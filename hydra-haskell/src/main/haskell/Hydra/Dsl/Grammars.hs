@@ -16,6 +16,9 @@ l >: p = G.PatternLabeled $ G.LabeledPattern (G.Label l) p
 alts :: [G.Pattern] -> G.Pattern
 alts = G.PatternAlternatives
 
+alts01 :: [G.Pattern] -> G.Pattern
+alts01 ps = alts $ [terminal ""] ++ ps
+
 define :: String -> [G.Pattern] -> G.Production
 define s pats = G.Production (G.Symbol s) pat
   where
