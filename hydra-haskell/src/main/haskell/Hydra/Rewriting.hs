@@ -25,6 +25,13 @@ import qualified Data.Set as S
 import qualified Data.Maybe as Y
 
 
+boundVariablesInType :: Type a -> S.Set Name
+boundVariablesInType = foldOverType TraversalOrderPre fld S.empty
+  where
+    fld names typ = case typ of
+      TypeLambda (LambdaType v _) -> S.insert v names
+      _ -> names
+
 elementsWithDependencies :: Ord a => [Element a] -> Flow (Graph a) [Element a]
 elementsWithDependencies original = CM.mapM requireElement allDepNames
   where
@@ -277,6 +284,16 @@ simplifyTerm = rewriteTerm simplify id
             else simplifyTerm body
         _ -> term
       _ -> term
+
+simplifyUniversalTypes :: Type a -> Type a
+simplifyUniversalTypes = rewriteType f id
+  where
+    f recurse t = case recurse t of
+      -- Caution: time complexity
+      TypeLambda (LambdaType v body) -> if S.member v (freeVariablesInType body)
+        then t
+        else body
+      _ -> t
 
 substituteVariable :: Ord a => Name -> Name -> Term a -> Term a
 substituteVariable from to = rewriteTerm replace id

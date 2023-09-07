@@ -363,14 +363,14 @@ fieldMapDef = basicsDefinition "fieldMap" $
   function (TypeList fieldA) (Types.map (TypeVariable _FieldName) termA) $
     (lambda "fields" $ Maps.fromList @@ (Lists.map @@ var "toPair" @@ var "fields"))
   `with` [
-    "toPair">: lambda "f" $ pair (project _Field _Field_name @@ var "f", project _Field _Field_term @@ var "f")]
+    "toPair">: lambda "f" $ pair (project _Field _Field_name @@ var "f") (project _Field _Field_term @@ var "f")]
 
 fieldTypeMapDef :: Definition ([FieldType a] -> M.Map FieldName (Type a))
 fieldTypeMapDef = basicsDefinition "fieldTypeMap" $
   function (TypeList fieldTypeA) (Types.map (TypeVariable _FieldName) typeA) $
     (lambda "fields" $ Maps.fromList @@ (Lists.map @@ var "toPair" @@ var "fields"))
   `with` [
-    "toPair">: lambda "f" $ pair (project _FieldType _FieldType_name @@ var "f", project _FieldType _FieldType_type @@ var "f")]
+    "toPair">: lambda "f" $ pair (project _FieldType _FieldType_name @@ var "f") (project _FieldType _FieldType_type @@ var "f")]
 
 isEncodedTypeDef :: Definition (Term a -> Bool)
 isEncodedTypeDef = basicsDefinition "isEncodedType" $
@@ -417,7 +417,7 @@ elementsToGraphDef = basicsDefinition "elementsToGraph" $
       (Graph.graphAnnotations @@ var "parent")
       (var "schema")
   `with` [
-    "toPair" >: lambda "el" $ pair (project _Element _Element_name @@ var "el", var "el")]
+    "toPair" >: lambda "el" $ pair (project _Element _Element_name @@ var "el") (var "el")]
 
 localNameOfEagerDef :: Definition (Name -> String)
 localNameOfEagerDef = basicsDefinition "localNameOfEager" $

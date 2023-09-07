@@ -4,7 +4,6 @@ module Hydra.Inference (
   annotateTermWithTypes,
   inferGraphTypes,
   inferType,
-  inferTypeScheme,
   inferTypeAndConstraints,
   Constraint,
 ) where
@@ -16,6 +15,7 @@ import Hydra.Graph
 import Hydra.Lexical
 import Hydra.Mantle
 import Hydra.Kv
+import Hydra.Reduction
 import Hydra.Rewriting
 import Hydra.Substitution
 import Hydra.Unification
@@ -41,12 +41,11 @@ annotateElements g sortedEls = withInferenceContext $ do
     --       but unification and substitution occur within elements in isolation
     let constraints = termConstraints . elementData <$> iels
     subst <- withGraphContext $ withSchemaContext $ CM.mapM solveConstraints constraints
-    r <- CM.zipWithM rewriteElement subst iels
 
-    return r
+    CM.zipWithM rewriteElement subst iels
   where
     rewriteElement subst el = do
-        let itm = rewriteDataType (substituteInType subst) $ elementData el
+        let itm = substituteAndNormalizeAnnotations subst $ elementData el
         term <- rewriteTermMetaM annotType itm
         return el {
           elementData = term}
@@ -61,11 +60,11 @@ annotateElements g sortedEls = withInferenceContext $ do
       [] -> pure $ L.reverse annotated
       (el:r) -> do
         iel <- inferElementType el
-        withBinding (elementName el) (termTypeScheme $ elementData iel) $ annotate r (iel:annotated)
+        withBinding (elementName el) (termType $ elementData iel) $ annotate r (iel:annotated)
 
 annotateTermWithTypes :: (Ord a, Show a) => Term a -> Flow (Graph a) (Term a)
 annotateTermWithTypes term0 = do
-  (term1, _) <- inferTypeAndConstraints term0
+  term1 <- inferTypeAndConstraints term0
 
   g <- getState
   let anns = graphAnnotations g
@@ -88,30 +87,62 @@ inferGraphTypes = getState >>= annotateGraph
       where
         toPair el = (elementName el, el)
 
--- TODO: deprecated
+-- TODO: deprecated; inference is performed on graphs, not individual terms. Update the Haskell coder to use inferElementType
 inferType :: (Ord a, Show a) => Term a -> Flow (Graph a) (Type a)
-inferType term = typeSchemeType <$> inferTypeScheme term
+inferType term = (simplifyUniversalTypes . termType) <$> inferTypeAndConstraints term
 
--- TODO: deprecated
+-- TODO: deprecated; inference is performed on graphs, not individual terms. Update tests to use inferElementType
 -- | Solve for the top-level type of an expression in a given environment
-inferTypeAndConstraints :: (Ord a, Show a) => Term a -> Flow (Graph a) (Term (a, Type a, [Constraint a]), TypeScheme a)
+inferTypeAndConstraints :: (Ord a, Show a) => Term a -> Flow (Graph a) (Term (InfAnn a))
 inferTypeAndConstraints term = withTrace ("infer type") $ withInferenceContext $ do
     iterm <- infer term
     subst <- withGraphContext $ withSchemaContext $ solveConstraints (termConstraints iterm)
-    let term2 = rewriteDataType (substituteInType subst) iterm
-    return (term2, closeOver $ termType term2)
-  where
-    -- | Canonicalize and return the polymorphic top-level type.
-    closeOver = normalizeScheme . generalize M.empty . reduceType
+    return $ substituteAndNormalizeAnnotations subst iterm
+--    return (term2, closeOver $ termType term2)
+--  where
+--    -- | Canonicalize and return the polymorphic top-level type.
+--    closeOver = normalizeScheme . generalize M.empty . reduceType
 
--- TODO: deprecated
-inferTypeScheme :: (Ord a, Show a) => Term a -> Flow (Graph a) (TypeScheme a)
-inferTypeScheme term = snd <$> inferTypeAndConstraints term
-
-rewriteDataType :: Ord a => (Type a -> Type a) -> Term (a, Type a, [Constraint a]) -> Term (a, Type a, [Constraint a])
-rewriteDataType f = rewriteTermMeta rewrite
+normalizeType :: Ord a => Type a -> Type a
+normalizeType = rewriteType f id
   where
-    rewrite (x, typ, c) = (x, f typ, c)
+    f recurse typ = yank $ recurse typ
+      where
+        yank typ = case typ of
+          TypeAnnotated (Annotated typ1 ann) -> normalize typ1 $ \typ2 -> TypeAnnotated $ Annotated typ2 ann
+          TypeApplication (ApplicationType lhs rhs) -> normalize lhs $ \lhs1 ->
+            normalize rhs $ \rhs1 -> case lhs of
+              TypeLambda (LambdaType var body) -> alphaConvertType var rhs1 body
+              _ -> TypeApplication $ ApplicationType lhs1 rhs1
+          TypeFunction (FunctionType dom cod) -> normalize dom $
+            \dom1 -> normalize cod $
+            \cod1 -> TypeFunction $ FunctionType dom1 cod1
+          TypeList lt -> normalize lt TypeList
+          TypeMap (MapType kt vt) -> normalize kt (\kt1 -> normalize vt (\vt1 -> TypeMap $ MapType kt1 vt1))
+          TypeOptional ot -> normalize ot TypeOptional
+          TypeProduct types -> case types of
+            [] -> TypeProduct []
+            (h:rest) -> normalize h
+              $ \h1 -> normalize (yank $ TypeProduct rest)
+                $ \(TypeProduct rest2) -> TypeProduct $ h1:rest2
+          TypeRecord (RowType tname ext fields) -> case fields of
+            [] -> TypeRecord (RowType tname ext [])
+            ((FieldType fname h):rest) -> normalize h $ \h1 -> normalize (yank $ TypeRecord (RowType tname ext rest))
+              $ \(TypeRecord (RowType _ _ rest2)) -> TypeRecord $ RowType tname ext ((FieldType fname h1):rest2)
+          TypeSet st -> normalize st TypeSet
+          TypeStream st -> normalize st TypeStream
+          TypeSum types -> case types of
+            [] -> TypeSum []
+            (h:rest) -> normalize h $ \h1 -> normalize (yank $ TypeSum rest) $ \(TypeSum rest2) -> TypeSum $ h1:rest2
+          TypeUnion (RowType tname ext fields) -> case fields of
+            [] -> TypeUnion (RowType tname ext [])
+            ((FieldType fname h):rest) -> normalize h $ \h1 -> normalize (yank $ TypeUnion (RowType tname ext rest))
+              $ \(TypeUnion (RowType _ _ rest2)) -> TypeUnion $ RowType tname ext ((FieldType fname h1):rest2)
+          TypeWrap (Nominal name t) -> normalize t (TypeWrap . Nominal name)
+          t -> t
+        normalize subtype build = case subtype of
+          TypeLambda (LambdaType var body) -> TypeLambda $ LambdaType var $ yank $ build body
+          t -> build t
 
 sortGraphElements :: (Ord a, Show a) => Graph a -> Flow (Graph a) [Element a]
 sortGraphElements g = do
@@ -137,6 +168,11 @@ sortGraphElements g = do
         -- No need for an inference dependency on an element which is already annotated with a type
         isNotAnnotated name = not $ S.member name annotated
 
+substituteAndNormalizeAnnotations :: Ord a => Subst a -> Term (InfAnn a) -> Term (InfAnn a)
+substituteAndNormalizeAnnotations subst = rewriteTermMeta rewrite
+  where
+    rewrite (x, typ, c) = (x, normalizeType $ substituteTypeVariables subst typ, c)
+
 withInferenceContext flow = do
     g <- getState
     env <- initialEnv g $ graphAnnotations g
@@ -146,4 +182,4 @@ withInferenceContext flow = do
       where
         toPair el = do
           mt <- annotationClassTermType anns $ elementData el
-          return $ (\t -> (elementName el, monotype t)) <$> mt
+          return $ (\t -> (elementName el, t)) <$> mt

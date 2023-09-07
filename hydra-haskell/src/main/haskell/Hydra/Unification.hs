@@ -46,7 +46,7 @@ unificationSolver (su, cs) = case cs of
     su1  <- unify t1 t2
     unificationSolver (
       composeSubst su1 su,
-      (\(t1, t2) -> (substituteInType su1 t1, substituteInType su1 t2)) <$> rest)
+      (\(t1, t2) -> (substituteTypeVariables su1 t1, substituteTypeVariables su1 t2)) <$> rest)
 
 unify :: (Eq a, Show a) => Type a -> Type a -> Flow s (Subst a)
 unify ltyp rtyp = do
@@ -68,8 +68,6 @@ unify ltyp rtyp = do
         unifyMany (fieldTypeType <$> rowTypeFields rt1) (fieldTypeType <$> rowTypeFields rt2)
       (TypeSet st1, TypeSet st2) -> unify st1 st2
       (TypeUnion rt1, TypeUnion rt2) -> verify (rowTypeTypeName rt1 == rowTypeTypeName rt2)
-      (TypeLambda (LambdaType (Name v1) body1), TypeLambda (LambdaType (Name v2) body2)) ->
-        unifyMany [Types.var v1, body1] [Types.var v2, body2]
       (TypeSum types1, TypeSum types2) -> unifyMany types1 types2
       (TypeWrap n1, TypeWrap n2) -> verify $ n1 == n2
 
@@ -77,15 +75,16 @@ unify ltyp rtyp = do
       (TypeVariable v1, TypeVariable v2) -> bindWeakest v1 v2
       (TypeVariable v, t2) -> bind v t2
       (t1, TypeVariable v) -> bind v t1
+      (TypeLambda lt, t2) -> unifyLambda lt t2
+      (t1, TypeLambda lt) -> unifyLambda lt t1
 
-      -- TODO; temporary "slop", e.g. (record "RowType" ...) is allowed to unify with (wrap "RowType" @ "a")
-      (TypeApplication (ApplicationType lhs rhs), t2) -> unify lhs t2
-      (t1, TypeApplication (ApplicationType lhs rhs)) -> unify t1 lhs
-      (TypeLambda (LambdaType _ body), t2) -> unify body t2
-      (t1, TypeLambda (LambdaType _ body)) -> unify t1 body
-      -- TODO; temporary "slop", e.g. (record "RowType" ...) is allowed to unify with (wrap "RowType")
-      (TypeWrap _, _) -> return M.empty -- TODO
-      (_, TypeWrap name) -> return M.empty -- TODO
+--      -- TODO; temporary "slop", e.g. (record "RowType" ...) is allowed to unify with (wrap "RowType" @ "a")
+--      (TypeApplication (ApplicationType lhs rhs), t2) -> unify lhs t2
+--      (t1, TypeApplication (ApplicationType lhs rhs)) -> unify t1 lhs
+--      -- TODO; temporary "slop", e.g. (record "RowType" ...) is allowed to unify with (wrap "RowType")
+--      (TypeWrap _, _) -> return M.empty -- TODO
+--      (_, TypeWrap name) -> return M.empty -- TODO
+
 
       (l, r) -> fail $ "unification of " ++ show (typeVariant l) ++ " with " ++ show (typeVariant r) ++
         ":\n  " ++ show l ++
@@ -99,12 +98,16 @@ unify ltyp rtyp = do
         else bind v2 (TypeVariable v1)
       where
         isWeak v = L.head (unName v) == 't' -- TODO: use a convention like _xxx for temporarily variables, then normalize and replace them
+    unifyLambda (LambdaType v body) other = case other of
+      TypeLambda (LambdaType v2 body2) -> unifyMany [TypeVariable v, body] [TypeVariable v2, body2]
+      _ -> unify body other
+--      _ -> fail $ "could not unify with lambda type: " ++ show (stripType ltyp)
 
 unifyMany :: (Eq a, Show a) => [Type a] -> [Type a] -> Flow s (Subst a)
 unifyMany [] [] = return M.empty
 unifyMany (t1 : ts1) (t2 : ts2) =
   do su1 <- unify t1 t2
-     su2 <- unifyMany (substituteInType su1 <$> ts1) (substituteInType su1 <$> ts2)
+     su2 <- unifyMany (substituteTypeVariables su1 <$> ts1) (substituteTypeVariables su1 <$> ts2)
      return (composeSubst su2 su1)
 unifyMany t1 t2 = fail $ "unification mismatch between " ++ show t1 ++ " and " ++ show t2
 

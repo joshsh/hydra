@@ -103,8 +103,8 @@ map kt vt = TypeMap $ MapType kt vt
 optional :: Type a -> Type a
 optional = TypeOptional
 
-pair :: (Type a, Type a) -> Type a
-pair (a, b) = TypeProduct [a, b]
+pair :: Type a -> Type a -> Type a
+pair a b = TypeProduct [a, b]
 
 product :: [Type a] -> Type a
 product = TypeProduct

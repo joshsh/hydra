@@ -24,8 +24,8 @@ import qualified Data.Set as S
 import qualified Data.Maybe as Y
 
 
-alphaConvert :: Ord a => Name -> Term a -> Term a -> Term a
-alphaConvert vold tnew = rewriteTerm rewrite id
+alphaConvertTerm :: Ord a => Name -> Term a -> Term a -> Term a
+alphaConvertTerm vold tnew = rewriteTerm rewrite id
   where
     rewrite recurse term = case term of
       TermFunction (FunctionLambda (Lambda v body)) -> if v == vold
@@ -33,6 +33,16 @@ alphaConvert vold tnew = rewriteTerm rewrite id
         else recurse term
       TermVariable v -> if v == vold then tnew else TermVariable v
       _ -> recurse term
+
+alphaConvertType :: Ord a => Name -> Type a -> Type a -> Type a
+alphaConvertType vold tnew = rewriteType rewrite id
+  where
+    rewrite recurse typ = case typ of
+      TypeLambda (LambdaType v body) -> if v == vold
+        then typ
+        else recurse typ
+      TypeVariable v -> if v == vold then tnew else TypeVariable v
+      _ -> recurse typ
 
 -- For demo purposes. This should be generalized to enable additional side effects of interest.
 countPrimitiveInvocations :: Bool
@@ -151,7 +161,7 @@ contractTerm = rewriteTerm rewrite id
         TermApplication (Application lhs rhs) -> case stripTerm lhs of
           TermFunction (FunctionLambda (Lambda v body)) -> if isFreeIn v body
             then body
-            else alphaConvert v rhs body
+            else alphaConvertTerm v rhs body
           _ -> rec
         _ -> rec
       where

@@ -138,8 +138,8 @@ nothing = optional Nothing
 optional :: Y.Maybe (Term a) -> Term a
 optional = TermOptional
 
-pair :: (Term a, Term a) -> Term a
-pair (a, b) = TermProduct [a, b]
+pair :: Term a -> Term a -> Term a
+pair a b = TermProduct [a, b]
 
 primitive :: Name -> Term a
 primitive = TermFunction . FunctionPrimitive
