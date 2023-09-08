@@ -1,9 +1,11 @@
 package hydra.langs.tinkerpop.propertyGraph;
 
+import java.io.Serializable;
+
 /**
  * A property key
  */
-public class PropertyKey {
+public class PropertyKey implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/tinkerpop/propertyGraph.PropertyKey");
   
   /**

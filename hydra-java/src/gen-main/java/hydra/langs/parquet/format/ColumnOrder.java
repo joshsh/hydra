@@ -1,11 +1,13 @@
 package hydra.langs.parquet.format;
 
+import java.io.Serializable;
+
 /**
  * Union to specify the order used for the min_value and max_value fields for a column. This union takes the role of an enhanced enum that allows rich elements (which will be needed for a collation-based ordering in the future). Possible values are:
  * * TypeDefinedOrder - the column uses the order defined by its logical or physical type (if there is no logical type).
  * If the reader does not support the value of this union, min and max stats for this column should be ignored. 
  */
-public abstract class ColumnOrder {
+public abstract class ColumnOrder implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/parquet/format.ColumnOrder");
   
   private ColumnOrder () {
@@ -69,7 +71,7 @@ public abstract class ColumnOrder {
    *     - If the max is -0, the row group may contain +0 values as well.
    *     - When looking for NaN values, min and max should be ignored.
    */
-  public static final class TypeOrder extends hydra.langs.parquet.format.ColumnOrder {
+  public static final class TypeOrder extends hydra.langs.parquet.format.ColumnOrder implements Serializable {
     public TypeOrder () {
     
     }

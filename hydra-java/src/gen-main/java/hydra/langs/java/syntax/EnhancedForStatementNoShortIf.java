@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class EnhancedForStatementNoShortIf {
+import java.io.Serializable;
+
+public class EnhancedForStatementNoShortIf implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.EnhancedForStatementNoShortIf");
   
   public final hydra.langs.java.syntax.EnhancedForCond cond;

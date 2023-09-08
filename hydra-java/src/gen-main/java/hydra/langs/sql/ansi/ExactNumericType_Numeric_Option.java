@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public class ExactNumericType_Numeric_Option {
+import java.io.Serializable;
+
+public class ExactNumericType_Numeric_Option implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.ExactNumericType.Numeric.Option");
   
   public final hydra.langs.sql.ansi.Precision precision;

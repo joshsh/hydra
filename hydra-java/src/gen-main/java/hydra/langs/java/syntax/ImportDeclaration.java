@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class ImportDeclaration {
+import java.io.Serializable;
+
+public abstract class ImportDeclaration implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ImportDeclaration");
   
   private ImportDeclaration () {
@@ -41,7 +43,7 @@ public abstract class ImportDeclaration {
     }
   }
   
-  public static final class SingleType extends hydra.langs.java.syntax.ImportDeclaration {
+  public static final class SingleType extends hydra.langs.java.syntax.ImportDeclaration implements Serializable {
     public final hydra.langs.java.syntax.SingleTypeImportDeclaration value;
     
     public SingleType (hydra.langs.java.syntax.SingleTypeImportDeclaration value) {
@@ -68,7 +70,7 @@ public abstract class ImportDeclaration {
     }
   }
   
-  public static final class TypeImportOnDemand extends hydra.langs.java.syntax.ImportDeclaration {
+  public static final class TypeImportOnDemand extends hydra.langs.java.syntax.ImportDeclaration implements Serializable {
     public final hydra.langs.java.syntax.TypeImportOnDemandDeclaration value;
     
     public TypeImportOnDemand (hydra.langs.java.syntax.TypeImportOnDemandDeclaration value) {
@@ -95,7 +97,7 @@ public abstract class ImportDeclaration {
     }
   }
   
-  public static final class SingleStaticImport extends hydra.langs.java.syntax.ImportDeclaration {
+  public static final class SingleStaticImport extends hydra.langs.java.syntax.ImportDeclaration implements Serializable {
     public final hydra.langs.java.syntax.SingleStaticImportDeclaration value;
     
     public SingleStaticImport (hydra.langs.java.syntax.SingleStaticImportDeclaration value) {
@@ -122,7 +124,7 @@ public abstract class ImportDeclaration {
     }
   }
   
-  public static final class StaticImportOnDemand extends hydra.langs.java.syntax.ImportDeclaration {
+  public static final class StaticImportOnDemand extends hydra.langs.java.syntax.ImportDeclaration implements Serializable {
     public final hydra.langs.java.syntax.StaticImportOnDemandDeclaration value;
     
     public StaticImportOnDemand (hydra.langs.java.syntax.StaticImportOnDemandDeclaration value) {

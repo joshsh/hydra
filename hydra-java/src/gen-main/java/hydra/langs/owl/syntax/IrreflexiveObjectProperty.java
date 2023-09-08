@@ -1,6 +1,8 @@
 package hydra.langs.owl.syntax;
 
-public class IrreflexiveObjectProperty {
+import java.io.Serializable;
+
+public class IrreflexiveObjectProperty implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/owl/syntax.IrreflexiveObjectProperty");
   
   public final java.util.List<hydra.langs.owl.syntax.Annotation> annotations;

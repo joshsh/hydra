@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public abstract class Data {
+import java.io.Serializable;
+
+public abstract class Data implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Data");
   
   private Data () {
@@ -227,7 +229,7 @@ public abstract class Data {
     }
   }
   
-  public static final class Lit extends hydra.langs.scala.meta.Data {
+  public static final class Lit extends hydra.langs.scala.meta.Data implements Serializable {
     public final hydra.langs.scala.meta.Lit value;
     
     public Lit (hydra.langs.scala.meta.Lit value) {
@@ -254,7 +256,7 @@ public abstract class Data {
     }
   }
   
-  public static final class Ref extends hydra.langs.scala.meta.Data {
+  public static final class Ref extends hydra.langs.scala.meta.Data implements Serializable {
     public final hydra.langs.scala.meta.Data_Ref value;
     
     public Ref (hydra.langs.scala.meta.Data_Ref value) {
@@ -281,7 +283,7 @@ public abstract class Data {
     }
   }
   
-  public static final class Interpolate extends hydra.langs.scala.meta.Data {
+  public static final class Interpolate extends hydra.langs.scala.meta.Data implements Serializable {
     public final hydra.langs.scala.meta.Data_Interpolate value;
     
     public Interpolate (hydra.langs.scala.meta.Data_Interpolate value) {
@@ -308,7 +310,7 @@ public abstract class Data {
     }
   }
   
-  public static final class Xml extends hydra.langs.scala.meta.Data {
+  public static final class Xml extends hydra.langs.scala.meta.Data implements Serializable {
     public final hydra.langs.scala.meta.Data_Xml value;
     
     public Xml (hydra.langs.scala.meta.Data_Xml value) {
@@ -335,7 +337,7 @@ public abstract class Data {
     }
   }
   
-  public static final class Apply extends hydra.langs.scala.meta.Data {
+  public static final class Apply extends hydra.langs.scala.meta.Data implements Serializable {
     public final hydra.langs.scala.meta.Data_Apply value;
     
     public Apply (hydra.langs.scala.meta.Data_Apply value) {
@@ -362,7 +364,7 @@ public abstract class Data {
     }
   }
   
-  public static final class ApplyUsing extends hydra.langs.scala.meta.Data {
+  public static final class ApplyUsing extends hydra.langs.scala.meta.Data implements Serializable {
     public final hydra.langs.scala.meta.Data_ApplyUsing value;
     
     public ApplyUsing (hydra.langs.scala.meta.Data_ApplyUsing value) {
@@ -389,7 +391,7 @@ public abstract class Data {
     }
   }
   
-  public static final class ApplyType extends hydra.langs.scala.meta.Data {
+  public static final class ApplyType extends hydra.langs.scala.meta.Data implements Serializable {
     public final hydra.langs.scala.meta.Data_ApplyType value;
     
     public ApplyType (hydra.langs.scala.meta.Data_ApplyType value) {
@@ -416,7 +418,7 @@ public abstract class Data {
     }
   }
   
-  public static final class Assign extends hydra.langs.scala.meta.Data {
+  public static final class Assign extends hydra.langs.scala.meta.Data implements Serializable {
     public final hydra.langs.scala.meta.Data_Assign value;
     
     public Assign (hydra.langs.scala.meta.Data_Assign value) {
@@ -443,7 +445,7 @@ public abstract class Data {
     }
   }
   
-  public static final class Return extends hydra.langs.scala.meta.Data {
+  public static final class Return extends hydra.langs.scala.meta.Data implements Serializable {
     public final hydra.langs.scala.meta.Data_Return value;
     
     public Return (hydra.langs.scala.meta.Data_Return value) {
@@ -470,7 +472,7 @@ public abstract class Data {
     }
   }
   
-  public static final class Throw extends hydra.langs.scala.meta.Data {
+  public static final class Throw extends hydra.langs.scala.meta.Data implements Serializable {
     public final hydra.langs.scala.meta.Data_Throw value;
     
     public Throw (hydra.langs.scala.meta.Data_Throw value) {
@@ -497,7 +499,7 @@ public abstract class Data {
     }
   }
   
-  public static final class Ascribe extends hydra.langs.scala.meta.Data {
+  public static final class Ascribe extends hydra.langs.scala.meta.Data implements Serializable {
     public final hydra.langs.scala.meta.Data_Ascribe value;
     
     public Ascribe (hydra.langs.scala.meta.Data_Ascribe value) {
@@ -524,7 +526,7 @@ public abstract class Data {
     }
   }
   
-  public static final class Annotate extends hydra.langs.scala.meta.Data {
+  public static final class Annotate extends hydra.langs.scala.meta.Data implements Serializable {
     public final hydra.langs.scala.meta.Data_Annotate value;
     
     public Annotate (hydra.langs.scala.meta.Data_Annotate value) {
@@ -551,7 +553,7 @@ public abstract class Data {
     }
   }
   
-  public static final class Tuple extends hydra.langs.scala.meta.Data {
+  public static final class Tuple extends hydra.langs.scala.meta.Data implements Serializable {
     public final hydra.langs.scala.meta.Data_Tuple value;
     
     public Tuple (hydra.langs.scala.meta.Data_Tuple value) {
@@ -578,7 +580,7 @@ public abstract class Data {
     }
   }
   
-  public static final class Block extends hydra.langs.scala.meta.Data {
+  public static final class Block extends hydra.langs.scala.meta.Data implements Serializable {
     public final hydra.langs.scala.meta.Data_Block value;
     
     public Block (hydra.langs.scala.meta.Data_Block value) {
@@ -605,7 +607,7 @@ public abstract class Data {
     }
   }
   
-  public static final class EndMarker extends hydra.langs.scala.meta.Data {
+  public static final class EndMarker extends hydra.langs.scala.meta.Data implements Serializable {
     public final hydra.langs.scala.meta.Data_EndMarker value;
     
     public EndMarker (hydra.langs.scala.meta.Data_EndMarker value) {
@@ -632,7 +634,7 @@ public abstract class Data {
     }
   }
   
-  public static final class If extends hydra.langs.scala.meta.Data {
+  public static final class If extends hydra.langs.scala.meta.Data implements Serializable {
     public final hydra.langs.scala.meta.Data_If value;
     
     public If (hydra.langs.scala.meta.Data_If value) {
@@ -659,7 +661,7 @@ public abstract class Data {
     }
   }
   
-  public static final class QuotedMacroExpr extends hydra.langs.scala.meta.Data {
+  public static final class QuotedMacroExpr extends hydra.langs.scala.meta.Data implements Serializable {
     public final hydra.langs.scala.meta.Data_QuotedMacroExpr value;
     
     public QuotedMacroExpr (hydra.langs.scala.meta.Data_QuotedMacroExpr value) {
@@ -686,7 +688,7 @@ public abstract class Data {
     }
   }
   
-  public static final class QuotedMacroType extends hydra.langs.scala.meta.Data {
+  public static final class QuotedMacroType extends hydra.langs.scala.meta.Data implements Serializable {
     public final hydra.langs.scala.meta.Data_QuotedMacroType value;
     
     public QuotedMacroType (hydra.langs.scala.meta.Data_QuotedMacroType value) {
@@ -713,7 +715,7 @@ public abstract class Data {
     }
   }
   
-  public static final class SplicedMacroExpr extends hydra.langs.scala.meta.Data {
+  public static final class SplicedMacroExpr extends hydra.langs.scala.meta.Data implements Serializable {
     public final hydra.langs.scala.meta.Data_SplicedMacroExpr value;
     
     public SplicedMacroExpr (hydra.langs.scala.meta.Data_SplicedMacroExpr value) {
@@ -740,7 +742,7 @@ public abstract class Data {
     }
   }
   
-  public static final class Match extends hydra.langs.scala.meta.Data {
+  public static final class Match extends hydra.langs.scala.meta.Data implements Serializable {
     public final hydra.langs.scala.meta.Data_Match value;
     
     public Match (hydra.langs.scala.meta.Data_Match value) {
@@ -767,7 +769,7 @@ public abstract class Data {
     }
   }
   
-  public static final class Try extends hydra.langs.scala.meta.Data {
+  public static final class Try extends hydra.langs.scala.meta.Data implements Serializable {
     public final hydra.langs.scala.meta.Data_Try value;
     
     public Try (hydra.langs.scala.meta.Data_Try value) {
@@ -794,7 +796,7 @@ public abstract class Data {
     }
   }
   
-  public static final class TryWithHandler extends hydra.langs.scala.meta.Data {
+  public static final class TryWithHandler extends hydra.langs.scala.meta.Data implements Serializable {
     public final hydra.langs.scala.meta.Data_TryWithHandler value;
     
     public TryWithHandler (hydra.langs.scala.meta.Data_TryWithHandler value) {
@@ -821,7 +823,7 @@ public abstract class Data {
     }
   }
   
-  public static final class FunctionData extends hydra.langs.scala.meta.Data {
+  public static final class FunctionData extends hydra.langs.scala.meta.Data implements Serializable {
     public final hydra.langs.scala.meta.Data_FunctionData value;
     
     public FunctionData (hydra.langs.scala.meta.Data_FunctionData value) {
@@ -848,7 +850,7 @@ public abstract class Data {
     }
   }
   
-  public static final class PolyFunction extends hydra.langs.scala.meta.Data {
+  public static final class PolyFunction extends hydra.langs.scala.meta.Data implements Serializable {
     public final hydra.langs.scala.meta.Data_PolyFunction value;
     
     public PolyFunction (hydra.langs.scala.meta.Data_PolyFunction value) {
@@ -875,7 +877,7 @@ public abstract class Data {
     }
   }
   
-  public static final class PartialFunction extends hydra.langs.scala.meta.Data {
+  public static final class PartialFunction extends hydra.langs.scala.meta.Data implements Serializable {
     public final hydra.langs.scala.meta.Data_PartialFunction value;
     
     public PartialFunction (hydra.langs.scala.meta.Data_PartialFunction value) {
@@ -902,7 +904,7 @@ public abstract class Data {
     }
   }
   
-  public static final class While extends hydra.langs.scala.meta.Data {
+  public static final class While extends hydra.langs.scala.meta.Data implements Serializable {
     public final hydra.langs.scala.meta.Data_While value;
     
     public While (hydra.langs.scala.meta.Data_While value) {
@@ -929,7 +931,7 @@ public abstract class Data {
     }
   }
   
-  public static final class Do extends hydra.langs.scala.meta.Data {
+  public static final class Do extends hydra.langs.scala.meta.Data implements Serializable {
     public final hydra.langs.scala.meta.Data_Do value;
     
     public Do (hydra.langs.scala.meta.Data_Do value) {
@@ -956,7 +958,7 @@ public abstract class Data {
     }
   }
   
-  public static final class For extends hydra.langs.scala.meta.Data {
+  public static final class For extends hydra.langs.scala.meta.Data implements Serializable {
     public final hydra.langs.scala.meta.Data_For value;
     
     public For (hydra.langs.scala.meta.Data_For value) {
@@ -983,7 +985,7 @@ public abstract class Data {
     }
   }
   
-  public static final class ForYield extends hydra.langs.scala.meta.Data {
+  public static final class ForYield extends hydra.langs.scala.meta.Data implements Serializable {
     public final hydra.langs.scala.meta.Data_ForYield value;
     
     public ForYield (hydra.langs.scala.meta.Data_ForYield value) {
@@ -1010,7 +1012,7 @@ public abstract class Data {
     }
   }
   
-  public static final class New extends hydra.langs.scala.meta.Data {
+  public static final class New extends hydra.langs.scala.meta.Data implements Serializable {
     public final hydra.langs.scala.meta.Data_New value;
     
     public New (hydra.langs.scala.meta.Data_New value) {
@@ -1037,7 +1039,7 @@ public abstract class Data {
     }
   }
   
-  public static final class NewAnonymous extends hydra.langs.scala.meta.Data {
+  public static final class NewAnonymous extends hydra.langs.scala.meta.Data implements Serializable {
     public final hydra.langs.scala.meta.Data_NewAnonymous value;
     
     public NewAnonymous (hydra.langs.scala.meta.Data_NewAnonymous value) {
@@ -1064,7 +1066,7 @@ public abstract class Data {
     }
   }
   
-  public static final class Placeholder extends hydra.langs.scala.meta.Data {
+  public static final class Placeholder extends hydra.langs.scala.meta.Data implements Serializable {
     public final hydra.langs.scala.meta.Data_Placeholder value;
     
     public Placeholder (hydra.langs.scala.meta.Data_Placeholder value) {
@@ -1091,7 +1093,7 @@ public abstract class Data {
     }
   }
   
-  public static final class Eta extends hydra.langs.scala.meta.Data {
+  public static final class Eta extends hydra.langs.scala.meta.Data implements Serializable {
     public final hydra.langs.scala.meta.Data_Eta value;
     
     public Eta (hydra.langs.scala.meta.Data_Eta value) {
@@ -1118,7 +1120,7 @@ public abstract class Data {
     }
   }
   
-  public static final class Repeated extends hydra.langs.scala.meta.Data {
+  public static final class Repeated extends hydra.langs.scala.meta.Data implements Serializable {
     public final hydra.langs.scala.meta.Data_Repeated value;
     
     public Repeated (hydra.langs.scala.meta.Data_Repeated value) {
@@ -1145,7 +1147,7 @@ public abstract class Data {
     }
   }
   
-  public static final class Param extends hydra.langs.scala.meta.Data {
+  public static final class Param extends hydra.langs.scala.meta.Data implements Serializable {
     public final hydra.langs.scala.meta.Data_Param value;
     
     public Param (hydra.langs.scala.meta.Data_Param value) {

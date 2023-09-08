@@ -1,6 +1,8 @@
 package hydra.langs.parquet.format;
 
-public abstract class TimeUnit {
+import java.io.Serializable;
+
+public abstract class TimeUnit implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/parquet/format.TimeUnit");
   
   private TimeUnit () {
@@ -35,7 +37,7 @@ public abstract class TimeUnit {
     }
   }
   
-  public static final class Millis extends hydra.langs.parquet.format.TimeUnit {
+  public static final class Millis extends hydra.langs.parquet.format.TimeUnit implements Serializable {
     public Millis () {
     
     }
@@ -60,7 +62,7 @@ public abstract class TimeUnit {
     }
   }
   
-  public static final class Micros extends hydra.langs.parquet.format.TimeUnit {
+  public static final class Micros extends hydra.langs.parquet.format.TimeUnit implements Serializable {
     public Micros () {
     
     }
@@ -85,7 +87,7 @@ public abstract class TimeUnit {
     }
   }
   
-  public static final class Nanos extends hydra.langs.parquet.format.TimeUnit {
+  public static final class Nanos extends hydra.langs.parquet.format.TimeUnit implements Serializable {
     public Nanos () {
     
     }

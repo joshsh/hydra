@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class ShapeOrRef {
+import java.io.Serializable;
+
+public abstract class ShapeOrRef implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.ShapeOrRef");
   
   private ShapeOrRef () {
@@ -41,7 +43,7 @@ public abstract class ShapeOrRef {
     }
   }
   
-  public static final class ShapeDefinition extends hydra.langs.shex.syntax.ShapeOrRef {
+  public static final class ShapeDefinition extends hydra.langs.shex.syntax.ShapeOrRef implements Serializable {
     public final hydra.langs.shex.syntax.ShapeDefinition value;
     
     public ShapeDefinition (hydra.langs.shex.syntax.ShapeDefinition value) {
@@ -68,7 +70,7 @@ public abstract class ShapeOrRef {
     }
   }
   
-  public static final class AtpNameLn extends hydra.langs.shex.syntax.ShapeOrRef {
+  public static final class AtpNameLn extends hydra.langs.shex.syntax.ShapeOrRef implements Serializable {
     public final hydra.langs.shex.syntax.AtpNameLn value;
     
     public AtpNameLn (hydra.langs.shex.syntax.AtpNameLn value) {
@@ -95,7 +97,7 @@ public abstract class ShapeOrRef {
     }
   }
   
-  public static final class AtpNameNs extends hydra.langs.shex.syntax.ShapeOrRef {
+  public static final class AtpNameNs extends hydra.langs.shex.syntax.ShapeOrRef implements Serializable {
     public final hydra.langs.shex.syntax.AtpNameNs value;
     
     public AtpNameNs (hydra.langs.shex.syntax.AtpNameNs value) {
@@ -122,7 +124,7 @@ public abstract class ShapeOrRef {
     }
   }
   
-  public static final class Sequence extends hydra.langs.shex.syntax.ShapeOrRef {
+  public static final class Sequence extends hydra.langs.shex.syntax.ShapeOrRef implements Serializable {
     public final hydra.langs.shex.syntax.ShapeExprLabel value;
     
     public Sequence (hydra.langs.shex.syntax.ShapeExprLabel value) {

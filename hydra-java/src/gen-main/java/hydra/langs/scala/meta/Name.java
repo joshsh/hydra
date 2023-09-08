@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public abstract class Name {
+import java.io.Serializable;
+
+public abstract class Name implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Name");
   
   private Name () {
@@ -35,7 +37,7 @@ public abstract class Name {
     }
   }
   
-  public static final class Value extends hydra.langs.scala.meta.Name {
+  public static final class Value extends hydra.langs.scala.meta.Name implements Serializable {
     public final String value;
     
     public Value (String value) {
@@ -62,7 +64,7 @@ public abstract class Name {
     }
   }
   
-  public static final class Anonymous extends hydra.langs.scala.meta.Name {
+  public static final class Anonymous extends hydra.langs.scala.meta.Name implements Serializable {
     public Anonymous () {
     
     }
@@ -87,7 +89,7 @@ public abstract class Name {
     }
   }
   
-  public static final class Indeterminate extends hydra.langs.scala.meta.Name {
+  public static final class Indeterminate extends hydra.langs.scala.meta.Name implements Serializable {
     public final hydra.langs.scala.meta.PredefString value;
     
     public Indeterminate (hydra.langs.scala.meta.PredefString value) {

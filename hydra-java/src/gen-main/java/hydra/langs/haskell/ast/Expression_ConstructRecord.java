@@ -1,9 +1,11 @@
 package hydra.langs.haskell.ast;
 
+import java.io.Serializable;
+
 /**
  * A record constructor expression
  */
-public class Expression_ConstructRecord {
+public class Expression_ConstructRecord implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.Expression.ConstructRecord");
   
   public final hydra.langs.haskell.ast.Name name;

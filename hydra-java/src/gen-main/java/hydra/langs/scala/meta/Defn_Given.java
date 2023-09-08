@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public class Defn_Given {
+import java.io.Serializable;
+
+public class Defn_Given implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Defn.Given");
   
   public final java.util.List<hydra.langs.scala.meta.Mod> mods;

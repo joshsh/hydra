@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public class MultisetElementReference {
+import java.io.Serializable;
+
+public class MultisetElementReference implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.MultisetElementReference");
   
   public MultisetElementReference () {

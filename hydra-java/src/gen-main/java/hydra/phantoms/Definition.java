@@ -1,9 +1,11 @@
 package hydra.phantoms;
 
+import java.io.Serializable;
+
 /**
  * An association with a named term with a phantom type
  */
-public class Definition<A> {
+public class Definition<A> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/phantoms.Definition");
   
   public final hydra.core.Name name;

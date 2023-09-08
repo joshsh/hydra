@@ -1,9 +1,11 @@
 package hydra.langs.tinkerpop.propertyGraph;
 
+import java.io.Serializable;
+
 /**
  * The type of a vertex
  */
-public class VertexType<T> {
+public class VertexType<T> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/tinkerpop/propertyGraph.VertexType");
   
   /**

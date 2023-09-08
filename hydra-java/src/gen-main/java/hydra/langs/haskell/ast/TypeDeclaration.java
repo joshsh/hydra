@@ -1,6 +1,8 @@
 package hydra.langs.haskell.ast;
 
-public class TypeDeclaration {
+import java.io.Serializable;
+
+public class TypeDeclaration implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.TypeDeclaration");
   
   public final hydra.langs.haskell.ast.DeclarationHead name;

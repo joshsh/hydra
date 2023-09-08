@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public class ShapeDefinition {
+import java.io.Serializable;
+
+public class ShapeDefinition implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.ShapeDefinition");
   
   public final java.util.List<hydra.langs.shex.syntax.ShapeDefinition_ListOfAlts_Elmt> listOfAlts;

@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public class Type_Apply {
+import java.io.Serializable;
+
+public class Type_Apply implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Type.Apply");
   
   public final hydra.langs.scala.meta.Type tpe;

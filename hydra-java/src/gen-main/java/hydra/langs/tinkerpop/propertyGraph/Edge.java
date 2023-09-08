@@ -1,9 +1,11 @@
 package hydra.langs.tinkerpop.propertyGraph;
 
+import java.io.Serializable;
+
 /**
  * An edge
  */
-public class Edge<V> {
+public class Edge<V> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/tinkerpop/propertyGraph.Edge");
   
   /**

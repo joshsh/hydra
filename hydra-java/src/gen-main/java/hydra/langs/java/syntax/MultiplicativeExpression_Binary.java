@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class MultiplicativeExpression_Binary {
+import java.io.Serializable;
+
+public class MultiplicativeExpression_Binary implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.MultiplicativeExpression.Binary");
   
   public final hydra.langs.java.syntax.MultiplicativeExpression lhs;

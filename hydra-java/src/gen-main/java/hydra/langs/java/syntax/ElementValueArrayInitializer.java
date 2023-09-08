@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class ElementValueArrayInitializer {
+import java.io.Serializable;
+
+public class ElementValueArrayInitializer implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ElementValueArrayInitializer");
   
   public final java.util.List<hydra.langs.java.syntax.ElementValue> value;

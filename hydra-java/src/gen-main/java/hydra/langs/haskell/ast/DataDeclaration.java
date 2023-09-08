@@ -1,9 +1,11 @@
 package hydra.langs.haskell.ast;
 
+import java.io.Serializable;
+
 /**
  * A data type declaration
  */
-public class DataDeclaration {
+public class DataDeclaration implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.DataDeclaration");
   
   public final hydra.langs.haskell.ast.DataDeclaration_Keyword keyword;

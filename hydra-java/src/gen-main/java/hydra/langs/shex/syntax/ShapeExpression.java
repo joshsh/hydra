@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public class ShapeExpression {
+import java.io.Serializable;
+
+public class ShapeExpression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.ShapeExpression");
   
   public final hydra.langs.shex.syntax.ShapeOr value;

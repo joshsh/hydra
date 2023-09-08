@@ -1,9 +1,11 @@
 package hydra.langs.haskell.ast;
 
+import java.io.Serializable;
+
 /**
  * A section expression
  */
-public class Expression_Section {
+public class Expression_Section implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.Expression.Section");
   
   public final hydra.langs.haskell.ast.Operator operator;

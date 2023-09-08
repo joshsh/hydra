@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class FloatingPointType {
+import java.io.Serializable;
+
+public abstract class FloatingPointType implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.FloatingPointType");
   
   private FloatingPointType () {
@@ -29,7 +31,7 @@ public abstract class FloatingPointType {
     }
   }
   
-  public static final class Float_ extends hydra.langs.java.syntax.FloatingPointType {
+  public static final class Float_ extends hydra.langs.java.syntax.FloatingPointType implements Serializable {
     public Float_ () {
     
     }
@@ -54,7 +56,7 @@ public abstract class FloatingPointType {
     }
   }
   
-  public static final class Double_ extends hydra.langs.java.syntax.FloatingPointType {
+  public static final class Double_ extends hydra.langs.java.syntax.FloatingPointType implements Serializable {
     public Double_ () {
     
     }

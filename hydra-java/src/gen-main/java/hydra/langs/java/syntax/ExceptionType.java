@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class ExceptionType {
+import java.io.Serializable;
+
+public abstract class ExceptionType implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ExceptionType");
   
   private ExceptionType () {
@@ -29,7 +31,7 @@ public abstract class ExceptionType {
     }
   }
   
-  public static final class Class_ extends hydra.langs.java.syntax.ExceptionType {
+  public static final class Class_ extends hydra.langs.java.syntax.ExceptionType implements Serializable {
     public final hydra.langs.java.syntax.ClassType value;
     
     public Class_ (hydra.langs.java.syntax.ClassType value) {
@@ -56,7 +58,7 @@ public abstract class ExceptionType {
     }
   }
   
-  public static final class Variable extends hydra.langs.java.syntax.ExceptionType {
+  public static final class Variable extends hydra.langs.java.syntax.ExceptionType implements Serializable {
     public final hydra.langs.java.syntax.TypeVariable value;
     
     public Variable (hydra.langs.java.syntax.TypeVariable value) {

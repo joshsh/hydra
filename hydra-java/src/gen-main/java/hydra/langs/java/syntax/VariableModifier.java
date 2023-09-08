@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class VariableModifier {
+import java.io.Serializable;
+
+public abstract class VariableModifier implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.VariableModifier");
   
   private VariableModifier () {
@@ -29,7 +31,7 @@ public abstract class VariableModifier {
     }
   }
   
-  public static final class Annotation extends hydra.langs.java.syntax.VariableModifier {
+  public static final class Annotation extends hydra.langs.java.syntax.VariableModifier implements Serializable {
     public final hydra.langs.java.syntax.Annotation value;
     
     public Annotation (hydra.langs.java.syntax.Annotation value) {
@@ -56,7 +58,7 @@ public abstract class VariableModifier {
     }
   }
   
-  public static final class Final extends hydra.langs.java.syntax.VariableModifier {
+  public static final class Final extends hydra.langs.java.syntax.VariableModifier implements Serializable {
     public Final () {
     
     }

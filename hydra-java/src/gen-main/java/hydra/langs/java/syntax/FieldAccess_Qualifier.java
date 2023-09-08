@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class FieldAccess_Qualifier {
+import java.io.Serializable;
+
+public abstract class FieldAccess_Qualifier implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.FieldAccess.Qualifier");
   
   private FieldAccess_Qualifier () {
@@ -35,7 +37,7 @@ public abstract class FieldAccess_Qualifier {
     }
   }
   
-  public static final class Primary extends hydra.langs.java.syntax.FieldAccess_Qualifier {
+  public static final class Primary extends hydra.langs.java.syntax.FieldAccess_Qualifier implements Serializable {
     public final hydra.langs.java.syntax.Primary value;
     
     public Primary (hydra.langs.java.syntax.Primary value) {
@@ -62,7 +64,7 @@ public abstract class FieldAccess_Qualifier {
     }
   }
   
-  public static final class Super extends hydra.langs.java.syntax.FieldAccess_Qualifier {
+  public static final class Super extends hydra.langs.java.syntax.FieldAccess_Qualifier implements Serializable {
     public Super () {
     
     }
@@ -87,7 +89,7 @@ public abstract class FieldAccess_Qualifier {
     }
   }
   
-  public static final class Typed extends hydra.langs.java.syntax.FieldAccess_Qualifier {
+  public static final class Typed extends hydra.langs.java.syntax.FieldAccess_Qualifier implements Serializable {
     public final hydra.langs.java.syntax.TypeName value;
     
     public Typed (hydra.langs.java.syntax.TypeName value) {

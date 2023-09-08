@@ -1,6 +1,8 @@
 package hydra.langs.xml.schema;
 
-public class UnsignedLong {
+import java.io.Serializable;
+
+public class UnsignedLong implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/xml/schema.UnsignedLong");
   
   public final java.math.BigInteger value;

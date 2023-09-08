@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public abstract class BooleanValueExpression {
+import java.io.Serializable;
+
+public abstract class BooleanValueExpression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.BooleanValueExpression");
   
   private BooleanValueExpression () {
@@ -29,7 +31,7 @@ public abstract class BooleanValueExpression {
     }
   }
   
-  public static final class Term extends hydra.langs.sql.ansi.BooleanValueExpression {
+  public static final class Term extends hydra.langs.sql.ansi.BooleanValueExpression implements Serializable {
     public final hydra.langs.sql.ansi.BooleanTerm value;
     
     public Term (hydra.langs.sql.ansi.BooleanTerm value) {
@@ -56,7 +58,7 @@ public abstract class BooleanValueExpression {
     }
   }
   
-  public static final class Or extends hydra.langs.sql.ansi.BooleanValueExpression {
+  public static final class Or extends hydra.langs.sql.ansi.BooleanValueExpression implements Serializable {
     public final hydra.langs.sql.ansi.BooleanValueExpression_Or value;
     
     public Or (hydra.langs.sql.ansi.BooleanValueExpression_Or value) {

@@ -1,9 +1,11 @@
 package hydra.langs.rdf.syntax;
 
+import java.io.Serializable;
+
 /**
  * A graph of RDF statements together with a distinguished subject and/or object node
  */
-public class Description {
+public class Description implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/rdf/syntax.Description");
   
   public final hydra.langs.rdf.syntax.Node subject;

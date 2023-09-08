@@ -1,9 +1,11 @@
 package hydra.coders;
 
+import java.io.Serializable;
+
 /**
  * Specifies either a pre-order or post-order traversal
  */
-public abstract class TraversalOrder {
+public abstract class TraversalOrder implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/coders.TraversalOrder");
   
   private TraversalOrder () {
@@ -35,7 +37,7 @@ public abstract class TraversalOrder {
   /**
    * Pre-order traversal
    */
-  public static final class Pre extends hydra.coders.TraversalOrder {
+  public static final class Pre extends hydra.coders.TraversalOrder implements Serializable {
     public Pre () {
     
     }
@@ -63,7 +65,7 @@ public abstract class TraversalOrder {
   /**
    * Post-order traversal
    */
-  public static final class Post extends hydra.coders.TraversalOrder {
+  public static final class Post extends hydra.coders.TraversalOrder implements Serializable {
     public Post () {
     
     }

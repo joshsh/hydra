@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public class NotStartAction_ShapeExprDecl {
+import java.io.Serializable;
+
+public class NotStartAction_ShapeExprDecl implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.NotStartAction.ShapeExprDecl");
   
   public final hydra.langs.shex.syntax.ShapeExprLabel shapeExprLabel;

@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class Iri {
+import java.io.Serializable;
+
+public abstract class Iri implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.Iri");
   
   private Iri () {
@@ -29,7 +31,7 @@ public abstract class Iri {
     }
   }
   
-  public static final class IriRef extends hydra.langs.shex.syntax.Iri {
+  public static final class IriRef extends hydra.langs.shex.syntax.Iri implements Serializable {
     public final hydra.langs.shex.syntax.IriRef value;
     
     public IriRef (hydra.langs.shex.syntax.IriRef value) {
@@ -56,7 +58,7 @@ public abstract class Iri {
     }
   }
   
-  public static final class PrefixedName extends hydra.langs.shex.syntax.Iri {
+  public static final class PrefixedName extends hydra.langs.shex.syntax.Iri implements Serializable {
     public final hydra.langs.shex.syntax.PrefixedName value;
     
     public PrefixedName (hydra.langs.shex.syntax.PrefixedName value) {

@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public class Length {
+import java.io.Serializable;
+
+public class Length implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.Length");
   
   public final hydra.langs.sql.ansi.UnsignedInteger value;

@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public class Type_Bounds {
+import java.io.Serializable;
+
+public class Type_Bounds implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Type.Bounds");
   
   public final java.util.Optional<hydra.langs.scala.meta.Type> lo;

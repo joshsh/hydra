@@ -1,9 +1,11 @@
 package hydra.phantoms;
 
+import java.io.Serializable;
+
 /**
  * A pure association with a phantom type
  */
-public class Reference<A> {
+public class Reference<A> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/phantoms.Reference");
   
   public Reference () {

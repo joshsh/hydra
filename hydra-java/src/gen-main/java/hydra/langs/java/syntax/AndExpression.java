@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class AndExpression {
+import java.io.Serializable;
+
+public class AndExpression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.AndExpression");
   
   public final java.util.List<hydra.langs.java.syntax.EqualityExpression> value;

@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class NumericLiteral {
+import java.io.Serializable;
+
+public abstract class NumericLiteral implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.NumericLiteral");
   
   private NumericLiteral () {
@@ -35,7 +37,7 @@ public abstract class NumericLiteral {
     }
   }
   
-  public static final class Integer_ extends hydra.langs.shex.syntax.NumericLiteral {
+  public static final class Integer_ extends hydra.langs.shex.syntax.NumericLiteral implements Serializable {
     public final hydra.langs.shex.syntax.Integer_ value;
     
     public Integer_ (hydra.langs.shex.syntax.Integer_ value) {
@@ -62,7 +64,7 @@ public abstract class NumericLiteral {
     }
   }
   
-  public static final class Decimal extends hydra.langs.shex.syntax.NumericLiteral {
+  public static final class Decimal extends hydra.langs.shex.syntax.NumericLiteral implements Serializable {
     public final hydra.langs.shex.syntax.Decimal value;
     
     public Decimal (hydra.langs.shex.syntax.Decimal value) {
@@ -89,7 +91,7 @@ public abstract class NumericLiteral {
     }
   }
   
-  public static final class Double_ extends hydra.langs.shex.syntax.NumericLiteral {
+  public static final class Double_ extends hydra.langs.shex.syntax.NumericLiteral implements Serializable {
     public final hydra.langs.shex.syntax.Double_ value;
     
     public Double_ (hydra.langs.shex.syntax.Double_ value) {

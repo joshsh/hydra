@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class StatementNoShortIf {
+import java.io.Serializable;
+
+public abstract class StatementNoShortIf implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.StatementNoShortIf");
   
   private StatementNoShortIf () {
@@ -47,7 +49,7 @@ public abstract class StatementNoShortIf {
     }
   }
   
-  public static final class WithoutTrailing extends hydra.langs.java.syntax.StatementNoShortIf {
+  public static final class WithoutTrailing extends hydra.langs.java.syntax.StatementNoShortIf implements Serializable {
     public final hydra.langs.java.syntax.StatementWithoutTrailingSubstatement value;
     
     public WithoutTrailing (hydra.langs.java.syntax.StatementWithoutTrailingSubstatement value) {
@@ -74,7 +76,7 @@ public abstract class StatementNoShortIf {
     }
   }
   
-  public static final class Labeled extends hydra.langs.java.syntax.StatementNoShortIf {
+  public static final class Labeled extends hydra.langs.java.syntax.StatementNoShortIf implements Serializable {
     public final hydra.langs.java.syntax.LabeledStatementNoShortIf value;
     
     public Labeled (hydra.langs.java.syntax.LabeledStatementNoShortIf value) {
@@ -101,7 +103,7 @@ public abstract class StatementNoShortIf {
     }
   }
   
-  public static final class IfThenElse extends hydra.langs.java.syntax.StatementNoShortIf {
+  public static final class IfThenElse extends hydra.langs.java.syntax.StatementNoShortIf implements Serializable {
     public final hydra.langs.java.syntax.IfThenElseStatementNoShortIf value;
     
     public IfThenElse (hydra.langs.java.syntax.IfThenElseStatementNoShortIf value) {
@@ -128,7 +130,7 @@ public abstract class StatementNoShortIf {
     }
   }
   
-  public static final class While extends hydra.langs.java.syntax.StatementNoShortIf {
+  public static final class While extends hydra.langs.java.syntax.StatementNoShortIf implements Serializable {
     public final hydra.langs.java.syntax.WhileStatementNoShortIf value;
     
     public While (hydra.langs.java.syntax.WhileStatementNoShortIf value) {
@@ -155,7 +157,7 @@ public abstract class StatementNoShortIf {
     }
   }
   
-  public static final class For extends hydra.langs.java.syntax.StatementNoShortIf {
+  public static final class For extends hydra.langs.java.syntax.StatementNoShortIf implements Serializable {
     public final hydra.langs.java.syntax.ForStatementNoShortIf value;
     
     public For (hydra.langs.java.syntax.ForStatementNoShortIf value) {

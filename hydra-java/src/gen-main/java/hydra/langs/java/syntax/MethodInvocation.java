@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class MethodInvocation {
+import java.io.Serializable;
+
+public class MethodInvocation implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.MethodInvocation");
   
   public final hydra.langs.java.syntax.MethodInvocation_Header header;

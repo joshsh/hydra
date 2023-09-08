@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class FieldAccess {
+import java.io.Serializable;
+
+public class FieldAccess implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.FieldAccess");
   
   public final hydra.langs.java.syntax.FieldAccess_Qualifier qualifier;

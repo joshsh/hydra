@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class WhileStatementNoShortIf {
+import java.io.Serializable;
+
+public class WhileStatementNoShortIf implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.WhileStatementNoShortIf");
   
   public final java.util.Optional<hydra.langs.java.syntax.Expression> cond;

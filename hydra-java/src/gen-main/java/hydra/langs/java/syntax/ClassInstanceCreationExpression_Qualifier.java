@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class ClassInstanceCreationExpression_Qualifier {
+import java.io.Serializable;
+
+public abstract class ClassInstanceCreationExpression_Qualifier implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ClassInstanceCreationExpression.Qualifier");
   
   private ClassInstanceCreationExpression_Qualifier () {
@@ -29,7 +31,7 @@ public abstract class ClassInstanceCreationExpression_Qualifier {
     }
   }
   
-  public static final class Expression extends hydra.langs.java.syntax.ClassInstanceCreationExpression_Qualifier {
+  public static final class Expression extends hydra.langs.java.syntax.ClassInstanceCreationExpression_Qualifier implements Serializable {
     public final hydra.langs.java.syntax.ExpressionName value;
     
     public Expression (hydra.langs.java.syntax.ExpressionName value) {
@@ -56,7 +58,7 @@ public abstract class ClassInstanceCreationExpression_Qualifier {
     }
   }
   
-  public static final class Primary extends hydra.langs.java.syntax.ClassInstanceCreationExpression_Qualifier {
+  public static final class Primary extends hydra.langs.java.syntax.ClassInstanceCreationExpression_Qualifier implements Serializable {
     public final hydra.langs.java.syntax.Primary value;
     
     public Primary (hydra.langs.java.syntax.Primary value) {

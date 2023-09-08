@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public class UnicodeCharacterStringLiteral {
+import java.io.Serializable;
+
+public class UnicodeCharacterStringLiteral implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.UnicodeCharacterStringLiteral");
   
   public UnicodeCharacterStringLiteral () {

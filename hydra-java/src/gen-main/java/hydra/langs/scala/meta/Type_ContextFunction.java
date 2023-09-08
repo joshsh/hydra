@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public class Type_ContextFunction {
+import java.io.Serializable;
+
+public class Type_ContextFunction implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Type.ContextFunction");
   
   public final java.util.List<hydra.langs.scala.meta.Type> params;

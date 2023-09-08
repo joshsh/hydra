@@ -1,9 +1,11 @@
 package hydra.ast;
 
+import java.io.Serializable;
+
 /**
  * Any of several indentation styles
  */
-public abstract class IndentStyle {
+public abstract class IndentStyle implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/ast.IndentStyle");
   
   private IndentStyle () {
@@ -32,7 +34,7 @@ public abstract class IndentStyle {
     }
   }
   
-  public static final class AllLines extends hydra.ast.IndentStyle {
+  public static final class AllLines extends hydra.ast.IndentStyle implements Serializable {
     public final String value;
     
     public AllLines (String value) {
@@ -59,7 +61,7 @@ public abstract class IndentStyle {
     }
   }
   
-  public static final class SubsequentLines extends hydra.ast.IndentStyle {
+  public static final class SubsequentLines extends hydra.ast.IndentStyle implements Serializable {
     public final String value;
     
     public SubsequentLines (String value) {

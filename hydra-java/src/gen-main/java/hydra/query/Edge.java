@@ -1,9 +1,11 @@
 package hydra.query;
 
+import java.io.Serializable;
+
 /**
  * An abstract edge based on a record type
  */
-public class Edge {
+public class Edge implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/query.Edge");
   
   /**

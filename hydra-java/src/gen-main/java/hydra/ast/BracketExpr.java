@@ -1,9 +1,11 @@
 package hydra.ast;
 
+import java.io.Serializable;
+
 /**
  * An expression enclosed by brackets
  */
-public class BracketExpr {
+public class BracketExpr implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/ast.BracketExpr");
   
   public final hydra.ast.Brackets brackets;

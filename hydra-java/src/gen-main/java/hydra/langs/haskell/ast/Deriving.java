@@ -1,9 +1,11 @@
 package hydra.langs.haskell.ast;
 
+import java.io.Serializable;
+
 /**
  * A 'deriving' statement
  */
-public class Deriving {
+public class Deriving implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.Deriving");
   
   /**

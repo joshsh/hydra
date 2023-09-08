@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class PnLocal_Sequence_Option_ListOfAlts_Elmt {
+import java.io.Serializable;
+
+public abstract class PnLocal_Sequence_Option_ListOfAlts_Elmt implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.PnLocal.Sequence.Option.ListOfAlts.Elmt");
   
   private PnLocal_Sequence_Option_ListOfAlts_Elmt () {
@@ -41,7 +43,7 @@ public abstract class PnLocal_Sequence_Option_ListOfAlts_Elmt {
     }
   }
   
-  public static final class PnChars extends hydra.langs.shex.syntax.PnLocal_Sequence_Option_ListOfAlts_Elmt {
+  public static final class PnChars extends hydra.langs.shex.syntax.PnLocal_Sequence_Option_ListOfAlts_Elmt implements Serializable {
     public final hydra.langs.shex.syntax.PnChars value;
     
     public PnChars (hydra.langs.shex.syntax.PnChars value) {
@@ -68,7 +70,7 @@ public abstract class PnLocal_Sequence_Option_ListOfAlts_Elmt {
     }
   }
   
-  public static final class Period extends hydra.langs.shex.syntax.PnLocal_Sequence_Option_ListOfAlts_Elmt {
+  public static final class Period extends hydra.langs.shex.syntax.PnLocal_Sequence_Option_ListOfAlts_Elmt implements Serializable {
     public Period () {
     
     }
@@ -93,7 +95,7 @@ public abstract class PnLocal_Sequence_Option_ListOfAlts_Elmt {
     }
   }
   
-  public static final class Colon extends hydra.langs.shex.syntax.PnLocal_Sequence_Option_ListOfAlts_Elmt {
+  public static final class Colon extends hydra.langs.shex.syntax.PnLocal_Sequence_Option_ListOfAlts_Elmt implements Serializable {
     public Colon () {
     
     }
@@ -118,7 +120,7 @@ public abstract class PnLocal_Sequence_Option_ListOfAlts_Elmt {
     }
   }
   
-  public static final class Plx extends hydra.langs.shex.syntax.PnLocal_Sequence_Option_ListOfAlts_Elmt {
+  public static final class Plx extends hydra.langs.shex.syntax.PnLocal_Sequence_Option_ListOfAlts_Elmt implements Serializable {
     public final hydra.langs.shex.syntax.Plx value;
     
     public Plx (hydra.langs.shex.syntax.Plx value) {

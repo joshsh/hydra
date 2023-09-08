@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class MethodInvocation_Variant {
+import java.io.Serializable;
+
+public abstract class MethodInvocation_Variant implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.MethodInvocation.Variant");
   
   private MethodInvocation_Variant () {
@@ -47,7 +49,7 @@ public abstract class MethodInvocation_Variant {
     }
   }
   
-  public static final class Type extends hydra.langs.java.syntax.MethodInvocation_Variant {
+  public static final class Type extends hydra.langs.java.syntax.MethodInvocation_Variant implements Serializable {
     public final hydra.langs.java.syntax.TypeName value;
     
     public Type (hydra.langs.java.syntax.TypeName value) {
@@ -74,7 +76,7 @@ public abstract class MethodInvocation_Variant {
     }
   }
   
-  public static final class Expression extends hydra.langs.java.syntax.MethodInvocation_Variant {
+  public static final class Expression extends hydra.langs.java.syntax.MethodInvocation_Variant implements Serializable {
     public final hydra.langs.java.syntax.ExpressionName value;
     
     public Expression (hydra.langs.java.syntax.ExpressionName value) {
@@ -101,7 +103,7 @@ public abstract class MethodInvocation_Variant {
     }
   }
   
-  public static final class Primary extends hydra.langs.java.syntax.MethodInvocation_Variant {
+  public static final class Primary extends hydra.langs.java.syntax.MethodInvocation_Variant implements Serializable {
     public final hydra.langs.java.syntax.Primary value;
     
     public Primary (hydra.langs.java.syntax.Primary value) {
@@ -128,7 +130,7 @@ public abstract class MethodInvocation_Variant {
     }
   }
   
-  public static final class Super extends hydra.langs.java.syntax.MethodInvocation_Variant {
+  public static final class Super extends hydra.langs.java.syntax.MethodInvocation_Variant implements Serializable {
     public Super () {
     
     }
@@ -153,7 +155,7 @@ public abstract class MethodInvocation_Variant {
     }
   }
   
-  public static final class TypeSuper extends hydra.langs.java.syntax.MethodInvocation_Variant {
+  public static final class TypeSuper extends hydra.langs.java.syntax.MethodInvocation_Variant implements Serializable {
     public final hydra.langs.java.syntax.TypeName value;
     
     public TypeSuper (hydra.langs.java.syntax.TypeName value) {

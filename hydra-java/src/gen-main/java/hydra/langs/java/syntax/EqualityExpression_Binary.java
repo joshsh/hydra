@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class EqualityExpression_Binary {
+import java.io.Serializable;
+
+public class EqualityExpression_Binary implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.EqualityExpression.Binary");
   
   public final hydra.langs.java.syntax.EqualityExpression lhs;

@@ -1,9 +1,11 @@
 package hydra.langs.haskell.ast;
 
+import java.io.Serializable;
+
 /**
  * An infix application expression
  */
-public class Expression_InfixApplication {
+public class Expression_InfixApplication implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.Expression.InfixApplication");
   
   public final hydra.langs.haskell.ast.Expression lhs;

@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public class NationalCharacterStringType {
+import java.io.Serializable;
+
+public class NationalCharacterStringType implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.NationalCharacterStringType");
   
   public NationalCharacterStringType () {

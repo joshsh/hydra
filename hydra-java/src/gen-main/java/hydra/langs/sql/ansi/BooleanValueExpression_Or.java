@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public class BooleanValueExpression_Or {
+import java.io.Serializable;
+
+public class BooleanValueExpression_Or implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.BooleanValueExpression.Or");
   
   public final hydra.langs.sql.ansi.BooleanValueExpression lhs;

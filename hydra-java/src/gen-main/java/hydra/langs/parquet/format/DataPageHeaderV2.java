@@ -1,9 +1,11 @@
 package hydra.langs.parquet.format;
 
+import java.io.Serializable;
+
 /**
  * New page format allowing reading levels without decompressing the data Repetition and definition levels are uncompressed The remaining section containing the data is compressed if is_compressed is true
  */
-public class DataPageHeaderV2 {
+public class DataPageHeaderV2 implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/parquet/format.DataPageHeaderV2");
   
   /**

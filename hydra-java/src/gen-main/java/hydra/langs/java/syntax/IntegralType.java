@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class IntegralType {
+import java.io.Serializable;
+
+public abstract class IntegralType implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.IntegralType");
   
   private IntegralType () {
@@ -47,7 +49,7 @@ public abstract class IntegralType {
     }
   }
   
-  public static final class Byte_ extends hydra.langs.java.syntax.IntegralType {
+  public static final class Byte_ extends hydra.langs.java.syntax.IntegralType implements Serializable {
     public Byte_ () {
     
     }
@@ -72,7 +74,7 @@ public abstract class IntegralType {
     }
   }
   
-  public static final class Short_ extends hydra.langs.java.syntax.IntegralType {
+  public static final class Short_ extends hydra.langs.java.syntax.IntegralType implements Serializable {
     public Short_ () {
     
     }
@@ -97,7 +99,7 @@ public abstract class IntegralType {
     }
   }
   
-  public static final class Int extends hydra.langs.java.syntax.IntegralType {
+  public static final class Int extends hydra.langs.java.syntax.IntegralType implements Serializable {
     public Int () {
     
     }
@@ -122,7 +124,7 @@ public abstract class IntegralType {
     }
   }
   
-  public static final class Long_ extends hydra.langs.java.syntax.IntegralType {
+  public static final class Long_ extends hydra.langs.java.syntax.IntegralType implements Serializable {
     public Long_ () {
     
     }
@@ -147,7 +149,7 @@ public abstract class IntegralType {
     }
   }
   
-  public static final class Char extends hydra.langs.java.syntax.IntegralType {
+  public static final class Char extends hydra.langs.java.syntax.IntegralType implements Serializable {
     public Char () {
     
     }

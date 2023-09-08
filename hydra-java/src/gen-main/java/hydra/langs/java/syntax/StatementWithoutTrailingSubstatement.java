@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class StatementWithoutTrailingSubstatement {
+import java.io.Serializable;
+
+public abstract class StatementWithoutTrailingSubstatement implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.StatementWithoutTrailingSubstatement");
   
   private StatementWithoutTrailingSubstatement () {
@@ -89,7 +91,7 @@ public abstract class StatementWithoutTrailingSubstatement {
     }
   }
   
-  public static final class Block extends hydra.langs.java.syntax.StatementWithoutTrailingSubstatement {
+  public static final class Block extends hydra.langs.java.syntax.StatementWithoutTrailingSubstatement implements Serializable {
     public final hydra.langs.java.syntax.Block value;
     
     public Block (hydra.langs.java.syntax.Block value) {
@@ -116,7 +118,7 @@ public abstract class StatementWithoutTrailingSubstatement {
     }
   }
   
-  public static final class Empty extends hydra.langs.java.syntax.StatementWithoutTrailingSubstatement {
+  public static final class Empty extends hydra.langs.java.syntax.StatementWithoutTrailingSubstatement implements Serializable {
     public final hydra.langs.java.syntax.EmptyStatement value;
     
     public Empty (hydra.langs.java.syntax.EmptyStatement value) {
@@ -143,7 +145,7 @@ public abstract class StatementWithoutTrailingSubstatement {
     }
   }
   
-  public static final class Expression extends hydra.langs.java.syntax.StatementWithoutTrailingSubstatement {
+  public static final class Expression extends hydra.langs.java.syntax.StatementWithoutTrailingSubstatement implements Serializable {
     public final hydra.langs.java.syntax.ExpressionStatement value;
     
     public Expression (hydra.langs.java.syntax.ExpressionStatement value) {
@@ -170,7 +172,7 @@ public abstract class StatementWithoutTrailingSubstatement {
     }
   }
   
-  public static final class Assert extends hydra.langs.java.syntax.StatementWithoutTrailingSubstatement {
+  public static final class Assert extends hydra.langs.java.syntax.StatementWithoutTrailingSubstatement implements Serializable {
     public final hydra.langs.java.syntax.AssertStatement value;
     
     public Assert (hydra.langs.java.syntax.AssertStatement value) {
@@ -197,7 +199,7 @@ public abstract class StatementWithoutTrailingSubstatement {
     }
   }
   
-  public static final class Switch extends hydra.langs.java.syntax.StatementWithoutTrailingSubstatement {
+  public static final class Switch extends hydra.langs.java.syntax.StatementWithoutTrailingSubstatement implements Serializable {
     public final hydra.langs.java.syntax.SwitchStatement value;
     
     public Switch (hydra.langs.java.syntax.SwitchStatement value) {
@@ -224,7 +226,7 @@ public abstract class StatementWithoutTrailingSubstatement {
     }
   }
   
-  public static final class Do extends hydra.langs.java.syntax.StatementWithoutTrailingSubstatement {
+  public static final class Do extends hydra.langs.java.syntax.StatementWithoutTrailingSubstatement implements Serializable {
     public final hydra.langs.java.syntax.DoStatement value;
     
     public Do (hydra.langs.java.syntax.DoStatement value) {
@@ -251,7 +253,7 @@ public abstract class StatementWithoutTrailingSubstatement {
     }
   }
   
-  public static final class Break extends hydra.langs.java.syntax.StatementWithoutTrailingSubstatement {
+  public static final class Break extends hydra.langs.java.syntax.StatementWithoutTrailingSubstatement implements Serializable {
     public final hydra.langs.java.syntax.BreakStatement value;
     
     public Break (hydra.langs.java.syntax.BreakStatement value) {
@@ -278,7 +280,7 @@ public abstract class StatementWithoutTrailingSubstatement {
     }
   }
   
-  public static final class Continue extends hydra.langs.java.syntax.StatementWithoutTrailingSubstatement {
+  public static final class Continue extends hydra.langs.java.syntax.StatementWithoutTrailingSubstatement implements Serializable {
     public final hydra.langs.java.syntax.ContinueStatement value;
     
     public Continue (hydra.langs.java.syntax.ContinueStatement value) {
@@ -305,7 +307,7 @@ public abstract class StatementWithoutTrailingSubstatement {
     }
   }
   
-  public static final class Return extends hydra.langs.java.syntax.StatementWithoutTrailingSubstatement {
+  public static final class Return extends hydra.langs.java.syntax.StatementWithoutTrailingSubstatement implements Serializable {
     public final hydra.langs.java.syntax.ReturnStatement value;
     
     public Return (hydra.langs.java.syntax.ReturnStatement value) {
@@ -332,7 +334,7 @@ public abstract class StatementWithoutTrailingSubstatement {
     }
   }
   
-  public static final class Synchronized extends hydra.langs.java.syntax.StatementWithoutTrailingSubstatement {
+  public static final class Synchronized extends hydra.langs.java.syntax.StatementWithoutTrailingSubstatement implements Serializable {
     public final hydra.langs.java.syntax.SynchronizedStatement value;
     
     public Synchronized (hydra.langs.java.syntax.SynchronizedStatement value) {
@@ -359,7 +361,7 @@ public abstract class StatementWithoutTrailingSubstatement {
     }
   }
   
-  public static final class Throw extends hydra.langs.java.syntax.StatementWithoutTrailingSubstatement {
+  public static final class Throw extends hydra.langs.java.syntax.StatementWithoutTrailingSubstatement implements Serializable {
     public final hydra.langs.java.syntax.ThrowStatement value;
     
     public Throw (hydra.langs.java.syntax.ThrowStatement value) {
@@ -386,7 +388,7 @@ public abstract class StatementWithoutTrailingSubstatement {
     }
   }
   
-  public static final class Try extends hydra.langs.java.syntax.StatementWithoutTrailingSubstatement {
+  public static final class Try extends hydra.langs.java.syntax.StatementWithoutTrailingSubstatement implements Serializable {
     public final hydra.langs.java.syntax.TryStatement value;
     
     public Try (hydra.langs.java.syntax.TryStatement value) {

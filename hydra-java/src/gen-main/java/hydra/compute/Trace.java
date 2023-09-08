@@ -1,9 +1,11 @@
 package hydra.compute;
 
+import java.io.Serializable;
+
 /**
  * A container for logging and error information
  */
-public class Trace {
+public class Trace implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/compute.Trace");
   
   public final java.util.List<String> stack;

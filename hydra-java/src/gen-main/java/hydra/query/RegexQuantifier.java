@@ -1,9 +1,11 @@
 package hydra.query;
 
+import java.io.Serializable;
+
 /**
  * A regular expression quantifier
  */
-public abstract class RegexQuantifier {
+public abstract class RegexQuantifier implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/query.RegexQuantifier");
   
   private RegexQuantifier () {
@@ -65,7 +67,7 @@ public abstract class RegexQuantifier {
   /**
    * No quantifier; matches a single occurrence
    */
-  public static final class One extends hydra.query.RegexQuantifier {
+  public static final class One extends hydra.query.RegexQuantifier implements Serializable {
     public One () {
     
     }
@@ -93,7 +95,7 @@ public abstract class RegexQuantifier {
   /**
    * The ? quanifier; matches zero or one occurrence
    */
-  public static final class ZeroOrOne extends hydra.query.RegexQuantifier {
+  public static final class ZeroOrOne extends hydra.query.RegexQuantifier implements Serializable {
     public ZeroOrOne () {
     
     }
@@ -121,7 +123,7 @@ public abstract class RegexQuantifier {
   /**
    * The * quantifier; matches any number of occurrences
    */
-  public static final class ZeroOrMore extends hydra.query.RegexQuantifier {
+  public static final class ZeroOrMore extends hydra.query.RegexQuantifier implements Serializable {
     public ZeroOrMore () {
     
     }
@@ -149,7 +151,7 @@ public abstract class RegexQuantifier {
   /**
    * The + quantifier; matches one or more occurrences
    */
-  public static final class OneOrMore extends hydra.query.RegexQuantifier {
+  public static final class OneOrMore extends hydra.query.RegexQuantifier implements Serializable {
     public OneOrMore () {
     
     }
@@ -177,7 +179,7 @@ public abstract class RegexQuantifier {
   /**
    * The {n} quantifier; matches exactly n occurrences
    */
-  public static final class Exactly extends hydra.query.RegexQuantifier {
+  public static final class Exactly extends hydra.query.RegexQuantifier implements Serializable {
     /**
      * The {n} quantifier; matches exactly n occurrences
      */
@@ -210,7 +212,7 @@ public abstract class RegexQuantifier {
   /**
    * The {n,} quantifier; matches at least n occurrences
    */
-  public static final class AtLeast extends hydra.query.RegexQuantifier {
+  public static final class AtLeast extends hydra.query.RegexQuantifier implements Serializable {
     /**
      * The {n,} quantifier; matches at least n occurrences
      */
@@ -243,7 +245,7 @@ public abstract class RegexQuantifier {
   /**
    * The {n, m} quantifier; matches between n and m (inclusive) occurrences
    */
-  public static final class Range extends hydra.query.RegexQuantifier {
+  public static final class Range extends hydra.query.RegexQuantifier implements Serializable {
     /**
      * The {n, m} quantifier; matches between n and m (inclusive) occurrences
      */

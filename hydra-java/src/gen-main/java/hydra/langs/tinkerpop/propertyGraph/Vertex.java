@@ -1,9 +1,11 @@
 package hydra.langs.tinkerpop.propertyGraph;
 
+import java.io.Serializable;
+
 /**
  * A vertex
  */
-public class Vertex<V> {
+public class Vertex<V> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/tinkerpop/propertyGraph.Vertex");
   
   /**

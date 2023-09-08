@@ -1,9 +1,11 @@
 package hydra.query;
 
+import java.io.Serializable;
+
 /**
  * A node in a query expression; it may be a term, a variable, or a wildcard
  */
-public abstract class Node<A> {
+public abstract class Node<A> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/query.Node");
   
   private Node () {
@@ -41,7 +43,7 @@ public abstract class Node<A> {
   /**
    * A graph term; an expression which is valid in the graph being matched
    */
-  public static final class Term<A> extends hydra.query.Node<A> {
+  public static final class Term<A> extends hydra.query.Node<A> implements Serializable {
     /**
      * A graph term; an expression which is valid in the graph being matched
      */
@@ -74,7 +76,7 @@ public abstract class Node<A> {
   /**
    * A query variable, not to be confused with a variable term
    */
-  public static final class Variable<A> extends hydra.query.Node<A> {
+  public static final class Variable<A> extends hydra.query.Node<A> implements Serializable {
     /**
      * A query variable, not to be confused with a variable term
      */
@@ -107,7 +109,7 @@ public abstract class Node<A> {
   /**
    * An anonymous variable which we do not care to join across patterns
    */
-  public static final class Wildcard<A> extends hydra.query.Node<A> {
+  public static final class Wildcard<A> extends hydra.query.Node<A> implements Serializable {
     public Wildcard () {
     
     }

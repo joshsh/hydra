@@ -1,9 +1,11 @@
 package hydra.mantle;
 
+import java.io.Serializable;
+
 /**
  * Numeric precision: arbitrary precision, or precision to a specified number of bits
  */
-public abstract class Precision {
+public abstract class Precision implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/mantle.Precision");
   
   private Precision () {
@@ -32,7 +34,7 @@ public abstract class Precision {
     }
   }
   
-  public static final class Arbitrary extends hydra.mantle.Precision {
+  public static final class Arbitrary extends hydra.mantle.Precision implements Serializable {
     public Arbitrary () {
     
     }
@@ -57,7 +59,7 @@ public abstract class Precision {
     }
   }
   
-  public static final class Bits extends hydra.mantle.Precision {
+  public static final class Bits extends hydra.mantle.Precision implements Serializable {
     public final Integer value;
     
     public Bits (Integer value) {

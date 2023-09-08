@@ -1,9 +1,11 @@
 package hydra.ast;
 
+import java.io.Serializable;
+
 /**
  * Formatting option for code blocks
  */
-public class BlockStyle {
+public class BlockStyle implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/ast.BlockStyle");
   
   public final java.util.Optional<String> indent;

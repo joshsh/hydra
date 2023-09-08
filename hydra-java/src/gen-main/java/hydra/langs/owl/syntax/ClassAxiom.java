@@ -1,6 +1,8 @@
 package hydra.langs.owl.syntax;
 
-public abstract class ClassAxiom {
+import java.io.Serializable;
+
+public abstract class ClassAxiom implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/owl/syntax.ClassAxiom");
   
   private ClassAxiom () {
@@ -41,7 +43,7 @@ public abstract class ClassAxiom {
     }
   }
   
-  public static final class DisjointClasses extends hydra.langs.owl.syntax.ClassAxiom {
+  public static final class DisjointClasses extends hydra.langs.owl.syntax.ClassAxiom implements Serializable {
     public final hydra.langs.owl.syntax.DisjointClasses value;
     
     public DisjointClasses (hydra.langs.owl.syntax.DisjointClasses value) {
@@ -68,7 +70,7 @@ public abstract class ClassAxiom {
     }
   }
   
-  public static final class DisjointUnion extends hydra.langs.owl.syntax.ClassAxiom {
+  public static final class DisjointUnion extends hydra.langs.owl.syntax.ClassAxiom implements Serializable {
     public final hydra.langs.owl.syntax.DisjointUnion value;
     
     public DisjointUnion (hydra.langs.owl.syntax.DisjointUnion value) {
@@ -95,7 +97,7 @@ public abstract class ClassAxiom {
     }
   }
   
-  public static final class EquivalentClasses extends hydra.langs.owl.syntax.ClassAxiom {
+  public static final class EquivalentClasses extends hydra.langs.owl.syntax.ClassAxiom implements Serializable {
     public final hydra.langs.owl.syntax.EquivalentClasses value;
     
     public EquivalentClasses (hydra.langs.owl.syntax.EquivalentClasses value) {
@@ -122,7 +124,7 @@ public abstract class ClassAxiom {
     }
   }
   
-  public static final class SubClassOf extends hydra.langs.owl.syntax.ClassAxiom {
+  public static final class SubClassOf extends hydra.langs.owl.syntax.ClassAxiom implements Serializable {
     public final hydra.langs.owl.syntax.SubClassOf value;
     
     public SubClassOf (hydra.langs.owl.syntax.SubClassOf value) {

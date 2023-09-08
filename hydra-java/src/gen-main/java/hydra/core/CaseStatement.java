@@ -1,9 +1,11 @@
 package hydra.core;
 
+import java.io.Serializable;
+
 /**
  * A union elimination; a case statement
  */
-public class CaseStatement<A> {
+public class CaseStatement<A> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/core.CaseStatement");
   
   public final hydra.core.Name typeName;

@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public class Type_TypedParam {
+import java.io.Serializable;
+
+public class Type_TypedParam implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Type.TypedParam");
   
   public final hydra.langs.scala.meta.Name name;

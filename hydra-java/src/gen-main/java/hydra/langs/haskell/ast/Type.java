@@ -1,6 +1,8 @@
 package hydra.langs.haskell.ast;
 
-public abstract class Type {
+import java.io.Serializable;
+
+public abstract class Type implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.Type");
   
   private Type () {
@@ -65,7 +67,7 @@ public abstract class Type {
     }
   }
   
-  public static final class Application extends hydra.langs.haskell.ast.Type {
+  public static final class Application extends hydra.langs.haskell.ast.Type implements Serializable {
     public final hydra.langs.haskell.ast.Type_Application value;
     
     public Application (hydra.langs.haskell.ast.Type_Application value) {
@@ -92,7 +94,7 @@ public abstract class Type {
     }
   }
   
-  public static final class Ctx extends hydra.langs.haskell.ast.Type {
+  public static final class Ctx extends hydra.langs.haskell.ast.Type implements Serializable {
     public final hydra.langs.haskell.ast.Type_Context value;
     
     public Ctx (hydra.langs.haskell.ast.Type_Context value) {
@@ -119,7 +121,7 @@ public abstract class Type {
     }
   }
   
-  public static final class Function extends hydra.langs.haskell.ast.Type {
+  public static final class Function extends hydra.langs.haskell.ast.Type implements Serializable {
     public final hydra.langs.haskell.ast.Type_Function value;
     
     public Function (hydra.langs.haskell.ast.Type_Function value) {
@@ -146,7 +148,7 @@ public abstract class Type {
     }
   }
   
-  public static final class Infix extends hydra.langs.haskell.ast.Type {
+  public static final class Infix extends hydra.langs.haskell.ast.Type implements Serializable {
     public final hydra.langs.haskell.ast.Type_Infix value;
     
     public Infix (hydra.langs.haskell.ast.Type_Infix value) {
@@ -173,7 +175,7 @@ public abstract class Type {
     }
   }
   
-  public static final class List extends hydra.langs.haskell.ast.Type {
+  public static final class List extends hydra.langs.haskell.ast.Type implements Serializable {
     public final hydra.langs.haskell.ast.Type value;
     
     public List (hydra.langs.haskell.ast.Type value) {
@@ -200,7 +202,7 @@ public abstract class Type {
     }
   }
   
-  public static final class Parens extends hydra.langs.haskell.ast.Type {
+  public static final class Parens extends hydra.langs.haskell.ast.Type implements Serializable {
     public final hydra.langs.haskell.ast.Type value;
     
     public Parens (hydra.langs.haskell.ast.Type value) {
@@ -227,7 +229,7 @@ public abstract class Type {
     }
   }
   
-  public static final class Tuple extends hydra.langs.haskell.ast.Type {
+  public static final class Tuple extends hydra.langs.haskell.ast.Type implements Serializable {
     public final java.util.List<hydra.langs.haskell.ast.Type> value;
     
     public Tuple (java.util.List<hydra.langs.haskell.ast.Type> value) {
@@ -254,7 +256,7 @@ public abstract class Type {
     }
   }
   
-  public static final class Variable extends hydra.langs.haskell.ast.Type {
+  public static final class Variable extends hydra.langs.haskell.ast.Type implements Serializable {
     public final hydra.langs.haskell.ast.Name value;
     
     public Variable (hydra.langs.haskell.ast.Name value) {

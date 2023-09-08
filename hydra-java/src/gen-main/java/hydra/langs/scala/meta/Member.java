@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public abstract class Member {
+import java.io.Serializable;
+
+public abstract class Member implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Member");
   
   private Member () {
@@ -47,7 +49,7 @@ public abstract class Member {
     }
   }
   
-  public static final class Term extends hydra.langs.scala.meta.Member {
+  public static final class Term extends hydra.langs.scala.meta.Member implements Serializable {
     public final hydra.langs.scala.meta.Member_Data value;
     
     public Term (hydra.langs.scala.meta.Member_Data value) {
@@ -74,7 +76,7 @@ public abstract class Member {
     }
   }
   
-  public static final class Type extends hydra.langs.scala.meta.Member {
+  public static final class Type extends hydra.langs.scala.meta.Member implements Serializable {
     public final hydra.langs.scala.meta.Member_Type value;
     
     public Type (hydra.langs.scala.meta.Member_Type value) {
@@ -101,7 +103,7 @@ public abstract class Member {
     }
   }
   
-  public static final class TermParam extends hydra.langs.scala.meta.Member {
+  public static final class TermParam extends hydra.langs.scala.meta.Member implements Serializable {
     public final hydra.langs.scala.meta.Data_Param value;
     
     public TermParam (hydra.langs.scala.meta.Data_Param value) {
@@ -128,7 +130,7 @@ public abstract class Member {
     }
   }
   
-  public static final class TypeParam extends hydra.langs.scala.meta.Member {
+  public static final class TypeParam extends hydra.langs.scala.meta.Member implements Serializable {
     public final hydra.langs.scala.meta.Type_Param value;
     
     public TypeParam (hydra.langs.scala.meta.Type_Param value) {
@@ -155,7 +157,7 @@ public abstract class Member {
     }
   }
   
-  public static final class Self extends hydra.langs.scala.meta.Member {
+  public static final class Self extends hydra.langs.scala.meta.Member implements Serializable {
     public final hydra.langs.scala.meta.Self value;
     
     public Self (hydra.langs.scala.meta.Self value) {

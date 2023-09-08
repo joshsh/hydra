@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class EnhancedForCond {
+import java.io.Serializable;
+
+public class EnhancedForCond implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.EnhancedForCond");
   
   public final java.util.List<hydra.langs.java.syntax.VariableModifier> modifiers;

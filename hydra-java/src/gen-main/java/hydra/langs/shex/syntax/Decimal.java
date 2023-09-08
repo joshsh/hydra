@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public class Decimal {
+import java.io.Serializable;
+
+public class Decimal implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.Decimal");
   
   public final String value;

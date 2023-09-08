@@ -1,9 +1,11 @@
 package hydra.langs.owl.syntax;
 
+import java.io.Serializable;
+
 /**
  * See https://www.w3.org/TR/owl2-syntax/#Intersection_of_Data_Ranges
  */
-public class DataIntersectionOf {
+public class DataIntersectionOf implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/owl/syntax.DataIntersectionOf");
   
   /**

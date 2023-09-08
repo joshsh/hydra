@@ -1,6 +1,8 @@
 package hydra.langs.haskell.ast;
 
-public class Pattern_Typed {
+import java.io.Serializable;
+
+public class Pattern_Typed implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.Pattern.Typed");
   
   public final hydra.langs.haskell.ast.Pattern inner;

@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public class Annotation {
+import java.io.Serializable;
+
+public class Annotation implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.Annotation");
   
   public final hydra.langs.shex.syntax.Predicate predicate;

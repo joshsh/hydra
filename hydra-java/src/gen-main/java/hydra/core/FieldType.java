@@ -1,9 +1,11 @@
 package hydra.core;
 
+import java.io.Serializable;
+
 /**
  * The name and type of a field
  */
-public class FieldType<A> {
+public class FieldType<A> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/core.FieldType");
   
   public final hydra.core.FieldName name;

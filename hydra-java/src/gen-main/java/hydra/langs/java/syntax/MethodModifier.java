@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class MethodModifier {
+import java.io.Serializable;
+
+public abstract class MethodModifier implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.MethodModifier");
   
   private MethodModifier () {
@@ -77,7 +79,7 @@ public abstract class MethodModifier {
     }
   }
   
-  public static final class Annotation extends hydra.langs.java.syntax.MethodModifier {
+  public static final class Annotation extends hydra.langs.java.syntax.MethodModifier implements Serializable {
     public final hydra.langs.java.syntax.Annotation value;
     
     public Annotation (hydra.langs.java.syntax.Annotation value) {
@@ -104,7 +106,7 @@ public abstract class MethodModifier {
     }
   }
   
-  public static final class Public extends hydra.langs.java.syntax.MethodModifier {
+  public static final class Public extends hydra.langs.java.syntax.MethodModifier implements Serializable {
     public Public () {
     
     }
@@ -129,7 +131,7 @@ public abstract class MethodModifier {
     }
   }
   
-  public static final class Protected extends hydra.langs.java.syntax.MethodModifier {
+  public static final class Protected extends hydra.langs.java.syntax.MethodModifier implements Serializable {
     public Protected () {
     
     }
@@ -154,7 +156,7 @@ public abstract class MethodModifier {
     }
   }
   
-  public static final class Private extends hydra.langs.java.syntax.MethodModifier {
+  public static final class Private extends hydra.langs.java.syntax.MethodModifier implements Serializable {
     public Private () {
     
     }
@@ -179,7 +181,7 @@ public abstract class MethodModifier {
     }
   }
   
-  public static final class Abstract extends hydra.langs.java.syntax.MethodModifier {
+  public static final class Abstract extends hydra.langs.java.syntax.MethodModifier implements Serializable {
     public Abstract () {
     
     }
@@ -204,7 +206,7 @@ public abstract class MethodModifier {
     }
   }
   
-  public static final class Static extends hydra.langs.java.syntax.MethodModifier {
+  public static final class Static extends hydra.langs.java.syntax.MethodModifier implements Serializable {
     public Static () {
     
     }
@@ -229,7 +231,7 @@ public abstract class MethodModifier {
     }
   }
   
-  public static final class Final extends hydra.langs.java.syntax.MethodModifier {
+  public static final class Final extends hydra.langs.java.syntax.MethodModifier implements Serializable {
     public Final () {
     
     }
@@ -254,7 +256,7 @@ public abstract class MethodModifier {
     }
   }
   
-  public static final class Synchronized extends hydra.langs.java.syntax.MethodModifier {
+  public static final class Synchronized extends hydra.langs.java.syntax.MethodModifier implements Serializable {
     public Synchronized () {
     
     }
@@ -279,7 +281,7 @@ public abstract class MethodModifier {
     }
   }
   
-  public static final class Native extends hydra.langs.java.syntax.MethodModifier {
+  public static final class Native extends hydra.langs.java.syntax.MethodModifier implements Serializable {
     public Native () {
     
     }
@@ -304,7 +306,7 @@ public abstract class MethodModifier {
     }
   }
   
-  public static final class Strictfb extends hydra.langs.java.syntax.MethodModifier {
+  public static final class Strictfb extends hydra.langs.java.syntax.MethodModifier implements Serializable {
     public Strictfb () {
     
     }

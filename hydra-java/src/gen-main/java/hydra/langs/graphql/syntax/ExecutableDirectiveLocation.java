@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public abstract class ExecutableDirectiveLocation {
+import java.io.Serializable;
+
+public abstract class ExecutableDirectiveLocation implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.ExecutableDirectiveLocation");
   
   private ExecutableDirectiveLocation () {
@@ -65,7 +67,7 @@ public abstract class ExecutableDirectiveLocation {
     }
   }
   
-  public static final class QUERY extends hydra.langs.graphql.syntax.ExecutableDirectiveLocation {
+  public static final class QUERY extends hydra.langs.graphql.syntax.ExecutableDirectiveLocation implements Serializable {
     public QUERY () {
     
     }
@@ -90,7 +92,7 @@ public abstract class ExecutableDirectiveLocation {
     }
   }
   
-  public static final class MUTATION extends hydra.langs.graphql.syntax.ExecutableDirectiveLocation {
+  public static final class MUTATION extends hydra.langs.graphql.syntax.ExecutableDirectiveLocation implements Serializable {
     public MUTATION () {
     
     }
@@ -115,7 +117,7 @@ public abstract class ExecutableDirectiveLocation {
     }
   }
   
-  public static final class SUBSCRIPTION extends hydra.langs.graphql.syntax.ExecutableDirectiveLocation {
+  public static final class SUBSCRIPTION extends hydra.langs.graphql.syntax.ExecutableDirectiveLocation implements Serializable {
     public SUBSCRIPTION () {
     
     }
@@ -140,7 +142,7 @@ public abstract class ExecutableDirectiveLocation {
     }
   }
   
-  public static final class FIELD extends hydra.langs.graphql.syntax.ExecutableDirectiveLocation {
+  public static final class FIELD extends hydra.langs.graphql.syntax.ExecutableDirectiveLocation implements Serializable {
     public FIELD () {
     
     }
@@ -165,7 +167,7 @@ public abstract class ExecutableDirectiveLocation {
     }
   }
   
-  public static final class FRAGMENTLowbarDEFINITION extends hydra.langs.graphql.syntax.ExecutableDirectiveLocation {
+  public static final class FRAGMENTLowbarDEFINITION extends hydra.langs.graphql.syntax.ExecutableDirectiveLocation implements Serializable {
     public FRAGMENTLowbarDEFINITION () {
     
     }
@@ -190,7 +192,7 @@ public abstract class ExecutableDirectiveLocation {
     }
   }
   
-  public static final class FRAGMENTLowbarSPREAD extends hydra.langs.graphql.syntax.ExecutableDirectiveLocation {
+  public static final class FRAGMENTLowbarSPREAD extends hydra.langs.graphql.syntax.ExecutableDirectiveLocation implements Serializable {
     public FRAGMENTLowbarSPREAD () {
     
     }
@@ -215,7 +217,7 @@ public abstract class ExecutableDirectiveLocation {
     }
   }
   
-  public static final class INLINELowbarFRAGMENT extends hydra.langs.graphql.syntax.ExecutableDirectiveLocation {
+  public static final class INLINELowbarFRAGMENT extends hydra.langs.graphql.syntax.ExecutableDirectiveLocation implements Serializable {
     public INLINELowbarFRAGMENT () {
     
     }
@@ -240,7 +242,7 @@ public abstract class ExecutableDirectiveLocation {
     }
   }
   
-  public static final class VARIABLELowbarDEFINITION extends hydra.langs.graphql.syntax.ExecutableDirectiveLocation {
+  public static final class VARIABLELowbarDEFINITION extends hydra.langs.graphql.syntax.ExecutableDirectiveLocation implements Serializable {
     public VARIABLELowbarDEFINITION () {
     
     }

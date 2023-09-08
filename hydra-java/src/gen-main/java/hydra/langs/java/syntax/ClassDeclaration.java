@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class ClassDeclaration {
+import java.io.Serializable;
+
+public abstract class ClassDeclaration implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ClassDeclaration");
   
   private ClassDeclaration () {
@@ -29,7 +31,7 @@ public abstract class ClassDeclaration {
     }
   }
   
-  public static final class Normal extends hydra.langs.java.syntax.ClassDeclaration {
+  public static final class Normal extends hydra.langs.java.syntax.ClassDeclaration implements Serializable {
     public final hydra.langs.java.syntax.NormalClassDeclaration value;
     
     public Normal (hydra.langs.java.syntax.NormalClassDeclaration value) {
@@ -56,7 +58,7 @@ public abstract class ClassDeclaration {
     }
   }
   
-  public static final class Enum_ extends hydra.langs.java.syntax.ClassDeclaration {
+  public static final class Enum_ extends hydra.langs.java.syntax.ClassDeclaration implements Serializable {
     public final hydra.langs.java.syntax.EnumDeclaration value;
     
     public Enum_ (hydra.langs.java.syntax.EnumDeclaration value) {

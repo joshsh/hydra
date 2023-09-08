@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class BooleanArray {
+import java.io.Serializable;
+
+public abstract class BooleanArray implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.BooleanArray");
   
   private BooleanArray () {
@@ -29,7 +31,7 @@ public abstract class BooleanArray {
     }
   }
   
-  public static final class Simple extends hydra.langs.java.syntax.BooleanArray {
+  public static final class Simple extends hydra.langs.java.syntax.BooleanArray implements Serializable {
     public Simple () {
     
     }
@@ -54,7 +56,7 @@ public abstract class BooleanArray {
     }
   }
   
-  public static final class Array extends hydra.langs.java.syntax.BooleanArray {
+  public static final class Array extends hydra.langs.java.syntax.BooleanArray implements Serializable {
     public final hydra.langs.java.syntax.BooleanArray value;
     
     public Array (hydra.langs.java.syntax.BooleanArray value) {

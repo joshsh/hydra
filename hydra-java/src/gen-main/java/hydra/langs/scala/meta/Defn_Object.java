@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public class Defn_Object {
+import java.io.Serializable;
+
+public class Defn_Object implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Defn.Object");
   
   public final hydra.langs.scala.meta.Data_Name name;

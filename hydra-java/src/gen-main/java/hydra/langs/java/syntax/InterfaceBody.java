@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class InterfaceBody {
+import java.io.Serializable;
+
+public class InterfaceBody implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.InterfaceBody");
   
   public final java.util.List<hydra.langs.java.syntax.InterfaceMemberDeclaration> value;

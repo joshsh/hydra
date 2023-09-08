@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class AnnotationTypeMemberDeclaration {
+import java.io.Serializable;
+
+public abstract class AnnotationTypeMemberDeclaration implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.AnnotationTypeMemberDeclaration");
   
   private AnnotationTypeMemberDeclaration () {
@@ -41,7 +43,7 @@ public abstract class AnnotationTypeMemberDeclaration {
     }
   }
   
-  public static final class AnnotationType extends hydra.langs.java.syntax.AnnotationTypeMemberDeclaration {
+  public static final class AnnotationType extends hydra.langs.java.syntax.AnnotationTypeMemberDeclaration implements Serializable {
     public final hydra.langs.java.syntax.AnnotationTypeElementDeclaration value;
     
     public AnnotationType (hydra.langs.java.syntax.AnnotationTypeElementDeclaration value) {
@@ -68,7 +70,7 @@ public abstract class AnnotationTypeMemberDeclaration {
     }
   }
   
-  public static final class Constant extends hydra.langs.java.syntax.AnnotationTypeMemberDeclaration {
+  public static final class Constant extends hydra.langs.java.syntax.AnnotationTypeMemberDeclaration implements Serializable {
     public final hydra.langs.java.syntax.ConstantDeclaration value;
     
     public Constant (hydra.langs.java.syntax.ConstantDeclaration value) {
@@ -95,7 +97,7 @@ public abstract class AnnotationTypeMemberDeclaration {
     }
   }
   
-  public static final class Class_ extends hydra.langs.java.syntax.AnnotationTypeMemberDeclaration {
+  public static final class Class_ extends hydra.langs.java.syntax.AnnotationTypeMemberDeclaration implements Serializable {
     public final hydra.langs.java.syntax.ClassDeclaration value;
     
     public Class_ (hydra.langs.java.syntax.ClassDeclaration value) {
@@ -122,7 +124,7 @@ public abstract class AnnotationTypeMemberDeclaration {
     }
   }
   
-  public static final class Interface extends hydra.langs.java.syntax.AnnotationTypeMemberDeclaration {
+  public static final class Interface extends hydra.langs.java.syntax.AnnotationTypeMemberDeclaration implements Serializable {
     public final hydra.langs.java.syntax.InterfaceDeclaration value;
     
     public Interface (hydra.langs.java.syntax.InterfaceDeclaration value) {

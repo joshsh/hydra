@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class AssertStatement_Pair {
+import java.io.Serializable;
+
+public class AssertStatement_Pair implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.AssertStatement.Pair");
   
   public final hydra.langs.java.syntax.Expression first;

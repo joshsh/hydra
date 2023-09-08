@@ -1,9 +1,11 @@
 package hydra.langs.owl.syntax;
 
+import java.io.Serializable;
+
 /**
  * See https://www.w3.org/TR/owl2-syntax/#Keys
  */
-public class HasKey {
+public class HasKey implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/owl/syntax.HasKey");
   
   public final java.util.List<hydra.langs.owl.syntax.Annotation> annotations;

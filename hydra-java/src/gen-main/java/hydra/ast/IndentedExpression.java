@@ -1,9 +1,11 @@
 package hydra.ast;
 
+import java.io.Serializable;
+
 /**
  * An expression indented in a certain style
  */
-public class IndentedExpression {
+public class IndentedExpression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/ast.IndentedExpression");
   
   public final hydra.ast.IndentStyle style;

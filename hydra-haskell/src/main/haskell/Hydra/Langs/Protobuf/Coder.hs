@@ -41,22 +41,38 @@ constructModule :: (Ord a, Read a, Show a)
   -> Flow (Graph a) (M.Map FilePath P3.ProtoFile)
 constructModule mod@(Module ns els _ desc) _ pairs = do
     schemaImports <- (fmap namespaceToFileReference . S.toList) <$> moduleDependencyNamespaces True False False False mod
-    definitions <- CM.mapM toDef pairs
+    types <- CM.mapM toType pairs
+    definitions <- CM.mapM toDef types
     let pfile = P3.ProtoFile {
       P3.protoFilePackage = namespaceToPackageName ns,
-      P3.protoFileImports = schemaImports ++ defaultImports,
+      P3.protoFileImports = schemaImports ++ (defaultImports $ snd <$> types),
       P3.protoFileTypes = definitions,
       P3.protoFileOptions = []}
     return $ M.singleton path pfile
   where
     path = P3.unFileReference $ namespaceToFileReference ns
-    toDef (el, (TypedTerm typ term)) = do
+    toType (el, (TypedTerm typ term)) = do
       if isType typ
-        then coreDecodeType term
-          >>= pure . flattenType
-          >>= adaptAndEncodeType protobufLanguage (encodeDefinition ns (elementName el))
+        then do
+          t <- coreDecodeType term
+          return (el, t)
         else fail $ "mapping of non-type elements to PDL is not yet supported: " ++ unName (elementName el)
-    defaultImports = [P3.FileReference "google/protobuf/wrappers.proto"]
+    toDef (el, typ) = adaptAndEncodeType protobufLanguage (encodeDefinition ns (elementName el)) $ flattenType typ
+    defaultImports types = if L.foldl (||) False (hasWrappers <$> types)
+        then [P3.FileReference "google/protobuf/wrappers.proto"]
+        else []
+      where
+        hasWrappers = foldOverType TraversalOrderPre (\b t -> b || isWrapperType t) False
+        isWrapperType typ = case typ of
+          TypeRecord rt -> checkRowType rt
+          TypeUnion rt -> checkRowType rt
+          _ -> False
+        checkRowType (RowType _ _ fields) = L.foldl (||) False (checkFieldType <$> fields)
+        checkFieldType (FieldType _ typ) = case stripType typ of
+          TypeOptional ot -> case stripType ot of
+            TypeLiteral _ -> True
+            _ -> False
+          _ -> False
 
 encodeDefinition :: (Eq a, Ord a, Show a) => Namespace -> Name -> Type a -> Flow (Graph a) P3.Definition
 encodeDefinition localNs name typ = withTrace ("encoding " ++ unName name) $ do
@@ -82,21 +98,24 @@ encodeEnumDefinition options (RowType tname _ fields) = do
       P3.enumDefinitionOptions = options}
   where
     unknownField = P3.EnumValue {
-      P3.enumValueName = P3.EnumValueName "UNKNOWN",
+      P3.enumValueName = encodeEnumValueName tname $ FieldName "unknown",
       P3.enumValueNumber = 0,
       P3.enumValueOptions = []}
     encodeEnumField (FieldType fname ftype) idx = do
       opts <- findOptions ftype
       return $ P3.EnumValue {
-        P3.enumValueName = encodeEnumValueName fname,
+        P3.enumValueName = encodeEnumValueName tname fname,
         P3.enumValueNumber = idx,
         P3.enumValueOptions = opts}
 
-encodeEnumValueName :: FieldName -> P3.EnumValueName
-encodeEnumValueName = P3.EnumValueName . Strings.toUpper . unFieldName
+encodeEnumValueName :: Name -> FieldName -> P3.EnumValueName
+encodeEnumValueName tname fname = P3.EnumValueName (prefix ++ "_" ++ suffix)
+  where
+    prefix = localNameOfEager tname
+    suffix = convertCase CaseConventionCamel CaseConventionUpperSnake $ unFieldName fname
 
 encodeFieldName :: FieldName -> P3.FieldName
-encodeFieldName = P3.FieldName . unFieldName
+encodeFieldName = P3.FieldName . convertCase CaseConventionCamel CaseConventionLowerSnake . unFieldName
 
 encodeFieldType :: (Ord a, Show a) => Namespace -> FieldType a -> Flow (Graph a) P3.Field
 encodeFieldType localNs (FieldType fname ftype) = withTrace ("encode field " ++ show (unFieldName fname)) $ do
@@ -114,7 +133,7 @@ encodeFieldType localNs (FieldType fname ftype) = withTrace ("encode field " ++ 
       TypeList lt -> do
         P3.FieldTypeRepeated <$> encodeSimpleType lt
       TypeMap (MapType kt vt) -> do
-        checkIsStringType kt
+--        checkIsStringType kt
         P3.FieldTypeMap <$> encodeSimpleType vt
       TypeOptional ot -> case stripType ot of
         TypeLiteral lt -> P3.FieldTypeSimple <$> encodeScalarTypeWrapped lt

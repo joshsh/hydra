@@ -1,6 +1,8 @@
 package hydra.langs.parquet.format;
 
-public abstract class PageType {
+import java.io.Serializable;
+
+public abstract class PageType implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/parquet/format.PageType");
   
   private PageType () {
@@ -41,7 +43,7 @@ public abstract class PageType {
     }
   }
   
-  public static final class DataPage extends hydra.langs.parquet.format.PageType {
+  public static final class DataPage extends hydra.langs.parquet.format.PageType implements Serializable {
     public DataPage () {
     
     }
@@ -66,7 +68,7 @@ public abstract class PageType {
     }
   }
   
-  public static final class IndexPage extends hydra.langs.parquet.format.PageType {
+  public static final class IndexPage extends hydra.langs.parquet.format.PageType implements Serializable {
     public IndexPage () {
     
     }
@@ -91,7 +93,7 @@ public abstract class PageType {
     }
   }
   
-  public static final class DictionaryPage extends hydra.langs.parquet.format.PageType {
+  public static final class DictionaryPage extends hydra.langs.parquet.format.PageType implements Serializable {
     public DictionaryPage () {
     
     }
@@ -116,7 +118,7 @@ public abstract class PageType {
     }
   }
   
-  public static final class DataPageV2 extends hydra.langs.parquet.format.PageType {
+  public static final class DataPageV2 extends hydra.langs.parquet.format.PageType implements Serializable {
     public DataPageV2 () {
     
     }

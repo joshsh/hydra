@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class InterfaceMethodDeclaration {
+import java.io.Serializable;
+
+public class InterfaceMethodDeclaration implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.InterfaceMethodDeclaration");
   
   public final java.util.List<hydra.langs.java.syntax.InterfaceMethodModifier> modifiers;

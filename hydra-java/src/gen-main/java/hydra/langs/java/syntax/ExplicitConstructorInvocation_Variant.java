@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class ExplicitConstructorInvocation_Variant {
+import java.io.Serializable;
+
+public abstract class ExplicitConstructorInvocation_Variant implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ExplicitConstructorInvocation.Variant");
   
   private ExplicitConstructorInvocation_Variant () {
@@ -35,7 +37,7 @@ public abstract class ExplicitConstructorInvocation_Variant {
     }
   }
   
-  public static final class This extends hydra.langs.java.syntax.ExplicitConstructorInvocation_Variant {
+  public static final class This extends hydra.langs.java.syntax.ExplicitConstructorInvocation_Variant implements Serializable {
     public This () {
     
     }
@@ -60,7 +62,7 @@ public abstract class ExplicitConstructorInvocation_Variant {
     }
   }
   
-  public static final class Super extends hydra.langs.java.syntax.ExplicitConstructorInvocation_Variant {
+  public static final class Super extends hydra.langs.java.syntax.ExplicitConstructorInvocation_Variant implements Serializable {
     public final java.util.Optional<hydra.langs.java.syntax.ExpressionName> value;
     
     public Super (java.util.Optional<hydra.langs.java.syntax.ExpressionName> value) {
@@ -87,7 +89,7 @@ public abstract class ExplicitConstructorInvocation_Variant {
     }
   }
   
-  public static final class Primary extends hydra.langs.java.syntax.ExplicitConstructorInvocation_Variant {
+  public static final class Primary extends hydra.langs.java.syntax.ExplicitConstructorInvocation_Variant implements Serializable {
     public final hydra.langs.java.syntax.Primary value;
     
     public Primary (hydra.langs.java.syntax.Primary value) {

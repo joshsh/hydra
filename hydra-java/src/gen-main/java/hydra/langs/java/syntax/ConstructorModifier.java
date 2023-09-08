@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class ConstructorModifier {
+import java.io.Serializable;
+
+public abstract class ConstructorModifier implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ConstructorModifier");
   
   private ConstructorModifier () {
@@ -41,7 +43,7 @@ public abstract class ConstructorModifier {
     }
   }
   
-  public static final class Annotation extends hydra.langs.java.syntax.ConstructorModifier {
+  public static final class Annotation extends hydra.langs.java.syntax.ConstructorModifier implements Serializable {
     public final hydra.langs.java.syntax.Annotation value;
     
     public Annotation (hydra.langs.java.syntax.Annotation value) {
@@ -68,7 +70,7 @@ public abstract class ConstructorModifier {
     }
   }
   
-  public static final class Public extends hydra.langs.java.syntax.ConstructorModifier {
+  public static final class Public extends hydra.langs.java.syntax.ConstructorModifier implements Serializable {
     public Public () {
     
     }
@@ -93,7 +95,7 @@ public abstract class ConstructorModifier {
     }
   }
   
-  public static final class Protected extends hydra.langs.java.syntax.ConstructorModifier {
+  public static final class Protected extends hydra.langs.java.syntax.ConstructorModifier implements Serializable {
     public Protected () {
     
     }
@@ -118,7 +120,7 @@ public abstract class ConstructorModifier {
     }
   }
   
-  public static final class Private extends hydra.langs.java.syntax.ConstructorModifier {
+  public static final class Private extends hydra.langs.java.syntax.ConstructorModifier implements Serializable {
     public Private () {
     
     }

@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class StringLiteralLong2_Elmt {
+import java.io.Serializable;
+
+public abstract class StringLiteralLong2_Elmt implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.StringLiteralLong2.Elmt");
   
   private StringLiteralLong2_Elmt () {
@@ -35,7 +37,7 @@ public abstract class StringLiteralLong2_Elmt {
     }
   }
   
-  public static final class Sequence extends hydra.langs.shex.syntax.StringLiteralLong2_Elmt {
+  public static final class Sequence extends hydra.langs.shex.syntax.StringLiteralLong2_Elmt implements Serializable {
     public final hydra.langs.shex.syntax.StringLiteralLong2_Elmt_Sequence value;
     
     public Sequence (hydra.langs.shex.syntax.StringLiteralLong2_Elmt_Sequence value) {
@@ -62,7 +64,7 @@ public abstract class StringLiteralLong2_Elmt {
     }
   }
   
-  public static final class Echar extends hydra.langs.shex.syntax.StringLiteralLong2_Elmt {
+  public static final class Echar extends hydra.langs.shex.syntax.StringLiteralLong2_Elmt implements Serializable {
     public final hydra.langs.shex.syntax.Echar value;
     
     public Echar (hydra.langs.shex.syntax.Echar value) {
@@ -89,7 +91,7 @@ public abstract class StringLiteralLong2_Elmt {
     }
   }
   
-  public static final class Uchar extends hydra.langs.shex.syntax.StringLiteralLong2_Elmt {
+  public static final class Uchar extends hydra.langs.shex.syntax.StringLiteralLong2_Elmt implements Serializable {
     public final hydra.langs.shex.syntax.Uchar value;
     
     public Uchar (hydra.langs.shex.syntax.Uchar value) {

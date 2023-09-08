@@ -1,9 +1,11 @@
 package hydra.langs.haskell.ast;
 
+import java.io.Serializable;
+
 /**
  * An 'if' expression
  */
-public class Expression_If {
+public class Expression_If implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.Expression.If");
   
   public final hydra.langs.haskell.ast.Expression condition;

@@ -1,9 +1,11 @@
 package hydra.core;
 
+import java.io.Serializable;
+
 /**
  * A corresponding elimination for an introduction term
  */
-public abstract class Elimination<A> {
+public abstract class Elimination<A> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/core.Elimination");
   
   private Elimination () {
@@ -59,7 +61,7 @@ public abstract class Elimination<A> {
   /**
    * Eliminates a list using a fold function; this function has the signature b -&gt; [a] -&gt; b
    */
-  public static final class List<A> extends hydra.core.Elimination<A> {
+  public static final class List<A> extends hydra.core.Elimination<A> implements Serializable {
     /**
      * Eliminates a list using a fold function; this function has the signature b -&gt; [a] -&gt; b
      */
@@ -92,7 +94,7 @@ public abstract class Elimination<A> {
   /**
    * Eliminates an optional term by matching over the two possible cases
    */
-  public static final class Optional<A> extends hydra.core.Elimination<A> {
+  public static final class Optional<A> extends hydra.core.Elimination<A> implements Serializable {
     /**
      * Eliminates an optional term by matching over the two possible cases
      */
@@ -125,7 +127,7 @@ public abstract class Elimination<A> {
   /**
    * Eliminates a tuple by projecting the component at a given 0-indexed offset
    */
-  public static final class Product<A> extends hydra.core.Elimination<A> {
+  public static final class Product<A> extends hydra.core.Elimination<A> implements Serializable {
     /**
      * Eliminates a tuple by projecting the component at a given 0-indexed offset
      */
@@ -158,7 +160,7 @@ public abstract class Elimination<A> {
   /**
    * Eliminates a record by projecting a given field
    */
-  public static final class Record<A> extends hydra.core.Elimination<A> {
+  public static final class Record<A> extends hydra.core.Elimination<A> implements Serializable {
     /**
      * Eliminates a record by projecting a given field
      */
@@ -191,7 +193,7 @@ public abstract class Elimination<A> {
   /**
    * Eliminates a union term by matching over the fields of the union. This is a case statement.
    */
-  public static final class Union<A> extends hydra.core.Elimination<A> {
+  public static final class Union<A> extends hydra.core.Elimination<A> implements Serializable {
     /**
      * Eliminates a union term by matching over the fields of the union. This is a case statement.
      */
@@ -224,7 +226,7 @@ public abstract class Elimination<A> {
   /**
    * Unwrap a wrapped term
    */
-  public static final class Wrap<A> extends hydra.core.Elimination<A> {
+  public static final class Wrap<A> extends hydra.core.Elimination<A> implements Serializable {
     /**
      * Unwrap a wrapped term
      */

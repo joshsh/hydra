@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public abstract class TableCommitAction {
+import java.io.Serializable;
+
+public abstract class TableCommitAction implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.TableCommitAction");
   
   private TableCommitAction () {
@@ -29,7 +31,7 @@ public abstract class TableCommitAction {
     }
   }
   
-  public static final class Preserve extends hydra.langs.sql.ansi.TableCommitAction {
+  public static final class Preserve extends hydra.langs.sql.ansi.TableCommitAction implements Serializable {
     public Preserve () {
     
     }
@@ -54,7 +56,7 @@ public abstract class TableCommitAction {
     }
   }
   
-  public static final class Delete extends hydra.langs.sql.ansi.TableCommitAction {
+  public static final class Delete extends hydra.langs.sql.ansi.TableCommitAction implements Serializable {
     public Delete () {
     
     }

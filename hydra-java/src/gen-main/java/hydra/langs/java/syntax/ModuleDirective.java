@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class ModuleDirective {
+import java.io.Serializable;
+
+public abstract class ModuleDirective implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ModuleDirective");
   
   private ModuleDirective () {
@@ -47,7 +49,7 @@ public abstract class ModuleDirective {
     }
   }
   
-  public static final class Requires extends hydra.langs.java.syntax.ModuleDirective {
+  public static final class Requires extends hydra.langs.java.syntax.ModuleDirective implements Serializable {
     public final hydra.langs.java.syntax.ModuleDirective_Requires value;
     
     public Requires (hydra.langs.java.syntax.ModuleDirective_Requires value) {
@@ -74,7 +76,7 @@ public abstract class ModuleDirective {
     }
   }
   
-  public static final class Exports extends hydra.langs.java.syntax.ModuleDirective {
+  public static final class Exports extends hydra.langs.java.syntax.ModuleDirective implements Serializable {
     public final hydra.langs.java.syntax.ModuleDirective_ExportsOrOpens value;
     
     public Exports (hydra.langs.java.syntax.ModuleDirective_ExportsOrOpens value) {
@@ -101,7 +103,7 @@ public abstract class ModuleDirective {
     }
   }
   
-  public static final class Opens extends hydra.langs.java.syntax.ModuleDirective {
+  public static final class Opens extends hydra.langs.java.syntax.ModuleDirective implements Serializable {
     public final hydra.langs.java.syntax.ModuleDirective_ExportsOrOpens value;
     
     public Opens (hydra.langs.java.syntax.ModuleDirective_ExportsOrOpens value) {
@@ -128,7 +130,7 @@ public abstract class ModuleDirective {
     }
   }
   
-  public static final class Uses extends hydra.langs.java.syntax.ModuleDirective {
+  public static final class Uses extends hydra.langs.java.syntax.ModuleDirective implements Serializable {
     public final hydra.langs.java.syntax.TypeName value;
     
     public Uses (hydra.langs.java.syntax.TypeName value) {
@@ -155,7 +157,7 @@ public abstract class ModuleDirective {
     }
   }
   
-  public static final class Provides extends hydra.langs.java.syntax.ModuleDirective {
+  public static final class Provides extends hydra.langs.java.syntax.ModuleDirective implements Serializable {
     public final hydra.langs.java.syntax.ModuleDirective_Provides value;
     
     public Provides (hydra.langs.java.syntax.ModuleDirective_Provides value) {

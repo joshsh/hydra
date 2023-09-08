@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class ForInit {
+import java.io.Serializable;
+
+public abstract class ForInit implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ForInit");
   
   private ForInit () {
@@ -29,7 +31,7 @@ public abstract class ForInit {
     }
   }
   
-  public static final class Statements extends hydra.langs.java.syntax.ForInit {
+  public static final class Statements extends hydra.langs.java.syntax.ForInit implements Serializable {
     public final java.util.List<hydra.langs.java.syntax.StatementExpression> value;
     
     public Statements (java.util.List<hydra.langs.java.syntax.StatementExpression> value) {
@@ -56,7 +58,7 @@ public abstract class ForInit {
     }
   }
   
-  public static final class LocalVariable extends hydra.langs.java.syntax.ForInit {
+  public static final class LocalVariable extends hydra.langs.java.syntax.ForInit implements Serializable {
     public final hydra.langs.java.syntax.LocalVariableDeclaration value;
     
     public LocalVariable (hydra.langs.java.syntax.LocalVariableDeclaration value) {

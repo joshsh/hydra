@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class CatchType {
+import java.io.Serializable;
+
+public class CatchType implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.CatchType");
   
   public final hydra.langs.java.syntax.UnannClassType type;

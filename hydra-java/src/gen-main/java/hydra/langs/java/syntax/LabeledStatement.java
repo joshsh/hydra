@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class LabeledStatement {
+import java.io.Serializable;
+
+public class LabeledStatement implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.LabeledStatement");
   
   public final hydra.langs.java.syntax.Identifier identifier;

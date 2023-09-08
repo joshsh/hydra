@@ -1,9 +1,11 @@
 package hydra.grammar;
 
+import java.io.Serializable;
+
 /**
  * A nonterminal symbol
  */
-public class Symbol {
+public class Symbol implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/grammar.Symbol");
   
   /**

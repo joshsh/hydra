@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class PnLocal_Sequence_Option_Alts {
+import java.io.Serializable;
+
+public abstract class PnLocal_Sequence_Option_Alts implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.PnLocal.Sequence.Option.Alts");
   
   private PnLocal_Sequence_Option_Alts () {
@@ -35,7 +37,7 @@ public abstract class PnLocal_Sequence_Option_Alts {
     }
   }
   
-  public static final class PnChars extends hydra.langs.shex.syntax.PnLocal_Sequence_Option_Alts {
+  public static final class PnChars extends hydra.langs.shex.syntax.PnLocal_Sequence_Option_Alts implements Serializable {
     public final hydra.langs.shex.syntax.PnChars value;
     
     public PnChars (hydra.langs.shex.syntax.PnChars value) {
@@ -62,7 +64,7 @@ public abstract class PnLocal_Sequence_Option_Alts {
     }
   }
   
-  public static final class Colon extends hydra.langs.shex.syntax.PnLocal_Sequence_Option_Alts {
+  public static final class Colon extends hydra.langs.shex.syntax.PnLocal_Sequence_Option_Alts implements Serializable {
     public Colon () {
     
     }
@@ -87,7 +89,7 @@ public abstract class PnLocal_Sequence_Option_Alts {
     }
   }
   
-  public static final class Plx extends hydra.langs.shex.syntax.PnLocal_Sequence_Option_Alts {
+  public static final class Plx extends hydra.langs.shex.syntax.PnLocal_Sequence_Option_Alts implements Serializable {
     public final hydra.langs.shex.syntax.Plx value;
     
     public Plx (hydra.langs.shex.syntax.Plx value) {

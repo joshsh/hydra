@@ -1,9 +1,11 @@
 package hydra.ast;
 
+import java.io.Serializable;
+
 /**
  * Operator precedence
  */
-public class Precedence {
+public class Precedence implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/ast.Precedence");
   
   /**

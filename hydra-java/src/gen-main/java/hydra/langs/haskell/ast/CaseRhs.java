@@ -1,9 +1,11 @@
 package hydra.langs.haskell.ast;
 
+import java.io.Serializable;
+
 /**
  * The right-hand side of a pattern-matching alternative
  */
-public class CaseRhs {
+public class CaseRhs implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.CaseRhs");
   
   /**

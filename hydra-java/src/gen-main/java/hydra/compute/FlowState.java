@@ -1,9 +1,11 @@
 package hydra.compute;
 
+import java.io.Serializable;
+
 /**
  * The result of evaluating a Flow
  */
-public class FlowState<S, X> {
+public class FlowState<S, X> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/compute.FlowState");
   
   public final java.util.Optional<X> value;

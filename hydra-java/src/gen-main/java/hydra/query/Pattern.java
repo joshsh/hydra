@@ -1,9 +1,11 @@
 package hydra.query;
 
+import java.io.Serializable;
+
 /**
  * A query pattern
  */
-public abstract class Pattern<A> {
+public abstract class Pattern<A> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/query.Pattern");
   
   private Pattern () {
@@ -53,7 +55,7 @@ public abstract class Pattern<A> {
   /**
    * A subject/predicate/object pattern
    */
-  public static final class Triple<A> extends hydra.query.Pattern<A> {
+  public static final class Triple<A> extends hydra.query.Pattern<A> implements Serializable {
     /**
      * A subject/predicate/object pattern
      */
@@ -86,7 +88,7 @@ public abstract class Pattern<A> {
   /**
    * The negation of another pattern
    */
-  public static final class Negation<A> extends hydra.query.Pattern<A> {
+  public static final class Negation<A> extends hydra.query.Pattern<A> implements Serializable {
     /**
      * The negation of another pattern
      */
@@ -119,7 +121,7 @@ public abstract class Pattern<A> {
   /**
    * The conjunction ('and') of several other patterns
    */
-  public static final class Conjunction<A> extends hydra.query.Pattern<A> {
+  public static final class Conjunction<A> extends hydra.query.Pattern<A> implements Serializable {
     /**
      * The conjunction ('and') of several other patterns
      */
@@ -152,7 +154,7 @@ public abstract class Pattern<A> {
   /**
    * The disjunction (inclusive 'or') of several other patterns
    */
-  public static final class Disjunction<A> extends hydra.query.Pattern<A> {
+  public static final class Disjunction<A> extends hydra.query.Pattern<A> implements Serializable {
     /**
      * The disjunction (inclusive 'or') of several other patterns
      */
@@ -185,7 +187,7 @@ public abstract class Pattern<A> {
   /**
    * A pattern which matches within a named subgraph
    */
-  public static final class Graph<A> extends hydra.query.Pattern<A> {
+  public static final class Graph<A> extends hydra.query.Pattern<A> implements Serializable {
     /**
      * A pattern which matches within a named subgraph
      */

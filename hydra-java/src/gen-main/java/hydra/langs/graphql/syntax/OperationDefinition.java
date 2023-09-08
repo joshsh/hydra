@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public abstract class OperationDefinition {
+import java.io.Serializable;
+
+public abstract class OperationDefinition implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.OperationDefinition");
   
   private OperationDefinition () {
@@ -29,7 +31,7 @@ public abstract class OperationDefinition {
     }
   }
   
-  public static final class Sequence extends hydra.langs.graphql.syntax.OperationDefinition {
+  public static final class Sequence extends hydra.langs.graphql.syntax.OperationDefinition implements Serializable {
     public final hydra.langs.graphql.syntax.OperationDefinition_Sequence value;
     
     public Sequence (hydra.langs.graphql.syntax.OperationDefinition_Sequence value) {
@@ -56,7 +58,7 @@ public abstract class OperationDefinition {
     }
   }
   
-  public static final class SelectionSet extends hydra.langs.graphql.syntax.OperationDefinition {
+  public static final class SelectionSet extends hydra.langs.graphql.syntax.OperationDefinition implements Serializable {
     public final hydra.langs.graphql.syntax.SelectionSet value;
     
     public SelectionSet (hydra.langs.graphql.syntax.SelectionSet value) {

@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class NotStartAction {
+import java.io.Serializable;
+
+public abstract class NotStartAction implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.NotStartAction");
   
   private NotStartAction () {
@@ -29,7 +31,7 @@ public abstract class NotStartAction {
     }
   }
   
-  public static final class Start extends hydra.langs.shex.syntax.NotStartAction {
+  public static final class Start extends hydra.langs.shex.syntax.NotStartAction implements Serializable {
     public final hydra.langs.shex.syntax.ShapeExpression value;
     
     public Start (hydra.langs.shex.syntax.ShapeExpression value) {
@@ -56,7 +58,7 @@ public abstract class NotStartAction {
     }
   }
   
-  public static final class ShapeExprDecl extends hydra.langs.shex.syntax.NotStartAction {
+  public static final class ShapeExprDecl extends hydra.langs.shex.syntax.NotStartAction implements Serializable {
     public final hydra.langs.shex.syntax.NotStartAction_ShapeExprDecl value;
     
     public ShapeExprDecl (hydra.langs.shex.syntax.NotStartAction_ShapeExprDecl value) {

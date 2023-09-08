@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class PreIncrementExpression {
+import java.io.Serializable;
+
+public class PreIncrementExpression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.PreIncrementExpression");
   
   public final hydra.langs.java.syntax.UnaryExpression value;

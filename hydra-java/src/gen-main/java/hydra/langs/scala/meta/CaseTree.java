@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public abstract class CaseTree {
+import java.io.Serializable;
+
+public abstract class CaseTree implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.CaseTree");
   
   private CaseTree () {
@@ -29,7 +31,7 @@ public abstract class CaseTree {
     }
   }
   
-  public static final class Case extends hydra.langs.scala.meta.CaseTree {
+  public static final class Case extends hydra.langs.scala.meta.CaseTree implements Serializable {
     public final hydra.langs.scala.meta.Case value;
     
     public Case (hydra.langs.scala.meta.Case value) {
@@ -56,7 +58,7 @@ public abstract class CaseTree {
     }
   }
   
-  public static final class TypeCase extends hydra.langs.scala.meta.CaseTree {
+  public static final class TypeCase extends hydra.langs.scala.meta.CaseTree implements Serializable {
     public final hydra.langs.scala.meta.TypeCase value;
     
     public TypeCase (hydra.langs.scala.meta.TypeCase value) {

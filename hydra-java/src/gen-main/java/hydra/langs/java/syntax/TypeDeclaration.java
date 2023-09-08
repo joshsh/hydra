@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class TypeDeclaration {
+import java.io.Serializable;
+
+public abstract class TypeDeclaration implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.TypeDeclaration");
   
   private TypeDeclaration () {
@@ -35,7 +37,7 @@ public abstract class TypeDeclaration {
     }
   }
   
-  public static final class Class_ extends hydra.langs.java.syntax.TypeDeclaration {
+  public static final class Class_ extends hydra.langs.java.syntax.TypeDeclaration implements Serializable {
     public final hydra.langs.java.syntax.ClassDeclaration value;
     
     public Class_ (hydra.langs.java.syntax.ClassDeclaration value) {
@@ -62,7 +64,7 @@ public abstract class TypeDeclaration {
     }
   }
   
-  public static final class Interface extends hydra.langs.java.syntax.TypeDeclaration {
+  public static final class Interface extends hydra.langs.java.syntax.TypeDeclaration implements Serializable {
     public final hydra.langs.java.syntax.InterfaceDeclaration value;
     
     public Interface (hydra.langs.java.syntax.InterfaceDeclaration value) {
@@ -89,7 +91,7 @@ public abstract class TypeDeclaration {
     }
   }
   
-  public static final class None extends hydra.langs.java.syntax.TypeDeclaration {
+  public static final class None extends hydra.langs.java.syntax.TypeDeclaration implements Serializable {
     public None () {
     
     }

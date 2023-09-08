@@ -1,9 +1,11 @@
 package hydra.langs.haskell.ast;
 
+import java.io.Serializable;
+
 /**
  * A record-style data constructor
  */
-public class Constructor_Record {
+public class Constructor_Record implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.Constructor.Record");
   
   public final hydra.langs.haskell.ast.Name name;

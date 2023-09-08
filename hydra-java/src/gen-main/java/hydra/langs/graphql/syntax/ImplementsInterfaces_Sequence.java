@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public class ImplementsInterfaces_Sequence {
+import java.io.Serializable;
+
+public class ImplementsInterfaces_Sequence implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.ImplementsInterfaces.Sequence");
   
   public final hydra.langs.graphql.syntax.ImplementsInterfaces implementsInterfaces;

@@ -1,9 +1,11 @@
 package hydra.langs.relationalModel;
 
+import java.io.Serializable;
+
 /**
  * A unique relation (table) name
  */
-public class RelationName {
+public class RelationName implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/relationalModel.RelationName");
   
   /**

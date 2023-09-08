@@ -1,6 +1,8 @@
 package hydra.langs.xml.schema;
 
-public class Double_ {
+import java.io.Serializable;
+
+public class Double_ implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/xml/schema.Double");
   
   public final Double value;

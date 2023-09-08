@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public class Defn_EnumCase {
+import java.io.Serializable;
+
+public class Defn_EnumCase implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Defn.EnumCase");
   
   public final java.util.List<hydra.langs.scala.meta.Mod> mods;

@@ -1,9 +1,11 @@
 package hydra.langs.owl.syntax;
 
+import java.io.Serializable;
+
 /**
  * See https://www.w3.org/TR/owl2-syntax/#Enumeration_of_Literals
  */
-public class DataOneOf {
+public class DataOneOf implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/owl/syntax.DataOneOf");
   
   /**

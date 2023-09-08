@@ -1,6 +1,8 @@
 package hydra.langs.pegasus.pdl;
 
-public class Property {
+import java.io.Serializable;
+
+public class Property implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/pegasus/pdl.Property");
   
   public final hydra.langs.pegasus.pdl.PropertyKey key;

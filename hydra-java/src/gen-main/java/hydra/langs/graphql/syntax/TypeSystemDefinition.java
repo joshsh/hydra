@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public abstract class TypeSystemDefinition {
+import java.io.Serializable;
+
+public abstract class TypeSystemDefinition implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.TypeSystemDefinition");
   
   private TypeSystemDefinition () {
@@ -35,7 +37,7 @@ public abstract class TypeSystemDefinition {
     }
   }
   
-  public static final class Schema extends hydra.langs.graphql.syntax.TypeSystemDefinition {
+  public static final class Schema extends hydra.langs.graphql.syntax.TypeSystemDefinition implements Serializable {
     public final hydra.langs.graphql.syntax.SchemaDefinition value;
     
     public Schema (hydra.langs.graphql.syntax.SchemaDefinition value) {
@@ -62,7 +64,7 @@ public abstract class TypeSystemDefinition {
     }
   }
   
-  public static final class Type extends hydra.langs.graphql.syntax.TypeSystemDefinition {
+  public static final class Type extends hydra.langs.graphql.syntax.TypeSystemDefinition implements Serializable {
     public final hydra.langs.graphql.syntax.TypeDefinition value;
     
     public Type (hydra.langs.graphql.syntax.TypeDefinition value) {
@@ -89,7 +91,7 @@ public abstract class TypeSystemDefinition {
     }
   }
   
-  public static final class Directive extends hydra.langs.graphql.syntax.TypeSystemDefinition {
+  public static final class Directive extends hydra.langs.graphql.syntax.TypeSystemDefinition implements Serializable {
     public final hydra.langs.graphql.syntax.DirectiveDefinition value;
     
     public Directive (hydra.langs.graphql.syntax.DirectiveDefinition value) {

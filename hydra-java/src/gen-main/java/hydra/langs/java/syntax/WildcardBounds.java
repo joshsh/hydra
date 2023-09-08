@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class WildcardBounds {
+import java.io.Serializable;
+
+public abstract class WildcardBounds implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.WildcardBounds");
   
   private WildcardBounds () {
@@ -29,7 +31,7 @@ public abstract class WildcardBounds {
     }
   }
   
-  public static final class Extends extends hydra.langs.java.syntax.WildcardBounds {
+  public static final class Extends extends hydra.langs.java.syntax.WildcardBounds implements Serializable {
     public final hydra.langs.java.syntax.ReferenceType value;
     
     public Extends (hydra.langs.java.syntax.ReferenceType value) {
@@ -56,7 +58,7 @@ public abstract class WildcardBounds {
     }
   }
   
-  public static final class Super extends hydra.langs.java.syntax.WildcardBounds {
+  public static final class Super extends hydra.langs.java.syntax.WildcardBounds implements Serializable {
     public final hydra.langs.java.syntax.ReferenceType value;
     
     public Super (hydra.langs.java.syntax.ReferenceType value) {

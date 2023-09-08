@@ -1,9 +1,11 @@
 package hydra.langs.shacl.model;
 
+import java.io.Serializable;
+
 /**
  * See https://www.w3.org/TR/shacl/#QualifiedValueShapeConstraintComponent
  */
-public class QualifiedValueShape {
+public class QualifiedValueShape implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shacl/model.QualifiedValueShape");
   
   public final hydra.langs.shacl.model.Reference<hydra.langs.shacl.model.Shape> qualifiedValueShape;

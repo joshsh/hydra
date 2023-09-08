@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class TypeArgument {
+import java.io.Serializable;
+
+public abstract class TypeArgument implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.TypeArgument");
   
   private TypeArgument () {
@@ -29,7 +31,7 @@ public abstract class TypeArgument {
     }
   }
   
-  public static final class Reference extends hydra.langs.java.syntax.TypeArgument {
+  public static final class Reference extends hydra.langs.java.syntax.TypeArgument implements Serializable {
     public final hydra.langs.java.syntax.ReferenceType value;
     
     public Reference (hydra.langs.java.syntax.ReferenceType value) {
@@ -56,7 +58,7 @@ public abstract class TypeArgument {
     }
   }
   
-  public static final class Wildcard extends hydra.langs.java.syntax.TypeArgument {
+  public static final class Wildcard extends hydra.langs.java.syntax.TypeArgument implements Serializable {
     public final hydra.langs.java.syntax.Wildcard value;
     
     public Wildcard (hydra.langs.java.syntax.Wildcard value) {

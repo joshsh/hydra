@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public abstract class Value {
+import java.io.Serializable;
+
+public abstract class Value implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.Value");
   
   private Value () {
@@ -71,7 +73,7 @@ public abstract class Value {
     }
   }
   
-  public static final class Variable extends hydra.langs.graphql.syntax.Value {
+  public static final class Variable extends hydra.langs.graphql.syntax.Value implements Serializable {
     public final hydra.langs.graphql.syntax.Variable value;
     
     public Variable (hydra.langs.graphql.syntax.Variable value) {
@@ -98,7 +100,7 @@ public abstract class Value {
     }
   }
   
-  public static final class Int extends hydra.langs.graphql.syntax.Value {
+  public static final class Int extends hydra.langs.graphql.syntax.Value implements Serializable {
     public final hydra.langs.graphql.syntax.IntValue value;
     
     public Int (hydra.langs.graphql.syntax.IntValue value) {
@@ -125,7 +127,7 @@ public abstract class Value {
     }
   }
   
-  public static final class Float_ extends hydra.langs.graphql.syntax.Value {
+  public static final class Float_ extends hydra.langs.graphql.syntax.Value implements Serializable {
     public final hydra.langs.graphql.syntax.FloatValue value;
     
     public Float_ (hydra.langs.graphql.syntax.FloatValue value) {
@@ -152,7 +154,7 @@ public abstract class Value {
     }
   }
   
-  public static final class String_ extends hydra.langs.graphql.syntax.Value {
+  public static final class String_ extends hydra.langs.graphql.syntax.Value implements Serializable {
     public final hydra.langs.graphql.syntax.StringValue value;
     
     public String_ (hydra.langs.graphql.syntax.StringValue value) {
@@ -179,7 +181,7 @@ public abstract class Value {
     }
   }
   
-  public static final class Boolean_ extends hydra.langs.graphql.syntax.Value {
+  public static final class Boolean_ extends hydra.langs.graphql.syntax.Value implements Serializable {
     public final hydra.langs.graphql.syntax.BooleanValue value;
     
     public Boolean_ (hydra.langs.graphql.syntax.BooleanValue value) {
@@ -206,7 +208,7 @@ public abstract class Value {
     }
   }
   
-  public static final class Null extends hydra.langs.graphql.syntax.Value {
+  public static final class Null extends hydra.langs.graphql.syntax.Value implements Serializable {
     public final hydra.langs.graphql.syntax.NullValue value;
     
     public Null (hydra.langs.graphql.syntax.NullValue value) {
@@ -233,7 +235,7 @@ public abstract class Value {
     }
   }
   
-  public static final class Enum_ extends hydra.langs.graphql.syntax.Value {
+  public static final class Enum_ extends hydra.langs.graphql.syntax.Value implements Serializable {
     public final hydra.langs.graphql.syntax.EnumValue value;
     
     public Enum_ (hydra.langs.graphql.syntax.EnumValue value) {
@@ -260,7 +262,7 @@ public abstract class Value {
     }
   }
   
-  public static final class List extends hydra.langs.graphql.syntax.Value {
+  public static final class List extends hydra.langs.graphql.syntax.Value implements Serializable {
     public final hydra.langs.graphql.syntax.ListValue value;
     
     public List (hydra.langs.graphql.syntax.ListValue value) {
@@ -287,7 +289,7 @@ public abstract class Value {
     }
   }
   
-  public static final class Object_ extends hydra.langs.graphql.syntax.Value {
+  public static final class Object_ extends hydra.langs.graphql.syntax.Value implements Serializable {
     public final hydra.langs.graphql.syntax.ObjectValue value;
     
     public Object_ (hydra.langs.graphql.syntax.ObjectValue value) {

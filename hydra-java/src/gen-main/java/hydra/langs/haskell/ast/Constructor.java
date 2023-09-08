@@ -1,9 +1,11 @@
 package hydra.langs.haskell.ast;
 
+import java.io.Serializable;
+
 /**
  * A data constructor
  */
-public abstract class Constructor {
+public abstract class Constructor implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.Constructor");
   
   private Constructor () {
@@ -32,7 +34,7 @@ public abstract class Constructor {
     }
   }
   
-  public static final class Ordinary extends hydra.langs.haskell.ast.Constructor {
+  public static final class Ordinary extends hydra.langs.haskell.ast.Constructor implements Serializable {
     public final hydra.langs.haskell.ast.Constructor_Ordinary value;
     
     public Ordinary (hydra.langs.haskell.ast.Constructor_Ordinary value) {
@@ -59,7 +61,7 @@ public abstract class Constructor {
     }
   }
   
-  public static final class Record extends hydra.langs.haskell.ast.Constructor {
+  public static final class Record extends hydra.langs.haskell.ast.Constructor implements Serializable {
     public final hydra.langs.haskell.ast.Constructor_Record value;
     
     public Record (hydra.langs.haskell.ast.Constructor_Record value) {

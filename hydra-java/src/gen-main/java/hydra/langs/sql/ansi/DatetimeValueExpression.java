@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public class DatetimeValueExpression {
+import java.io.Serializable;
+
+public class DatetimeValueExpression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.DatetimeValueExpression");
   
   public DatetimeValueExpression () {

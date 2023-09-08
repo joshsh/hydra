@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public class ShapeAtom_Sequence {
+import java.io.Serializable;
+
+public class ShapeAtom_Sequence implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.ShapeAtom.Sequence");
   
   public final hydra.langs.shex.syntax.NodeConstraint nodeConstraint;

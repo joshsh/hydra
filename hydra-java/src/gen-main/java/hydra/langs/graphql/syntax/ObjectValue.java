@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public abstract class ObjectValue {
+import java.io.Serializable;
+
+public abstract class ObjectValue implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.ObjectValue");
   
   private ObjectValue () {
@@ -29,7 +31,7 @@ public abstract class ObjectValue {
     }
   }
   
-  public static final class Sequence extends hydra.langs.graphql.syntax.ObjectValue {
+  public static final class Sequence extends hydra.langs.graphql.syntax.ObjectValue implements Serializable {
     public final hydra.langs.graphql.syntax.ObjectValue_Sequence value;
     
     public Sequence (hydra.langs.graphql.syntax.ObjectValue_Sequence value) {
@@ -56,7 +58,7 @@ public abstract class ObjectValue {
     }
   }
   
-  public static final class Sequence2 extends hydra.langs.graphql.syntax.ObjectValue {
+  public static final class Sequence2 extends hydra.langs.graphql.syntax.ObjectValue implements Serializable {
     public final java.util.List<hydra.langs.graphql.syntax.ObjectField> value;
     
     public Sequence2 (java.util.List<hydra.langs.graphql.syntax.ObjectField> value) {

@@ -1,6 +1,8 @@
 package hydra.langs.haskell.ast;
 
-public class ValueBinding_Simple {
+import java.io.Serializable;
+
+public class ValueBinding_Simple implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.ValueBinding.Simple");
   
   public final hydra.langs.haskell.ast.Pattern pattern;

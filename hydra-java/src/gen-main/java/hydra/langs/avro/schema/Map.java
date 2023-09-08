@@ -1,6 +1,8 @@
 package hydra.langs.avro.schema;
 
-public class Map {
+import java.io.Serializable;
+
+public class Map implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/avro/schema.Map");
   
   public final hydra.langs.avro.schema.Schema values;

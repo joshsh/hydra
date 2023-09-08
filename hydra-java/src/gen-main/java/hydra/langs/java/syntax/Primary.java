@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class Primary {
+import java.io.Serializable;
+
+public abstract class Primary implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.Primary");
   
   private Primary () {
@@ -29,7 +31,7 @@ public abstract class Primary {
     }
   }
   
-  public static final class NoNewArray extends hydra.langs.java.syntax.Primary {
+  public static final class NoNewArray extends hydra.langs.java.syntax.Primary implements Serializable {
     public final hydra.langs.java.syntax.PrimaryNoNewArray value;
     
     public NoNewArray (hydra.langs.java.syntax.PrimaryNoNewArray value) {
@@ -56,7 +58,7 @@ public abstract class Primary {
     }
   }
   
-  public static final class ArrayCreation extends hydra.langs.java.syntax.Primary {
+  public static final class ArrayCreation extends hydra.langs.java.syntax.Primary implements Serializable {
     public final hydra.langs.java.syntax.ArrayCreationExpression value;
     
     public ArrayCreation (hydra.langs.java.syntax.ArrayCreationExpression value) {

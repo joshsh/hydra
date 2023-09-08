@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public class NullValue {
+import java.io.Serializable;
+
+public class NullValue implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.NullValue");
   
   public NullValue () {

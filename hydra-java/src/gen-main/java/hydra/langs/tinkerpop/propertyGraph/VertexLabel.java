@@ -1,9 +1,11 @@
 package hydra.langs.tinkerpop.propertyGraph;
 
+import java.io.Serializable;
+
 /**
  * The label of a vertex. The default (null) vertex is represented by the empty string
  */
-public class VertexLabel {
+public class VertexLabel implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/tinkerpop/propertyGraph.VertexLabel");
   
   /**

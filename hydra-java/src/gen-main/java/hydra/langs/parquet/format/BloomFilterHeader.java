@@ -1,9 +1,11 @@
 package hydra.langs.parquet.format;
 
+import java.io.Serializable;
+
 /**
  * Bloom filter header is stored at beginning of Bloom filter data of each column and followed by its bitset.
  */
-public class BloomFilterHeader {
+public class BloomFilterHeader implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/parquet/format.BloomFilterHeader");
   
   /**

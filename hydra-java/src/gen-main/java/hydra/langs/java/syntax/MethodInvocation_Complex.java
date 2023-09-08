@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class MethodInvocation_Complex {
+import java.io.Serializable;
+
+public class MethodInvocation_Complex implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.MethodInvocation.Complex");
   
   public final hydra.langs.java.syntax.MethodInvocation_Variant variant;

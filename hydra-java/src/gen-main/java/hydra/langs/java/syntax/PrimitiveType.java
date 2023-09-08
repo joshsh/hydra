@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class PrimitiveType {
+import java.io.Serializable;
+
+public abstract class PrimitiveType implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.PrimitiveType");
   
   private PrimitiveType () {
@@ -29,7 +31,7 @@ public abstract class PrimitiveType {
     }
   }
   
-  public static final class Numeric extends hydra.langs.java.syntax.PrimitiveType {
+  public static final class Numeric extends hydra.langs.java.syntax.PrimitiveType implements Serializable {
     public final hydra.langs.java.syntax.NumericType value;
     
     public Numeric (hydra.langs.java.syntax.NumericType value) {
@@ -56,7 +58,7 @@ public abstract class PrimitiveType {
     }
   }
   
-  public static final class Boolean_ extends hydra.langs.java.syntax.PrimitiveType {
+  public static final class Boolean_ extends hydra.langs.java.syntax.PrimitiveType implements Serializable {
     public Boolean_ () {
     
     }

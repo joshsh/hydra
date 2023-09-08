@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public class InlineShapeOr {
+import java.io.Serializable;
+
+public class InlineShapeOr implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.InlineShapeOr");
   
   public final hydra.langs.shex.syntax.ShapeAnd shapeAnd;

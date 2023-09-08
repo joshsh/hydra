@@ -1,9 +1,11 @@
 package hydra.graph;
 
+import java.io.Serializable;
+
 /**
  * An equality judgement: less than, equal to, or greater than
  */
-public abstract class Comparison {
+public abstract class Comparison implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/graph.Comparison");
   
   private Comparison () {
@@ -38,7 +40,7 @@ public abstract class Comparison {
     }
   }
   
-  public static final class LessThan extends hydra.graph.Comparison {
+  public static final class LessThan extends hydra.graph.Comparison implements Serializable {
     public LessThan () {
     
     }
@@ -63,7 +65,7 @@ public abstract class Comparison {
     }
   }
   
-  public static final class EqualTo extends hydra.graph.Comparison {
+  public static final class EqualTo extends hydra.graph.Comparison implements Serializable {
     public EqualTo () {
     
     }
@@ -88,7 +90,7 @@ public abstract class Comparison {
     }
   }
   
-  public static final class GreaterThan extends hydra.graph.Comparison {
+  public static final class GreaterThan extends hydra.graph.Comparison implements Serializable {
     public GreaterThan () {
     
     }

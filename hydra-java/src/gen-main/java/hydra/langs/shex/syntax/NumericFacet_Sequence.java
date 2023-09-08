@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public class NumericFacet_Sequence {
+import java.io.Serializable;
+
+public class NumericFacet_Sequence implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.NumericFacet.Sequence");
   
   public final hydra.langs.shex.syntax.NumericRange numericRange;

@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public abstract class ArrayValueConstructor {
+import java.io.Serializable;
+
+public abstract class ArrayValueConstructor implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.ArrayValueConstructor");
   
   private ArrayValueConstructor () {
@@ -29,7 +31,7 @@ public abstract class ArrayValueConstructor {
     }
   }
   
-  public static final class Enumeration extends hydra.langs.sql.ansi.ArrayValueConstructor {
+  public static final class Enumeration extends hydra.langs.sql.ansi.ArrayValueConstructor implements Serializable {
     public final hydra.langs.sql.ansi.ArrayValueConstructorByEnumeration value;
     
     public Enumeration (hydra.langs.sql.ansi.ArrayValueConstructorByEnumeration value) {
@@ -56,7 +58,7 @@ public abstract class ArrayValueConstructor {
     }
   }
   
-  public static final class Query extends hydra.langs.sql.ansi.ArrayValueConstructor {
+  public static final class Query extends hydra.langs.sql.ansi.ArrayValueConstructor implements Serializable {
     public final hydra.langs.sql.ansi.ArrayValueConstructorByQuery value;
     
     public Query (hydra.langs.sql.ansi.ArrayValueConstructorByQuery value) {

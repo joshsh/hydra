@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public class Member_Type {
+import java.io.Serializable;
+
+public class Member_Type implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Member.Type");
   
   public final hydra.langs.scala.meta.Type_Name name;

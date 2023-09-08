@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public class InsertStatement {
+import java.io.Serializable;
+
+public class InsertStatement implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.InsertStatement");
   
   public final hydra.langs.sql.ansi.InsertionTarget target;

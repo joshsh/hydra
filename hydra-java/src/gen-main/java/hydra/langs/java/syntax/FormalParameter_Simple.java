@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class FormalParameter_Simple {
+import java.io.Serializable;
+
+public class FormalParameter_Simple implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.FormalParameter.Simple");
   
   public final java.util.List<hydra.langs.java.syntax.VariableModifier> modifiers;

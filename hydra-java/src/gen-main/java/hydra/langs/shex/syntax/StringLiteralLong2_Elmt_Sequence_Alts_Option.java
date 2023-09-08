@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class StringLiteralLong2_Elmt_Sequence_Alts_Option {
+import java.io.Serializable;
+
+public abstract class StringLiteralLong2_Elmt_Sequence_Alts_Option implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.StringLiteralLong2.Elmt.Sequence.Alts.Option");
   
   private StringLiteralLong2_Elmt_Sequence_Alts_Option () {
@@ -29,7 +31,7 @@ public abstract class StringLiteralLong2_Elmt_Sequence_Alts_Option {
     }
   }
   
-  public static final class Quot extends hydra.langs.shex.syntax.StringLiteralLong2_Elmt_Sequence_Alts_Option {
+  public static final class Quot extends hydra.langs.shex.syntax.StringLiteralLong2_Elmt_Sequence_Alts_Option implements Serializable {
     public Quot () {
     
     }
@@ -54,7 +56,7 @@ public abstract class StringLiteralLong2_Elmt_Sequence_Alts_Option {
     }
   }
   
-  public static final class Sequence extends hydra.langs.shex.syntax.StringLiteralLong2_Elmt_Sequence_Alts_Option {
+  public static final class Sequence extends hydra.langs.shex.syntax.StringLiteralLong2_Elmt_Sequence_Alts_Option implements Serializable {
     public final hydra.langs.shex.syntax.StringLiteralLong2_Elmt_Sequence_Alts_Option_Sequence value;
     
     public Sequence (hydra.langs.shex.syntax.StringLiteralLong2_Elmt_Sequence_Alts_Option_Sequence value) {

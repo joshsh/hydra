@@ -1,6 +1,8 @@
 package hydra.langs.xml.schema;
 
-public class Boolean_ {
+import java.io.Serializable;
+
+public class Boolean_ implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/xml/schema.Boolean");
   
   public final Boolean value;

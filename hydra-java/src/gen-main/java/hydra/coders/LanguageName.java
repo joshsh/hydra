@@ -1,9 +1,11 @@
 package hydra.coders;
 
+import java.io.Serializable;
+
 /**
  * The unique name of a language
  */
-public class LanguageName {
+public class LanguageName implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/coders.LanguageName");
   
   /**

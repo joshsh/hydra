@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public abstract class CharacterStringType {
+import java.io.Serializable;
+
+public abstract class CharacterStringType implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.CharacterStringType");
   
   private CharacterStringType () {
@@ -65,7 +67,7 @@ public abstract class CharacterStringType {
     }
   }
   
-  public static final class Character_ extends hydra.langs.sql.ansi.CharacterStringType {
+  public static final class Character_ extends hydra.langs.sql.ansi.CharacterStringType implements Serializable {
     public final java.util.Optional<hydra.langs.sql.ansi.Length> value;
     
     public Character_ (java.util.Optional<hydra.langs.sql.ansi.Length> value) {
@@ -92,7 +94,7 @@ public abstract class CharacterStringType {
     }
   }
   
-  public static final class Char extends hydra.langs.sql.ansi.CharacterStringType {
+  public static final class Char extends hydra.langs.sql.ansi.CharacterStringType implements Serializable {
     public final java.util.Optional<hydra.langs.sql.ansi.Length> value;
     
     public Char (java.util.Optional<hydra.langs.sql.ansi.Length> value) {
@@ -119,7 +121,7 @@ public abstract class CharacterStringType {
     }
   }
   
-  public static final class CharacterVarying extends hydra.langs.sql.ansi.CharacterStringType {
+  public static final class CharacterVarying extends hydra.langs.sql.ansi.CharacterStringType implements Serializable {
     public final hydra.langs.sql.ansi.Length value;
     
     public CharacterVarying (hydra.langs.sql.ansi.Length value) {
@@ -146,7 +148,7 @@ public abstract class CharacterStringType {
     }
   }
   
-  public static final class CharVarying extends hydra.langs.sql.ansi.CharacterStringType {
+  public static final class CharVarying extends hydra.langs.sql.ansi.CharacterStringType implements Serializable {
     public final hydra.langs.sql.ansi.Length value;
     
     public CharVarying (hydra.langs.sql.ansi.Length value) {
@@ -173,7 +175,7 @@ public abstract class CharacterStringType {
     }
   }
   
-  public static final class Varchar extends hydra.langs.sql.ansi.CharacterStringType {
+  public static final class Varchar extends hydra.langs.sql.ansi.CharacterStringType implements Serializable {
     public final hydra.langs.sql.ansi.Length value;
     
     public Varchar (hydra.langs.sql.ansi.Length value) {
@@ -200,7 +202,7 @@ public abstract class CharacterStringType {
     }
   }
   
-  public static final class CharacterLargeObject extends hydra.langs.sql.ansi.CharacterStringType {
+  public static final class CharacterLargeObject extends hydra.langs.sql.ansi.CharacterStringType implements Serializable {
     public final java.util.Optional<hydra.langs.sql.ansi.LargeObjectLength> value;
     
     public CharacterLargeObject (java.util.Optional<hydra.langs.sql.ansi.LargeObjectLength> value) {
@@ -227,7 +229,7 @@ public abstract class CharacterStringType {
     }
   }
   
-  public static final class CharLargeObject extends hydra.langs.sql.ansi.CharacterStringType {
+  public static final class CharLargeObject extends hydra.langs.sql.ansi.CharacterStringType implements Serializable {
     public final java.util.Optional<hydra.langs.sql.ansi.LargeObjectLength> value;
     
     public CharLargeObject (java.util.Optional<hydra.langs.sql.ansi.LargeObjectLength> value) {
@@ -254,7 +256,7 @@ public abstract class CharacterStringType {
     }
   }
   
-  public static final class Clob extends hydra.langs.sql.ansi.CharacterStringType {
+  public static final class Clob extends hydra.langs.sql.ansi.CharacterStringType implements Serializable {
     public final java.util.Optional<hydra.langs.sql.ansi.LargeObjectLength> value;
     
     public Clob (java.util.Optional<hydra.langs.sql.ansi.LargeObjectLength> value) {

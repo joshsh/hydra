@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public abstract class Lit {
+import java.io.Serializable;
+
+public abstract class Lit implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Lit");
   
   private Lit () {
@@ -89,7 +91,7 @@ public abstract class Lit {
     }
   }
   
-  public static final class Boolean_ extends hydra.langs.scala.meta.Lit {
+  public static final class Boolean_ extends hydra.langs.scala.meta.Lit implements Serializable {
     public final Boolean value;
     
     public Boolean_ (Boolean value) {
@@ -116,7 +118,7 @@ public abstract class Lit {
     }
   }
   
-  public static final class Byte_ extends hydra.langs.scala.meta.Lit {
+  public static final class Byte_ extends hydra.langs.scala.meta.Lit implements Serializable {
     public final Short value;
     
     public Byte_ (Short value) {
@@ -143,7 +145,7 @@ public abstract class Lit {
     }
   }
   
-  public static final class Char extends hydra.langs.scala.meta.Lit {
+  public static final class Char extends hydra.langs.scala.meta.Lit implements Serializable {
     public final Character value;
     
     public Char (Character value) {
@@ -170,7 +172,7 @@ public abstract class Lit {
     }
   }
   
-  public static final class Double_ extends hydra.langs.scala.meta.Lit {
+  public static final class Double_ extends hydra.langs.scala.meta.Lit implements Serializable {
     public final Double value;
     
     public Double_ (Double value) {
@@ -197,7 +199,7 @@ public abstract class Lit {
     }
   }
   
-  public static final class Float_ extends hydra.langs.scala.meta.Lit {
+  public static final class Float_ extends hydra.langs.scala.meta.Lit implements Serializable {
     public final Float value;
     
     public Float_ (Float value) {
@@ -224,7 +226,7 @@ public abstract class Lit {
     }
   }
   
-  public static final class Int extends hydra.langs.scala.meta.Lit {
+  public static final class Int extends hydra.langs.scala.meta.Lit implements Serializable {
     public final Integer value;
     
     public Int (Integer value) {
@@ -251,7 +253,7 @@ public abstract class Lit {
     }
   }
   
-  public static final class Long_ extends hydra.langs.scala.meta.Lit {
+  public static final class Long_ extends hydra.langs.scala.meta.Lit implements Serializable {
     public final Long value;
     
     public Long_ (Long value) {
@@ -278,7 +280,7 @@ public abstract class Lit {
     }
   }
   
-  public static final class Null extends hydra.langs.scala.meta.Lit {
+  public static final class Null extends hydra.langs.scala.meta.Lit implements Serializable {
     public Null () {
     
     }
@@ -303,7 +305,7 @@ public abstract class Lit {
     }
   }
   
-  public static final class Short_ extends hydra.langs.scala.meta.Lit {
+  public static final class Short_ extends hydra.langs.scala.meta.Lit implements Serializable {
     public final Short value;
     
     public Short_ (Short value) {
@@ -330,7 +332,7 @@ public abstract class Lit {
     }
   }
   
-  public static final class String_ extends hydra.langs.scala.meta.Lit {
+  public static final class String_ extends hydra.langs.scala.meta.Lit implements Serializable {
     public final String value;
     
     public String_ (String value) {
@@ -357,7 +359,7 @@ public abstract class Lit {
     }
   }
   
-  public static final class Symbol extends hydra.langs.scala.meta.Lit {
+  public static final class Symbol extends hydra.langs.scala.meta.Lit implements Serializable {
     public final hydra.langs.scala.meta.ScalaSymbol value;
     
     public Symbol (hydra.langs.scala.meta.ScalaSymbol value) {
@@ -384,7 +386,7 @@ public abstract class Lit {
     }
   }
   
-  public static final class Unit extends hydra.langs.scala.meta.Lit {
+  public static final class Unit extends hydra.langs.scala.meta.Lit implements Serializable {
     public Unit () {
     
     }

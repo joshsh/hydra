@@ -1,9 +1,11 @@
 package hydra.core;
 
+import java.io.Serializable;
+
 /**
  * A function
  */
-public abstract class Function<A> {
+public abstract class Function<A> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/core.Function");
   
   private Function () {
@@ -41,7 +43,7 @@ public abstract class Function<A> {
   /**
    * An elimination for any of a few term variants
    */
-  public static final class Elimination<A> extends hydra.core.Function<A> {
+  public static final class Elimination<A> extends hydra.core.Function<A> implements Serializable {
     /**
      * An elimination for any of a few term variants
      */
@@ -74,7 +76,7 @@ public abstract class Function<A> {
   /**
    * A function abstraction (lambda)
    */
-  public static final class Lambda<A> extends hydra.core.Function<A> {
+  public static final class Lambda<A> extends hydra.core.Function<A> implements Serializable {
     /**
      * A function abstraction (lambda)
      */
@@ -107,7 +109,7 @@ public abstract class Function<A> {
   /**
    * A reference to a built-in (primitive) function
    */
-  public static final class Primitive<A> extends hydra.core.Function<A> {
+  public static final class Primitive<A> extends hydra.core.Function<A> implements Serializable {
     /**
      * A reference to a built-in (primitive) function
      */

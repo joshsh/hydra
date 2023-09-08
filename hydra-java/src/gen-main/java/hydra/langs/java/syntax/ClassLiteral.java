@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class ClassLiteral {
+import java.io.Serializable;
+
+public abstract class ClassLiteral implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ClassLiteral");
   
   private ClassLiteral () {
@@ -41,7 +43,7 @@ public abstract class ClassLiteral {
     }
   }
   
-  public static final class Type extends hydra.langs.java.syntax.ClassLiteral {
+  public static final class Type extends hydra.langs.java.syntax.ClassLiteral implements Serializable {
     public final hydra.langs.java.syntax.TypeNameArray value;
     
     public Type (hydra.langs.java.syntax.TypeNameArray value) {
@@ -68,7 +70,7 @@ public abstract class ClassLiteral {
     }
   }
   
-  public static final class NumericType extends hydra.langs.java.syntax.ClassLiteral {
+  public static final class NumericType extends hydra.langs.java.syntax.ClassLiteral implements Serializable {
     public final hydra.langs.java.syntax.NumericTypeArray value;
     
     public NumericType (hydra.langs.java.syntax.NumericTypeArray value) {
@@ -95,7 +97,7 @@ public abstract class ClassLiteral {
     }
   }
   
-  public static final class Boolean_ extends hydra.langs.java.syntax.ClassLiteral {
+  public static final class Boolean_ extends hydra.langs.java.syntax.ClassLiteral implements Serializable {
     public final hydra.langs.java.syntax.BooleanArray value;
     
     public Boolean_ (hydra.langs.java.syntax.BooleanArray value) {
@@ -122,7 +124,7 @@ public abstract class ClassLiteral {
     }
   }
   
-  public static final class Void_ extends hydra.langs.java.syntax.ClassLiteral {
+  public static final class Void_ extends hydra.langs.java.syntax.ClassLiteral implements Serializable {
     public Void_ () {
     
     }

@@ -1,9 +1,11 @@
 package hydra.langs.parquet.format;
 
+import java.io.Serializable;
+
 /**
  * Enum to annotate whether lists of min/max elements inside ColumnIndex are ordered and if so, in which direction.
  */
-public abstract class BoundaryOrder {
+public abstract class BoundaryOrder implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/parquet/format.BoundaryOrder");
   
   private BoundaryOrder () {
@@ -38,7 +40,7 @@ public abstract class BoundaryOrder {
     }
   }
   
-  public static final class Unordered extends hydra.langs.parquet.format.BoundaryOrder {
+  public static final class Unordered extends hydra.langs.parquet.format.BoundaryOrder implements Serializable {
     public Unordered () {
     
     }
@@ -63,7 +65,7 @@ public abstract class BoundaryOrder {
     }
   }
   
-  public static final class Ascending extends hydra.langs.parquet.format.BoundaryOrder {
+  public static final class Ascending extends hydra.langs.parquet.format.BoundaryOrder implements Serializable {
     public Ascending () {
     
     }
@@ -88,7 +90,7 @@ public abstract class BoundaryOrder {
     }
   }
   
-  public static final class Descending extends hydra.langs.parquet.format.BoundaryOrder {
+  public static final class Descending extends hydra.langs.parquet.format.BoundaryOrder implements Serializable {
     public Descending () {
     
     }

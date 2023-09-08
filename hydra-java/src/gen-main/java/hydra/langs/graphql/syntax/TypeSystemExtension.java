@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public abstract class TypeSystemExtension {
+import java.io.Serializable;
+
+public abstract class TypeSystemExtension implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.TypeSystemExtension");
   
   private TypeSystemExtension () {
@@ -29,7 +31,7 @@ public abstract class TypeSystemExtension {
     }
   }
   
-  public static final class Schema extends hydra.langs.graphql.syntax.TypeSystemExtension {
+  public static final class Schema extends hydra.langs.graphql.syntax.TypeSystemExtension implements Serializable {
     public final hydra.langs.graphql.syntax.SchemaExtension value;
     
     public Schema (hydra.langs.graphql.syntax.SchemaExtension value) {
@@ -56,7 +58,7 @@ public abstract class TypeSystemExtension {
     }
   }
   
-  public static final class Type extends hydra.langs.graphql.syntax.TypeSystemExtension {
+  public static final class Type extends hydra.langs.graphql.syntax.TypeSystemExtension implements Serializable {
     public final hydra.langs.graphql.syntax.TypeExtension value;
     
     public Type (hydra.langs.graphql.syntax.TypeExtension value) {

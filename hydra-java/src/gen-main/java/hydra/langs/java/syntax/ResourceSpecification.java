@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class ResourceSpecification {
+import java.io.Serializable;
+
+public class ResourceSpecification implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ResourceSpecification");
   
   public final java.util.List<hydra.langs.java.syntax.Resource> value;

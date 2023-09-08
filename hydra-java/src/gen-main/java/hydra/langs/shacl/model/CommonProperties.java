@@ -1,9 +1,11 @@
 package hydra.langs.shacl.model;
 
+import java.io.Serializable;
+
 /**
  * Common constraint parameters and other properties for SHACL shapes
  */
-public class CommonProperties {
+public class CommonProperties implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shacl/model.CommonProperties");
   
   /**

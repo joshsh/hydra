@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class LocalVariableDeclarationStatement {
+import java.io.Serializable;
+
+public class LocalVariableDeclarationStatement implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.LocalVariableDeclarationStatement");
   
   public final hydra.langs.java.syntax.LocalVariableDeclaration value;

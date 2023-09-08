@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public class InlineShapeDefinition {
+import java.io.Serializable;
+
+public class InlineShapeDefinition implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.InlineShapeDefinition");
   
   public final java.util.List<hydra.langs.shex.syntax.InlineShapeDefinition_ListOfAlts_Elmt> listOfAlts;

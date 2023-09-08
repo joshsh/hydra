@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class InclusiveOrExpression {
+import java.io.Serializable;
+
+public class InclusiveOrExpression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.InclusiveOrExpression");
   
   public final java.util.List<hydra.langs.java.syntax.ExclusiveOrExpression> value;

@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public abstract class Decl {
+import java.io.Serializable;
+
+public abstract class Decl implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Decl");
   
   private Decl () {
@@ -47,7 +49,7 @@ public abstract class Decl {
     }
   }
   
-  public static final class Val extends hydra.langs.scala.meta.Decl {
+  public static final class Val extends hydra.langs.scala.meta.Decl implements Serializable {
     public final hydra.langs.scala.meta.Decl_Val value;
     
     public Val (hydra.langs.scala.meta.Decl_Val value) {
@@ -74,7 +76,7 @@ public abstract class Decl {
     }
   }
   
-  public static final class Var extends hydra.langs.scala.meta.Decl {
+  public static final class Var extends hydra.langs.scala.meta.Decl implements Serializable {
     public final hydra.langs.scala.meta.Decl_Var value;
     
     public Var (hydra.langs.scala.meta.Decl_Var value) {
@@ -101,7 +103,7 @@ public abstract class Decl {
     }
   }
   
-  public static final class Def extends hydra.langs.scala.meta.Decl {
+  public static final class Def extends hydra.langs.scala.meta.Decl implements Serializable {
     public final hydra.langs.scala.meta.Decl_Def value;
     
     public Def (hydra.langs.scala.meta.Decl_Def value) {
@@ -128,7 +130,7 @@ public abstract class Decl {
     }
   }
   
-  public static final class Type extends hydra.langs.scala.meta.Decl {
+  public static final class Type extends hydra.langs.scala.meta.Decl implements Serializable {
     public final hydra.langs.scala.meta.Decl_Type value;
     
     public Type (hydra.langs.scala.meta.Decl_Type value) {
@@ -155,7 +157,7 @@ public abstract class Decl {
     }
   }
   
-  public static final class Given extends hydra.langs.scala.meta.Decl {
+  public static final class Given extends hydra.langs.scala.meta.Decl implements Serializable {
     public final hydra.langs.scala.meta.Decl_Given value;
     
     public Given (hydra.langs.scala.meta.Decl_Given value) {

@@ -1,9 +1,11 @@
 package hydra.langs.tinkerpop.propertyGraph;
 
+import java.io.Serializable;
+
 /**
  * A graph schema; a vertex and edge types for the vertices and edges of a graph conforming to the schema
  */
-public class GraphSchema<T> {
+public class GraphSchema<T> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/tinkerpop/propertyGraph.GraphSchema");
   
   /**

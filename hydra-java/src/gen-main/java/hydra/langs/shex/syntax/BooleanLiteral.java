@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class BooleanLiteral {
+import java.io.Serializable;
+
+public abstract class BooleanLiteral implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.BooleanLiteral");
   
   private BooleanLiteral () {
@@ -29,7 +31,7 @@ public abstract class BooleanLiteral {
     }
   }
   
-  public static final class True extends hydra.langs.shex.syntax.BooleanLiteral {
+  public static final class True extends hydra.langs.shex.syntax.BooleanLiteral implements Serializable {
     public True () {
     
     }
@@ -54,7 +56,7 @@ public abstract class BooleanLiteral {
     }
   }
   
-  public static final class False extends hydra.langs.shex.syntax.BooleanLiteral {
+  public static final class False extends hydra.langs.shex.syntax.BooleanLiteral implements Serializable {
     public False () {
     
     }

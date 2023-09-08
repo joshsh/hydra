@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class LambdaParameterType {
+import java.io.Serializable;
+
+public abstract class LambdaParameterType implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.LambdaParameterType");
   
   private LambdaParameterType () {
@@ -29,7 +31,7 @@ public abstract class LambdaParameterType {
     }
   }
   
-  public static final class Type extends hydra.langs.java.syntax.LambdaParameterType {
+  public static final class Type extends hydra.langs.java.syntax.LambdaParameterType implements Serializable {
     public final hydra.langs.java.syntax.UnannType value;
     
     public Type (hydra.langs.java.syntax.UnannType value) {
@@ -56,7 +58,7 @@ public abstract class LambdaParameterType {
     }
   }
   
-  public static final class Var extends hydra.langs.java.syntax.LambdaParameterType {
+  public static final class Var extends hydra.langs.java.syntax.LambdaParameterType implements Serializable {
     public Var () {
     
     }

@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public class TimestampLiteral {
+import java.io.Serializable;
+
+public class TimestampLiteral implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.TimestampLiteral");
   
   public TimestampLiteral () {

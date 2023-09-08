@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public class ListType {
+import java.io.Serializable;
+
+public class ListType implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.ListType");
   
   public final hydra.langs.graphql.syntax.Type value;

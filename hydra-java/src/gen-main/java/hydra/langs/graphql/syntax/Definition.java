@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public abstract class Definition {
+import java.io.Serializable;
+
+public abstract class Definition implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.Definition");
   
   private Definition () {
@@ -29,7 +31,7 @@ public abstract class Definition {
     }
   }
   
-  public static final class Executable extends hydra.langs.graphql.syntax.Definition {
+  public static final class Executable extends hydra.langs.graphql.syntax.Definition implements Serializable {
     public final hydra.langs.graphql.syntax.ExecutableDefinition value;
     
     public Executable (hydra.langs.graphql.syntax.ExecutableDefinition value) {
@@ -56,7 +58,7 @@ public abstract class Definition {
     }
   }
   
-  public static final class TypeSystem extends hydra.langs.graphql.syntax.Definition {
+  public static final class TypeSystem extends hydra.langs.graphql.syntax.Definition implements Serializable {
     public final hydra.langs.graphql.syntax.TypeSystemDefinitionOrExtension value;
     
     public TypeSystem (hydra.langs.graphql.syntax.TypeSystemDefinitionOrExtension value) {

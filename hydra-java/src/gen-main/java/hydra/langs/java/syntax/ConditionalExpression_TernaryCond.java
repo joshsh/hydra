@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class ConditionalExpression_TernaryCond {
+import java.io.Serializable;
+
+public class ConditionalExpression_TernaryCond implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ConditionalExpression.TernaryCond");
   
   public final hydra.langs.java.syntax.ConditionalOrExpression cond;

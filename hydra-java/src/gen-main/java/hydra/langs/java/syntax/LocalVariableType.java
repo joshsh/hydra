@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class LocalVariableType {
+import java.io.Serializable;
+
+public abstract class LocalVariableType implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.LocalVariableType");
   
   private LocalVariableType () {
@@ -29,7 +31,7 @@ public abstract class LocalVariableType {
     }
   }
   
-  public static final class Type extends hydra.langs.java.syntax.LocalVariableType {
+  public static final class Type extends hydra.langs.java.syntax.LocalVariableType implements Serializable {
     public final hydra.langs.java.syntax.UnannType value;
     
     public Type (hydra.langs.java.syntax.UnannType value) {
@@ -56,7 +58,7 @@ public abstract class LocalVariableType {
     }
   }
   
-  public static final class Var extends hydra.langs.java.syntax.LocalVariableType {
+  public static final class Var extends hydra.langs.java.syntax.LocalVariableType implements Serializable {
     public Var () {
     
     }

@@ -1,9 +1,11 @@
 package hydra.mantle;
 
+import java.io.Serializable;
+
 /**
  * A disjoint union between a 'left' type and a 'right' type
  */
-public abstract class Either<A, B> {
+public abstract class Either<A, B> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/mantle.Either");
   
   private Either () {
@@ -32,7 +34,7 @@ public abstract class Either<A, B> {
     }
   }
   
-  public static final class Left<A, B> extends hydra.mantle.Either<A, B> {
+  public static final class Left<A, B> extends hydra.mantle.Either<A, B> implements Serializable {
     public final A value;
     
     public Left (A value) {
@@ -59,7 +61,7 @@ public abstract class Either<A, B> {
     }
   }
   
-  public static final class Right<A, B> extends hydra.mantle.Either<A, B> {
+  public static final class Right<A, B> extends hydra.mantle.Either<A, B> implements Serializable {
     public final B value;
     
     public Right (B value) {

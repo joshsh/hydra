@@ -1,9 +1,11 @@
 package hydra.langs.tinkerpop.propertyGraph;
 
+import java.io.Serializable;
+
 /**
  * An element type together with its dependencies in some context
  */
-public class ElementTypeTree<T> {
+public class ElementTypeTree<T> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/tinkerpop/propertyGraph.ElementTypeTree");
   
   public final hydra.langs.tinkerpop.propertyGraph.ElementType<T> self;

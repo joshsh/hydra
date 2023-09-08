@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class VariableInitializer {
+import java.io.Serializable;
+
+public abstract class VariableInitializer implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.VariableInitializer");
   
   private VariableInitializer () {
@@ -29,7 +31,7 @@ public abstract class VariableInitializer {
     }
   }
   
-  public static final class Expression extends hydra.langs.java.syntax.VariableInitializer {
+  public static final class Expression extends hydra.langs.java.syntax.VariableInitializer implements Serializable {
     public final hydra.langs.java.syntax.Expression value;
     
     public Expression (hydra.langs.java.syntax.Expression value) {
@@ -56,7 +58,7 @@ public abstract class VariableInitializer {
     }
   }
   
-  public static final class ArrayInitializer extends hydra.langs.java.syntax.VariableInitializer {
+  public static final class ArrayInitializer extends hydra.langs.java.syntax.VariableInitializer implements Serializable {
     public final hydra.langs.java.syntax.ArrayInitializer value;
     
     public ArrayInitializer (hydra.langs.java.syntax.ArrayInitializer value) {

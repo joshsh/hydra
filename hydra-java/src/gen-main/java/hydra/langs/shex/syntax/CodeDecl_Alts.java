@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class CodeDecl_Alts {
+import java.io.Serializable;
+
+public abstract class CodeDecl_Alts implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.CodeDecl.Alts");
   
   private CodeDecl_Alts () {
@@ -29,7 +31,7 @@ public abstract class CodeDecl_Alts {
     }
   }
   
-  public static final class Code extends hydra.langs.shex.syntax.CodeDecl_Alts {
+  public static final class Code extends hydra.langs.shex.syntax.CodeDecl_Alts implements Serializable {
     public final hydra.langs.shex.syntax.Code value;
     
     public Code (hydra.langs.shex.syntax.Code value) {
@@ -56,7 +58,7 @@ public abstract class CodeDecl_Alts {
     }
   }
   
-  public static final class Percnt extends hydra.langs.shex.syntax.CodeDecl_Alts {
+  public static final class Percnt extends hydra.langs.shex.syntax.CodeDecl_Alts implements Serializable {
     public Percnt () {
     
     }

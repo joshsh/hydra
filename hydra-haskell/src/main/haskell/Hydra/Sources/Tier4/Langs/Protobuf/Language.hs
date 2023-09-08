@@ -32,7 +32,7 @@ protobufLanguageDefinition :: String -> Datum a -> Definition a
 protobufLanguageDefinition = definitionInModule protobufLanguageModule
 
 protobufLanguageModule :: Module Kv
-protobufLanguageModule = Module ns elements [hydraCodersModule, hydraBasicsModule] Nothing
+protobufLanguageModule = Module ns elements [hydraCodersModule, hydraBasicsModule, hydraStripModule] Nothing
   where
     ns = Namespace "hydra/langs/protobuf/language"
     elements = [
@@ -79,9 +79,8 @@ protobufLanguageDef = protobufLanguageDefinition "protobufLanguage" $
         _TypeVariant_union,
         _TypeVariant_variable]),
       _LanguageConstraints_types>>: match _Type (Just true) [
-        _Type_map>>: lambda "mt" ((match _Type (Just false) [
-          _Type_literal>>: match _LiteralType (Just false) [
-            _LiteralType_string>>: constant true]]) @@ (Core.mapTypeKeys @@ var "mt"))]]]
+        _Type_map>>: lambda "mt" (match _Type (Just true) [
+          _Type_optional>>: constant false] @@ (ref stripTypeDef @@ (Core.mapTypeValues @@ var "mt")))]]]
 
 protobufReservedWordsDef :: Definition (S.Set String)
 protobufReservedWordsDef = protobufLanguageDefinition "protobufReservedWords" $

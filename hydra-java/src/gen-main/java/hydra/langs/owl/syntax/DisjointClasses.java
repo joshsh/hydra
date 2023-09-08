@@ -1,6 +1,8 @@
 package hydra.langs.owl.syntax;
 
-public class DisjointClasses {
+import java.io.Serializable;
+
+public class DisjointClasses implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/owl/syntax.DisjointClasses");
   
   public final java.util.List<hydra.langs.owl.syntax.Annotation> annotations;

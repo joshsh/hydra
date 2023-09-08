@@ -1,9 +1,11 @@
 package hydra.core;
 
+import java.io.Serializable;
+
 /**
  * An object wrapped in a type name
  */
-public class Nominal<X> {
+public class Nominal<X> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/core.Nominal");
   
   public final hydra.core.Name typeName;

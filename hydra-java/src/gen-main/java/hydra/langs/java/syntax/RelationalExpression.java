@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class RelationalExpression {
+import java.io.Serializable;
+
+public abstract class RelationalExpression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.RelationalExpression");
   
   private RelationalExpression () {
@@ -53,7 +55,7 @@ public abstract class RelationalExpression {
     }
   }
   
-  public static final class Simple extends hydra.langs.java.syntax.RelationalExpression {
+  public static final class Simple extends hydra.langs.java.syntax.RelationalExpression implements Serializable {
     public final hydra.langs.java.syntax.ShiftExpression value;
     
     public Simple (hydra.langs.java.syntax.ShiftExpression value) {
@@ -80,7 +82,7 @@ public abstract class RelationalExpression {
     }
   }
   
-  public static final class LessThan extends hydra.langs.java.syntax.RelationalExpression {
+  public static final class LessThan extends hydra.langs.java.syntax.RelationalExpression implements Serializable {
     public final hydra.langs.java.syntax.RelationalExpression_LessThan value;
     
     public LessThan (hydra.langs.java.syntax.RelationalExpression_LessThan value) {
@@ -107,7 +109,7 @@ public abstract class RelationalExpression {
     }
   }
   
-  public static final class GreaterThan extends hydra.langs.java.syntax.RelationalExpression {
+  public static final class GreaterThan extends hydra.langs.java.syntax.RelationalExpression implements Serializable {
     public final hydra.langs.java.syntax.RelationalExpression_GreaterThan value;
     
     public GreaterThan (hydra.langs.java.syntax.RelationalExpression_GreaterThan value) {
@@ -134,7 +136,7 @@ public abstract class RelationalExpression {
     }
   }
   
-  public static final class LessThanEqual extends hydra.langs.java.syntax.RelationalExpression {
+  public static final class LessThanEqual extends hydra.langs.java.syntax.RelationalExpression implements Serializable {
     public final hydra.langs.java.syntax.RelationalExpression_LessThanEqual value;
     
     public LessThanEqual (hydra.langs.java.syntax.RelationalExpression_LessThanEqual value) {
@@ -161,7 +163,7 @@ public abstract class RelationalExpression {
     }
   }
   
-  public static final class GreaterThanEqual extends hydra.langs.java.syntax.RelationalExpression {
+  public static final class GreaterThanEqual extends hydra.langs.java.syntax.RelationalExpression implements Serializable {
     public final hydra.langs.java.syntax.RelationalExpression_GreaterThanEqual value;
     
     public GreaterThanEqual (hydra.langs.java.syntax.RelationalExpression_GreaterThanEqual value) {
@@ -188,7 +190,7 @@ public abstract class RelationalExpression {
     }
   }
   
-  public static final class Instanceof extends hydra.langs.java.syntax.RelationalExpression {
+  public static final class Instanceof extends hydra.langs.java.syntax.RelationalExpression implements Serializable {
     public final hydra.langs.java.syntax.RelationalExpression_InstanceOf value;
     
     public Instanceof (hydra.langs.java.syntax.RelationalExpression_InstanceOf value) {

@@ -1,9 +1,11 @@
 package hydra.langs.haskell.ast;
 
+import java.io.Serializable;
+
 /**
  * An import or export specification
  */
-public class ImportExportSpec {
+public class ImportExportSpec implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.ImportExportSpec");
   
   public final java.util.Optional<hydra.langs.haskell.ast.ImportModifier> modifier;

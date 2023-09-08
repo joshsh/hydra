@@ -1,9 +1,11 @@
 package hydra.core;
 
+import java.io.Serializable;
+
 /**
  * A data term
  */
-public abstract class Term<A> {
+public abstract class Term<A> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/core.Term");
   
   private Term () {
@@ -119,7 +121,7 @@ public abstract class Term<A> {
   /**
    * A term annotated with metadata
    */
-  public static final class Annotated<A> extends hydra.core.Term<A> {
+  public static final class Annotated<A> extends hydra.core.Term<A> implements Serializable {
     /**
      * A term annotated with metadata
      */
@@ -152,7 +154,7 @@ public abstract class Term<A> {
   /**
    * A function application
    */
-  public static final class Application<A> extends hydra.core.Term<A> {
+  public static final class Application<A> extends hydra.core.Term<A> implements Serializable {
     /**
      * A function application
      */
@@ -185,7 +187,7 @@ public abstract class Term<A> {
   /**
    * A function term
    */
-  public static final class Function<A> extends hydra.core.Term<A> {
+  public static final class Function<A> extends hydra.core.Term<A> implements Serializable {
     /**
      * A function term
      */
@@ -215,7 +217,7 @@ public abstract class Term<A> {
     }
   }
   
-  public static final class Let<A> extends hydra.core.Term<A> {
+  public static final class Let<A> extends hydra.core.Term<A> implements Serializable {
     public final hydra.core.Let<A> value;
     
     public Let (hydra.core.Let<A> value) {
@@ -245,7 +247,7 @@ public abstract class Term<A> {
   /**
    * A list
    */
-  public static final class List<A> extends hydra.core.Term<A> {
+  public static final class List<A> extends hydra.core.Term<A> implements Serializable {
     /**
      * A list
      */
@@ -278,7 +280,7 @@ public abstract class Term<A> {
   /**
    * A literal value
    */
-  public static final class Literal<A> extends hydra.core.Term<A> {
+  public static final class Literal<A> extends hydra.core.Term<A> implements Serializable {
     /**
      * A literal value
      */
@@ -311,7 +313,7 @@ public abstract class Term<A> {
   /**
    * A map of keys to values
    */
-  public static final class Map<A> extends hydra.core.Term<A> {
+  public static final class Map<A> extends hydra.core.Term<A> implements Serializable {
     /**
      * A map of keys to values
      */
@@ -344,7 +346,7 @@ public abstract class Term<A> {
   /**
    * An optional value
    */
-  public static final class Optional<A> extends hydra.core.Term<A> {
+  public static final class Optional<A> extends hydra.core.Term<A> implements Serializable {
     /**
      * An optional value
      */
@@ -377,7 +379,7 @@ public abstract class Term<A> {
   /**
    * A tuple
    */
-  public static final class Product<A> extends hydra.core.Term<A> {
+  public static final class Product<A> extends hydra.core.Term<A> implements Serializable {
     /**
      * A tuple
      */
@@ -410,7 +412,7 @@ public abstract class Term<A> {
   /**
    * A record term
    */
-  public static final class Record<A> extends hydra.core.Term<A> {
+  public static final class Record<A> extends hydra.core.Term<A> implements Serializable {
     /**
      * A record term
      */
@@ -443,7 +445,7 @@ public abstract class Term<A> {
   /**
    * A set of values
    */
-  public static final class Set<A> extends hydra.core.Term<A> {
+  public static final class Set<A> extends hydra.core.Term<A> implements Serializable {
     /**
      * A set of values
      */
@@ -476,7 +478,7 @@ public abstract class Term<A> {
   /**
    * An infinite stream of terms
    */
-  public static final class Stream<A> extends hydra.core.Term<A> {
+  public static final class Stream<A> extends hydra.core.Term<A> implements Serializable {
     /**
      * An infinite stream of terms
      */
@@ -509,7 +511,7 @@ public abstract class Term<A> {
   /**
    * A variant tuple
    */
-  public static final class Sum<A> extends hydra.core.Term<A> {
+  public static final class Sum<A> extends hydra.core.Term<A> implements Serializable {
     /**
      * A variant tuple
      */
@@ -542,7 +544,7 @@ public abstract class Term<A> {
   /**
    * An injection; an instance of a union type
    */
-  public static final class Union<A> extends hydra.core.Term<A> {
+  public static final class Union<A> extends hydra.core.Term<A> implements Serializable {
     /**
      * An injection; an instance of a union type
      */
@@ -575,7 +577,7 @@ public abstract class Term<A> {
   /**
    * A variable reference
    */
-  public static final class Variable<A> extends hydra.core.Term<A> {
+  public static final class Variable<A> extends hydra.core.Term<A> implements Serializable {
     /**
      * A variable reference
      */
@@ -605,7 +607,7 @@ public abstract class Term<A> {
     }
   }
   
-  public static final class Wrap<A> extends hydra.core.Term<A> {
+  public static final class Wrap<A> extends hydra.core.Term<A> implements Serializable {
     public final hydra.core.Nominal<hydra.core.Term<A>> value;
     
     public Wrap (hydra.core.Nominal<hydra.core.Term<A>> value) {

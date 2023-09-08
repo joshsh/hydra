@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class TryStatement {
+import java.io.Serializable;
+
+public abstract class TryStatement implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.TryStatement");
   
   private TryStatement () {
@@ -35,7 +37,7 @@ public abstract class TryStatement {
     }
   }
   
-  public static final class Simple extends hydra.langs.java.syntax.TryStatement {
+  public static final class Simple extends hydra.langs.java.syntax.TryStatement implements Serializable {
     public final hydra.langs.java.syntax.TryStatement_Simple value;
     
     public Simple (hydra.langs.java.syntax.TryStatement_Simple value) {
@@ -62,7 +64,7 @@ public abstract class TryStatement {
     }
   }
   
-  public static final class WithFinally extends hydra.langs.java.syntax.TryStatement {
+  public static final class WithFinally extends hydra.langs.java.syntax.TryStatement implements Serializable {
     public final hydra.langs.java.syntax.TryStatement_WithFinally value;
     
     public WithFinally (hydra.langs.java.syntax.TryStatement_WithFinally value) {
@@ -89,7 +91,7 @@ public abstract class TryStatement {
     }
   }
   
-  public static final class WithResources extends hydra.langs.java.syntax.TryStatement {
+  public static final class WithResources extends hydra.langs.java.syntax.TryStatement implements Serializable {
     public final hydra.langs.java.syntax.TryWithResourcesStatement value;
     
     public WithResources (hydra.langs.java.syntax.TryWithResourcesStatement value) {

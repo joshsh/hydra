@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class Uchar {
+import java.io.Serializable;
+
+public abstract class Uchar implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.Uchar");
   
   private Uchar () {
@@ -29,7 +31,7 @@ public abstract class Uchar {
     }
   }
   
-  public static final class Sequence extends hydra.langs.shex.syntax.Uchar {
+  public static final class Sequence extends hydra.langs.shex.syntax.Uchar implements Serializable {
     public final hydra.langs.shex.syntax.Uchar_Sequence value;
     
     public Sequence (hydra.langs.shex.syntax.Uchar_Sequence value) {
@@ -56,7 +58,7 @@ public abstract class Uchar {
     }
   }
   
-  public static final class Sequence2 extends hydra.langs.shex.syntax.Uchar {
+  public static final class Sequence2 extends hydra.langs.shex.syntax.Uchar implements Serializable {
     public final hydra.langs.shex.syntax.Uchar_Sequence2 value;
     
     public Sequence2 (hydra.langs.shex.syntax.Uchar_Sequence2 value) {

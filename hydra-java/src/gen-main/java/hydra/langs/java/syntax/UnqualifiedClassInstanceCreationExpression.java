@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class UnqualifiedClassInstanceCreationExpression {
+import java.io.Serializable;
+
+public class UnqualifiedClassInstanceCreationExpression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.UnqualifiedClassInstanceCreationExpression");
   
   public final java.util.List<hydra.langs.java.syntax.TypeArgument> typeArguments;

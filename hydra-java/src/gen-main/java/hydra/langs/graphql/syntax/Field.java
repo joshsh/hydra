@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public class Field {
+import java.io.Serializable;
+
+public class Field implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.Field");
   
   public final java.util.Optional<hydra.langs.graphql.syntax.Alias> alias;

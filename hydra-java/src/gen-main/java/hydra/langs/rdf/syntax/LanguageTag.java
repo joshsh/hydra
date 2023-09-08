@@ -1,9 +1,11 @@
 package hydra.langs.rdf.syntax;
 
+import java.io.Serializable;
+
 /**
  * A BCP47 language tag
  */
-public class LanguageTag {
+public class LanguageTag implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/rdf/syntax.LanguageTag");
   
   /**

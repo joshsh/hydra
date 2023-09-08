@@ -1,9 +1,11 @@
 package hydra.langs.tinkerpop.mappings;
 
+import java.io.Serializable;
+
 /**
  * A mapping specification producing values (usually literal values) whose type is understood in context
  */
-public abstract class ValueSpec {
+public abstract class ValueSpec implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/tinkerpop/mappings.ValueSpec");
   
   private ValueSpec () {
@@ -35,7 +37,7 @@ public abstract class ValueSpec {
   /**
    * A trivial no-op specification which passes the entire value
    */
-  public static final class Value extends hydra.langs.tinkerpop.mappings.ValueSpec {
+  public static final class Value extends hydra.langs.tinkerpop.mappings.ValueSpec implements Serializable {
     public Value () {
     
     }
@@ -63,7 +65,7 @@ public abstract class ValueSpec {
   /**
    * A compact path representing the function, e.g. engine-${engineInfo/model/name}
    */
-  public static final class Pattern extends hydra.langs.tinkerpop.mappings.ValueSpec {
+  public static final class Pattern extends hydra.langs.tinkerpop.mappings.ValueSpec implements Serializable {
     /**
      * A compact path representing the function, e.g. engine-${engineInfo/model/name}
      */

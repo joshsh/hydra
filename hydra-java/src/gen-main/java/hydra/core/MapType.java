@@ -1,9 +1,11 @@
 package hydra.core;
 
+import java.io.Serializable;
+
 /**
  * A map type
  */
-public class MapType<A> {
+public class MapType<A> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/core.MapType");
   
   public final hydra.core.Type<A> keys;

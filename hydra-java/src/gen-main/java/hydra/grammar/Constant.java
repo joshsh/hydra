@@ -1,9 +1,11 @@
 package hydra.grammar;
 
+import java.io.Serializable;
+
 /**
  * A constant pattern
  */
-public class Constant {
+public class Constant implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/grammar.Constant");
   
   /**

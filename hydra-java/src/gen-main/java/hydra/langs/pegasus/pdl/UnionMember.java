@@ -1,6 +1,8 @@
 package hydra.langs.pegasus.pdl;
 
-public class UnionMember {
+import java.io.Serializable;
+
+public class UnionMember implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/pegasus/pdl.UnionMember");
   
   public final java.util.Optional<hydra.langs.pegasus.pdl.FieldName> alias;

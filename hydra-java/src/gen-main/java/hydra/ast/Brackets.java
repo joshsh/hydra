@@ -1,9 +1,11 @@
 package hydra.ast;
 
+import java.io.Serializable;
+
 /**
  * Matching open and close bracket symbols
  */
-public class Brackets {
+public class Brackets implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/ast.Brackets");
   
   public final hydra.ast.Symbol open;

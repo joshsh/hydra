@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class EnhancedForStatement {
+import java.io.Serializable;
+
+public class EnhancedForStatement implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.EnhancedForStatement");
   
   public final hydra.langs.java.syntax.EnhancedForCond cond;

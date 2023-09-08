@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public abstract class UnsignedLiteral {
+import java.io.Serializable;
+
+public abstract class UnsignedLiteral implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.UnsignedLiteral");
   
   private UnsignedLiteral () {
@@ -29,7 +31,7 @@ public abstract class UnsignedLiteral {
     }
   }
   
-  public static final class Numeric extends hydra.langs.sql.ansi.UnsignedLiteral {
+  public static final class Numeric extends hydra.langs.sql.ansi.UnsignedLiteral implements Serializable {
     public final hydra.langs.sql.ansi.UnsignedNumericLiteral value;
     
     public Numeric (hydra.langs.sql.ansi.UnsignedNumericLiteral value) {
@@ -56,7 +58,7 @@ public abstract class UnsignedLiteral {
     }
   }
   
-  public static final class General extends hydra.langs.sql.ansi.UnsignedLiteral {
+  public static final class General extends hydra.langs.sql.ansi.UnsignedLiteral implements Serializable {
     public final hydra.langs.sql.ansi.GeneralLiteral value;
     
     public General (hydra.langs.sql.ansi.GeneralLiteral value) {

@@ -1,9 +1,11 @@
 package hydra.langs.shacl.model;
 
+import java.io.Serializable;
+
 /**
  * An instance of a type like sh:Shape or sh:NodeShape, together with a unique IRI for that instance
  */
-public class Definition<A> {
+public class Definition<A> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shacl/model.Definition");
   
   public final hydra.langs.rdf.syntax.Iri iri;

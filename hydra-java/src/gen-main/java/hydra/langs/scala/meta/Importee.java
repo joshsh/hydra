@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public abstract class Importee {
+import java.io.Serializable;
+
+public abstract class Importee implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Importee");
   
   private Importee () {
@@ -53,7 +55,7 @@ public abstract class Importee {
     }
   }
   
-  public static final class Wildcard extends hydra.langs.scala.meta.Importee {
+  public static final class Wildcard extends hydra.langs.scala.meta.Importee implements Serializable {
     public Wildcard () {
     
     }
@@ -78,7 +80,7 @@ public abstract class Importee {
     }
   }
   
-  public static final class Given extends hydra.langs.scala.meta.Importee {
+  public static final class Given extends hydra.langs.scala.meta.Importee implements Serializable {
     public final hydra.langs.scala.meta.Importee_Given value;
     
     public Given (hydra.langs.scala.meta.Importee_Given value) {
@@ -105,7 +107,7 @@ public abstract class Importee {
     }
   }
   
-  public static final class GivenAll extends hydra.langs.scala.meta.Importee {
+  public static final class GivenAll extends hydra.langs.scala.meta.Importee implements Serializable {
     public GivenAll () {
     
     }
@@ -130,7 +132,7 @@ public abstract class Importee {
     }
   }
   
-  public static final class Name extends hydra.langs.scala.meta.Importee {
+  public static final class Name extends hydra.langs.scala.meta.Importee implements Serializable {
     public final hydra.langs.scala.meta.Importee_Name value;
     
     public Name (hydra.langs.scala.meta.Importee_Name value) {
@@ -157,7 +159,7 @@ public abstract class Importee {
     }
   }
   
-  public static final class Rename extends hydra.langs.scala.meta.Importee {
+  public static final class Rename extends hydra.langs.scala.meta.Importee implements Serializable {
     public final hydra.langs.scala.meta.Importee_Rename value;
     
     public Rename (hydra.langs.scala.meta.Importee_Rename value) {
@@ -184,7 +186,7 @@ public abstract class Importee {
     }
   }
   
-  public static final class Unimport extends hydra.langs.scala.meta.Importee {
+  public static final class Unimport extends hydra.langs.scala.meta.Importee implements Serializable {
     public final hydra.langs.scala.meta.Importee_Unimport value;
     
     public Unimport (hydra.langs.scala.meta.Importee_Unimport value) {

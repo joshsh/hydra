@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class SynchronizedStatement {
+import java.io.Serializable;
+
+public class SynchronizedStatement implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.SynchronizedStatement");
   
   public final hydra.langs.java.syntax.Expression expression;

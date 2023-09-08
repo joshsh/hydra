@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public abstract class PredefinedType {
+import java.io.Serializable;
+
+public abstract class PredefinedType implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.PredefinedType");
   
   private PredefinedType () {
@@ -59,7 +61,7 @@ public abstract class PredefinedType {
     }
   }
   
-  public static final class String_ extends hydra.langs.sql.ansi.PredefinedType {
+  public static final class String_ extends hydra.langs.sql.ansi.PredefinedType implements Serializable {
     public final hydra.langs.sql.ansi.PredefinedType_String value;
     
     public String_ (hydra.langs.sql.ansi.PredefinedType_String value) {
@@ -86,7 +88,7 @@ public abstract class PredefinedType {
     }
   }
   
-  public static final class NationalString extends hydra.langs.sql.ansi.PredefinedType {
+  public static final class NationalString extends hydra.langs.sql.ansi.PredefinedType implements Serializable {
     public final hydra.langs.sql.ansi.PredefinedType_NationalString value;
     
     public NationalString (hydra.langs.sql.ansi.PredefinedType_NationalString value) {
@@ -113,7 +115,7 @@ public abstract class PredefinedType {
     }
   }
   
-  public static final class Blob extends hydra.langs.sql.ansi.PredefinedType {
+  public static final class Blob extends hydra.langs.sql.ansi.PredefinedType implements Serializable {
     public final hydra.langs.sql.ansi.BinaryLargeObjectStringType value;
     
     public Blob (hydra.langs.sql.ansi.BinaryLargeObjectStringType value) {
@@ -140,7 +142,7 @@ public abstract class PredefinedType {
     }
   }
   
-  public static final class Numeric extends hydra.langs.sql.ansi.PredefinedType {
+  public static final class Numeric extends hydra.langs.sql.ansi.PredefinedType implements Serializable {
     public final hydra.langs.sql.ansi.NumericType value;
     
     public Numeric (hydra.langs.sql.ansi.NumericType value) {
@@ -167,7 +169,7 @@ public abstract class PredefinedType {
     }
   }
   
-  public static final class Boolean_ extends hydra.langs.sql.ansi.PredefinedType {
+  public static final class Boolean_ extends hydra.langs.sql.ansi.PredefinedType implements Serializable {
     public final hydra.langs.sql.ansi.BooleanType value;
     
     public Boolean_ (hydra.langs.sql.ansi.BooleanType value) {
@@ -194,7 +196,7 @@ public abstract class PredefinedType {
     }
   }
   
-  public static final class Datetime extends hydra.langs.sql.ansi.PredefinedType {
+  public static final class Datetime extends hydra.langs.sql.ansi.PredefinedType implements Serializable {
     public final hydra.langs.sql.ansi.DatetimeType value;
     
     public Datetime (hydra.langs.sql.ansi.DatetimeType value) {
@@ -221,7 +223,7 @@ public abstract class PredefinedType {
     }
   }
   
-  public static final class Interval extends hydra.langs.sql.ansi.PredefinedType {
+  public static final class Interval extends hydra.langs.sql.ansi.PredefinedType implements Serializable {
     public final hydra.langs.sql.ansi.IntervalType value;
     
     public Interval (hydra.langs.sql.ansi.IntervalType value) {

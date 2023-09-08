@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public abstract class ListValue {
+import java.io.Serializable;
+
+public abstract class ListValue implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.ListValue");
   
   private ListValue () {
@@ -29,7 +31,7 @@ public abstract class ListValue {
     }
   }
   
-  public static final class Sequence extends hydra.langs.graphql.syntax.ListValue {
+  public static final class Sequence extends hydra.langs.graphql.syntax.ListValue implements Serializable {
     public final hydra.langs.graphql.syntax.ListValue_Sequence value;
     
     public Sequence (hydra.langs.graphql.syntax.ListValue_Sequence value) {
@@ -56,7 +58,7 @@ public abstract class ListValue {
     }
   }
   
-  public static final class Sequence2 extends hydra.langs.graphql.syntax.ListValue {
+  public static final class Sequence2 extends hydra.langs.graphql.syntax.ListValue implements Serializable {
     public final java.util.List<hydra.langs.graphql.syntax.Value> value;
     
     public Sequence2 (java.util.List<hydra.langs.graphql.syntax.Value> value) {

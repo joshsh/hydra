@@ -1,9 +1,11 @@
 package hydra.mantle;
 
+import java.io.Serializable;
+
 /**
  * The identifier of a literal constructor
  */
-public abstract class LiteralVariant {
+public abstract class LiteralVariant implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/mantle.LiteralVariant");
   
   private LiteralVariant () {
@@ -50,7 +52,7 @@ public abstract class LiteralVariant {
     }
   }
   
-  public static final class Binary extends hydra.mantle.LiteralVariant {
+  public static final class Binary extends hydra.mantle.LiteralVariant implements Serializable {
     public Binary () {
     
     }
@@ -75,7 +77,7 @@ public abstract class LiteralVariant {
     }
   }
   
-  public static final class Boolean_ extends hydra.mantle.LiteralVariant {
+  public static final class Boolean_ extends hydra.mantle.LiteralVariant implements Serializable {
     public Boolean_ () {
     
     }
@@ -100,7 +102,7 @@ public abstract class LiteralVariant {
     }
   }
   
-  public static final class Float_ extends hydra.mantle.LiteralVariant {
+  public static final class Float_ extends hydra.mantle.LiteralVariant implements Serializable {
     public Float_ () {
     
     }
@@ -125,7 +127,7 @@ public abstract class LiteralVariant {
     }
   }
   
-  public static final class Integer_ extends hydra.mantle.LiteralVariant {
+  public static final class Integer_ extends hydra.mantle.LiteralVariant implements Serializable {
     public Integer_ () {
     
     }
@@ -150,7 +152,7 @@ public abstract class LiteralVariant {
     }
   }
   
-  public static final class String_ extends hydra.mantle.LiteralVariant {
+  public static final class String_ extends hydra.mantle.LiteralVariant implements Serializable {
     public String_ () {
     
     }

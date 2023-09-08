@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public class InsertColumnList {
+import java.io.Serializable;
+
+public class InsertColumnList implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.InsertColumnList");
   
   public final hydra.langs.sql.ansi.ColumnNameList value;

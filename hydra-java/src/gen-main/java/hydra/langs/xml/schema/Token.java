@@ -1,6 +1,8 @@
 package hydra.langs.xml.schema;
 
-public class Token {
+import java.io.Serializable;
+
+public class Token implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/xml/schema.Token");
   
   public final String value;

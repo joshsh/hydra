@@ -1,9 +1,11 @@
 package hydra.langs.rdf.syntax;
 
+import java.io.Serializable;
+
 /**
  * A value such as a string, number, or date
  */
-public class Literal {
+public class Literal implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/rdf/syntax.Literal");
   
   /**

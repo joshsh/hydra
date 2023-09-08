@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class Plx {
+import java.io.Serializable;
+
+public abstract class Plx implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.Plx");
   
   private Plx () {
@@ -29,7 +31,7 @@ public abstract class Plx {
     }
   }
   
-  public static final class Percent extends hydra.langs.shex.syntax.Plx {
+  public static final class Percent extends hydra.langs.shex.syntax.Plx implements Serializable {
     public final hydra.langs.shex.syntax.Percent value;
     
     public Percent (hydra.langs.shex.syntax.Percent value) {
@@ -56,7 +58,7 @@ public abstract class Plx {
     }
   }
   
-  public static final class PnLocalEsc extends hydra.langs.shex.syntax.Plx {
+  public static final class PnLocalEsc extends hydra.langs.shex.syntax.Plx implements Serializable {
     public final hydra.langs.shex.syntax.PnLocalEsc value;
     
     public PnLocalEsc (hydra.langs.shex.syntax.PnLocalEsc value) {

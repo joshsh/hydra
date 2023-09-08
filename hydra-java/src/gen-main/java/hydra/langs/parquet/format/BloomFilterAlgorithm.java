@@ -1,9 +1,11 @@
 package hydra.langs.parquet.format;
 
+import java.io.Serializable;
+
 /**
  * The algorithm used in Bloom filter.
  */
-public abstract class BloomFilterAlgorithm {
+public abstract class BloomFilterAlgorithm implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/parquet/format.BloomFilterAlgorithm");
   
   private BloomFilterAlgorithm () {
@@ -29,7 +31,7 @@ public abstract class BloomFilterAlgorithm {
   /**
    * Block-based Bloom filter.
    */
-  public static final class Block extends hydra.langs.parquet.format.BloomFilterAlgorithm {
+  public static final class Block extends hydra.langs.parquet.format.BloomFilterAlgorithm implements Serializable {
     public Block () {
     
     }

@@ -1,6 +1,8 @@
 package hydra.langs.owl.syntax;
 
-public abstract class Entity {
+import java.io.Serializable;
+
+public abstract class Entity implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/owl/syntax.Entity");
   
   private Entity () {
@@ -53,7 +55,7 @@ public abstract class Entity {
     }
   }
   
-  public static final class AnnotationProperty extends hydra.langs.owl.syntax.Entity {
+  public static final class AnnotationProperty extends hydra.langs.owl.syntax.Entity implements Serializable {
     public final hydra.langs.owl.syntax.AnnotationProperty value;
     
     public AnnotationProperty (hydra.langs.owl.syntax.AnnotationProperty value) {
@@ -80,7 +82,7 @@ public abstract class Entity {
     }
   }
   
-  public static final class Class_ extends hydra.langs.owl.syntax.Entity {
+  public static final class Class_ extends hydra.langs.owl.syntax.Entity implements Serializable {
     public final hydra.langs.owl.syntax.Class_ value;
     
     public Class_ (hydra.langs.owl.syntax.Class_ value) {
@@ -107,7 +109,7 @@ public abstract class Entity {
     }
   }
   
-  public static final class DataProperty extends hydra.langs.owl.syntax.Entity {
+  public static final class DataProperty extends hydra.langs.owl.syntax.Entity implements Serializable {
     public final hydra.langs.owl.syntax.DataProperty value;
     
     public DataProperty (hydra.langs.owl.syntax.DataProperty value) {
@@ -134,7 +136,7 @@ public abstract class Entity {
     }
   }
   
-  public static final class Datatype extends hydra.langs.owl.syntax.Entity {
+  public static final class Datatype extends hydra.langs.owl.syntax.Entity implements Serializable {
     public final hydra.langs.owl.syntax.Datatype value;
     
     public Datatype (hydra.langs.owl.syntax.Datatype value) {
@@ -161,7 +163,7 @@ public abstract class Entity {
     }
   }
   
-  public static final class NamedIndividual extends hydra.langs.owl.syntax.Entity {
+  public static final class NamedIndividual extends hydra.langs.owl.syntax.Entity implements Serializable {
     public final hydra.langs.owl.syntax.NamedIndividual value;
     
     public NamedIndividual (hydra.langs.owl.syntax.NamedIndividual value) {
@@ -188,7 +190,7 @@ public abstract class Entity {
     }
   }
   
-  public static final class ObjectProperty extends hydra.langs.owl.syntax.Entity {
+  public static final class ObjectProperty extends hydra.langs.owl.syntax.Entity implements Serializable {
     public final hydra.langs.owl.syntax.ObjectProperty value;
     
     public ObjectProperty (hydra.langs.owl.syntax.ObjectProperty value) {

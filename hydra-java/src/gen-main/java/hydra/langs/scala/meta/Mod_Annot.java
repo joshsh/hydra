@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public class Mod_Annot {
+import java.io.Serializable;
+
+public class Mod_Annot implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Mod.Annot");
   
   public final hydra.langs.scala.meta.Init init;

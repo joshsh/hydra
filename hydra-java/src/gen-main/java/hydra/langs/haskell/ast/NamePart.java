@@ -1,6 +1,8 @@
 package hydra.langs.haskell.ast;
 
-public class NamePart {
+import java.io.Serializable;
+
+public class NamePart implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.NamePart");
   
   public final String value;

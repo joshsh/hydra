@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public abstract class BooleanTerm {
+import java.io.Serializable;
+
+public abstract class BooleanTerm implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.BooleanTerm");
   
   private BooleanTerm () {
@@ -29,7 +31,7 @@ public abstract class BooleanTerm {
     }
   }
   
-  public static final class Factor extends hydra.langs.sql.ansi.BooleanTerm {
+  public static final class Factor extends hydra.langs.sql.ansi.BooleanTerm implements Serializable {
     public final hydra.langs.sql.ansi.BooleanFactor value;
     
     public Factor (hydra.langs.sql.ansi.BooleanFactor value) {
@@ -56,7 +58,7 @@ public abstract class BooleanTerm {
     }
   }
   
-  public static final class And extends hydra.langs.sql.ansi.BooleanTerm {
+  public static final class And extends hydra.langs.sql.ansi.BooleanTerm implements Serializable {
     public final hydra.langs.sql.ansi.BooleanTerm_And value;
     
     public And (hydra.langs.sql.ansi.BooleanTerm_And value) {

@@ -1,9 +1,11 @@
 package hydra.langs.rdf.syntax;
 
+import java.io.Serializable;
+
 /**
  * Stand-in for rdfs:Class
  */
-public class RdfsClass {
+public class RdfsClass implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/rdf/syntax.RdfsClass");
   
   public RdfsClass () {

@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class RepeatRange_Sequence_Option_Option_Option {
+import java.io.Serializable;
+
+public abstract class RepeatRange_Sequence_Option_Option_Option implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.RepeatRange.Sequence.Option.Option.Option");
   
   private RepeatRange_Sequence_Option_Option_Option () {
@@ -29,7 +31,7 @@ public abstract class RepeatRange_Sequence_Option_Option_Option {
     }
   }
   
-  public static final class Integer_ extends hydra.langs.shex.syntax.RepeatRange_Sequence_Option_Option_Option {
+  public static final class Integer_ extends hydra.langs.shex.syntax.RepeatRange_Sequence_Option_Option_Option implements Serializable {
     public final hydra.langs.shex.syntax.Integer_ value;
     
     public Integer_ (hydra.langs.shex.syntax.Integer_ value) {
@@ -56,7 +58,7 @@ public abstract class RepeatRange_Sequence_Option_Option_Option {
     }
   }
   
-  public static final class Ast extends hydra.langs.shex.syntax.RepeatRange_Sequence_Option_Option_Option {
+  public static final class Ast extends hydra.langs.shex.syntax.RepeatRange_Sequence_Option_Option_Option implements Serializable {
     public Ast () {
     
     }

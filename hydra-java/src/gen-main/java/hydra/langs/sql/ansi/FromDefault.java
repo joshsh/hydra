@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public class FromDefault {
+import java.io.Serializable;
+
+public class FromDefault implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.FromDefault");
   
   public FromDefault () {

@@ -1,9 +1,11 @@
 package hydra.core;
 
+import java.io.Serializable;
+
 /**
  * A term which applies a function to an argument
  */
-public class Application<A> {
+public class Application<A> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/core.Application");
   
   /**

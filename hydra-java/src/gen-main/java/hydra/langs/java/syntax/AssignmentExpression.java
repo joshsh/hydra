@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class AssignmentExpression {
+import java.io.Serializable;
+
+public abstract class AssignmentExpression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.AssignmentExpression");
   
   private AssignmentExpression () {
@@ -29,7 +31,7 @@ public abstract class AssignmentExpression {
     }
   }
   
-  public static final class Conditional extends hydra.langs.java.syntax.AssignmentExpression {
+  public static final class Conditional extends hydra.langs.java.syntax.AssignmentExpression implements Serializable {
     public final hydra.langs.java.syntax.ConditionalExpression value;
     
     public Conditional (hydra.langs.java.syntax.ConditionalExpression value) {
@@ -56,7 +58,7 @@ public abstract class AssignmentExpression {
     }
   }
   
-  public static final class Assignment extends hydra.langs.java.syntax.AssignmentExpression {
+  public static final class Assignment extends hydra.langs.java.syntax.AssignmentExpression implements Serializable {
     public final hydra.langs.java.syntax.Assignment value;
     
     public Assignment (hydra.langs.java.syntax.Assignment value) {

@@ -1,9 +1,11 @@
 package hydra.ast;
 
+import java.io.Serializable;
+
 /**
  * An operator expression
  */
-public class OpExpr {
+public class OpExpr implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/ast.OpExpr");
   
   public final hydra.ast.Op op;

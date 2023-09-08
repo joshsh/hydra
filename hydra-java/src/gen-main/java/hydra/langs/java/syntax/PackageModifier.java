@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class PackageModifier {
+import java.io.Serializable;
+
+public class PackageModifier implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.PackageModifier");
   
   public final hydra.langs.java.syntax.Annotation value;

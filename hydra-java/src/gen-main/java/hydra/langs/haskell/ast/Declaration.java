@@ -1,9 +1,11 @@
 package hydra.langs.haskell.ast;
 
+import java.io.Serializable;
+
 /**
  * A data or value declaration
  */
-public abstract class Declaration {
+public abstract class Declaration implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.Declaration");
   
   private Declaration () {
@@ -44,7 +46,7 @@ public abstract class Declaration {
     }
   }
   
-  public static final class Data extends hydra.langs.haskell.ast.Declaration {
+  public static final class Data extends hydra.langs.haskell.ast.Declaration implements Serializable {
     public final hydra.langs.haskell.ast.DataDeclaration value;
     
     public Data (hydra.langs.haskell.ast.DataDeclaration value) {
@@ -71,7 +73,7 @@ public abstract class Declaration {
     }
   }
   
-  public static final class Type extends hydra.langs.haskell.ast.Declaration {
+  public static final class Type extends hydra.langs.haskell.ast.Declaration implements Serializable {
     public final hydra.langs.haskell.ast.TypeDeclaration value;
     
     public Type (hydra.langs.haskell.ast.TypeDeclaration value) {
@@ -98,7 +100,7 @@ public abstract class Declaration {
     }
   }
   
-  public static final class ValueBinding extends hydra.langs.haskell.ast.Declaration {
+  public static final class ValueBinding extends hydra.langs.haskell.ast.Declaration implements Serializable {
     public final hydra.langs.haskell.ast.ValueBinding value;
     
     public ValueBinding (hydra.langs.haskell.ast.ValueBinding value) {
@@ -125,7 +127,7 @@ public abstract class Declaration {
     }
   }
   
-  public static final class TypedBinding extends hydra.langs.haskell.ast.Declaration {
+  public static final class TypedBinding extends hydra.langs.haskell.ast.Declaration implements Serializable {
     public final hydra.langs.haskell.ast.TypedBinding value;
     
     public TypedBinding (hydra.langs.haskell.ast.TypedBinding value) {

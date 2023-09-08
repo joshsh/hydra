@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public class Template {
+import java.io.Serializable;
+
+public class Template implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Template");
   
   public final java.util.List<hydra.langs.scala.meta.Stat> early;

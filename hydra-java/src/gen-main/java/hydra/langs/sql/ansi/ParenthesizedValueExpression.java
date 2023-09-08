@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public class ParenthesizedValueExpression {
+import java.io.Serializable;
+
+public class ParenthesizedValueExpression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.ParenthesizedValueExpression");
   
   public final hydra.langs.sql.ansi.ValueExpression value;

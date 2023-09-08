@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class ClassOrInterfaceType {
+import java.io.Serializable;
+
+public abstract class ClassOrInterfaceType implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ClassOrInterfaceType");
   
   private ClassOrInterfaceType () {
@@ -29,7 +31,7 @@ public abstract class ClassOrInterfaceType {
     }
   }
   
-  public static final class Class_ extends hydra.langs.java.syntax.ClassOrInterfaceType {
+  public static final class Class_ extends hydra.langs.java.syntax.ClassOrInterfaceType implements Serializable {
     public final hydra.langs.java.syntax.ClassType value;
     
     public Class_ (hydra.langs.java.syntax.ClassType value) {
@@ -56,7 +58,7 @@ public abstract class ClassOrInterfaceType {
     }
   }
   
-  public static final class Interface extends hydra.langs.java.syntax.ClassOrInterfaceType {
+  public static final class Interface extends hydra.langs.java.syntax.ClassOrInterfaceType implements Serializable {
     public final hydra.langs.java.syntax.InterfaceType value;
     
     public Interface (hydra.langs.java.syntax.InterfaceType value) {

@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class LambdaParameters {
+import java.io.Serializable;
+
+public abstract class LambdaParameters implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.LambdaParameters");
   
   private LambdaParameters () {
@@ -29,7 +31,7 @@ public abstract class LambdaParameters {
     }
   }
   
-  public static final class Tuple extends hydra.langs.java.syntax.LambdaParameters {
+  public static final class Tuple extends hydra.langs.java.syntax.LambdaParameters implements Serializable {
     public final java.util.List<hydra.langs.java.syntax.LambdaParameters> value;
     
     public Tuple (java.util.List<hydra.langs.java.syntax.LambdaParameters> value) {
@@ -56,7 +58,7 @@ public abstract class LambdaParameters {
     }
   }
   
-  public static final class Single extends hydra.langs.java.syntax.LambdaParameters {
+  public static final class Single extends hydra.langs.java.syntax.LambdaParameters implements Serializable {
     public final hydra.langs.java.syntax.Identifier value;
     
     public Single (hydra.langs.java.syntax.Identifier value) {

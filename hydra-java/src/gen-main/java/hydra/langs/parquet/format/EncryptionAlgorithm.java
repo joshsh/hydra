@@ -1,6 +1,8 @@
 package hydra.langs.parquet.format;
 
-public abstract class EncryptionAlgorithm {
+import java.io.Serializable;
+
+public abstract class EncryptionAlgorithm implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/parquet/format.EncryptionAlgorithm");
   
   private EncryptionAlgorithm () {
@@ -29,7 +31,7 @@ public abstract class EncryptionAlgorithm {
     }
   }
   
-  public static final class AesGcmV1 extends hydra.langs.parquet.format.EncryptionAlgorithm {
+  public static final class AesGcmV1 extends hydra.langs.parquet.format.EncryptionAlgorithm implements Serializable {
     public final hydra.langs.parquet.format.AesGcmV1 value;
     
     public AesGcmV1 (hydra.langs.parquet.format.AesGcmV1 value) {
@@ -56,7 +58,7 @@ public abstract class EncryptionAlgorithm {
     }
   }
   
-  public static final class AesGcmCtrV1 extends hydra.langs.parquet.format.EncryptionAlgorithm {
+  public static final class AesGcmCtrV1 extends hydra.langs.parquet.format.EncryptionAlgorithm implements Serializable {
     public final hydra.langs.parquet.format.AesGcmCtrV1 value;
     
     public AesGcmCtrV1 (hydra.langs.parquet.format.AesGcmCtrV1 value) {

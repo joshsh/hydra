@@ -1,9 +1,11 @@
 package hydra.langs.haskell.ast;
 
+import java.io.Serializable;
+
 /**
  * A data expression
  */
-public abstract class Expression {
+public abstract class Expression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.Expression");
   
   private Expression () {
@@ -128,7 +130,7 @@ public abstract class Expression {
     }
   }
   
-  public static final class Application extends hydra.langs.haskell.ast.Expression {
+  public static final class Application extends hydra.langs.haskell.ast.Expression implements Serializable {
     public final hydra.langs.haskell.ast.Expression_Application value;
     
     public Application (hydra.langs.haskell.ast.Expression_Application value) {
@@ -155,7 +157,7 @@ public abstract class Expression {
     }
   }
   
-  public static final class Case extends hydra.langs.haskell.ast.Expression {
+  public static final class Case extends hydra.langs.haskell.ast.Expression implements Serializable {
     public final hydra.langs.haskell.ast.Expression_Case value;
     
     public Case (hydra.langs.haskell.ast.Expression_Case value) {
@@ -182,7 +184,7 @@ public abstract class Expression {
     }
   }
   
-  public static final class ConstructRecord extends hydra.langs.haskell.ast.Expression {
+  public static final class ConstructRecord extends hydra.langs.haskell.ast.Expression implements Serializable {
     public final hydra.langs.haskell.ast.Expression_ConstructRecord value;
     
     public ConstructRecord (hydra.langs.haskell.ast.Expression_ConstructRecord value) {
@@ -209,7 +211,7 @@ public abstract class Expression {
     }
   }
   
-  public static final class Do extends hydra.langs.haskell.ast.Expression {
+  public static final class Do extends hydra.langs.haskell.ast.Expression implements Serializable {
     public final java.util.List<hydra.langs.haskell.ast.Statement> value;
     
     public Do (java.util.List<hydra.langs.haskell.ast.Statement> value) {
@@ -236,7 +238,7 @@ public abstract class Expression {
     }
   }
   
-  public static final class If extends hydra.langs.haskell.ast.Expression {
+  public static final class If extends hydra.langs.haskell.ast.Expression implements Serializable {
     public final hydra.langs.haskell.ast.Expression_If value;
     
     public If (hydra.langs.haskell.ast.Expression_If value) {
@@ -263,7 +265,7 @@ public abstract class Expression {
     }
   }
   
-  public static final class InfixApplication extends hydra.langs.haskell.ast.Expression {
+  public static final class InfixApplication extends hydra.langs.haskell.ast.Expression implements Serializable {
     public final hydra.langs.haskell.ast.Expression_InfixApplication value;
     
     public InfixApplication (hydra.langs.haskell.ast.Expression_InfixApplication value) {
@@ -290,7 +292,7 @@ public abstract class Expression {
     }
   }
   
-  public static final class Literal extends hydra.langs.haskell.ast.Expression {
+  public static final class Literal extends hydra.langs.haskell.ast.Expression implements Serializable {
     public final hydra.langs.haskell.ast.Literal value;
     
     public Literal (hydra.langs.haskell.ast.Literal value) {
@@ -317,7 +319,7 @@ public abstract class Expression {
     }
   }
   
-  public static final class Lambda extends hydra.langs.haskell.ast.Expression {
+  public static final class Lambda extends hydra.langs.haskell.ast.Expression implements Serializable {
     public final hydra.langs.haskell.ast.Expression_Lambda value;
     
     public Lambda (hydra.langs.haskell.ast.Expression_Lambda value) {
@@ -344,7 +346,7 @@ public abstract class Expression {
     }
   }
   
-  public static final class LeftSection extends hydra.langs.haskell.ast.Expression {
+  public static final class LeftSection extends hydra.langs.haskell.ast.Expression implements Serializable {
     public final hydra.langs.haskell.ast.Expression_Section value;
     
     public LeftSection (hydra.langs.haskell.ast.Expression_Section value) {
@@ -371,7 +373,7 @@ public abstract class Expression {
     }
   }
   
-  public static final class Let extends hydra.langs.haskell.ast.Expression {
+  public static final class Let extends hydra.langs.haskell.ast.Expression implements Serializable {
     public final hydra.langs.haskell.ast.Expression_Let value;
     
     public Let (hydra.langs.haskell.ast.Expression_Let value) {
@@ -398,7 +400,7 @@ public abstract class Expression {
     }
   }
   
-  public static final class List extends hydra.langs.haskell.ast.Expression {
+  public static final class List extends hydra.langs.haskell.ast.Expression implements Serializable {
     public final java.util.List<hydra.langs.haskell.ast.Expression> value;
     
     public List (java.util.List<hydra.langs.haskell.ast.Expression> value) {
@@ -425,7 +427,7 @@ public abstract class Expression {
     }
   }
   
-  public static final class Parens extends hydra.langs.haskell.ast.Expression {
+  public static final class Parens extends hydra.langs.haskell.ast.Expression implements Serializable {
     public final hydra.langs.haskell.ast.Expression value;
     
     public Parens (hydra.langs.haskell.ast.Expression value) {
@@ -452,7 +454,7 @@ public abstract class Expression {
     }
   }
   
-  public static final class PrefixApplication extends hydra.langs.haskell.ast.Expression {
+  public static final class PrefixApplication extends hydra.langs.haskell.ast.Expression implements Serializable {
     public final hydra.langs.haskell.ast.Expression_PrefixApplication value;
     
     public PrefixApplication (hydra.langs.haskell.ast.Expression_PrefixApplication value) {
@@ -479,7 +481,7 @@ public abstract class Expression {
     }
   }
   
-  public static final class RightSection extends hydra.langs.haskell.ast.Expression {
+  public static final class RightSection extends hydra.langs.haskell.ast.Expression implements Serializable {
     public final hydra.langs.haskell.ast.Expression_Section value;
     
     public RightSection (hydra.langs.haskell.ast.Expression_Section value) {
@@ -506,7 +508,7 @@ public abstract class Expression {
     }
   }
   
-  public static final class Tuple extends hydra.langs.haskell.ast.Expression {
+  public static final class Tuple extends hydra.langs.haskell.ast.Expression implements Serializable {
     public final java.util.List<hydra.langs.haskell.ast.Expression> value;
     
     public Tuple (java.util.List<hydra.langs.haskell.ast.Expression> value) {
@@ -533,7 +535,7 @@ public abstract class Expression {
     }
   }
   
-  public static final class TypeSignature extends hydra.langs.haskell.ast.Expression {
+  public static final class TypeSignature extends hydra.langs.haskell.ast.Expression implements Serializable {
     public final hydra.langs.haskell.ast.Expression_TypeSignature value;
     
     public TypeSignature (hydra.langs.haskell.ast.Expression_TypeSignature value) {
@@ -560,7 +562,7 @@ public abstract class Expression {
     }
   }
   
-  public static final class UpdateRecord extends hydra.langs.haskell.ast.Expression {
+  public static final class UpdateRecord extends hydra.langs.haskell.ast.Expression implements Serializable {
     public final hydra.langs.haskell.ast.Expression_UpdateRecord value;
     
     public UpdateRecord (hydra.langs.haskell.ast.Expression_UpdateRecord value) {
@@ -587,7 +589,7 @@ public abstract class Expression {
     }
   }
   
-  public static final class Variable extends hydra.langs.haskell.ast.Expression {
+  public static final class Variable extends hydra.langs.haskell.ast.Expression implements Serializable {
     public final hydra.langs.haskell.ast.Name value;
     
     public Variable (hydra.langs.haskell.ast.Name value) {

@@ -1,6 +1,8 @@
 package hydra.langs.xml.schema;
 
-public class GMonth {
+import java.io.Serializable;
+
+public class GMonth implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/xml/schema.GMonth");
   
   public final String value;

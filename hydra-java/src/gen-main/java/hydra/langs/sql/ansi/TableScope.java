@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public class TableScope {
+import java.io.Serializable;
+
+public class TableScope implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.TableScope");
   
   public final hydra.langs.sql.ansi.GlobalOrLocal value;

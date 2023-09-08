@@ -1,6 +1,8 @@
 package hydra.langs.owl.syntax;
 
-public class DataPropertyRange {
+import java.io.Serializable;
+
+public class DataPropertyRange implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/owl/syntax.DataPropertyRange");
   
   public final java.util.List<hydra.langs.owl.syntax.Annotation> annotations;

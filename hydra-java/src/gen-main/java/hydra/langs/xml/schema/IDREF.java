@@ -1,6 +1,8 @@
 package hydra.langs.xml.schema;
 
-public class IDREF {
+import java.io.Serializable;
+
+public class IDREF implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/xml/schema.IDREF");
   
   public final String value;

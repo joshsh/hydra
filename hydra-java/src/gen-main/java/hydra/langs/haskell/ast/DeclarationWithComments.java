@@ -1,9 +1,11 @@
 package hydra.langs.haskell.ast;
 
+import java.io.Serializable;
+
 /**
  * A data declaration together with any comments
  */
-public class DeclarationWithComments {
+public class DeclarationWithComments implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.DeclarationWithComments");
   
   public final hydra.langs.haskell.ast.Declaration body;

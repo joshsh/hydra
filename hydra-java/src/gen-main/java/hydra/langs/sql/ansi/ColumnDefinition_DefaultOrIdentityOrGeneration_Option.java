@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public abstract class ColumnDefinition_DefaultOrIdentityOrGeneration_Option {
+import java.io.Serializable;
+
+public abstract class ColumnDefinition_DefaultOrIdentityOrGeneration_Option implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.ColumnDefinition.DefaultOrIdentityOrGeneration.Option");
   
   private ColumnDefinition_DefaultOrIdentityOrGeneration_Option () {
@@ -35,7 +37,7 @@ public abstract class ColumnDefinition_DefaultOrIdentityOrGeneration_Option {
     }
   }
   
-  public static final class DefaultClause extends hydra.langs.sql.ansi.ColumnDefinition_DefaultOrIdentityOrGeneration_Option {
+  public static final class DefaultClause extends hydra.langs.sql.ansi.ColumnDefinition_DefaultOrIdentityOrGeneration_Option implements Serializable {
     public final hydra.langs.sql.ansi.DefaultClause value;
     
     public DefaultClause (hydra.langs.sql.ansi.DefaultClause value) {
@@ -62,7 +64,7 @@ public abstract class ColumnDefinition_DefaultOrIdentityOrGeneration_Option {
     }
   }
   
-  public static final class IdentityColumnSpecification extends hydra.langs.sql.ansi.ColumnDefinition_DefaultOrIdentityOrGeneration_Option {
+  public static final class IdentityColumnSpecification extends hydra.langs.sql.ansi.ColumnDefinition_DefaultOrIdentityOrGeneration_Option implements Serializable {
     public final hydra.langs.sql.ansi.IdentityColumnSpecification value;
     
     public IdentityColumnSpecification (hydra.langs.sql.ansi.IdentityColumnSpecification value) {
@@ -89,7 +91,7 @@ public abstract class ColumnDefinition_DefaultOrIdentityOrGeneration_Option {
     }
   }
   
-  public static final class GenerationClause extends hydra.langs.sql.ansi.ColumnDefinition_DefaultOrIdentityOrGeneration_Option {
+  public static final class GenerationClause extends hydra.langs.sql.ansi.ColumnDefinition_DefaultOrIdentityOrGeneration_Option implements Serializable {
     public final hydra.langs.sql.ansi.GenerationClause value;
     
     public GenerationClause (hydra.langs.sql.ansi.GenerationClause value) {

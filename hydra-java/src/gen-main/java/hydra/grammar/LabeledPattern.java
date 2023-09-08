@@ -1,9 +1,11 @@
 package hydra.grammar;
 
+import java.io.Serializable;
+
 /**
  * A pattern together with a name (label)
  */
-public class LabeledPattern {
+public class LabeledPattern implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/grammar.LabeledPattern");
   
   public final hydra.grammar.Label label;

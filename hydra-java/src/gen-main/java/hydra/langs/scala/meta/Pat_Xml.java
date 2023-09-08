@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public class Pat_Xml {
+import java.io.Serializable;
+
+public class Pat_Xml implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Pat.Xml");
   
   public final java.util.List<hydra.langs.scala.meta.Lit> parts;

@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public class ScalaSymbol {
+import java.io.Serializable;
+
+public class ScalaSymbol implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.ScalaSymbol");
   
   public final String name;

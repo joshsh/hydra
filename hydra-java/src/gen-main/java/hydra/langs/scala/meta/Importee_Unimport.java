@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public class Importee_Unimport {
+import java.io.Serializable;
+
+public class Importee_Unimport implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Importee.Unimport");
   
   public final hydra.langs.scala.meta.Name name;

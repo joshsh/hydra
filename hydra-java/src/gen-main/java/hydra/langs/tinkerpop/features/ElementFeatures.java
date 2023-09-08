@@ -1,9 +1,11 @@
 package hydra.langs.tinkerpop.features;
 
+import java.io.Serializable;
+
 /**
  * Features that are related to Element objects.
  */
-public class ElementFeatures {
+public class ElementFeatures implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/tinkerpop/features.ElementFeatures");
   
   /**

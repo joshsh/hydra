@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public abstract class OperationType {
+import java.io.Serializable;
+
+public abstract class OperationType implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.OperationType");
   
   private OperationType () {
@@ -35,7 +37,7 @@ public abstract class OperationType {
     }
   }
   
-  public static final class Query extends hydra.langs.graphql.syntax.OperationType {
+  public static final class Query extends hydra.langs.graphql.syntax.OperationType implements Serializable {
     public Query () {
     
     }
@@ -60,7 +62,7 @@ public abstract class OperationType {
     }
   }
   
-  public static final class Mutation extends hydra.langs.graphql.syntax.OperationType {
+  public static final class Mutation extends hydra.langs.graphql.syntax.OperationType implements Serializable {
     public Mutation () {
     
     }
@@ -85,7 +87,7 @@ public abstract class OperationType {
     }
   }
   
-  public static final class Subscription extends hydra.langs.graphql.syntax.OperationType {
+  public static final class Subscription extends hydra.langs.graphql.syntax.OperationType implements Serializable {
     public Subscription () {
     
     }

@@ -1,9 +1,11 @@
 package hydra.langs.rdf.syntax;
 
+import java.io.Serializable;
+
 /**
  * An RDF triple defined by a subject, predicate, and object
  */
-public class Triple {
+public class Triple implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/rdf/syntax.Triple");
   
   public final hydra.langs.rdf.syntax.Resource subject;

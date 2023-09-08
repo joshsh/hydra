@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public abstract class ValueExpression {
+import java.io.Serializable;
+
+public abstract class ValueExpression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.ValueExpression");
   
   private ValueExpression () {
@@ -35,7 +37,7 @@ public abstract class ValueExpression {
     }
   }
   
-  public static final class Common extends hydra.langs.sql.ansi.ValueExpression {
+  public static final class Common extends hydra.langs.sql.ansi.ValueExpression implements Serializable {
     public final hydra.langs.sql.ansi.CommonValueExpression value;
     
     public Common (hydra.langs.sql.ansi.CommonValueExpression value) {
@@ -62,7 +64,7 @@ public abstract class ValueExpression {
     }
   }
   
-  public static final class Boolean_ extends hydra.langs.sql.ansi.ValueExpression {
+  public static final class Boolean_ extends hydra.langs.sql.ansi.ValueExpression implements Serializable {
     public final hydra.langs.sql.ansi.BooleanValueExpression value;
     
     public Boolean_ (hydra.langs.sql.ansi.BooleanValueExpression value) {
@@ -89,7 +91,7 @@ public abstract class ValueExpression {
     }
   }
   
-  public static final class Row extends hydra.langs.sql.ansi.ValueExpression {
+  public static final class Row extends hydra.langs.sql.ansi.ValueExpression implements Serializable {
     public final hydra.langs.sql.ansi.RowValueExpression value;
     
     public Row (hydra.langs.sql.ansi.RowValueExpression value) {

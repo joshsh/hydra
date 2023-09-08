@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class TypeArgumentsOrDiamond {
+import java.io.Serializable;
+
+public abstract class TypeArgumentsOrDiamond implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.TypeArgumentsOrDiamond");
   
   private TypeArgumentsOrDiamond () {
@@ -29,7 +31,7 @@ public abstract class TypeArgumentsOrDiamond {
     }
   }
   
-  public static final class Arguments extends hydra.langs.java.syntax.TypeArgumentsOrDiamond {
+  public static final class Arguments extends hydra.langs.java.syntax.TypeArgumentsOrDiamond implements Serializable {
     public final java.util.List<hydra.langs.java.syntax.TypeArgument> value;
     
     public Arguments (java.util.List<hydra.langs.java.syntax.TypeArgument> value) {
@@ -56,7 +58,7 @@ public abstract class TypeArgumentsOrDiamond {
     }
   }
   
-  public static final class Diamond extends hydra.langs.java.syntax.TypeArgumentsOrDiamond {
+  public static final class Diamond extends hydra.langs.java.syntax.TypeArgumentsOrDiamond implements Serializable {
     public Diamond () {
     
     }

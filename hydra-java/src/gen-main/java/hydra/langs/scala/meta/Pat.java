@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public abstract class Pat {
+import java.io.Serializable;
+
+public abstract class Pat implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Pat");
   
   private Pat () {
@@ -101,7 +103,7 @@ public abstract class Pat {
     }
   }
   
-  public static final class Var extends hydra.langs.scala.meta.Pat {
+  public static final class Var extends hydra.langs.scala.meta.Pat implements Serializable {
     public final hydra.langs.scala.meta.Pat_Var value;
     
     public Var (hydra.langs.scala.meta.Pat_Var value) {
@@ -128,7 +130,7 @@ public abstract class Pat {
     }
   }
   
-  public static final class Wildcard extends hydra.langs.scala.meta.Pat {
+  public static final class Wildcard extends hydra.langs.scala.meta.Pat implements Serializable {
     public Wildcard () {
     
     }
@@ -153,7 +155,7 @@ public abstract class Pat {
     }
   }
   
-  public static final class SeqWildcard extends hydra.langs.scala.meta.Pat {
+  public static final class SeqWildcard extends hydra.langs.scala.meta.Pat implements Serializable {
     public SeqWildcard () {
     
     }
@@ -178,7 +180,7 @@ public abstract class Pat {
     }
   }
   
-  public static final class Bind extends hydra.langs.scala.meta.Pat {
+  public static final class Bind extends hydra.langs.scala.meta.Pat implements Serializable {
     public final hydra.langs.scala.meta.Pat_Bind value;
     
     public Bind (hydra.langs.scala.meta.Pat_Bind value) {
@@ -205,7 +207,7 @@ public abstract class Pat {
     }
   }
   
-  public static final class Alternative extends hydra.langs.scala.meta.Pat {
+  public static final class Alternative extends hydra.langs.scala.meta.Pat implements Serializable {
     public final hydra.langs.scala.meta.Pat_Alternative value;
     
     public Alternative (hydra.langs.scala.meta.Pat_Alternative value) {
@@ -232,7 +234,7 @@ public abstract class Pat {
     }
   }
   
-  public static final class Tuple extends hydra.langs.scala.meta.Pat {
+  public static final class Tuple extends hydra.langs.scala.meta.Pat implements Serializable {
     public final hydra.langs.scala.meta.Pat_Tuple value;
     
     public Tuple (hydra.langs.scala.meta.Pat_Tuple value) {
@@ -259,7 +261,7 @@ public abstract class Pat {
     }
   }
   
-  public static final class Repeated extends hydra.langs.scala.meta.Pat {
+  public static final class Repeated extends hydra.langs.scala.meta.Pat implements Serializable {
     public final hydra.langs.scala.meta.Pat_Repeated value;
     
     public Repeated (hydra.langs.scala.meta.Pat_Repeated value) {
@@ -286,7 +288,7 @@ public abstract class Pat {
     }
   }
   
-  public static final class Extract extends hydra.langs.scala.meta.Pat {
+  public static final class Extract extends hydra.langs.scala.meta.Pat implements Serializable {
     public final hydra.langs.scala.meta.Pat_Extract value;
     
     public Extract (hydra.langs.scala.meta.Pat_Extract value) {
@@ -313,7 +315,7 @@ public abstract class Pat {
     }
   }
   
-  public static final class ExtractInfix extends hydra.langs.scala.meta.Pat {
+  public static final class ExtractInfix extends hydra.langs.scala.meta.Pat implements Serializable {
     public final hydra.langs.scala.meta.Pat_ExtractInfix value;
     
     public ExtractInfix (hydra.langs.scala.meta.Pat_ExtractInfix value) {
@@ -340,7 +342,7 @@ public abstract class Pat {
     }
   }
   
-  public static final class Interpolate extends hydra.langs.scala.meta.Pat {
+  public static final class Interpolate extends hydra.langs.scala.meta.Pat implements Serializable {
     public final hydra.langs.scala.meta.Pat_Interpolate value;
     
     public Interpolate (hydra.langs.scala.meta.Pat_Interpolate value) {
@@ -367,7 +369,7 @@ public abstract class Pat {
     }
   }
   
-  public static final class Xml extends hydra.langs.scala.meta.Pat {
+  public static final class Xml extends hydra.langs.scala.meta.Pat implements Serializable {
     public final hydra.langs.scala.meta.Pat_Xml value;
     
     public Xml (hydra.langs.scala.meta.Pat_Xml value) {
@@ -394,7 +396,7 @@ public abstract class Pat {
     }
   }
   
-  public static final class Typed extends hydra.langs.scala.meta.Pat {
+  public static final class Typed extends hydra.langs.scala.meta.Pat implements Serializable {
     public final hydra.langs.scala.meta.Pat_Typed value;
     
     public Typed (hydra.langs.scala.meta.Pat_Typed value) {
@@ -421,7 +423,7 @@ public abstract class Pat {
     }
   }
   
-  public static final class Macro extends hydra.langs.scala.meta.Pat {
+  public static final class Macro extends hydra.langs.scala.meta.Pat implements Serializable {
     public final hydra.langs.scala.meta.Pat_Macro value;
     
     public Macro (hydra.langs.scala.meta.Pat_Macro value) {
@@ -448,7 +450,7 @@ public abstract class Pat {
     }
   }
   
-  public static final class Given extends hydra.langs.scala.meta.Pat {
+  public static final class Given extends hydra.langs.scala.meta.Pat implements Serializable {
     public final hydra.langs.scala.meta.Pat_Given value;
     
     public Given (hydra.langs.scala.meta.Pat_Given value) {

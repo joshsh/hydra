@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class ClassMemberDeclaration {
+import java.io.Serializable;
+
+public abstract class ClassMemberDeclaration implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ClassMemberDeclaration");
   
   private ClassMemberDeclaration () {
@@ -47,7 +49,7 @@ public abstract class ClassMemberDeclaration {
     }
   }
   
-  public static final class Field extends hydra.langs.java.syntax.ClassMemberDeclaration {
+  public static final class Field extends hydra.langs.java.syntax.ClassMemberDeclaration implements Serializable {
     public final hydra.langs.java.syntax.FieldDeclaration value;
     
     public Field (hydra.langs.java.syntax.FieldDeclaration value) {
@@ -74,7 +76,7 @@ public abstract class ClassMemberDeclaration {
     }
   }
   
-  public static final class Method extends hydra.langs.java.syntax.ClassMemberDeclaration {
+  public static final class Method extends hydra.langs.java.syntax.ClassMemberDeclaration implements Serializable {
     public final hydra.langs.java.syntax.MethodDeclaration value;
     
     public Method (hydra.langs.java.syntax.MethodDeclaration value) {
@@ -101,7 +103,7 @@ public abstract class ClassMemberDeclaration {
     }
   }
   
-  public static final class Class_ extends hydra.langs.java.syntax.ClassMemberDeclaration {
+  public static final class Class_ extends hydra.langs.java.syntax.ClassMemberDeclaration implements Serializable {
     public final hydra.langs.java.syntax.ClassDeclaration value;
     
     public Class_ (hydra.langs.java.syntax.ClassDeclaration value) {
@@ -128,7 +130,7 @@ public abstract class ClassMemberDeclaration {
     }
   }
   
-  public static final class Interface extends hydra.langs.java.syntax.ClassMemberDeclaration {
+  public static final class Interface extends hydra.langs.java.syntax.ClassMemberDeclaration implements Serializable {
     public final hydra.langs.java.syntax.InterfaceDeclaration value;
     
     public Interface (hydra.langs.java.syntax.InterfaceDeclaration value) {
@@ -155,7 +157,7 @@ public abstract class ClassMemberDeclaration {
     }
   }
   
-  public static final class None extends hydra.langs.java.syntax.ClassMemberDeclaration {
+  public static final class None extends hydra.langs.java.syntax.ClassMemberDeclaration implements Serializable {
     public None () {
     
     }

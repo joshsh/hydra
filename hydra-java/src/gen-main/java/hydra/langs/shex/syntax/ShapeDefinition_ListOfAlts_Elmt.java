@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class ShapeDefinition_ListOfAlts_Elmt {
+import java.io.Serializable;
+
+public abstract class ShapeDefinition_ListOfAlts_Elmt implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.ShapeDefinition.ListOfAlts.Elmt");
   
   private ShapeDefinition_ListOfAlts_Elmt () {
@@ -35,7 +37,7 @@ public abstract class ShapeDefinition_ListOfAlts_Elmt {
     }
   }
   
-  public static final class IncludeSet extends hydra.langs.shex.syntax.ShapeDefinition_ListOfAlts_Elmt {
+  public static final class IncludeSet extends hydra.langs.shex.syntax.ShapeDefinition_ListOfAlts_Elmt implements Serializable {
     public final hydra.langs.shex.syntax.IncludeSet value;
     
     public IncludeSet (hydra.langs.shex.syntax.IncludeSet value) {
@@ -62,7 +64,7 @@ public abstract class ShapeDefinition_ListOfAlts_Elmt {
     }
   }
   
-  public static final class ExtraPropertySet extends hydra.langs.shex.syntax.ShapeDefinition_ListOfAlts_Elmt {
+  public static final class ExtraPropertySet extends hydra.langs.shex.syntax.ShapeDefinition_ListOfAlts_Elmt implements Serializable {
     public final hydra.langs.shex.syntax.ExtraPropertySet value;
     
     public ExtraPropertySet (hydra.langs.shex.syntax.ExtraPropertySet value) {
@@ -89,7 +91,7 @@ public abstract class ShapeDefinition_ListOfAlts_Elmt {
     }
   }
   
-  public static final class CLOSED extends hydra.langs.shex.syntax.ShapeDefinition_ListOfAlts_Elmt {
+  public static final class CLOSED extends hydra.langs.shex.syntax.ShapeDefinition_ListOfAlts_Elmt implements Serializable {
     public CLOSED () {
     
     }

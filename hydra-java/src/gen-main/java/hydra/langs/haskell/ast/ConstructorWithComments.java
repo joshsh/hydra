@@ -1,9 +1,11 @@
 package hydra.langs.haskell.ast;
 
+import java.io.Serializable;
+
 /**
  * A data constructor together with any comments
  */
-public class ConstructorWithComments {
+public class ConstructorWithComments implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.ConstructorWithComments");
   
   public final hydra.langs.haskell.ast.Constructor body;

@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public class InputObjectTypeDefinition_Sequence2 {
+import java.io.Serializable;
+
+public class InputObjectTypeDefinition_Sequence2 implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.InputObjectTypeDefinition.Sequence2");
   
   public final java.util.Optional<hydra.langs.graphql.syntax.Description> description;

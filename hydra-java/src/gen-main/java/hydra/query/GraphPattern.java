@@ -1,9 +1,11 @@
 package hydra.query;
 
+import java.io.Serializable;
+
 /**
  * A query pattern which matches within a designated component subgraph
  */
-public class GraphPattern<A> {
+public class GraphPattern<A> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/query.GraphPattern");
   
   /**

@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class DoStatement {
+import java.io.Serializable;
+
+public class DoStatement implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.DoStatement");
   
   public final hydra.langs.java.syntax.Statement body;

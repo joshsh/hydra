@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class InterfaceMethodModifier {
+import java.io.Serializable;
+
+public abstract class InterfaceMethodModifier implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.InterfaceMethodModifier");
   
   private InterfaceMethodModifier () {
@@ -59,7 +61,7 @@ public abstract class InterfaceMethodModifier {
     }
   }
   
-  public static final class Annotation extends hydra.langs.java.syntax.InterfaceMethodModifier {
+  public static final class Annotation extends hydra.langs.java.syntax.InterfaceMethodModifier implements Serializable {
     public final hydra.langs.java.syntax.Annotation value;
     
     public Annotation (hydra.langs.java.syntax.Annotation value) {
@@ -86,7 +88,7 @@ public abstract class InterfaceMethodModifier {
     }
   }
   
-  public static final class Public extends hydra.langs.java.syntax.InterfaceMethodModifier {
+  public static final class Public extends hydra.langs.java.syntax.InterfaceMethodModifier implements Serializable {
     public Public () {
     
     }
@@ -111,7 +113,7 @@ public abstract class InterfaceMethodModifier {
     }
   }
   
-  public static final class Private extends hydra.langs.java.syntax.InterfaceMethodModifier {
+  public static final class Private extends hydra.langs.java.syntax.InterfaceMethodModifier implements Serializable {
     public Private () {
     
     }
@@ -136,7 +138,7 @@ public abstract class InterfaceMethodModifier {
     }
   }
   
-  public static final class Abstract extends hydra.langs.java.syntax.InterfaceMethodModifier {
+  public static final class Abstract extends hydra.langs.java.syntax.InterfaceMethodModifier implements Serializable {
     public Abstract () {
     
     }
@@ -161,7 +163,7 @@ public abstract class InterfaceMethodModifier {
     }
   }
   
-  public static final class Default extends hydra.langs.java.syntax.InterfaceMethodModifier {
+  public static final class Default extends hydra.langs.java.syntax.InterfaceMethodModifier implements Serializable {
     public Default () {
     
     }
@@ -186,7 +188,7 @@ public abstract class InterfaceMethodModifier {
     }
   }
   
-  public static final class Static extends hydra.langs.java.syntax.InterfaceMethodModifier {
+  public static final class Static extends hydra.langs.java.syntax.InterfaceMethodModifier implements Serializable {
     public Static () {
     
     }
@@ -211,7 +213,7 @@ public abstract class InterfaceMethodModifier {
     }
   }
   
-  public static final class Strictfp extends hydra.langs.java.syntax.InterfaceMethodModifier {
+  public static final class Strictfp extends hydra.langs.java.syntax.InterfaceMethodModifier implements Serializable {
     public Strictfp () {
     
     }

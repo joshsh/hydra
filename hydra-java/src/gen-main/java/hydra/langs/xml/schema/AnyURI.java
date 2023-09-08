@@ -1,6 +1,8 @@
 package hydra.langs.xml.schema;
 
-public class AnyURI {
+import java.io.Serializable;
+
+public class AnyURI implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/xml/schema.AnyURI");
   
   public final String value;

@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public class BooleanType {
+import java.io.Serializable;
+
+public class BooleanType implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.BooleanType");
   
   public BooleanType () {

@@ -1,9 +1,11 @@
 package hydra.workflow;
 
+import java.io.Serializable;
+
 /**
  * The specification of a schema at the source end of a workflow
  */
-public abstract class SchemaSpec {
+public abstract class SchemaSpec implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/workflow.SchemaSpec");
   
   private SchemaSpec () {
@@ -41,7 +43,7 @@ public abstract class SchemaSpec {
   /**
    * A native Hydra schema
    */
-  public static final class Hydra extends hydra.workflow.SchemaSpec {
+  public static final class Hydra extends hydra.workflow.SchemaSpec implements Serializable {
     /**
      * A native Hydra schema
      */
@@ -74,7 +76,7 @@ public abstract class SchemaSpec {
   /**
    * A schema provided as a file, available at the given file path
    */
-  public static final class File extends hydra.workflow.SchemaSpec {
+  public static final class File extends hydra.workflow.SchemaSpec implements Serializable {
     /**
      * A schema provided as a file, available at the given file path
      */
@@ -107,7 +109,7 @@ public abstract class SchemaSpec {
   /**
    * A schema which will be provided within the workflow
    */
-  public static final class Provided extends hydra.workflow.SchemaSpec {
+  public static final class Provided extends hydra.workflow.SchemaSpec implements Serializable {
     public Provided () {
     
     }

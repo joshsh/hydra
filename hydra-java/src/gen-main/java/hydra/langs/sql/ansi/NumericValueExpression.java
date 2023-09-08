@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public class NumericValueExpression {
+import java.io.Serializable;
+
+public class NumericValueExpression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.NumericValueExpression");
   
   public NumericValueExpression () {

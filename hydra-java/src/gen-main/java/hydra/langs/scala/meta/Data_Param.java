@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public class Data_Param {
+import java.io.Serializable;
+
+public class Data_Param implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Data.Param");
   
   public final java.util.List<hydra.langs.scala.meta.Mod> mods;

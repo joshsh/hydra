@@ -1,6 +1,8 @@
 package hydra.langs.owl.syntax;
 
-public class TransitiveObjectProperty {
+import java.io.Serializable;
+
+public class TransitiveObjectProperty implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/owl/syntax.TransitiveObjectProperty");
   
   public final java.util.List<hydra.langs.owl.syntax.Annotation> annotations;

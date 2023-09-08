@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class ShapeExprLabel {
+import java.io.Serializable;
+
+public abstract class ShapeExprLabel implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.ShapeExprLabel");
   
   private ShapeExprLabel () {
@@ -29,7 +31,7 @@ public abstract class ShapeExprLabel {
     }
   }
   
-  public static final class Iri extends hydra.langs.shex.syntax.ShapeExprLabel {
+  public static final class Iri extends hydra.langs.shex.syntax.ShapeExprLabel implements Serializable {
     public final hydra.langs.shex.syntax.Iri value;
     
     public Iri (hydra.langs.shex.syntax.Iri value) {
@@ -56,7 +58,7 @@ public abstract class ShapeExprLabel {
     }
   }
   
-  public static final class BlankNode extends hydra.langs.shex.syntax.ShapeExprLabel {
+  public static final class BlankNode extends hydra.langs.shex.syntax.ShapeExprLabel implements Serializable {
     public final hydra.langs.shex.syntax.BlankNode value;
     
     public BlankNode (hydra.langs.shex.syntax.BlankNode value) {

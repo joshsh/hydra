@@ -1,9 +1,11 @@
 package hydra.langs.parquet.format;
 
+import java.io.Serializable;
+
 /**
  * Decimal logical type annotation. To maintain forward-compatibility in v1, implementations using this logical type must also set scale and precision on the annotated SchemaElement. Allowed for physical types: INT32, INT64, FIXED, and BINARY
  */
-public class DecimalType {
+public class DecimalType implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/parquet/format.DecimalType");
   
   public final Integer scale;

@@ -1,6 +1,8 @@
 package hydra.langs.owl.syntax;
 
-public abstract class AnnotationAxiom {
+import java.io.Serializable;
+
+public abstract class AnnotationAxiom implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/owl/syntax.AnnotationAxiom");
   
   private AnnotationAxiom () {
@@ -41,7 +43,7 @@ public abstract class AnnotationAxiom {
     }
   }
   
-  public static final class AnnotationAssertion extends hydra.langs.owl.syntax.AnnotationAxiom {
+  public static final class AnnotationAssertion extends hydra.langs.owl.syntax.AnnotationAxiom implements Serializable {
     public final hydra.langs.owl.syntax.AnnotationAssertion value;
     
     public AnnotationAssertion (hydra.langs.owl.syntax.AnnotationAssertion value) {
@@ -68,7 +70,7 @@ public abstract class AnnotationAxiom {
     }
   }
   
-  public static final class AnnotationPropertyDomain extends hydra.langs.owl.syntax.AnnotationAxiom {
+  public static final class AnnotationPropertyDomain extends hydra.langs.owl.syntax.AnnotationAxiom implements Serializable {
     public final hydra.langs.owl.syntax.AnnotationPropertyDomain value;
     
     public AnnotationPropertyDomain (hydra.langs.owl.syntax.AnnotationPropertyDomain value) {
@@ -95,7 +97,7 @@ public abstract class AnnotationAxiom {
     }
   }
   
-  public static final class AnnotationPropertyRange extends hydra.langs.owl.syntax.AnnotationAxiom {
+  public static final class AnnotationPropertyRange extends hydra.langs.owl.syntax.AnnotationAxiom implements Serializable {
     public final hydra.langs.owl.syntax.AnnotationPropertyRange value;
     
     public AnnotationPropertyRange (hydra.langs.owl.syntax.AnnotationPropertyRange value) {
@@ -122,7 +124,7 @@ public abstract class AnnotationAxiom {
     }
   }
   
-  public static final class SubAnnotationPropertyOf extends hydra.langs.owl.syntax.AnnotationAxiom {
+  public static final class SubAnnotationPropertyOf extends hydra.langs.owl.syntax.AnnotationAxiom implements Serializable {
     public final hydra.langs.owl.syntax.SubAnnotationPropertyOf value;
     
     public SubAnnotationPropertyOf (hydra.langs.owl.syntax.SubAnnotationPropertyOf value) {

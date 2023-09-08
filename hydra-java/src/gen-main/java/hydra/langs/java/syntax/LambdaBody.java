@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class LambdaBody {
+import java.io.Serializable;
+
+public abstract class LambdaBody implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.LambdaBody");
   
   private LambdaBody () {
@@ -29,7 +31,7 @@ public abstract class LambdaBody {
     }
   }
   
-  public static final class Expression extends hydra.langs.java.syntax.LambdaBody {
+  public static final class Expression extends hydra.langs.java.syntax.LambdaBody implements Serializable {
     public final hydra.langs.java.syntax.Expression value;
     
     public Expression (hydra.langs.java.syntax.Expression value) {
@@ -56,7 +58,7 @@ public abstract class LambdaBody {
     }
   }
   
-  public static final class Block extends hydra.langs.java.syntax.LambdaBody {
+  public static final class Block extends hydra.langs.java.syntax.LambdaBody implements Serializable {
     public final hydra.langs.java.syntax.Block value;
     
     public Block (hydra.langs.java.syntax.Block value) {

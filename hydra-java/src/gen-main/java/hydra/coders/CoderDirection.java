@@ -1,9 +1,11 @@
 package hydra.coders;
 
+import java.io.Serializable;
+
 /**
  * Indicates either the 'out' or the 'in' direction of a coder
  */
-public abstract class CoderDirection {
+public abstract class CoderDirection implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/coders.CoderDirection");
   
   private CoderDirection () {
@@ -32,7 +34,7 @@ public abstract class CoderDirection {
     }
   }
   
-  public static final class Encode extends hydra.coders.CoderDirection {
+  public static final class Encode extends hydra.coders.CoderDirection implements Serializable {
     public Encode () {
     
     }
@@ -57,7 +59,7 @@ public abstract class CoderDirection {
     }
   }
   
-  public static final class Decode extends hydra.coders.CoderDirection {
+  public static final class Decode extends hydra.coders.CoderDirection implements Serializable {
     public Decode () {
     
     }

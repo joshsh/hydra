@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public abstract class SchemaExtension {
+import java.io.Serializable;
+
+public abstract class SchemaExtension implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.SchemaExtension");
   
   private SchemaExtension () {
@@ -29,7 +31,7 @@ public abstract class SchemaExtension {
     }
   }
   
-  public static final class Sequence extends hydra.langs.graphql.syntax.SchemaExtension {
+  public static final class Sequence extends hydra.langs.graphql.syntax.SchemaExtension implements Serializable {
     public final hydra.langs.graphql.syntax.SchemaExtension_Sequence value;
     
     public Sequence (hydra.langs.graphql.syntax.SchemaExtension_Sequence value) {
@@ -56,7 +58,7 @@ public abstract class SchemaExtension {
     }
   }
   
-  public static final class Sequence2 extends hydra.langs.graphql.syntax.SchemaExtension {
+  public static final class Sequence2 extends hydra.langs.graphql.syntax.SchemaExtension implements Serializable {
     public final hydra.langs.graphql.syntax.Directives value;
     
     public Sequence2 (hydra.langs.graphql.syntax.Directives value) {

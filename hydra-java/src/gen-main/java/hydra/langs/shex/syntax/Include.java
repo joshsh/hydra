@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public class Include {
+import java.io.Serializable;
+
+public class Include implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.Include");
   
   public final hydra.langs.shex.syntax.TripleExprLabel value;

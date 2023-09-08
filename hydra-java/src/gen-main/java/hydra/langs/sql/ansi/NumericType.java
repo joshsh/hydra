@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public abstract class NumericType {
+import java.io.Serializable;
+
+public abstract class NumericType implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.NumericType");
   
   private NumericType () {
@@ -29,7 +31,7 @@ public abstract class NumericType {
     }
   }
   
-  public static final class Exact extends hydra.langs.sql.ansi.NumericType {
+  public static final class Exact extends hydra.langs.sql.ansi.NumericType implements Serializable {
     public final hydra.langs.sql.ansi.ExactNumericType value;
     
     public Exact (hydra.langs.sql.ansi.ExactNumericType value) {
@@ -56,7 +58,7 @@ public abstract class NumericType {
     }
   }
   
-  public static final class Approximate extends hydra.langs.sql.ansi.NumericType {
+  public static final class Approximate extends hydra.langs.sql.ansi.NumericType implements Serializable {
     public final hydra.langs.sql.ansi.ApproximateNumericType value;
     
     public Approximate (hydra.langs.sql.ansi.ApproximateNumericType value) {

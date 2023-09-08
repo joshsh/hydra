@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class ArrayCreationExpression {
+import java.io.Serializable;
+
+public abstract class ArrayCreationExpression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ArrayCreationExpression");
   
   private ArrayCreationExpression () {
@@ -41,7 +43,7 @@ public abstract class ArrayCreationExpression {
     }
   }
   
-  public static final class Primitive extends hydra.langs.java.syntax.ArrayCreationExpression {
+  public static final class Primitive extends hydra.langs.java.syntax.ArrayCreationExpression implements Serializable {
     public final hydra.langs.java.syntax.ArrayCreationExpression_Primitive value;
     
     public Primitive (hydra.langs.java.syntax.ArrayCreationExpression_Primitive value) {
@@ -68,7 +70,7 @@ public abstract class ArrayCreationExpression {
     }
   }
   
-  public static final class ClassOrInterface extends hydra.langs.java.syntax.ArrayCreationExpression {
+  public static final class ClassOrInterface extends hydra.langs.java.syntax.ArrayCreationExpression implements Serializable {
     public final hydra.langs.java.syntax.ArrayCreationExpression_ClassOrInterface value;
     
     public ClassOrInterface (hydra.langs.java.syntax.ArrayCreationExpression_ClassOrInterface value) {
@@ -95,7 +97,7 @@ public abstract class ArrayCreationExpression {
     }
   }
   
-  public static final class PrimitiveArray extends hydra.langs.java.syntax.ArrayCreationExpression {
+  public static final class PrimitiveArray extends hydra.langs.java.syntax.ArrayCreationExpression implements Serializable {
     public final hydra.langs.java.syntax.ArrayCreationExpression_PrimitiveArray value;
     
     public PrimitiveArray (hydra.langs.java.syntax.ArrayCreationExpression_PrimitiveArray value) {
@@ -122,7 +124,7 @@ public abstract class ArrayCreationExpression {
     }
   }
   
-  public static final class ClassOrInterfaceArray extends hydra.langs.java.syntax.ArrayCreationExpression {
+  public static final class ClassOrInterfaceArray extends hydra.langs.java.syntax.ArrayCreationExpression implements Serializable {
     public final hydra.langs.java.syntax.ArrayCreationExpression_ClassOrInterfaceArray value;
     
     public ClassOrInterfaceArray (hydra.langs.java.syntax.ArrayCreationExpression_ClassOrInterfaceArray value) {

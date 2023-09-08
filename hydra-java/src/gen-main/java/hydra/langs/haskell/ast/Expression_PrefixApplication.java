@@ -1,9 +1,11 @@
 package hydra.langs.haskell.ast;
 
+import java.io.Serializable;
+
 /**
  * A prefix expression
  */
-public class Expression_PrefixApplication {
+public class Expression_PrefixApplication implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.Expression.PrefixApplication");
   
   public final hydra.langs.haskell.ast.Operator operator;

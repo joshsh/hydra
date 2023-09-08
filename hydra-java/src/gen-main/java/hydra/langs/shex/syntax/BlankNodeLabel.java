@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public class BlankNodeLabel {
+import java.io.Serializable;
+
+public class BlankNodeLabel implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.BlankNodeLabel");
   
   public final hydra.langs.shex.syntax.BlankNodeLabel_Alts alts;

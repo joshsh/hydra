@@ -1,6 +1,8 @@
 package hydra.langs.owl.syntax;
 
-public class EquivalentDataProperties {
+import java.io.Serializable;
+
+public class EquivalentDataProperties implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/owl/syntax.EquivalentDataProperties");
   
   public final java.util.List<hydra.langs.owl.syntax.Annotation> annotations;

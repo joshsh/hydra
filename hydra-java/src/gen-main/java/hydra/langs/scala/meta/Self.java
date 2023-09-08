@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public class Self {
+import java.io.Serializable;
+
+public class Self implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Self");
   
   public Self () {

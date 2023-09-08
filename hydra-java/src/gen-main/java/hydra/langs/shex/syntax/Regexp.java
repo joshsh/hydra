@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public class Regexp {
+import java.io.Serializable;
+
+public class Regexp implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.Regexp");
   
   public final java.util.List<hydra.langs.shex.syntax.Regexp_ListOfAlts_Elmt> listOfAlts;

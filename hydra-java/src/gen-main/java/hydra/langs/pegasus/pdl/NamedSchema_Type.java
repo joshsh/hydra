@@ -1,6 +1,8 @@
 package hydra.langs.pegasus.pdl;
 
-public abstract class NamedSchema_Type {
+import java.io.Serializable;
+
+public abstract class NamedSchema_Type implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/pegasus/pdl.NamedSchema.Type");
   
   private NamedSchema_Type () {
@@ -35,7 +37,7 @@ public abstract class NamedSchema_Type {
     }
   }
   
-  public static final class Record extends hydra.langs.pegasus.pdl.NamedSchema_Type {
+  public static final class Record extends hydra.langs.pegasus.pdl.NamedSchema_Type implements Serializable {
     public final hydra.langs.pegasus.pdl.RecordSchema value;
     
     public Record (hydra.langs.pegasus.pdl.RecordSchema value) {
@@ -62,7 +64,7 @@ public abstract class NamedSchema_Type {
     }
   }
   
-  public static final class Enum_ extends hydra.langs.pegasus.pdl.NamedSchema_Type {
+  public static final class Enum_ extends hydra.langs.pegasus.pdl.NamedSchema_Type implements Serializable {
     public final hydra.langs.pegasus.pdl.EnumSchema value;
     
     public Enum_ (hydra.langs.pegasus.pdl.EnumSchema value) {
@@ -89,7 +91,7 @@ public abstract class NamedSchema_Type {
     }
   }
   
-  public static final class Typeref extends hydra.langs.pegasus.pdl.NamedSchema_Type {
+  public static final class Typeref extends hydra.langs.pegasus.pdl.NamedSchema_Type implements Serializable {
     public final hydra.langs.pegasus.pdl.Schema value;
     
     public Typeref (hydra.langs.pegasus.pdl.Schema value) {

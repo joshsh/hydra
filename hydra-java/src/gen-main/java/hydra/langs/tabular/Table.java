@@ -1,9 +1,11 @@
 package hydra.langs.tabular;
 
+import java.io.Serializable;
+
 /**
  * A simple table as in a CSV file, having an optional header row and any number of data rows
  */
-public class Table {
+public class Table implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/tabular.Table");
   
   /**

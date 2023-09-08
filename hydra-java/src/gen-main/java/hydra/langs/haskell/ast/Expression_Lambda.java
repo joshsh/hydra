@@ -1,9 +1,11 @@
 package hydra.langs.haskell.ast;
 
+import java.io.Serializable;
+
 /**
  * A lambda expression
  */
-public class Expression_Lambda {
+public class Expression_Lambda implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.Expression.Lambda");
   
   public final java.util.List<hydra.langs.haskell.ast.Pattern> bindings;

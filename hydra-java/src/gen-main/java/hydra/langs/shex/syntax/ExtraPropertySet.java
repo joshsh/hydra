@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public class ExtraPropertySet {
+import java.io.Serializable;
+
+public class ExtraPropertySet implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.ExtraPropertySet");
   
   public final java.util.List<hydra.langs.shex.syntax.Predicate> value;

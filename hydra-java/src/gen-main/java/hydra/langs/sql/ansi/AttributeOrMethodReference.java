@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public class AttributeOrMethodReference {
+import java.io.Serializable;
+
+public class AttributeOrMethodReference implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.AttributeOrMethodReference");
   
   public AttributeOrMethodReference () {

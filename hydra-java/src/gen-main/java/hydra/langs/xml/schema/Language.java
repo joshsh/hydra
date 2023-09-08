@@ -1,6 +1,8 @@
 package hydra.langs.xml.schema;
 
-public class Language {
+import java.io.Serializable;
+
+public class Language implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/xml/schema.Language");
   
   public final String value;

@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public abstract class ApproximateNumericType {
+import java.io.Serializable;
+
+public abstract class ApproximateNumericType implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.ApproximateNumericType");
   
   private ApproximateNumericType () {
@@ -35,7 +37,7 @@ public abstract class ApproximateNumericType {
     }
   }
   
-  public static final class Float_ extends hydra.langs.sql.ansi.ApproximateNumericType {
+  public static final class Float_ extends hydra.langs.sql.ansi.ApproximateNumericType implements Serializable {
     public final java.util.Optional<hydra.langs.sql.ansi.Precision> value;
     
     public Float_ (java.util.Optional<hydra.langs.sql.ansi.Precision> value) {
@@ -62,7 +64,7 @@ public abstract class ApproximateNumericType {
     }
   }
   
-  public static final class Real extends hydra.langs.sql.ansi.ApproximateNumericType {
+  public static final class Real extends hydra.langs.sql.ansi.ApproximateNumericType implements Serializable {
     public Real () {
     
     }
@@ -87,7 +89,7 @@ public abstract class ApproximateNumericType {
     }
   }
   
-  public static final class Double_ extends hydra.langs.sql.ansi.ApproximateNumericType {
+  public static final class Double_ extends hydra.langs.sql.ansi.ApproximateNumericType implements Serializable {
     public Double_ () {
     
     }

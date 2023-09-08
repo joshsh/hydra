@@ -1,9 +1,11 @@
 package hydra.langs.haskell.ast;
 
+import java.io.Serializable;
+
 /**
  * An import modifier ('pattern' or 'type')
  */
-public abstract class ImportModifier {
+public abstract class ImportModifier implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.ImportModifier");
   
   private ImportModifier () {
@@ -32,7 +34,7 @@ public abstract class ImportModifier {
     }
   }
   
-  public static final class Pattern extends hydra.langs.haskell.ast.ImportModifier {
+  public static final class Pattern extends hydra.langs.haskell.ast.ImportModifier implements Serializable {
     public Pattern () {
     
     }
@@ -57,7 +59,7 @@ public abstract class ImportModifier {
     }
   }
   
-  public static final class Type extends hydra.langs.haskell.ast.ImportModifier {
+  public static final class Type extends hydra.langs.haskell.ast.ImportModifier implements Serializable {
     public Type () {
     
     }

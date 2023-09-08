@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public abstract class ColumnDefinition_TypeOrDomain_Option {
+import java.io.Serializable;
+
+public abstract class ColumnDefinition_TypeOrDomain_Option implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.ColumnDefinition.TypeOrDomain.Option");
   
   private ColumnDefinition_TypeOrDomain_Option () {
@@ -29,7 +31,7 @@ public abstract class ColumnDefinition_TypeOrDomain_Option {
     }
   }
   
-  public static final class DataType extends hydra.langs.sql.ansi.ColumnDefinition_TypeOrDomain_Option {
+  public static final class DataType extends hydra.langs.sql.ansi.ColumnDefinition_TypeOrDomain_Option implements Serializable {
     public final hydra.langs.sql.ansi.DataType value;
     
     public DataType (hydra.langs.sql.ansi.DataType value) {
@@ -56,7 +58,7 @@ public abstract class ColumnDefinition_TypeOrDomain_Option {
     }
   }
   
-  public static final class DomainName extends hydra.langs.sql.ansi.ColumnDefinition_TypeOrDomain_Option {
+  public static final class DomainName extends hydra.langs.sql.ansi.ColumnDefinition_TypeOrDomain_Option implements Serializable {
     public final hydra.langs.sql.ansi.DomainName value;
     
     public DomainName (hydra.langs.sql.ansi.DomainName value) {

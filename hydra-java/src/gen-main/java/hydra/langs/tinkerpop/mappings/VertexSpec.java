@@ -1,9 +1,11 @@
 package hydra.langs.tinkerpop.mappings;
 
+import java.io.Serializable;
+
 /**
  * A mapping specification producing vertices of a specified label
  */
-public class VertexSpec {
+public class VertexSpec implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/tinkerpop/mappings.VertexSpec");
   
   /**

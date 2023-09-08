@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public class Defn_ExtensionGroup {
+import java.io.Serializable;
+
+public class Defn_ExtensionGroup implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Defn.ExtensionGroup");
   
   public final java.util.List<hydra.langs.scala.meta.Type_Param> tparams;

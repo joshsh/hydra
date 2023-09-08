@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public class Percent {
+import java.io.Serializable;
+
+public class Percent implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.Percent");
   
   public final hydra.langs.shex.syntax.Hex hex;

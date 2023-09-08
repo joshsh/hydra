@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public class BracketedTripleExpr {
+import java.io.Serializable;
+
+public class BracketedTripleExpr implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.BracketedTripleExpr");
   
   public final hydra.langs.shex.syntax.InnerTripleExpr innerTripleExpr;

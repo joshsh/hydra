@@ -1,9 +1,11 @@
 package hydra.ast;
 
+import java.io.Serializable;
+
 /**
  * An operator symbol
  */
-public class Op {
+public class Op implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/ast.Op");
   
   public final hydra.ast.Symbol symbol;

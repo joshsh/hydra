@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class InstanceInitializer {
+import java.io.Serializable;
+
+public class InstanceInitializer implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.InstanceInitializer");
   
   public final hydra.langs.java.syntax.Block value;

@@ -1,9 +1,11 @@
 package hydra.langs.shacl.model;
 
+import java.io.Serializable;
+
 /**
  * An RDF graph containing zero or more shapes that is passed into a SHACL validation process so that a data graph can be validated against the shapes
  */
-public class ShapesGraph {
+public class ShapesGraph implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shacl/model.ShapesGraph");
   
   /**

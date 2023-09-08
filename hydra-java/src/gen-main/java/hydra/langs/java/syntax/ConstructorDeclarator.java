@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class ConstructorDeclarator {
+import java.io.Serializable;
+
+public class ConstructorDeclarator implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ConstructorDeclarator");
   
   public final java.util.List<hydra.langs.java.syntax.TypeParameter> parameters;

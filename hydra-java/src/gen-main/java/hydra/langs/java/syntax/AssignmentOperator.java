@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class AssignmentOperator {
+import java.io.Serializable;
+
+public abstract class AssignmentOperator implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.AssignmentOperator");
   
   private AssignmentOperator () {
@@ -89,7 +91,7 @@ public abstract class AssignmentOperator {
     }
   }
   
-  public static final class Simple extends hydra.langs.java.syntax.AssignmentOperator {
+  public static final class Simple extends hydra.langs.java.syntax.AssignmentOperator implements Serializable {
     public Simple () {
     
     }
@@ -114,7 +116,7 @@ public abstract class AssignmentOperator {
     }
   }
   
-  public static final class Times extends hydra.langs.java.syntax.AssignmentOperator {
+  public static final class Times extends hydra.langs.java.syntax.AssignmentOperator implements Serializable {
     public Times () {
     
     }
@@ -139,7 +141,7 @@ public abstract class AssignmentOperator {
     }
   }
   
-  public static final class Div extends hydra.langs.java.syntax.AssignmentOperator {
+  public static final class Div extends hydra.langs.java.syntax.AssignmentOperator implements Serializable {
     public Div () {
     
     }
@@ -164,7 +166,7 @@ public abstract class AssignmentOperator {
     }
   }
   
-  public static final class Mod extends hydra.langs.java.syntax.AssignmentOperator {
+  public static final class Mod extends hydra.langs.java.syntax.AssignmentOperator implements Serializable {
     public Mod () {
     
     }
@@ -189,7 +191,7 @@ public abstract class AssignmentOperator {
     }
   }
   
-  public static final class Plus extends hydra.langs.java.syntax.AssignmentOperator {
+  public static final class Plus extends hydra.langs.java.syntax.AssignmentOperator implements Serializable {
     public Plus () {
     
     }
@@ -214,7 +216,7 @@ public abstract class AssignmentOperator {
     }
   }
   
-  public static final class Minus extends hydra.langs.java.syntax.AssignmentOperator {
+  public static final class Minus extends hydra.langs.java.syntax.AssignmentOperator implements Serializable {
     public Minus () {
     
     }
@@ -239,7 +241,7 @@ public abstract class AssignmentOperator {
     }
   }
   
-  public static final class ShiftLeft extends hydra.langs.java.syntax.AssignmentOperator {
+  public static final class ShiftLeft extends hydra.langs.java.syntax.AssignmentOperator implements Serializable {
     public ShiftLeft () {
     
     }
@@ -264,7 +266,7 @@ public abstract class AssignmentOperator {
     }
   }
   
-  public static final class ShiftRight extends hydra.langs.java.syntax.AssignmentOperator {
+  public static final class ShiftRight extends hydra.langs.java.syntax.AssignmentOperator implements Serializable {
     public ShiftRight () {
     
     }
@@ -289,7 +291,7 @@ public abstract class AssignmentOperator {
     }
   }
   
-  public static final class ShiftRightZeroFill extends hydra.langs.java.syntax.AssignmentOperator {
+  public static final class ShiftRightZeroFill extends hydra.langs.java.syntax.AssignmentOperator implements Serializable {
     public ShiftRightZeroFill () {
     
     }
@@ -314,7 +316,7 @@ public abstract class AssignmentOperator {
     }
   }
   
-  public static final class And extends hydra.langs.java.syntax.AssignmentOperator {
+  public static final class And extends hydra.langs.java.syntax.AssignmentOperator implements Serializable {
     public And () {
     
     }
@@ -339,7 +341,7 @@ public abstract class AssignmentOperator {
     }
   }
   
-  public static final class Xor extends hydra.langs.java.syntax.AssignmentOperator {
+  public static final class Xor extends hydra.langs.java.syntax.AssignmentOperator implements Serializable {
     public Xor () {
     
     }
@@ -364,7 +366,7 @@ public abstract class AssignmentOperator {
     }
   }
   
-  public static final class Or extends hydra.langs.java.syntax.AssignmentOperator {
+  public static final class Or extends hydra.langs.java.syntax.AssignmentOperator implements Serializable {
     public Or () {
     
     }

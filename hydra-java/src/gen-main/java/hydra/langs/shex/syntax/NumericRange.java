@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class NumericRange {
+import java.io.Serializable;
+
+public abstract class NumericRange implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.NumericRange");
   
   private NumericRange () {
@@ -41,7 +43,7 @@ public abstract class NumericRange {
     }
   }
   
-  public static final class MININCLUSIVE extends hydra.langs.shex.syntax.NumericRange {
+  public static final class MININCLUSIVE extends hydra.langs.shex.syntax.NumericRange implements Serializable {
     public MININCLUSIVE () {
     
     }
@@ -66,7 +68,7 @@ public abstract class NumericRange {
     }
   }
   
-  public static final class MINEXCLUSIVE extends hydra.langs.shex.syntax.NumericRange {
+  public static final class MINEXCLUSIVE extends hydra.langs.shex.syntax.NumericRange implements Serializable {
     public MINEXCLUSIVE () {
     
     }
@@ -91,7 +93,7 @@ public abstract class NumericRange {
     }
   }
   
-  public static final class MAXINCLUSIVE extends hydra.langs.shex.syntax.NumericRange {
+  public static final class MAXINCLUSIVE extends hydra.langs.shex.syntax.NumericRange implements Serializable {
     public MAXINCLUSIVE () {
     
     }
@@ -116,7 +118,7 @@ public abstract class NumericRange {
     }
   }
   
-  public static final class MAXEXCLUSIVE extends hydra.langs.shex.syntax.NumericRange {
+  public static final class MAXEXCLUSIVE extends hydra.langs.shex.syntax.NumericRange implements Serializable {
     public MAXEXCLUSIVE () {
     
     }

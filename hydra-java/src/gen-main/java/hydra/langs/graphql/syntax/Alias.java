@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public abstract class Alias {
+import java.io.Serializable;
+
+public abstract class Alias implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.Alias");
   
   private Alias () {
@@ -29,7 +31,7 @@ public abstract class Alias {
     }
   }
   
-  public static final class Name extends hydra.langs.graphql.syntax.Alias {
+  public static final class Name extends hydra.langs.graphql.syntax.Alias implements Serializable {
     public final hydra.langs.graphql.syntax.Name value;
     
     public Name (hydra.langs.graphql.syntax.Name value) {
@@ -56,7 +58,7 @@ public abstract class Alias {
     }
   }
   
-  public static final class Colon extends hydra.langs.graphql.syntax.Alias {
+  public static final class Colon extends hydra.langs.graphql.syntax.Alias implements Serializable {
     public Colon () {
     
     }

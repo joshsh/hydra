@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class TypeIdentifier {
+import java.io.Serializable;
+
+public class TypeIdentifier implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.TypeIdentifier");
   
   public final hydra.langs.java.syntax.Identifier value;

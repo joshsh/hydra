@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public class SelectionSet {
+import java.io.Serializable;
+
+public class SelectionSet implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.SelectionSet");
   
   public final java.util.List<hydra.langs.graphql.syntax.Selection> value;

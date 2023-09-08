@@ -1,6 +1,8 @@
 package hydra.langs.owl.syntax;
 
-public class ObjectHasValue {
+import java.io.Serializable;
+
+public class ObjectHasValue implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/owl/syntax.ObjectHasValue");
   
   public final hydra.langs.owl.syntax.ObjectPropertyExpression property;

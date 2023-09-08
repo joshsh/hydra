@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public abstract class Stat {
+import java.io.Serializable;
+
+public abstract class Stat implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Stat");
   
   private Stat () {
@@ -41,7 +43,7 @@ public abstract class Stat {
     }
   }
   
-  public static final class Term extends hydra.langs.scala.meta.Stat {
+  public static final class Term extends hydra.langs.scala.meta.Stat implements Serializable {
     public final hydra.langs.scala.meta.Data value;
     
     public Term (hydra.langs.scala.meta.Data value) {
@@ -68,7 +70,7 @@ public abstract class Stat {
     }
   }
   
-  public static final class Decl extends hydra.langs.scala.meta.Stat {
+  public static final class Decl extends hydra.langs.scala.meta.Stat implements Serializable {
     public final hydra.langs.scala.meta.Decl value;
     
     public Decl (hydra.langs.scala.meta.Decl value) {
@@ -95,7 +97,7 @@ public abstract class Stat {
     }
   }
   
-  public static final class Defn extends hydra.langs.scala.meta.Stat {
+  public static final class Defn extends hydra.langs.scala.meta.Stat implements Serializable {
     public final hydra.langs.scala.meta.Defn value;
     
     public Defn (hydra.langs.scala.meta.Defn value) {
@@ -122,7 +124,7 @@ public abstract class Stat {
     }
   }
   
-  public static final class ImportExport extends hydra.langs.scala.meta.Stat {
+  public static final class ImportExport extends hydra.langs.scala.meta.Stat implements Serializable {
     public final hydra.langs.scala.meta.ImportExportStat value;
     
     public ImportExport (hydra.langs.scala.meta.ImportExportStat value) {

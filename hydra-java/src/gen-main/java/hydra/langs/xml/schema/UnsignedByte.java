@@ -1,6 +1,8 @@
 package hydra.langs.xml.schema;
 
-public class UnsignedByte {
+import java.io.Serializable;
+
+public class UnsignedByte implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/xml/schema.UnsignedByte");
   
   public final Byte value;

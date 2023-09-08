@@ -380,7 +380,8 @@ writeIfThenElseStatement _ = cst "TODO:IfThenElseStatement"
 
 writeImportDeclaration :: Java.ImportDeclaration -> CT.Expr
 writeImportDeclaration imp = case imp of
-  Java.ImportDeclarationSingleType d -> cst "TODO:ImportDeclarationSingleType"
+  Java.ImportDeclarationSingleType (Java.SingleTypeImportDeclaration tn) -> suffixSemi $
+    spaceSep [cst "import", writeTypeName tn]
   Java.ImportDeclarationTypeImportOnDemand d -> cst "TODO:ImportDeclarationTypeImportOnDemand"
   Java.ImportDeclarationSingleStaticImport d -> cst "TODO:ImportDeclarationSingleStaticImport"
   Java.ImportDeclarationStaticImportOnDemand d -> cst "TODO:ImportDeclarationStaticImportOnDemand"

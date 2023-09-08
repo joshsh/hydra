@@ -1,9 +1,11 @@
 package hydra.langs.yaml.model;
 
+import java.io.Serializable;
+
 /**
  * A union of scalars supported in the YAML failsafe and JSON schemas. Other scalars are not supported here
  */
-public abstract class Scalar {
+public abstract class Scalar implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/yaml/model.Scalar");
   
   private Scalar () {
@@ -53,7 +55,7 @@ public abstract class Scalar {
   /**
    * Represents a true/false value
    */
-  public static final class Bool extends hydra.langs.yaml.model.Scalar {
+  public static final class Bool extends hydra.langs.yaml.model.Scalar implements Serializable {
     /**
      * Represents a true/false value
      */
@@ -83,7 +85,7 @@ public abstract class Scalar {
     }
   }
   
-  public static final class Float_ extends hydra.langs.yaml.model.Scalar {
+  public static final class Float_ extends hydra.langs.yaml.model.Scalar implements Serializable {
     public final Double value;
     
     public Float_ (Double value) {
@@ -113,7 +115,7 @@ public abstract class Scalar {
   /**
    * Represents arbitrary sized finite mathematical integers
    */
-  public static final class Int extends hydra.langs.yaml.model.Scalar {
+  public static final class Int extends hydra.langs.yaml.model.Scalar implements Serializable {
     /**
      * Represents arbitrary sized finite mathematical integers
      */
@@ -146,7 +148,7 @@ public abstract class Scalar {
   /**
    * Represents the lack of a value
    */
-  public static final class Null extends hydra.langs.yaml.model.Scalar {
+  public static final class Null extends hydra.langs.yaml.model.Scalar implements Serializable {
     public Null () {
     
     }
@@ -174,7 +176,7 @@ public abstract class Scalar {
   /**
    * A string value
    */
-  public static final class Str extends hydra.langs.yaml.model.Scalar {
+  public static final class Str extends hydra.langs.yaml.model.Scalar implements Serializable {
     /**
      * A string value
      */

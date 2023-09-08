@@ -1,9 +1,11 @@
 package hydra.langs.parquet.format;
 
+import java.io.Serializable;
+
 /**
  * statistics of a given page type and encoding
  */
-public class PageEncodingStats {
+public class PageEncodingStats implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/parquet/format.PageEncodingStats");
   
   /**

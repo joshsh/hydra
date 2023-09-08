@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public class TripleExpression {
+import java.io.Serializable;
+
+public class TripleExpression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.TripleExpression");
   
   public final hydra.langs.shex.syntax.OneOfTripleExpr value;

@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class ExpressionStatement {
+import java.io.Serializable;
+
+public class ExpressionStatement implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ExpressionStatement");
   
   public final hydra.langs.java.syntax.StatementExpression value;

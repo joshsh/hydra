@@ -1,9 +1,11 @@
 package hydra.langs.tabular;
 
+import java.io.Serializable;
+
 /**
  * A data row, containing untyped cells; one per column
  */
-public class DataRow {
+public class DataRow implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/tabular.DataRow");
   
   /**

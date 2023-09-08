@@ -1,9 +1,11 @@
 package hydra.langs.owl.syntax;
 
+import java.io.Serializable;
+
 /**
  * See https://www.w3.org/TR/owl2-syntax/#Data_Ranges
  */
-public abstract class DataRange {
+public abstract class DataRange implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/owl/syntax.DataRange");
   
   private DataRange () {
@@ -56,7 +58,7 @@ public abstract class DataRange {
     }
   }
   
-  public static final class DataComplementOf extends hydra.langs.owl.syntax.DataRange {
+  public static final class DataComplementOf extends hydra.langs.owl.syntax.DataRange implements Serializable {
     public final hydra.langs.owl.syntax.DataComplementOf value;
     
     public DataComplementOf (hydra.langs.owl.syntax.DataComplementOf value) {
@@ -83,7 +85,7 @@ public abstract class DataRange {
     }
   }
   
-  public static final class DataIntersectionOf extends hydra.langs.owl.syntax.DataRange {
+  public static final class DataIntersectionOf extends hydra.langs.owl.syntax.DataRange implements Serializable {
     public final hydra.langs.owl.syntax.DataIntersectionOf value;
     
     public DataIntersectionOf (hydra.langs.owl.syntax.DataIntersectionOf value) {
@@ -110,7 +112,7 @@ public abstract class DataRange {
     }
   }
   
-  public static final class DataOneOf extends hydra.langs.owl.syntax.DataRange {
+  public static final class DataOneOf extends hydra.langs.owl.syntax.DataRange implements Serializable {
     public final hydra.langs.owl.syntax.DataOneOf value;
     
     public DataOneOf (hydra.langs.owl.syntax.DataOneOf value) {
@@ -137,7 +139,7 @@ public abstract class DataRange {
     }
   }
   
-  public static final class DataUnionOf extends hydra.langs.owl.syntax.DataRange {
+  public static final class DataUnionOf extends hydra.langs.owl.syntax.DataRange implements Serializable {
     public final hydra.langs.owl.syntax.DataUnionOf value;
     
     public DataUnionOf (hydra.langs.owl.syntax.DataUnionOf value) {
@@ -164,7 +166,7 @@ public abstract class DataRange {
     }
   }
   
-  public static final class Datatype extends hydra.langs.owl.syntax.DataRange {
+  public static final class Datatype extends hydra.langs.owl.syntax.DataRange implements Serializable {
     public final hydra.langs.owl.syntax.Datatype value;
     
     public Datatype (hydra.langs.owl.syntax.Datatype value) {
@@ -191,7 +193,7 @@ public abstract class DataRange {
     }
   }
   
-  public static final class DatatypeRestriction extends hydra.langs.owl.syntax.DataRange {
+  public static final class DatatypeRestriction extends hydra.langs.owl.syntax.DataRange implements Serializable {
     public final hydra.langs.owl.syntax.DatatypeRestriction value;
     
     public DatatypeRestriction (hydra.langs.owl.syntax.DatatypeRestriction value) {

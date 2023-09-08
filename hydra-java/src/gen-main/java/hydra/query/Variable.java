@@ -1,9 +1,11 @@
 package hydra.query;
 
+import java.io.Serializable;
+
 /**
  * A query variable
  */
-public class Variable {
+public class Variable implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/query.Variable");
   
   /**

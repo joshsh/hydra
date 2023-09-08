@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class Resource {
+import java.io.Serializable;
+
+public abstract class Resource implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.Resource");
   
   private Resource () {
@@ -29,7 +31,7 @@ public abstract class Resource {
     }
   }
   
-  public static final class Local extends hydra.langs.java.syntax.Resource {
+  public static final class Local extends hydra.langs.java.syntax.Resource implements Serializable {
     public final hydra.langs.java.syntax.Resource_Local value;
     
     public Local (hydra.langs.java.syntax.Resource_Local value) {
@@ -56,7 +58,7 @@ public abstract class Resource {
     }
   }
   
-  public static final class Variable extends hydra.langs.java.syntax.Resource {
+  public static final class Variable extends hydra.langs.java.syntax.Resource implements Serializable {
     public final hydra.langs.java.syntax.VariableAccess value;
     
     public Variable (hydra.langs.java.syntax.VariableAccess value) {

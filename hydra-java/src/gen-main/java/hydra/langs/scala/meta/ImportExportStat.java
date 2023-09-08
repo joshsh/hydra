@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public abstract class ImportExportStat {
+import java.io.Serializable;
+
+public abstract class ImportExportStat implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.ImportExportStat");
   
   private ImportExportStat () {
@@ -29,7 +31,7 @@ public abstract class ImportExportStat {
     }
   }
   
-  public static final class Import extends hydra.langs.scala.meta.ImportExportStat {
+  public static final class Import extends hydra.langs.scala.meta.ImportExportStat implements Serializable {
     public final hydra.langs.scala.meta.Import value;
     
     public Import (hydra.langs.scala.meta.Import value) {
@@ -56,7 +58,7 @@ public abstract class ImportExportStat {
     }
   }
   
-  public static final class Export extends hydra.langs.scala.meta.ImportExportStat {
+  public static final class Export extends hydra.langs.scala.meta.ImportExportStat implements Serializable {
     public final hydra.langs.scala.meta.Export value;
     
     public Export (hydra.langs.scala.meta.Export value) {

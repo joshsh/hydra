@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class NormalAnnotation {
+import java.io.Serializable;
+
+public class NormalAnnotation implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.NormalAnnotation");
   
   public final hydra.langs.java.syntax.TypeName typeName;

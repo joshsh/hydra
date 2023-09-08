@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class StatementExpression {
+import java.io.Serializable;
+
+public abstract class StatementExpression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.StatementExpression");
   
   private StatementExpression () {
@@ -59,7 +61,7 @@ public abstract class StatementExpression {
     }
   }
   
-  public static final class Assignment extends hydra.langs.java.syntax.StatementExpression {
+  public static final class Assignment extends hydra.langs.java.syntax.StatementExpression implements Serializable {
     public final hydra.langs.java.syntax.Assignment value;
     
     public Assignment (hydra.langs.java.syntax.Assignment value) {
@@ -86,7 +88,7 @@ public abstract class StatementExpression {
     }
   }
   
-  public static final class PreIncrement extends hydra.langs.java.syntax.StatementExpression {
+  public static final class PreIncrement extends hydra.langs.java.syntax.StatementExpression implements Serializable {
     public final hydra.langs.java.syntax.PreIncrementExpression value;
     
     public PreIncrement (hydra.langs.java.syntax.PreIncrementExpression value) {
@@ -113,7 +115,7 @@ public abstract class StatementExpression {
     }
   }
   
-  public static final class PreDecrement extends hydra.langs.java.syntax.StatementExpression {
+  public static final class PreDecrement extends hydra.langs.java.syntax.StatementExpression implements Serializable {
     public final hydra.langs.java.syntax.PreDecrementExpression value;
     
     public PreDecrement (hydra.langs.java.syntax.PreDecrementExpression value) {
@@ -140,7 +142,7 @@ public abstract class StatementExpression {
     }
   }
   
-  public static final class PostIncrement extends hydra.langs.java.syntax.StatementExpression {
+  public static final class PostIncrement extends hydra.langs.java.syntax.StatementExpression implements Serializable {
     public final hydra.langs.java.syntax.PostIncrementExpression value;
     
     public PostIncrement (hydra.langs.java.syntax.PostIncrementExpression value) {
@@ -167,7 +169,7 @@ public abstract class StatementExpression {
     }
   }
   
-  public static final class PostDecrement extends hydra.langs.java.syntax.StatementExpression {
+  public static final class PostDecrement extends hydra.langs.java.syntax.StatementExpression implements Serializable {
     public final hydra.langs.java.syntax.PostDecrementExpression value;
     
     public PostDecrement (hydra.langs.java.syntax.PostDecrementExpression value) {
@@ -194,7 +196,7 @@ public abstract class StatementExpression {
     }
   }
   
-  public static final class MethodInvocation extends hydra.langs.java.syntax.StatementExpression {
+  public static final class MethodInvocation extends hydra.langs.java.syntax.StatementExpression implements Serializable {
     public final hydra.langs.java.syntax.MethodInvocation value;
     
     public MethodInvocation (hydra.langs.java.syntax.MethodInvocation value) {
@@ -221,7 +223,7 @@ public abstract class StatementExpression {
     }
   }
   
-  public static final class ClassInstanceCreation extends hydra.langs.java.syntax.StatementExpression {
+  public static final class ClassInstanceCreation extends hydra.langs.java.syntax.StatementExpression implements Serializable {
     public final hydra.langs.java.syntax.ClassInstanceCreationExpression value;
     
     public ClassInstanceCreation (hydra.langs.java.syntax.ClassInstanceCreationExpression value) {

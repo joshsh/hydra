@@ -1,9 +1,11 @@
 package hydra.langs.owl.syntax;
 
+import java.io.Serializable;
+
 /**
  * See https://www.w3.org/TR/owl2-syntax/#Datatype_Restrictions
  */
-public class DatatypeRestriction {
+public class DatatypeRestriction implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/owl/syntax.DatatypeRestriction");
   
   public final hydra.langs.owl.syntax.Datatype datatype;

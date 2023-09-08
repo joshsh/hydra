@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public class StringLiteralLong1_Elmt_Sequence {
+import java.io.Serializable;
+
+public class StringLiteralLong1_Elmt_Sequence implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.StringLiteralLong1.Elmt.Sequence");
   
   public final java.util.Optional<hydra.langs.shex.syntax.StringLiteralLong1_Elmt_Sequence_Alts_Option> alts;

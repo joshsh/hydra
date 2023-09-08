@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public class Variable {
+import java.io.Serializable;
+
+public class Variable implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.Variable");
   
   public final hydra.langs.graphql.syntax.Name value;

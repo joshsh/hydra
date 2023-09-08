@@ -1,6 +1,8 @@
 package hydra.langs.xml.schema;
 
-public class Duration {
+import java.io.Serializable;
+
+public class Duration implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/xml/schema.Duration");
   
   public final String value;

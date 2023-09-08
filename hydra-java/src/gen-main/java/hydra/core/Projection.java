@@ -1,9 +1,11 @@
 package hydra.core;
 
+import java.io.Serializable;
+
 /**
  * A record elimination; a projection
  */
-public class Projection {
+public class Projection implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/core.Projection");
   
   public final hydra.core.Name typeName;

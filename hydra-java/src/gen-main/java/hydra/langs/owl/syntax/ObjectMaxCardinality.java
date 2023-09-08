@@ -1,9 +1,11 @@
 package hydra.langs.owl.syntax;
 
+import java.io.Serializable;
+
 /**
  * See https://www.w3.org/TR/owl2-syntax/#Maximum_Cardinality
  */
-public class ObjectMaxCardinality {
+public class ObjectMaxCardinality implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/owl/syntax.ObjectMaxCardinality");
   
   public final java.math.BigInteger bound;

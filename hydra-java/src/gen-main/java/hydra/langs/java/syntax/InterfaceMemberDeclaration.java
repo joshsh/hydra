@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class InterfaceMemberDeclaration {
+import java.io.Serializable;
+
+public abstract class InterfaceMemberDeclaration implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.InterfaceMemberDeclaration");
   
   private InterfaceMemberDeclaration () {
@@ -41,7 +43,7 @@ public abstract class InterfaceMemberDeclaration {
     }
   }
   
-  public static final class Constant extends hydra.langs.java.syntax.InterfaceMemberDeclaration {
+  public static final class Constant extends hydra.langs.java.syntax.InterfaceMemberDeclaration implements Serializable {
     public final hydra.langs.java.syntax.ConstantDeclaration value;
     
     public Constant (hydra.langs.java.syntax.ConstantDeclaration value) {
@@ -68,7 +70,7 @@ public abstract class InterfaceMemberDeclaration {
     }
   }
   
-  public static final class InterfaceMethod extends hydra.langs.java.syntax.InterfaceMemberDeclaration {
+  public static final class InterfaceMethod extends hydra.langs.java.syntax.InterfaceMemberDeclaration implements Serializable {
     public final hydra.langs.java.syntax.InterfaceMethodDeclaration value;
     
     public InterfaceMethod (hydra.langs.java.syntax.InterfaceMethodDeclaration value) {
@@ -95,7 +97,7 @@ public abstract class InterfaceMemberDeclaration {
     }
   }
   
-  public static final class Class_ extends hydra.langs.java.syntax.InterfaceMemberDeclaration {
+  public static final class Class_ extends hydra.langs.java.syntax.InterfaceMemberDeclaration implements Serializable {
     public final hydra.langs.java.syntax.ClassDeclaration value;
     
     public Class_ (hydra.langs.java.syntax.ClassDeclaration value) {
@@ -122,7 +124,7 @@ public abstract class InterfaceMemberDeclaration {
     }
   }
   
-  public static final class Interface extends hydra.langs.java.syntax.InterfaceMemberDeclaration {
+  public static final class Interface extends hydra.langs.java.syntax.InterfaceMemberDeclaration implements Serializable {
     public final hydra.langs.java.syntax.InterfaceDeclaration value;
     
     public Interface (hydra.langs.java.syntax.InterfaceDeclaration value) {

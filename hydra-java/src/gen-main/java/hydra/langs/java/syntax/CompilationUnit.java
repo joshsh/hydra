@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class CompilationUnit {
+import java.io.Serializable;
+
+public abstract class CompilationUnit implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.CompilationUnit");
   
   private CompilationUnit () {
@@ -29,7 +31,7 @@ public abstract class CompilationUnit {
     }
   }
   
-  public static final class Ordinary extends hydra.langs.java.syntax.CompilationUnit {
+  public static final class Ordinary extends hydra.langs.java.syntax.CompilationUnit implements Serializable {
     public final hydra.langs.java.syntax.OrdinaryCompilationUnit value;
     
     public Ordinary (hydra.langs.java.syntax.OrdinaryCompilationUnit value) {
@@ -56,7 +58,7 @@ public abstract class CompilationUnit {
     }
   }
   
-  public static final class Modular extends hydra.langs.java.syntax.CompilationUnit {
+  public static final class Modular extends hydra.langs.java.syntax.CompilationUnit implements Serializable {
     public final hydra.langs.java.syntax.ModularCompilationUnit value;
     
     public Modular (hydra.langs.java.syntax.ModularCompilationUnit value) {

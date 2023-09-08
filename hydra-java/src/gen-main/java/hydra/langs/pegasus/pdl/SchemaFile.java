@@ -1,6 +1,8 @@
 package hydra.langs.pegasus.pdl;
 
-public class SchemaFile {
+import java.io.Serializable;
+
+public class SchemaFile implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/pegasus/pdl.SchemaFile");
   
   public final hydra.langs.pegasus.pdl.Namespace namespace;

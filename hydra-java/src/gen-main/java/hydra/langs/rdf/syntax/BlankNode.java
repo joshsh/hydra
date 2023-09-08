@@ -1,6 +1,8 @@
 package hydra.langs.rdf.syntax;
 
-public class BlankNode {
+import java.io.Serializable;
+
+public class BlankNode implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/rdf/syntax.BlankNode");
   
   public final String value;

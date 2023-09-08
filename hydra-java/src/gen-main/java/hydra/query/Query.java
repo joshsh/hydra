@@ -1,9 +1,11 @@
 package hydra.query;
 
+import java.io.Serializable;
+
 /**
  * A SELECT-style graph pattern matching query
  */
-public class Query<A> {
+public class Query<A> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/query.Query");
   
   /**

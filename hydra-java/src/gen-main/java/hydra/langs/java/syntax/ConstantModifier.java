@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class ConstantModifier {
+import java.io.Serializable;
+
+public abstract class ConstantModifier implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ConstantModifier");
   
   private ConstantModifier () {
@@ -41,7 +43,7 @@ public abstract class ConstantModifier {
     }
   }
   
-  public static final class Annotation extends hydra.langs.java.syntax.ConstantModifier {
+  public static final class Annotation extends hydra.langs.java.syntax.ConstantModifier implements Serializable {
     public final hydra.langs.java.syntax.Annotation value;
     
     public Annotation (hydra.langs.java.syntax.Annotation value) {
@@ -68,7 +70,7 @@ public abstract class ConstantModifier {
     }
   }
   
-  public static final class Public extends hydra.langs.java.syntax.ConstantModifier {
+  public static final class Public extends hydra.langs.java.syntax.ConstantModifier implements Serializable {
     public Public () {
     
     }
@@ -93,7 +95,7 @@ public abstract class ConstantModifier {
     }
   }
   
-  public static final class Static extends hydra.langs.java.syntax.ConstantModifier {
+  public static final class Static extends hydra.langs.java.syntax.ConstantModifier implements Serializable {
     public Static () {
     
     }
@@ -118,7 +120,7 @@ public abstract class ConstantModifier {
     }
   }
   
-  public static final class Final extends hydra.langs.java.syntax.ConstantModifier {
+  public static final class Final extends hydra.langs.java.syntax.ConstantModifier implements Serializable {
     public Final () {
     
     }

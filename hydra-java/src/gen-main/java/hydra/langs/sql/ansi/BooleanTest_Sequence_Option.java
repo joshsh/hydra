@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public class BooleanTest_Sequence_Option {
+import java.io.Serializable;
+
+public class BooleanTest_Sequence_Option implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.BooleanTest.Sequence.Option");
   
   public final java.util.Optional<java.lang.Void> nOT;

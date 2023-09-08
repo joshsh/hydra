@@ -1,9 +1,11 @@
 package hydra.core;
 
+import java.io.Serializable;
+
 /**
  * An infinite stream of terms
  */
-public class Stream<A> {
+public class Stream<A> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/core.Stream");
   
   public final hydra.core.Term<A> first;

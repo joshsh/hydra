@@ -1,6 +1,8 @@
 package hydra.langs.pegasus.pdl;
 
-public class EnumSchema {
+import java.io.Serializable;
+
+public class EnumSchema implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/pegasus/pdl.EnumSchema");
   
   public final java.util.List<hydra.langs.pegasus.pdl.EnumField> fields;

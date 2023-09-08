@@ -1,9 +1,11 @@
 package hydra.langs.owl.syntax;
 
+import java.io.Serializable;
+
 /**
  * See https://www.w3.org/TR/owl2-syntax/#Exact_Cardinality
  */
-public class ObjectExactCardinality {
+public class ObjectExactCardinality implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/owl/syntax.ObjectExactCardinality");
   
   public final java.math.BigInteger bound;

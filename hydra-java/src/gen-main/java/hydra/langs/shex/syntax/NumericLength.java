@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class NumericLength {
+import java.io.Serializable;
+
+public abstract class NumericLength implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.NumericLength");
   
   private NumericLength () {
@@ -29,7 +31,7 @@ public abstract class NumericLength {
     }
   }
   
-  public static final class TOTALDIGITS extends hydra.langs.shex.syntax.NumericLength {
+  public static final class TOTALDIGITS extends hydra.langs.shex.syntax.NumericLength implements Serializable {
     public TOTALDIGITS () {
     
     }
@@ -54,7 +56,7 @@ public abstract class NumericLength {
     }
   }
   
-  public static final class FRACTIONDIGITS extends hydra.langs.shex.syntax.NumericLength {
+  public static final class FRACTIONDIGITS extends hydra.langs.shex.syntax.NumericLength implements Serializable {
     public FRACTIONDIGITS () {
     
     }

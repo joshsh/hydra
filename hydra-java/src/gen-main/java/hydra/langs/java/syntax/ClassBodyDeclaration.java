@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class ClassBodyDeclaration {
+import java.io.Serializable;
+
+public abstract class ClassBodyDeclaration implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ClassBodyDeclaration");
   
   private ClassBodyDeclaration () {
@@ -41,7 +43,7 @@ public abstract class ClassBodyDeclaration {
     }
   }
   
-  public static final class ClassMember extends hydra.langs.java.syntax.ClassBodyDeclaration {
+  public static final class ClassMember extends hydra.langs.java.syntax.ClassBodyDeclaration implements Serializable {
     public final hydra.langs.java.syntax.ClassMemberDeclaration value;
     
     public ClassMember (hydra.langs.java.syntax.ClassMemberDeclaration value) {
@@ -68,7 +70,7 @@ public abstract class ClassBodyDeclaration {
     }
   }
   
-  public static final class InstanceInitializer extends hydra.langs.java.syntax.ClassBodyDeclaration {
+  public static final class InstanceInitializer extends hydra.langs.java.syntax.ClassBodyDeclaration implements Serializable {
     public final hydra.langs.java.syntax.InstanceInitializer value;
     
     public InstanceInitializer (hydra.langs.java.syntax.InstanceInitializer value) {
@@ -95,7 +97,7 @@ public abstract class ClassBodyDeclaration {
     }
   }
   
-  public static final class StaticInitializer extends hydra.langs.java.syntax.ClassBodyDeclaration {
+  public static final class StaticInitializer extends hydra.langs.java.syntax.ClassBodyDeclaration implements Serializable {
     public final hydra.langs.java.syntax.StaticInitializer value;
     
     public StaticInitializer (hydra.langs.java.syntax.StaticInitializer value) {
@@ -122,7 +124,7 @@ public abstract class ClassBodyDeclaration {
     }
   }
   
-  public static final class ConstructorDeclaration extends hydra.langs.java.syntax.ClassBodyDeclaration {
+  public static final class ConstructorDeclaration extends hydra.langs.java.syntax.ClassBodyDeclaration implements Serializable {
     public final hydra.langs.java.syntax.ConstructorDeclaration value;
     
     public ConstructorDeclaration (hydra.langs.java.syntax.ConstructorDeclaration value) {

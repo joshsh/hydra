@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public class RowValueExpression {
+import java.io.Serializable;
+
+public class RowValueExpression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.RowValueExpression");
   
   public RowValueExpression () {

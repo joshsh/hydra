@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class NumericTypeArray {
+import java.io.Serializable;
+
+public abstract class NumericTypeArray implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.NumericTypeArray");
   
   private NumericTypeArray () {
@@ -29,7 +31,7 @@ public abstract class NumericTypeArray {
     }
   }
   
-  public static final class Simple extends hydra.langs.java.syntax.NumericTypeArray {
+  public static final class Simple extends hydra.langs.java.syntax.NumericTypeArray implements Serializable {
     public final hydra.langs.java.syntax.NumericType value;
     
     public Simple (hydra.langs.java.syntax.NumericType value) {
@@ -56,7 +58,7 @@ public abstract class NumericTypeArray {
     }
   }
   
-  public static final class Array extends hydra.langs.java.syntax.NumericTypeArray {
+  public static final class Array extends hydra.langs.java.syntax.NumericTypeArray implements Serializable {
     public final hydra.langs.java.syntax.NumericTypeArray value;
     
     public Array (hydra.langs.java.syntax.NumericTypeArray value) {

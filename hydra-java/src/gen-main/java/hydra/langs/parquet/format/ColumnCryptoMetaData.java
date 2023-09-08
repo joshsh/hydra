@@ -1,6 +1,8 @@
 package hydra.langs.parquet.format;
 
-public abstract class ColumnCryptoMetaData {
+import java.io.Serializable;
+
+public abstract class ColumnCryptoMetaData implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/parquet/format.ColumnCryptoMetaData");
   
   private ColumnCryptoMetaData () {
@@ -29,7 +31,7 @@ public abstract class ColumnCryptoMetaData {
     }
   }
   
-  public static final class EncryptionWithFooterKey extends hydra.langs.parquet.format.ColumnCryptoMetaData {
+  public static final class EncryptionWithFooterKey extends hydra.langs.parquet.format.ColumnCryptoMetaData implements Serializable {
     public final hydra.langs.parquet.format.EncryptionWithFooterKey value;
     
     public EncryptionWithFooterKey (hydra.langs.parquet.format.EncryptionWithFooterKey value) {
@@ -56,7 +58,7 @@ public abstract class ColumnCryptoMetaData {
     }
   }
   
-  public static final class EncryptionWithColumnKey extends hydra.langs.parquet.format.ColumnCryptoMetaData {
+  public static final class EncryptionWithColumnKey extends hydra.langs.parquet.format.ColumnCryptoMetaData implements Serializable {
     public final hydra.langs.parquet.format.EncryptionWithColumnKey value;
     
     public EncryptionWithColumnKey (hydra.langs.parquet.format.EncryptionWithColumnKey value) {

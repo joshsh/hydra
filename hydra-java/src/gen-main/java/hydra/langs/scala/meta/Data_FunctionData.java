@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public abstract class Data_FunctionData {
+import java.io.Serializable;
+
+public abstract class Data_FunctionData implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Data.FunctionData");
   
   private Data_FunctionData () {
@@ -29,7 +31,7 @@ public abstract class Data_FunctionData {
     }
   }
   
-  public static final class ContextFunction extends hydra.langs.scala.meta.Data_FunctionData {
+  public static final class ContextFunction extends hydra.langs.scala.meta.Data_FunctionData implements Serializable {
     public final hydra.langs.scala.meta.Data_ContextFunction value;
     
     public ContextFunction (hydra.langs.scala.meta.Data_ContextFunction value) {
@@ -56,7 +58,7 @@ public abstract class Data_FunctionData {
     }
   }
   
-  public static final class Function extends hydra.langs.scala.meta.Data_FunctionData {
+  public static final class Function extends hydra.langs.scala.meta.Data_FunctionData implements Serializable {
     public final hydra.langs.scala.meta.Data_Function value;
     
     public Function (hydra.langs.scala.meta.Data_Function value) {

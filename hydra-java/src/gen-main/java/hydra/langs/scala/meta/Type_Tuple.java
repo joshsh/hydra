@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public class Type_Tuple {
+import java.io.Serializable;
+
+public class Type_Tuple implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Type.Tuple");
   
   public final java.util.List<hydra.langs.scala.meta.Type> args;

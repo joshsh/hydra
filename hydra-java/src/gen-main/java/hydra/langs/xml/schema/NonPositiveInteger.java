@@ -1,6 +1,8 @@
 package hydra.langs.xml.schema;
 
-public class NonPositiveInteger {
+import java.io.Serializable;
+
+public class NonPositiveInteger implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/xml/schema.NonPositiveInteger");
   
   public final java.math.BigInteger value;

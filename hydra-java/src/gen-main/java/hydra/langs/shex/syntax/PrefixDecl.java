@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public class PrefixDecl {
+import java.io.Serializable;
+
+public class PrefixDecl implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.PrefixDecl");
   
   public final hydra.langs.shex.syntax.PnameNs pnameNs;

@@ -1,9 +1,11 @@
 package hydra.grammar;
 
+import java.io.Serializable;
+
 /**
  * An enhanced Backus-Naur form (BNF) grammar
  */
-public class Grammar {
+public class Grammar implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/grammar.Grammar");
   
   /**

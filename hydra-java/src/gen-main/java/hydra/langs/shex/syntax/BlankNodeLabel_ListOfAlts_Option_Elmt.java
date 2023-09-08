@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class BlankNodeLabel_ListOfAlts_Option_Elmt {
+import java.io.Serializable;
+
+public abstract class BlankNodeLabel_ListOfAlts_Option_Elmt implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.BlankNodeLabel.ListOfAlts.Option.Elmt");
   
   private BlankNodeLabel_ListOfAlts_Option_Elmt () {
@@ -29,7 +31,7 @@ public abstract class BlankNodeLabel_ListOfAlts_Option_Elmt {
     }
   }
   
-  public static final class PnChars extends hydra.langs.shex.syntax.BlankNodeLabel_ListOfAlts_Option_Elmt {
+  public static final class PnChars extends hydra.langs.shex.syntax.BlankNodeLabel_ListOfAlts_Option_Elmt implements Serializable {
     public final hydra.langs.shex.syntax.PnChars value;
     
     public PnChars (hydra.langs.shex.syntax.PnChars value) {
@@ -56,7 +58,7 @@ public abstract class BlankNodeLabel_ListOfAlts_Option_Elmt {
     }
   }
   
-  public static final class Period extends hydra.langs.shex.syntax.BlankNodeLabel_ListOfAlts_Option_Elmt {
+  public static final class Period extends hydra.langs.shex.syntax.BlankNodeLabel_ListOfAlts_Option_Elmt implements Serializable {
     public Period () {
     
     }

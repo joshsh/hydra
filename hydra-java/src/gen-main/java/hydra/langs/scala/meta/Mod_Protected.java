@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public class Mod_Protected {
+import java.io.Serializable;
+
+public class Mod_Protected implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Mod.Protected");
   
   public final hydra.langs.scala.meta.Ref within;

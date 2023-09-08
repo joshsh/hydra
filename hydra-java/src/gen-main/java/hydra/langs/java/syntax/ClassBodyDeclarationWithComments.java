@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class ClassBodyDeclarationWithComments {
+import java.io.Serializable;
+
+public class ClassBodyDeclarationWithComments implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ClassBodyDeclarationWithComments");
   
   public final hydra.langs.java.syntax.ClassBodyDeclaration value;

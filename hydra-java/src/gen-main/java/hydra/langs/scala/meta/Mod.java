@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public abstract class Mod {
+import java.io.Serializable;
+
+public abstract class Mod implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Mod");
   
   private Mod () {
@@ -143,7 +145,7 @@ public abstract class Mod {
     }
   }
   
-  public static final class Annot extends hydra.langs.scala.meta.Mod {
+  public static final class Annot extends hydra.langs.scala.meta.Mod implements Serializable {
     public final hydra.langs.scala.meta.Mod_Annot value;
     
     public Annot (hydra.langs.scala.meta.Mod_Annot value) {
@@ -170,7 +172,7 @@ public abstract class Mod {
     }
   }
   
-  public static final class Private extends hydra.langs.scala.meta.Mod {
+  public static final class Private extends hydra.langs.scala.meta.Mod implements Serializable {
     public final hydra.langs.scala.meta.Mod_Private value;
     
     public Private (hydra.langs.scala.meta.Mod_Private value) {
@@ -197,7 +199,7 @@ public abstract class Mod {
     }
   }
   
-  public static final class Protected extends hydra.langs.scala.meta.Mod {
+  public static final class Protected extends hydra.langs.scala.meta.Mod implements Serializable {
     public final hydra.langs.scala.meta.Mod_Protected value;
     
     public Protected (hydra.langs.scala.meta.Mod_Protected value) {
@@ -224,7 +226,7 @@ public abstract class Mod {
     }
   }
   
-  public static final class Implicit extends hydra.langs.scala.meta.Mod {
+  public static final class Implicit extends hydra.langs.scala.meta.Mod implements Serializable {
     public Implicit () {
     
     }
@@ -249,7 +251,7 @@ public abstract class Mod {
     }
   }
   
-  public static final class Final extends hydra.langs.scala.meta.Mod {
+  public static final class Final extends hydra.langs.scala.meta.Mod implements Serializable {
     public Final () {
     
     }
@@ -274,7 +276,7 @@ public abstract class Mod {
     }
   }
   
-  public static final class Sealed extends hydra.langs.scala.meta.Mod {
+  public static final class Sealed extends hydra.langs.scala.meta.Mod implements Serializable {
     public Sealed () {
     
     }
@@ -299,7 +301,7 @@ public abstract class Mod {
     }
   }
   
-  public static final class Open extends hydra.langs.scala.meta.Mod {
+  public static final class Open extends hydra.langs.scala.meta.Mod implements Serializable {
     public Open () {
     
     }
@@ -324,7 +326,7 @@ public abstract class Mod {
     }
   }
   
-  public static final class Super extends hydra.langs.scala.meta.Mod {
+  public static final class Super extends hydra.langs.scala.meta.Mod implements Serializable {
     public Super () {
     
     }
@@ -349,7 +351,7 @@ public abstract class Mod {
     }
   }
   
-  public static final class Override_ extends hydra.langs.scala.meta.Mod {
+  public static final class Override_ extends hydra.langs.scala.meta.Mod implements Serializable {
     public Override_ () {
     
     }
@@ -374,7 +376,7 @@ public abstract class Mod {
     }
   }
   
-  public static final class Case extends hydra.langs.scala.meta.Mod {
+  public static final class Case extends hydra.langs.scala.meta.Mod implements Serializable {
     public Case () {
     
     }
@@ -399,7 +401,7 @@ public abstract class Mod {
     }
   }
   
-  public static final class Abstract extends hydra.langs.scala.meta.Mod {
+  public static final class Abstract extends hydra.langs.scala.meta.Mod implements Serializable {
     public Abstract () {
     
     }
@@ -424,7 +426,7 @@ public abstract class Mod {
     }
   }
   
-  public static final class Covariant extends hydra.langs.scala.meta.Mod {
+  public static final class Covariant extends hydra.langs.scala.meta.Mod implements Serializable {
     public Covariant () {
     
     }
@@ -449,7 +451,7 @@ public abstract class Mod {
     }
   }
   
-  public static final class Contravariant extends hydra.langs.scala.meta.Mod {
+  public static final class Contravariant extends hydra.langs.scala.meta.Mod implements Serializable {
     public Contravariant () {
     
     }
@@ -474,7 +476,7 @@ public abstract class Mod {
     }
   }
   
-  public static final class Lazy extends hydra.langs.scala.meta.Mod {
+  public static final class Lazy extends hydra.langs.scala.meta.Mod implements Serializable {
     public Lazy () {
     
     }
@@ -499,7 +501,7 @@ public abstract class Mod {
     }
   }
   
-  public static final class ValParam extends hydra.langs.scala.meta.Mod {
+  public static final class ValParam extends hydra.langs.scala.meta.Mod implements Serializable {
     public ValParam () {
     
     }
@@ -524,7 +526,7 @@ public abstract class Mod {
     }
   }
   
-  public static final class VarParam extends hydra.langs.scala.meta.Mod {
+  public static final class VarParam extends hydra.langs.scala.meta.Mod implements Serializable {
     public VarParam () {
     
     }
@@ -549,7 +551,7 @@ public abstract class Mod {
     }
   }
   
-  public static final class Infix extends hydra.langs.scala.meta.Mod {
+  public static final class Infix extends hydra.langs.scala.meta.Mod implements Serializable {
     public Infix () {
     
     }
@@ -574,7 +576,7 @@ public abstract class Mod {
     }
   }
   
-  public static final class Inline extends hydra.langs.scala.meta.Mod {
+  public static final class Inline extends hydra.langs.scala.meta.Mod implements Serializable {
     public Inline () {
     
     }
@@ -599,7 +601,7 @@ public abstract class Mod {
     }
   }
   
-  public static final class Using extends hydra.langs.scala.meta.Mod {
+  public static final class Using extends hydra.langs.scala.meta.Mod implements Serializable {
     public Using () {
     
     }
@@ -624,7 +626,7 @@ public abstract class Mod {
     }
   }
   
-  public static final class Opaque extends hydra.langs.scala.meta.Mod {
+  public static final class Opaque extends hydra.langs.scala.meta.Mod implements Serializable {
     public Opaque () {
     
     }
@@ -649,7 +651,7 @@ public abstract class Mod {
     }
   }
   
-  public static final class Transparent extends hydra.langs.scala.meta.Mod {
+  public static final class Transparent extends hydra.langs.scala.meta.Mod implements Serializable {
     public Transparent () {
     
     }

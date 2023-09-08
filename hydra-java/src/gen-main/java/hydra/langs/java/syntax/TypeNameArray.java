@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class TypeNameArray {
+import java.io.Serializable;
+
+public abstract class TypeNameArray implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.TypeNameArray");
   
   private TypeNameArray () {
@@ -29,7 +31,7 @@ public abstract class TypeNameArray {
     }
   }
   
-  public static final class Simple extends hydra.langs.java.syntax.TypeNameArray {
+  public static final class Simple extends hydra.langs.java.syntax.TypeNameArray implements Serializable {
     public final hydra.langs.java.syntax.TypeName value;
     
     public Simple (hydra.langs.java.syntax.TypeName value) {
@@ -56,7 +58,7 @@ public abstract class TypeNameArray {
     }
   }
   
-  public static final class Array extends hydra.langs.java.syntax.TypeNameArray {
+  public static final class Array extends hydra.langs.java.syntax.TypeNameArray implements Serializable {
     public final hydra.langs.java.syntax.TypeNameArray value;
     
     public Array (hydra.langs.java.syntax.TypeNameArray value) {

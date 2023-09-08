@@ -1,6 +1,8 @@
 package hydra.langs.xml.schema;
 
-public abstract class Datatype {
+import java.io.Serializable;
+
+public abstract class Datatype implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/xml/schema.Datatype");
   
   private Datatype () {
@@ -281,7 +283,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class AnySimpleType extends hydra.langs.xml.schema.Datatype {
+  public static final class AnySimpleType extends hydra.langs.xml.schema.Datatype implements Serializable {
     public AnySimpleType () {
     
     }
@@ -306,7 +308,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class AnyType extends hydra.langs.xml.schema.Datatype {
+  public static final class AnyType extends hydra.langs.xml.schema.Datatype implements Serializable {
     public AnyType () {
     
     }
@@ -331,7 +333,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class AnyURI extends hydra.langs.xml.schema.Datatype {
+  public static final class AnyURI extends hydra.langs.xml.schema.Datatype implements Serializable {
     public AnyURI () {
     
     }
@@ -356,7 +358,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class Base64Binary extends hydra.langs.xml.schema.Datatype {
+  public static final class Base64Binary extends hydra.langs.xml.schema.Datatype implements Serializable {
     public Base64Binary () {
     
     }
@@ -381,7 +383,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class Boolean_ extends hydra.langs.xml.schema.Datatype {
+  public static final class Boolean_ extends hydra.langs.xml.schema.Datatype implements Serializable {
     public Boolean_ () {
     
     }
@@ -406,7 +408,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class Byte_ extends hydra.langs.xml.schema.Datatype {
+  public static final class Byte_ extends hydra.langs.xml.schema.Datatype implements Serializable {
     public Byte_ () {
     
     }
@@ -431,7 +433,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class Date extends hydra.langs.xml.schema.Datatype {
+  public static final class Date extends hydra.langs.xml.schema.Datatype implements Serializable {
     public Date () {
     
     }
@@ -456,7 +458,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class DateTime extends hydra.langs.xml.schema.Datatype {
+  public static final class DateTime extends hydra.langs.xml.schema.Datatype implements Serializable {
     public DateTime () {
     
     }
@@ -481,7 +483,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class Decimal extends hydra.langs.xml.schema.Datatype {
+  public static final class Decimal extends hydra.langs.xml.schema.Datatype implements Serializable {
     public Decimal () {
     
     }
@@ -506,7 +508,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class Double_ extends hydra.langs.xml.schema.Datatype {
+  public static final class Double_ extends hydra.langs.xml.schema.Datatype implements Serializable {
     public Double_ () {
     
     }
@@ -531,7 +533,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class Duration extends hydra.langs.xml.schema.Datatype {
+  public static final class Duration extends hydra.langs.xml.schema.Datatype implements Serializable {
     public Duration () {
     
     }
@@ -556,7 +558,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class ENTITIES extends hydra.langs.xml.schema.Datatype {
+  public static final class ENTITIES extends hydra.langs.xml.schema.Datatype implements Serializable {
     public ENTITIES () {
     
     }
@@ -581,7 +583,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class ENTITY extends hydra.langs.xml.schema.Datatype {
+  public static final class ENTITY extends hydra.langs.xml.schema.Datatype implements Serializable {
     public ENTITY () {
     
     }
@@ -606,7 +608,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class Float_ extends hydra.langs.xml.schema.Datatype {
+  public static final class Float_ extends hydra.langs.xml.schema.Datatype implements Serializable {
     public Float_ () {
     
     }
@@ -631,7 +633,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class GDay extends hydra.langs.xml.schema.Datatype {
+  public static final class GDay extends hydra.langs.xml.schema.Datatype implements Serializable {
     public GDay () {
     
     }
@@ -656,7 +658,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class GMonth extends hydra.langs.xml.schema.Datatype {
+  public static final class GMonth extends hydra.langs.xml.schema.Datatype implements Serializable {
     public GMonth () {
     
     }
@@ -681,7 +683,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class GMonthDay extends hydra.langs.xml.schema.Datatype {
+  public static final class GMonthDay extends hydra.langs.xml.schema.Datatype implements Serializable {
     public GMonthDay () {
     
     }
@@ -706,7 +708,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class GYear extends hydra.langs.xml.schema.Datatype {
+  public static final class GYear extends hydra.langs.xml.schema.Datatype implements Serializable {
     public GYear () {
     
     }
@@ -731,7 +733,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class GYearMonth extends hydra.langs.xml.schema.Datatype {
+  public static final class GYearMonth extends hydra.langs.xml.schema.Datatype implements Serializable {
     public GYearMonth () {
     
     }
@@ -756,7 +758,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class HexBinary extends hydra.langs.xml.schema.Datatype {
+  public static final class HexBinary extends hydra.langs.xml.schema.Datatype implements Serializable {
     public HexBinary () {
     
     }
@@ -781,7 +783,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class ID extends hydra.langs.xml.schema.Datatype {
+  public static final class ID extends hydra.langs.xml.schema.Datatype implements Serializable {
     public ID () {
     
     }
@@ -806,7 +808,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class IDREF extends hydra.langs.xml.schema.Datatype {
+  public static final class IDREF extends hydra.langs.xml.schema.Datatype implements Serializable {
     public IDREF () {
     
     }
@@ -831,7 +833,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class IDREFS extends hydra.langs.xml.schema.Datatype {
+  public static final class IDREFS extends hydra.langs.xml.schema.Datatype implements Serializable {
     public IDREFS () {
     
     }
@@ -856,7 +858,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class Int extends hydra.langs.xml.schema.Datatype {
+  public static final class Int extends hydra.langs.xml.schema.Datatype implements Serializable {
     public Int () {
     
     }
@@ -881,7 +883,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class Integer_ extends hydra.langs.xml.schema.Datatype {
+  public static final class Integer_ extends hydra.langs.xml.schema.Datatype implements Serializable {
     public Integer_ () {
     
     }
@@ -906,7 +908,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class Language extends hydra.langs.xml.schema.Datatype {
+  public static final class Language extends hydra.langs.xml.schema.Datatype implements Serializable {
     public Language () {
     
     }
@@ -931,7 +933,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class Long_ extends hydra.langs.xml.schema.Datatype {
+  public static final class Long_ extends hydra.langs.xml.schema.Datatype implements Serializable {
     public Long_ () {
     
     }
@@ -956,7 +958,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class NMTOKEN extends hydra.langs.xml.schema.Datatype {
+  public static final class NMTOKEN extends hydra.langs.xml.schema.Datatype implements Serializable {
     public NMTOKEN () {
     
     }
@@ -981,7 +983,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class NOTATION extends hydra.langs.xml.schema.Datatype {
+  public static final class NOTATION extends hydra.langs.xml.schema.Datatype implements Serializable {
     public NOTATION () {
     
     }
@@ -1006,7 +1008,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class Name extends hydra.langs.xml.schema.Datatype {
+  public static final class Name extends hydra.langs.xml.schema.Datatype implements Serializable {
     public Name () {
     
     }
@@ -1031,7 +1033,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class NegativeInteger extends hydra.langs.xml.schema.Datatype {
+  public static final class NegativeInteger extends hydra.langs.xml.schema.Datatype implements Serializable {
     public NegativeInteger () {
     
     }
@@ -1056,7 +1058,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class NonNegativeInteger extends hydra.langs.xml.schema.Datatype {
+  public static final class NonNegativeInteger extends hydra.langs.xml.schema.Datatype implements Serializable {
     public NonNegativeInteger () {
     
     }
@@ -1081,7 +1083,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class NonPositiveInteger extends hydra.langs.xml.schema.Datatype {
+  public static final class NonPositiveInteger extends hydra.langs.xml.schema.Datatype implements Serializable {
     public NonPositiveInteger () {
     
     }
@@ -1106,7 +1108,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class NormalizedString extends hydra.langs.xml.schema.Datatype {
+  public static final class NormalizedString extends hydra.langs.xml.schema.Datatype implements Serializable {
     public NormalizedString () {
     
     }
@@ -1131,7 +1133,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class PositiveInteger extends hydra.langs.xml.schema.Datatype {
+  public static final class PositiveInteger extends hydra.langs.xml.schema.Datatype implements Serializable {
     public PositiveInteger () {
     
     }
@@ -1156,7 +1158,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class QName extends hydra.langs.xml.schema.Datatype {
+  public static final class QName extends hydra.langs.xml.schema.Datatype implements Serializable {
     public QName () {
     
     }
@@ -1181,7 +1183,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class Short_ extends hydra.langs.xml.schema.Datatype {
+  public static final class Short_ extends hydra.langs.xml.schema.Datatype implements Serializable {
     public Short_ () {
     
     }
@@ -1206,7 +1208,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class String_ extends hydra.langs.xml.schema.Datatype {
+  public static final class String_ extends hydra.langs.xml.schema.Datatype implements Serializable {
     public String_ () {
     
     }
@@ -1231,7 +1233,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class Time extends hydra.langs.xml.schema.Datatype {
+  public static final class Time extends hydra.langs.xml.schema.Datatype implements Serializable {
     public Time () {
     
     }
@@ -1256,7 +1258,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class Token extends hydra.langs.xml.schema.Datatype {
+  public static final class Token extends hydra.langs.xml.schema.Datatype implements Serializable {
     public Token () {
     
     }
@@ -1281,7 +1283,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class UnsignedByte extends hydra.langs.xml.schema.Datatype {
+  public static final class UnsignedByte extends hydra.langs.xml.schema.Datatype implements Serializable {
     public UnsignedByte () {
     
     }
@@ -1306,7 +1308,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class UnsignedInt extends hydra.langs.xml.schema.Datatype {
+  public static final class UnsignedInt extends hydra.langs.xml.schema.Datatype implements Serializable {
     public UnsignedInt () {
     
     }
@@ -1331,7 +1333,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class UnsignedLong extends hydra.langs.xml.schema.Datatype {
+  public static final class UnsignedLong extends hydra.langs.xml.schema.Datatype implements Serializable {
     public UnsignedLong () {
     
     }
@@ -1356,7 +1358,7 @@ public abstract class Datatype {
     }
   }
   
-  public static final class UnsignedShort extends hydra.langs.xml.schema.Datatype {
+  public static final class UnsignedShort extends hydra.langs.xml.schema.Datatype implements Serializable {
     public UnsignedShort () {
     
     }

@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class ElementValue {
+import java.io.Serializable;
+
+public abstract class ElementValue implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ElementValue");
   
   private ElementValue () {
@@ -35,7 +37,7 @@ public abstract class ElementValue {
     }
   }
   
-  public static final class ConditionalExpression extends hydra.langs.java.syntax.ElementValue {
+  public static final class ConditionalExpression extends hydra.langs.java.syntax.ElementValue implements Serializable {
     public final hydra.langs.java.syntax.ConditionalExpression value;
     
     public ConditionalExpression (hydra.langs.java.syntax.ConditionalExpression value) {
@@ -62,7 +64,7 @@ public abstract class ElementValue {
     }
   }
   
-  public static final class ElementValueArrayInitializer extends hydra.langs.java.syntax.ElementValue {
+  public static final class ElementValueArrayInitializer extends hydra.langs.java.syntax.ElementValue implements Serializable {
     public final hydra.langs.java.syntax.ElementValueArrayInitializer value;
     
     public ElementValueArrayInitializer (hydra.langs.java.syntax.ElementValueArrayInitializer value) {
@@ -89,7 +91,7 @@ public abstract class ElementValue {
     }
   }
   
-  public static final class Annotation extends hydra.langs.java.syntax.ElementValue {
+  public static final class Annotation extends hydra.langs.java.syntax.ElementValue implements Serializable {
     public final hydra.langs.java.syntax.Annotation value;
     
     public Annotation (hydra.langs.java.syntax.Annotation value) {

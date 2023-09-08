@@ -1,6 +1,8 @@
 package hydra.langs.pegasus.pdl;
 
-public class QualifiedName {
+import java.io.Serializable;
+
+public class QualifiedName implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/pegasus/pdl.QualifiedName");
   
   public final hydra.langs.pegasus.pdl.Name name;

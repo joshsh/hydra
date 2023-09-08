@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class VariableAccess {
+import java.io.Serializable;
+
+public abstract class VariableAccess implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.VariableAccess");
   
   private VariableAccess () {
@@ -29,7 +31,7 @@ public abstract class VariableAccess {
     }
   }
   
-  public static final class ExpressionName extends hydra.langs.java.syntax.VariableAccess {
+  public static final class ExpressionName extends hydra.langs.java.syntax.VariableAccess implements Serializable {
     public final hydra.langs.java.syntax.ExpressionName value;
     
     public ExpressionName (hydra.langs.java.syntax.ExpressionName value) {
@@ -56,7 +58,7 @@ public abstract class VariableAccess {
     }
   }
   
-  public static final class FieldAccess extends hydra.langs.java.syntax.VariableAccess {
+  public static final class FieldAccess extends hydra.langs.java.syntax.VariableAccess implements Serializable {
     public final hydra.langs.java.syntax.FieldAccess value;
     
     public FieldAccess (hydra.langs.java.syntax.FieldAccess value) {

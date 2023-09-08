@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class BlankNodeLabel_Alts {
+import java.io.Serializable;
+
+public abstract class BlankNodeLabel_Alts implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.BlankNodeLabel.Alts");
   
   private BlankNodeLabel_Alts () {
@@ -29,7 +31,7 @@ public abstract class BlankNodeLabel_Alts {
     }
   }
   
-  public static final class PnCharsU extends hydra.langs.shex.syntax.BlankNodeLabel_Alts {
+  public static final class PnCharsU extends hydra.langs.shex.syntax.BlankNodeLabel_Alts implements Serializable {
     public final hydra.langs.shex.syntax.PnCharsU value;
     
     public PnCharsU (hydra.langs.shex.syntax.PnCharsU value) {
@@ -56,7 +58,7 @@ public abstract class BlankNodeLabel_Alts {
     }
   }
   
-  public static final class Regex extends hydra.langs.shex.syntax.BlankNodeLabel_Alts {
+  public static final class Regex extends hydra.langs.shex.syntax.BlankNodeLabel_Alts implements Serializable {
     public final String value;
     
     public Regex (String value) {

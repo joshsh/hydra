@@ -1,6 +1,8 @@
 package hydra.langs.owl.syntax;
 
-public class ObjectHasSelf {
+import java.io.Serializable;
+
+public class ObjectHasSelf implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/owl/syntax.ObjectHasSelf");
   
   public final hydra.langs.owl.syntax.ObjectPropertyExpression value;

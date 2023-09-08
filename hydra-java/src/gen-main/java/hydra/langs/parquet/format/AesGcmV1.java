@@ -1,6 +1,8 @@
 package hydra.langs.parquet.format;
 
-public class AesGcmV1 {
+import java.io.Serializable;
+
+public class AesGcmV1 implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/parquet/format.AesGcmV1");
   
   public final java.util.Optional<String> aadPrefix;

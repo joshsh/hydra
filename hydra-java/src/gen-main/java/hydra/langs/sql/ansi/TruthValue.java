@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public abstract class TruthValue {
+import java.io.Serializable;
+
+public abstract class TruthValue implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.TruthValue");
   
   private TruthValue () {
@@ -35,7 +37,7 @@ public abstract class TruthValue {
     }
   }
   
-  public static final class TRUE extends hydra.langs.sql.ansi.TruthValue {
+  public static final class TRUE extends hydra.langs.sql.ansi.TruthValue implements Serializable {
     public TRUE () {
     
     }
@@ -60,7 +62,7 @@ public abstract class TruthValue {
     }
   }
   
-  public static final class FALSE extends hydra.langs.sql.ansi.TruthValue {
+  public static final class FALSE extends hydra.langs.sql.ansi.TruthValue implements Serializable {
     public FALSE () {
     
     }
@@ -85,7 +87,7 @@ public abstract class TruthValue {
     }
   }
   
-  public static final class UNKNOWN extends hydra.langs.sql.ansi.TruthValue {
+  public static final class UNKNOWN extends hydra.langs.sql.ansi.TruthValue implements Serializable {
     public UNKNOWN () {
     
     }

@@ -1,6 +1,8 @@
 package hydra.langs.haskell.ast;
 
-public class PatternField {
+import java.io.Serializable;
+
+public class PatternField implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.PatternField");
   
   public final hydra.langs.haskell.ast.Name name;

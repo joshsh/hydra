@@ -1,6 +1,8 @@
 package hydra.langs.owl.syntax;
 
-public class ObjectPropertyAssertion {
+import java.io.Serializable;
+
+public class ObjectPropertyAssertion implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/owl/syntax.ObjectPropertyAssertion");
   
   public final java.util.List<hydra.langs.owl.syntax.Annotation> annotations;

@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public abstract class Enumerator {
+import java.io.Serializable;
+
+public abstract class Enumerator implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Enumerator");
   
   private Enumerator () {
@@ -41,7 +43,7 @@ public abstract class Enumerator {
     }
   }
   
-  public static final class Generator extends hydra.langs.scala.meta.Enumerator {
+  public static final class Generator extends hydra.langs.scala.meta.Enumerator implements Serializable {
     public final hydra.langs.scala.meta.Enumerator_Generator value;
     
     public Generator (hydra.langs.scala.meta.Enumerator_Generator value) {
@@ -68,7 +70,7 @@ public abstract class Enumerator {
     }
   }
   
-  public static final class CaseGenerator extends hydra.langs.scala.meta.Enumerator {
+  public static final class CaseGenerator extends hydra.langs.scala.meta.Enumerator implements Serializable {
     public final hydra.langs.scala.meta.Enumerator_CaseGenerator value;
     
     public CaseGenerator (hydra.langs.scala.meta.Enumerator_CaseGenerator value) {
@@ -95,7 +97,7 @@ public abstract class Enumerator {
     }
   }
   
-  public static final class Val extends hydra.langs.scala.meta.Enumerator {
+  public static final class Val extends hydra.langs.scala.meta.Enumerator implements Serializable {
     public final hydra.langs.scala.meta.Enumerator_Val value;
     
     public Val (hydra.langs.scala.meta.Enumerator_Val value) {
@@ -122,7 +124,7 @@ public abstract class Enumerator {
     }
   }
   
-  public static final class Guard extends hydra.langs.scala.meta.Enumerator {
+  public static final class Guard extends hydra.langs.scala.meta.Enumerator implements Serializable {
     public final hydra.langs.scala.meta.Enumerator_Guard value;
     
     public Guard (hydra.langs.scala.meta.Enumerator_Guard value) {

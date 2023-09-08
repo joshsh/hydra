@@ -1,9 +1,11 @@
 package hydra.mantle;
 
+import java.io.Serializable;
+
 /**
  * A type expression together with free type variables occurring in the expression
  */
-public class TypeScheme<A> {
+public class TypeScheme<A> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/mantle.TypeScheme");
   
   public final java.util.List<hydra.core.Name> variables;

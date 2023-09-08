@@ -1,6 +1,8 @@
 package hydra.langs.haskell.ast;
 
-public abstract class Pattern {
+import java.io.Serializable;
+
+public abstract class Pattern implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.Pattern");
   
   private Pattern () {
@@ -77,7 +79,7 @@ public abstract class Pattern {
     }
   }
   
-  public static final class Application extends hydra.langs.haskell.ast.Pattern {
+  public static final class Application extends hydra.langs.haskell.ast.Pattern implements Serializable {
     public final hydra.langs.haskell.ast.Pattern_Application value;
     
     public Application (hydra.langs.haskell.ast.Pattern_Application value) {
@@ -104,7 +106,7 @@ public abstract class Pattern {
     }
   }
   
-  public static final class As extends hydra.langs.haskell.ast.Pattern {
+  public static final class As extends hydra.langs.haskell.ast.Pattern implements Serializable {
     public final hydra.langs.haskell.ast.Pattern_As value;
     
     public As (hydra.langs.haskell.ast.Pattern_As value) {
@@ -131,7 +133,7 @@ public abstract class Pattern {
     }
   }
   
-  public static final class List extends hydra.langs.haskell.ast.Pattern {
+  public static final class List extends hydra.langs.haskell.ast.Pattern implements Serializable {
     public final java.util.List<hydra.langs.haskell.ast.Pattern> value;
     
     public List (java.util.List<hydra.langs.haskell.ast.Pattern> value) {
@@ -158,7 +160,7 @@ public abstract class Pattern {
     }
   }
   
-  public static final class Literal extends hydra.langs.haskell.ast.Pattern {
+  public static final class Literal extends hydra.langs.haskell.ast.Pattern implements Serializable {
     public final hydra.langs.haskell.ast.Literal value;
     
     public Literal (hydra.langs.haskell.ast.Literal value) {
@@ -185,7 +187,7 @@ public abstract class Pattern {
     }
   }
   
-  public static final class Name extends hydra.langs.haskell.ast.Pattern {
+  public static final class Name extends hydra.langs.haskell.ast.Pattern implements Serializable {
     public final hydra.langs.haskell.ast.Name value;
     
     public Name (hydra.langs.haskell.ast.Name value) {
@@ -212,7 +214,7 @@ public abstract class Pattern {
     }
   }
   
-  public static final class Parens extends hydra.langs.haskell.ast.Pattern {
+  public static final class Parens extends hydra.langs.haskell.ast.Pattern implements Serializable {
     public final hydra.langs.haskell.ast.Pattern value;
     
     public Parens (hydra.langs.haskell.ast.Pattern value) {
@@ -239,7 +241,7 @@ public abstract class Pattern {
     }
   }
   
-  public static final class Record extends hydra.langs.haskell.ast.Pattern {
+  public static final class Record extends hydra.langs.haskell.ast.Pattern implements Serializable {
     public final hydra.langs.haskell.ast.Pattern_Record value;
     
     public Record (hydra.langs.haskell.ast.Pattern_Record value) {
@@ -266,7 +268,7 @@ public abstract class Pattern {
     }
   }
   
-  public static final class Tuple extends hydra.langs.haskell.ast.Pattern {
+  public static final class Tuple extends hydra.langs.haskell.ast.Pattern implements Serializable {
     public final java.util.List<hydra.langs.haskell.ast.Pattern> value;
     
     public Tuple (java.util.List<hydra.langs.haskell.ast.Pattern> value) {
@@ -293,7 +295,7 @@ public abstract class Pattern {
     }
   }
   
-  public static final class Typed extends hydra.langs.haskell.ast.Pattern {
+  public static final class Typed extends hydra.langs.haskell.ast.Pattern implements Serializable {
     public final hydra.langs.haskell.ast.Pattern_Typed value;
     
     public Typed (hydra.langs.haskell.ast.Pattern_Typed value) {
@@ -320,7 +322,7 @@ public abstract class Pattern {
     }
   }
   
-  public static final class Wildcard extends hydra.langs.haskell.ast.Pattern {
+  public static final class Wildcard extends hydra.langs.haskell.ast.Pattern implements Serializable {
     public Wildcard () {
     
     }

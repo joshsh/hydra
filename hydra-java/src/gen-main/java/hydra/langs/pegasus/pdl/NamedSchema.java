@@ -1,6 +1,8 @@
 package hydra.langs.pegasus.pdl;
 
-public class NamedSchema {
+import java.io.Serializable;
+
+public class NamedSchema implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/pegasus/pdl.NamedSchema");
   
   public final hydra.langs.pegasus.pdl.QualifiedName qualifiedName;

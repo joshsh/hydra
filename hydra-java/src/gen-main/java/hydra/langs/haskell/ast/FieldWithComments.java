@@ -1,9 +1,11 @@
 package hydra.langs.haskell.ast;
 
+import java.io.Serializable;
+
 /**
  * A field together with any comments
  */
-public class FieldWithComments {
+public class FieldWithComments implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.FieldWithComments");
   
   public final hydra.langs.haskell.ast.Field field;

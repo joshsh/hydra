@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public abstract class CommonValueExpression {
+import java.io.Serializable;
+
+public abstract class CommonValueExpression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.CommonValueExpression");
   
   private CommonValueExpression () {
@@ -59,7 +61,7 @@ public abstract class CommonValueExpression {
     }
   }
   
-  public static final class Numeric extends hydra.langs.sql.ansi.CommonValueExpression {
+  public static final class Numeric extends hydra.langs.sql.ansi.CommonValueExpression implements Serializable {
     public final hydra.langs.sql.ansi.NumericValueExpression value;
     
     public Numeric (hydra.langs.sql.ansi.NumericValueExpression value) {
@@ -86,7 +88,7 @@ public abstract class CommonValueExpression {
     }
   }
   
-  public static final class String_ extends hydra.langs.sql.ansi.CommonValueExpression {
+  public static final class String_ extends hydra.langs.sql.ansi.CommonValueExpression implements Serializable {
     public final hydra.langs.sql.ansi.StringValueExpression value;
     
     public String_ (hydra.langs.sql.ansi.StringValueExpression value) {
@@ -113,7 +115,7 @@ public abstract class CommonValueExpression {
     }
   }
   
-  public static final class Datetime extends hydra.langs.sql.ansi.CommonValueExpression {
+  public static final class Datetime extends hydra.langs.sql.ansi.CommonValueExpression implements Serializable {
     public final hydra.langs.sql.ansi.DatetimeValueExpression value;
     
     public Datetime (hydra.langs.sql.ansi.DatetimeValueExpression value) {
@@ -140,7 +142,7 @@ public abstract class CommonValueExpression {
     }
   }
   
-  public static final class Interval extends hydra.langs.sql.ansi.CommonValueExpression {
+  public static final class Interval extends hydra.langs.sql.ansi.CommonValueExpression implements Serializable {
     public final hydra.langs.sql.ansi.IntervalValueExpression value;
     
     public Interval (hydra.langs.sql.ansi.IntervalValueExpression value) {
@@ -167,7 +169,7 @@ public abstract class CommonValueExpression {
     }
   }
   
-  public static final class UserDefined extends hydra.langs.sql.ansi.CommonValueExpression {
+  public static final class UserDefined extends hydra.langs.sql.ansi.CommonValueExpression implements Serializable {
     public final hydra.langs.sql.ansi.UserDefinedTypeValueExpression value;
     
     public UserDefined (hydra.langs.sql.ansi.UserDefinedTypeValueExpression value) {
@@ -194,7 +196,7 @@ public abstract class CommonValueExpression {
     }
   }
   
-  public static final class Reference extends hydra.langs.sql.ansi.CommonValueExpression {
+  public static final class Reference extends hydra.langs.sql.ansi.CommonValueExpression implements Serializable {
     public final hydra.langs.sql.ansi.ReferenceValueExpression value;
     
     public Reference (hydra.langs.sql.ansi.ReferenceValueExpression value) {
@@ -221,7 +223,7 @@ public abstract class CommonValueExpression {
     }
   }
   
-  public static final class Collection extends hydra.langs.sql.ansi.CommonValueExpression {
+  public static final class Collection extends hydra.langs.sql.ansi.CommonValueExpression implements Serializable {
     public final hydra.langs.sql.ansi.CollectionValueExpression value;
     
     public Collection (hydra.langs.sql.ansi.CollectionValueExpression value) {

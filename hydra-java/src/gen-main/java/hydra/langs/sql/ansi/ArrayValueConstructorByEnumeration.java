@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public class ArrayValueConstructorByEnumeration {
+import java.io.Serializable;
+
+public class ArrayValueConstructorByEnumeration implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.ArrayValueConstructorByEnumeration");
   
   public final hydra.langs.sql.ansi.LeftBracketOrTrigraph leftBracketOrTrigraph;

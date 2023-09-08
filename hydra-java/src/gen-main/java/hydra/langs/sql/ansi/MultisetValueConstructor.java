@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public class MultisetValueConstructor {
+import java.io.Serializable;
+
+public class MultisetValueConstructor implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.MultisetValueConstructor");
   
   public MultisetValueConstructor () {

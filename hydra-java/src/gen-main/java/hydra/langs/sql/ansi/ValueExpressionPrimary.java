@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public abstract class ValueExpressionPrimary {
+import java.io.Serializable;
+
+public abstract class ValueExpressionPrimary implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.ValueExpressionPrimary");
   
   private ValueExpressionPrimary () {
@@ -29,7 +31,7 @@ public abstract class ValueExpressionPrimary {
     }
   }
   
-  public static final class Parens extends hydra.langs.sql.ansi.ValueExpressionPrimary {
+  public static final class Parens extends hydra.langs.sql.ansi.ValueExpressionPrimary implements Serializable {
     public final hydra.langs.sql.ansi.ParenthesizedValueExpression value;
     
     public Parens (hydra.langs.sql.ansi.ParenthesizedValueExpression value) {
@@ -56,7 +58,7 @@ public abstract class ValueExpressionPrimary {
     }
   }
   
-  public static final class Noparens extends hydra.langs.sql.ansi.ValueExpressionPrimary {
+  public static final class Noparens extends hydra.langs.sql.ansi.ValueExpressionPrimary implements Serializable {
     public final hydra.langs.sql.ansi.NonparenthesizedValueExpressionPrimary value;
     
     public Noparens (hydra.langs.sql.ansi.NonparenthesizedValueExpressionPrimary value) {

@@ -1,9 +1,11 @@
 package hydra.module;
 
+import java.io.Serializable;
+
 /**
  * A qualified name consisting of an optional namespace together with a mandatory local name
  */
-public class QualifiedName {
+public class QualifiedName implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/module.QualifiedName");
   
   public final java.util.Optional<hydra.module.Namespace> namespace;

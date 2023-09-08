@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public abstract class TypeExtension {
+import java.io.Serializable;
+
+public abstract class TypeExtension implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.TypeExtension");
   
   private TypeExtension () {
@@ -53,7 +55,7 @@ public abstract class TypeExtension {
     }
   }
   
-  public static final class Scalar extends hydra.langs.graphql.syntax.TypeExtension {
+  public static final class Scalar extends hydra.langs.graphql.syntax.TypeExtension implements Serializable {
     public final hydra.langs.graphql.syntax.ScalarTypeExtension value;
     
     public Scalar (hydra.langs.graphql.syntax.ScalarTypeExtension value) {
@@ -80,7 +82,7 @@ public abstract class TypeExtension {
     }
   }
   
-  public static final class Object_ extends hydra.langs.graphql.syntax.TypeExtension {
+  public static final class Object_ extends hydra.langs.graphql.syntax.TypeExtension implements Serializable {
     public final hydra.langs.graphql.syntax.ObjectTypeExtension value;
     
     public Object_ (hydra.langs.graphql.syntax.ObjectTypeExtension value) {
@@ -107,7 +109,7 @@ public abstract class TypeExtension {
     }
   }
   
-  public static final class Interface extends hydra.langs.graphql.syntax.TypeExtension {
+  public static final class Interface extends hydra.langs.graphql.syntax.TypeExtension implements Serializable {
     public final hydra.langs.graphql.syntax.InterfaceTypeExtension value;
     
     public Interface (hydra.langs.graphql.syntax.InterfaceTypeExtension value) {
@@ -134,7 +136,7 @@ public abstract class TypeExtension {
     }
   }
   
-  public static final class Union extends hydra.langs.graphql.syntax.TypeExtension {
+  public static final class Union extends hydra.langs.graphql.syntax.TypeExtension implements Serializable {
     public final hydra.langs.graphql.syntax.UnionTypeExtension value;
     
     public Union (hydra.langs.graphql.syntax.UnionTypeExtension value) {
@@ -161,7 +163,7 @@ public abstract class TypeExtension {
     }
   }
   
-  public static final class Enum_ extends hydra.langs.graphql.syntax.TypeExtension {
+  public static final class Enum_ extends hydra.langs.graphql.syntax.TypeExtension implements Serializable {
     public final hydra.langs.graphql.syntax.EnumTypeExtension value;
     
     public Enum_ (hydra.langs.graphql.syntax.EnumTypeExtension value) {
@@ -188,7 +190,7 @@ public abstract class TypeExtension {
     }
   }
   
-  public static final class InputObject extends hydra.langs.graphql.syntax.TypeExtension {
+  public static final class InputObject extends hydra.langs.graphql.syntax.TypeExtension implements Serializable {
     public final hydra.langs.graphql.syntax.InputObjectTypeExtension value;
     
     public InputObject (hydra.langs.graphql.syntax.InputObjectTypeExtension value) {

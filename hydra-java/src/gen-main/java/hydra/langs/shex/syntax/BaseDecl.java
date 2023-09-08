@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public class BaseDecl {
+import java.io.Serializable;
+
+public class BaseDecl implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.BaseDecl");
   
   public final hydra.langs.shex.syntax.IriRef value;

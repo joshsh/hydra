@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public class DateString {
+import java.io.Serializable;
+
+public class DateString implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.DateString");
   
   public DateString () {

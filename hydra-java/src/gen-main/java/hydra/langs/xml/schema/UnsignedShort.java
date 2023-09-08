@@ -1,6 +1,8 @@
 package hydra.langs.xml.schema;
 
-public class UnsignedShort {
+import java.io.Serializable;
+
+public class UnsignedShort implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/xml/schema.UnsignedShort");
   
   public final Character value;

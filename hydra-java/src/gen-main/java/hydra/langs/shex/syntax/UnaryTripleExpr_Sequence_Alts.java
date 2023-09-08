@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class UnaryTripleExpr_Sequence_Alts {
+import java.io.Serializable;
+
+public abstract class UnaryTripleExpr_Sequence_Alts implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.UnaryTripleExpr.Sequence.Alts");
   
   private UnaryTripleExpr_Sequence_Alts () {
@@ -29,7 +31,7 @@ public abstract class UnaryTripleExpr_Sequence_Alts {
     }
   }
   
-  public static final class TripleConstraint extends hydra.langs.shex.syntax.UnaryTripleExpr_Sequence_Alts {
+  public static final class TripleConstraint extends hydra.langs.shex.syntax.UnaryTripleExpr_Sequence_Alts implements Serializable {
     public final hydra.langs.shex.syntax.TripleConstraint value;
     
     public TripleConstraint (hydra.langs.shex.syntax.TripleConstraint value) {
@@ -56,7 +58,7 @@ public abstract class UnaryTripleExpr_Sequence_Alts {
     }
   }
   
-  public static final class BracketedTripleExpr extends hydra.langs.shex.syntax.UnaryTripleExpr_Sequence_Alts {
+  public static final class BracketedTripleExpr extends hydra.langs.shex.syntax.UnaryTripleExpr_Sequence_Alts implements Serializable {
     public final hydra.langs.shex.syntax.BracketedTripleExpr value;
     
     public BracketedTripleExpr (hydra.langs.shex.syntax.BracketedTripleExpr value) {

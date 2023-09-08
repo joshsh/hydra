@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class Literal {
+import java.io.Serializable;
+
+public abstract class Literal implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.Literal");
   
   private Literal () {
@@ -35,7 +37,7 @@ public abstract class Literal {
     }
   }
   
-  public static final class RdfLiteral extends hydra.langs.shex.syntax.Literal {
+  public static final class RdfLiteral extends hydra.langs.shex.syntax.Literal implements Serializable {
     public final hydra.langs.shex.syntax.RdfLiteral value;
     
     public RdfLiteral (hydra.langs.shex.syntax.RdfLiteral value) {
@@ -62,7 +64,7 @@ public abstract class Literal {
     }
   }
   
-  public static final class NumericLiteral extends hydra.langs.shex.syntax.Literal {
+  public static final class NumericLiteral extends hydra.langs.shex.syntax.Literal implements Serializable {
     public final hydra.langs.shex.syntax.NumericLiteral value;
     
     public NumericLiteral (hydra.langs.shex.syntax.NumericLiteral value) {
@@ -89,7 +91,7 @@ public abstract class Literal {
     }
   }
   
-  public static final class BooleanLiteral extends hydra.langs.shex.syntax.Literal {
+  public static final class BooleanLiteral extends hydra.langs.shex.syntax.Literal implements Serializable {
     public final hydra.langs.shex.syntax.BooleanLiteral value;
     
     public BooleanLiteral (hydra.langs.shex.syntax.BooleanLiteral value) {

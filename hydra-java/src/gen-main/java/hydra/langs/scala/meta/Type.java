@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public abstract class Type {
+import java.io.Serializable;
+
+public abstract class Type implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Type");
   
   private Type () {
@@ -155,7 +157,7 @@ public abstract class Type {
     }
   }
   
-  public static final class Ref extends hydra.langs.scala.meta.Type {
+  public static final class Ref extends hydra.langs.scala.meta.Type implements Serializable {
     public final hydra.langs.scala.meta.Type_Ref value;
     
     public Ref (hydra.langs.scala.meta.Type_Ref value) {
@@ -182,7 +184,7 @@ public abstract class Type {
     }
   }
   
-  public static final class AnonymousName extends hydra.langs.scala.meta.Type {
+  public static final class AnonymousName extends hydra.langs.scala.meta.Type implements Serializable {
     public final hydra.langs.scala.meta.Type_AnonymousName value;
     
     public AnonymousName (hydra.langs.scala.meta.Type_AnonymousName value) {
@@ -209,7 +211,7 @@ public abstract class Type {
     }
   }
   
-  public static final class Apply extends hydra.langs.scala.meta.Type {
+  public static final class Apply extends hydra.langs.scala.meta.Type implements Serializable {
     public final hydra.langs.scala.meta.Type_Apply value;
     
     public Apply (hydra.langs.scala.meta.Type_Apply value) {
@@ -236,7 +238,7 @@ public abstract class Type {
     }
   }
   
-  public static final class ApplyInfix extends hydra.langs.scala.meta.Type {
+  public static final class ApplyInfix extends hydra.langs.scala.meta.Type implements Serializable {
     public final hydra.langs.scala.meta.Type_ApplyInfix value;
     
     public ApplyInfix (hydra.langs.scala.meta.Type_ApplyInfix value) {
@@ -263,7 +265,7 @@ public abstract class Type {
     }
   }
   
-  public static final class FunctionType extends hydra.langs.scala.meta.Type {
+  public static final class FunctionType extends hydra.langs.scala.meta.Type implements Serializable {
     public final hydra.langs.scala.meta.Type_FunctionType value;
     
     public FunctionType (hydra.langs.scala.meta.Type_FunctionType value) {
@@ -290,7 +292,7 @@ public abstract class Type {
     }
   }
   
-  public static final class PolyFunction extends hydra.langs.scala.meta.Type {
+  public static final class PolyFunction extends hydra.langs.scala.meta.Type implements Serializable {
     public final hydra.langs.scala.meta.Type_PolyFunction value;
     
     public PolyFunction (hydra.langs.scala.meta.Type_PolyFunction value) {
@@ -317,7 +319,7 @@ public abstract class Type {
     }
   }
   
-  public static final class ImplicitFunction extends hydra.langs.scala.meta.Type {
+  public static final class ImplicitFunction extends hydra.langs.scala.meta.Type implements Serializable {
     public final hydra.langs.scala.meta.Type_ImplicitFunction value;
     
     public ImplicitFunction (hydra.langs.scala.meta.Type_ImplicitFunction value) {
@@ -344,7 +346,7 @@ public abstract class Type {
     }
   }
   
-  public static final class Tuple extends hydra.langs.scala.meta.Type {
+  public static final class Tuple extends hydra.langs.scala.meta.Type implements Serializable {
     public final hydra.langs.scala.meta.Type_Tuple value;
     
     public Tuple (hydra.langs.scala.meta.Type_Tuple value) {
@@ -371,7 +373,7 @@ public abstract class Type {
     }
   }
   
-  public static final class With extends hydra.langs.scala.meta.Type {
+  public static final class With extends hydra.langs.scala.meta.Type implements Serializable {
     public final hydra.langs.scala.meta.Type_With value;
     
     public With (hydra.langs.scala.meta.Type_With value) {
@@ -398,7 +400,7 @@ public abstract class Type {
     }
   }
   
-  public static final class And extends hydra.langs.scala.meta.Type {
+  public static final class And extends hydra.langs.scala.meta.Type implements Serializable {
     public final hydra.langs.scala.meta.Type_And value;
     
     public And (hydra.langs.scala.meta.Type_And value) {
@@ -425,7 +427,7 @@ public abstract class Type {
     }
   }
   
-  public static final class Or extends hydra.langs.scala.meta.Type {
+  public static final class Or extends hydra.langs.scala.meta.Type implements Serializable {
     public final hydra.langs.scala.meta.Type_Or value;
     
     public Or (hydra.langs.scala.meta.Type_Or value) {
@@ -452,7 +454,7 @@ public abstract class Type {
     }
   }
   
-  public static final class Refine extends hydra.langs.scala.meta.Type {
+  public static final class Refine extends hydra.langs.scala.meta.Type implements Serializable {
     public final hydra.langs.scala.meta.Type_Refine value;
     
     public Refine (hydra.langs.scala.meta.Type_Refine value) {
@@ -479,7 +481,7 @@ public abstract class Type {
     }
   }
   
-  public static final class Existential extends hydra.langs.scala.meta.Type {
+  public static final class Existential extends hydra.langs.scala.meta.Type implements Serializable {
     public final hydra.langs.scala.meta.Type_Existential value;
     
     public Existential (hydra.langs.scala.meta.Type_Existential value) {
@@ -506,7 +508,7 @@ public abstract class Type {
     }
   }
   
-  public static final class Annotate extends hydra.langs.scala.meta.Type {
+  public static final class Annotate extends hydra.langs.scala.meta.Type implements Serializable {
     public final hydra.langs.scala.meta.Type_Annotate value;
     
     public Annotate (hydra.langs.scala.meta.Type_Annotate value) {
@@ -533,7 +535,7 @@ public abstract class Type {
     }
   }
   
-  public static final class Lambda extends hydra.langs.scala.meta.Type {
+  public static final class Lambda extends hydra.langs.scala.meta.Type implements Serializable {
     public final hydra.langs.scala.meta.Type_Lambda value;
     
     public Lambda (hydra.langs.scala.meta.Type_Lambda value) {
@@ -560,7 +562,7 @@ public abstract class Type {
     }
   }
   
-  public static final class Macro extends hydra.langs.scala.meta.Type {
+  public static final class Macro extends hydra.langs.scala.meta.Type implements Serializable {
     public final hydra.langs.scala.meta.Type_Macro value;
     
     public Macro (hydra.langs.scala.meta.Type_Macro value) {
@@ -587,7 +589,7 @@ public abstract class Type {
     }
   }
   
-  public static final class Method extends hydra.langs.scala.meta.Type {
+  public static final class Method extends hydra.langs.scala.meta.Type implements Serializable {
     public final hydra.langs.scala.meta.Type_Method value;
     
     public Method (hydra.langs.scala.meta.Type_Method value) {
@@ -614,7 +616,7 @@ public abstract class Type {
     }
   }
   
-  public static final class Placeholder extends hydra.langs.scala.meta.Type {
+  public static final class Placeholder extends hydra.langs.scala.meta.Type implements Serializable {
     public final hydra.langs.scala.meta.Type_Placeholder value;
     
     public Placeholder (hydra.langs.scala.meta.Type_Placeholder value) {
@@ -641,7 +643,7 @@ public abstract class Type {
     }
   }
   
-  public static final class ByName extends hydra.langs.scala.meta.Type {
+  public static final class ByName extends hydra.langs.scala.meta.Type implements Serializable {
     public final hydra.langs.scala.meta.Type_ByName value;
     
     public ByName (hydra.langs.scala.meta.Type_ByName value) {
@@ -668,7 +670,7 @@ public abstract class Type {
     }
   }
   
-  public static final class Repeated extends hydra.langs.scala.meta.Type {
+  public static final class Repeated extends hydra.langs.scala.meta.Type implements Serializable {
     public final hydra.langs.scala.meta.Type_Repeated value;
     
     public Repeated (hydra.langs.scala.meta.Type_Repeated value) {
@@ -695,7 +697,7 @@ public abstract class Type {
     }
   }
   
-  public static final class Var extends hydra.langs.scala.meta.Type {
+  public static final class Var extends hydra.langs.scala.meta.Type implements Serializable {
     public final hydra.langs.scala.meta.Type_Var value;
     
     public Var (hydra.langs.scala.meta.Type_Var value) {
@@ -722,7 +724,7 @@ public abstract class Type {
     }
   }
   
-  public static final class TypedParam extends hydra.langs.scala.meta.Type {
+  public static final class TypedParam extends hydra.langs.scala.meta.Type implements Serializable {
     public final hydra.langs.scala.meta.Type_TypedParam value;
     
     public TypedParam (hydra.langs.scala.meta.Type_TypedParam value) {
@@ -749,7 +751,7 @@ public abstract class Type {
     }
   }
   
-  public static final class Match extends hydra.langs.scala.meta.Type {
+  public static final class Match extends hydra.langs.scala.meta.Type implements Serializable {
     public final hydra.langs.scala.meta.Type_Match value;
     
     public Match (hydra.langs.scala.meta.Type_Match value) {

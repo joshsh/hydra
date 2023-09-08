@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class FormalParameter {
+import java.io.Serializable;
+
+public abstract class FormalParameter implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.FormalParameter");
   
   private FormalParameter () {
@@ -29,7 +31,7 @@ public abstract class FormalParameter {
     }
   }
   
-  public static final class Simple extends hydra.langs.java.syntax.FormalParameter {
+  public static final class Simple extends hydra.langs.java.syntax.FormalParameter implements Serializable {
     public final hydra.langs.java.syntax.FormalParameter_Simple value;
     
     public Simple (hydra.langs.java.syntax.FormalParameter_Simple value) {
@@ -56,7 +58,7 @@ public abstract class FormalParameter {
     }
   }
   
-  public static final class VariableArity extends hydra.langs.java.syntax.FormalParameter {
+  public static final class VariableArity extends hydra.langs.java.syntax.FormalParameter implements Serializable {
     public final hydra.langs.java.syntax.VariableArityParameter value;
     
     public VariableArity (hydra.langs.java.syntax.VariableArityParameter value) {

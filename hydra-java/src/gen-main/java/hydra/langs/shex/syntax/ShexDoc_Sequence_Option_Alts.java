@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class ShexDoc_Sequence_Option_Alts {
+import java.io.Serializable;
+
+public abstract class ShexDoc_Sequence_Option_Alts implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.ShexDoc.Sequence.Option.Alts");
   
   private ShexDoc_Sequence_Option_Alts () {
@@ -29,7 +31,7 @@ public abstract class ShexDoc_Sequence_Option_Alts {
     }
   }
   
-  public static final class NotStartAction extends hydra.langs.shex.syntax.ShexDoc_Sequence_Option_Alts {
+  public static final class NotStartAction extends hydra.langs.shex.syntax.ShexDoc_Sequence_Option_Alts implements Serializable {
     public final hydra.langs.shex.syntax.NotStartAction value;
     
     public NotStartAction (hydra.langs.shex.syntax.NotStartAction value) {
@@ -56,7 +58,7 @@ public abstract class ShexDoc_Sequence_Option_Alts {
     }
   }
   
-  public static final class StartActions extends hydra.langs.shex.syntax.ShexDoc_Sequence_Option_Alts {
+  public static final class StartActions extends hydra.langs.shex.syntax.ShexDoc_Sequence_Option_Alts implements Serializable {
     public final hydra.langs.shex.syntax.StartActions value;
     
     public StartActions (hydra.langs.shex.syntax.StartActions value) {

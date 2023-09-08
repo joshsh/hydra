@@ -1,6 +1,8 @@
 package hydra.langs.owl.syntax;
 
-public class DataPropertyExpression {
+import java.io.Serializable;
+
+public class DataPropertyExpression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/owl/syntax.DataPropertyExpression");
   
   public final hydra.langs.owl.syntax.DataProperty value;

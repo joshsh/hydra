@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class UnaryExpression {
+import java.io.Serializable;
+
+public abstract class UnaryExpression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.UnaryExpression");
   
   private UnaryExpression () {
@@ -47,7 +49,7 @@ public abstract class UnaryExpression {
     }
   }
   
-  public static final class PreIncrement extends hydra.langs.java.syntax.UnaryExpression {
+  public static final class PreIncrement extends hydra.langs.java.syntax.UnaryExpression implements Serializable {
     public final hydra.langs.java.syntax.PreIncrementExpression value;
     
     public PreIncrement (hydra.langs.java.syntax.PreIncrementExpression value) {
@@ -74,7 +76,7 @@ public abstract class UnaryExpression {
     }
   }
   
-  public static final class PreDecrement extends hydra.langs.java.syntax.UnaryExpression {
+  public static final class PreDecrement extends hydra.langs.java.syntax.UnaryExpression implements Serializable {
     public final hydra.langs.java.syntax.PreDecrementExpression value;
     
     public PreDecrement (hydra.langs.java.syntax.PreDecrementExpression value) {
@@ -101,7 +103,7 @@ public abstract class UnaryExpression {
     }
   }
   
-  public static final class Plus extends hydra.langs.java.syntax.UnaryExpression {
+  public static final class Plus extends hydra.langs.java.syntax.UnaryExpression implements Serializable {
     public final hydra.langs.java.syntax.UnaryExpression value;
     
     public Plus (hydra.langs.java.syntax.UnaryExpression value) {
@@ -128,7 +130,7 @@ public abstract class UnaryExpression {
     }
   }
   
-  public static final class Minus extends hydra.langs.java.syntax.UnaryExpression {
+  public static final class Minus extends hydra.langs.java.syntax.UnaryExpression implements Serializable {
     public final hydra.langs.java.syntax.UnaryExpression value;
     
     public Minus (hydra.langs.java.syntax.UnaryExpression value) {
@@ -155,7 +157,7 @@ public abstract class UnaryExpression {
     }
   }
   
-  public static final class Other extends hydra.langs.java.syntax.UnaryExpression {
+  public static final class Other extends hydra.langs.java.syntax.UnaryExpression implements Serializable {
     public final hydra.langs.java.syntax.UnaryExpressionNotPlusMinus value;
     
     public Other (hydra.langs.java.syntax.UnaryExpressionNotPlusMinus value) {

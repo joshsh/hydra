@@ -1,6 +1,8 @@
 package hydra.langs.shacl.model;
 
-public abstract class NodeKind {
+import java.io.Serializable;
+
+public abstract class NodeKind implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shacl/model.NodeKind");
   
   private NodeKind () {
@@ -56,7 +58,7 @@ public abstract class NodeKind {
   /**
    * A blank node
    */
-  public static final class BlankNode extends hydra.langs.shacl.model.NodeKind {
+  public static final class BlankNode extends hydra.langs.shacl.model.NodeKind implements Serializable {
     public BlankNode () {
     
     }
@@ -84,7 +86,7 @@ public abstract class NodeKind {
   /**
    * An IRI
    */
-  public static final class Iri extends hydra.langs.shacl.model.NodeKind {
+  public static final class Iri extends hydra.langs.shacl.model.NodeKind implements Serializable {
     public Iri () {
     
     }
@@ -112,7 +114,7 @@ public abstract class NodeKind {
   /**
    * A literal
    */
-  public static final class Literal extends hydra.langs.shacl.model.NodeKind {
+  public static final class Literal extends hydra.langs.shacl.model.NodeKind implements Serializable {
     public Literal () {
     
     }
@@ -140,7 +142,7 @@ public abstract class NodeKind {
   /**
    * A blank node or an IRI
    */
-  public static final class BlankNodeOrIri extends hydra.langs.shacl.model.NodeKind {
+  public static final class BlankNodeOrIri extends hydra.langs.shacl.model.NodeKind implements Serializable {
     public BlankNodeOrIri () {
     
     }
@@ -168,7 +170,7 @@ public abstract class NodeKind {
   /**
    * A blank node or a literal
    */
-  public static final class BlankNodeOrLiteral extends hydra.langs.shacl.model.NodeKind {
+  public static final class BlankNodeOrLiteral extends hydra.langs.shacl.model.NodeKind implements Serializable {
     public BlankNodeOrLiteral () {
     
     }
@@ -196,7 +198,7 @@ public abstract class NodeKind {
   /**
    * An IRI or a literal
    */
-  public static final class IriOrLiteral extends hydra.langs.shacl.model.NodeKind {
+  public static final class IriOrLiteral extends hydra.langs.shacl.model.NodeKind implements Serializable {
     public IriOrLiteral () {
     
     }

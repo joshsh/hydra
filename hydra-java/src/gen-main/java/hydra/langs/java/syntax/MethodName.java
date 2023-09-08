@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class MethodName {
+import java.io.Serializable;
+
+public class MethodName implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.MethodName");
   
   public final hydra.langs.java.syntax.Identifier value;

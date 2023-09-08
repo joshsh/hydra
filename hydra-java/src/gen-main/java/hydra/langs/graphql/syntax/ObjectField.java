@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public class ObjectField {
+import java.io.Serializable;
+
+public class ObjectField implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.ObjectField");
   
   public final hydra.langs.graphql.syntax.Name name;

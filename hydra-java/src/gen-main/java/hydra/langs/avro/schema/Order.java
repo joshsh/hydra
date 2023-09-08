@@ -1,6 +1,8 @@
 package hydra.langs.avro.schema;
 
-public abstract class Order {
+import java.io.Serializable;
+
+public abstract class Order implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/avro/schema.Order");
   
   private Order () {
@@ -35,7 +37,7 @@ public abstract class Order {
     }
   }
   
-  public static final class Ascending extends hydra.langs.avro.schema.Order {
+  public static final class Ascending extends hydra.langs.avro.schema.Order implements Serializable {
     public Ascending () {
     
     }
@@ -60,7 +62,7 @@ public abstract class Order {
     }
   }
   
-  public static final class Descending extends hydra.langs.avro.schema.Order {
+  public static final class Descending extends hydra.langs.avro.schema.Order implements Serializable {
     public Descending () {
     
     }
@@ -85,7 +87,7 @@ public abstract class Order {
     }
   }
   
-  public static final class Ignore extends hydra.langs.avro.schema.Order {
+  public static final class Ignore extends hydra.langs.avro.schema.Order implements Serializable {
     public Ignore () {
     
     }

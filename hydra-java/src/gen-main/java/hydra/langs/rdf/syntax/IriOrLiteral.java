@@ -1,9 +1,11 @@
 package hydra.langs.rdf.syntax;
 
+import java.io.Serializable;
+
 /**
  * An IRI or a literal; this type is a convenience for downstream models like SHACL which may exclude blank nodes
  */
-public abstract class IriOrLiteral {
+public abstract class IriOrLiteral implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/rdf/syntax.IriOrLiteral");
   
   private IriOrLiteral () {
@@ -32,7 +34,7 @@ public abstract class IriOrLiteral {
     }
   }
   
-  public static final class Iri extends hydra.langs.rdf.syntax.IriOrLiteral {
+  public static final class Iri extends hydra.langs.rdf.syntax.IriOrLiteral implements Serializable {
     public final hydra.langs.rdf.syntax.Iri value;
     
     public Iri (hydra.langs.rdf.syntax.Iri value) {
@@ -59,7 +61,7 @@ public abstract class IriOrLiteral {
     }
   }
   
-  public static final class Literal extends hydra.langs.rdf.syntax.IriOrLiteral {
+  public static final class Literal extends hydra.langs.rdf.syntax.IriOrLiteral implements Serializable {
     public final hydra.langs.rdf.syntax.Literal value;
     
     public Literal (hydra.langs.rdf.syntax.Literal value) {

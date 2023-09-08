@@ -1,6 +1,8 @@
 package hydra.langs.pegasus.pdl;
 
-public abstract class Schema {
+import java.io.Serializable;
+
+public abstract class Schema implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/pegasus/pdl.Schema");
   
   private Schema () {
@@ -65,7 +67,7 @@ public abstract class Schema {
     }
   }
   
-  public static final class Array extends hydra.langs.pegasus.pdl.Schema {
+  public static final class Array extends hydra.langs.pegasus.pdl.Schema implements Serializable {
     public final hydra.langs.pegasus.pdl.Schema value;
     
     public Array (hydra.langs.pegasus.pdl.Schema value) {
@@ -92,7 +94,7 @@ public abstract class Schema {
     }
   }
   
-  public static final class Fixed extends hydra.langs.pegasus.pdl.Schema {
+  public static final class Fixed extends hydra.langs.pegasus.pdl.Schema implements Serializable {
     public final Integer value;
     
     public Fixed (Integer value) {
@@ -119,7 +121,7 @@ public abstract class Schema {
     }
   }
   
-  public static final class Inline extends hydra.langs.pegasus.pdl.Schema {
+  public static final class Inline extends hydra.langs.pegasus.pdl.Schema implements Serializable {
     public final hydra.langs.pegasus.pdl.NamedSchema value;
     
     public Inline (hydra.langs.pegasus.pdl.NamedSchema value) {
@@ -146,7 +148,7 @@ public abstract class Schema {
     }
   }
   
-  public static final class Map extends hydra.langs.pegasus.pdl.Schema {
+  public static final class Map extends hydra.langs.pegasus.pdl.Schema implements Serializable {
     public final hydra.langs.pegasus.pdl.Schema value;
     
     public Map (hydra.langs.pegasus.pdl.Schema value) {
@@ -173,7 +175,7 @@ public abstract class Schema {
     }
   }
   
-  public static final class Named extends hydra.langs.pegasus.pdl.Schema {
+  public static final class Named extends hydra.langs.pegasus.pdl.Schema implements Serializable {
     public final hydra.langs.pegasus.pdl.QualifiedName value;
     
     public Named (hydra.langs.pegasus.pdl.QualifiedName value) {
@@ -200,7 +202,7 @@ public abstract class Schema {
     }
   }
   
-  public static final class Null extends hydra.langs.pegasus.pdl.Schema {
+  public static final class Null extends hydra.langs.pegasus.pdl.Schema implements Serializable {
     public Null () {
     
     }
@@ -225,7 +227,7 @@ public abstract class Schema {
     }
   }
   
-  public static final class Primitive extends hydra.langs.pegasus.pdl.Schema {
+  public static final class Primitive extends hydra.langs.pegasus.pdl.Schema implements Serializable {
     public final hydra.langs.pegasus.pdl.PrimitiveType value;
     
     public Primitive (hydra.langs.pegasus.pdl.PrimitiveType value) {
@@ -252,7 +254,7 @@ public abstract class Schema {
     }
   }
   
-  public static final class Union extends hydra.langs.pegasus.pdl.Schema {
+  public static final class Union extends hydra.langs.pegasus.pdl.Schema implements Serializable {
     public final hydra.langs.pegasus.pdl.UnionSchema value;
     
     public Union (hydra.langs.pegasus.pdl.UnionSchema value) {

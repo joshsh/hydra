@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public abstract class TableElement {
+import java.io.Serializable;
+
+public abstract class TableElement implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.TableElement");
   
   private TableElement () {
@@ -47,7 +49,7 @@ public abstract class TableElement {
     }
   }
   
-  public static final class Column extends hydra.langs.sql.ansi.TableElement {
+  public static final class Column extends hydra.langs.sql.ansi.TableElement implements Serializable {
     public final hydra.langs.sql.ansi.ColumnDefinition value;
     
     public Column (hydra.langs.sql.ansi.ColumnDefinition value) {
@@ -74,7 +76,7 @@ public abstract class TableElement {
     }
   }
   
-  public static final class TableConstraint extends hydra.langs.sql.ansi.TableElement {
+  public static final class TableConstraint extends hydra.langs.sql.ansi.TableElement implements Serializable {
     public final hydra.langs.sql.ansi.TableConstraintDefinition value;
     
     public TableConstraint (hydra.langs.sql.ansi.TableConstraintDefinition value) {
@@ -101,7 +103,7 @@ public abstract class TableElement {
     }
   }
   
-  public static final class Like extends hydra.langs.sql.ansi.TableElement {
+  public static final class Like extends hydra.langs.sql.ansi.TableElement implements Serializable {
     public final hydra.langs.sql.ansi.LikeClause value;
     
     public Like (hydra.langs.sql.ansi.LikeClause value) {
@@ -128,7 +130,7 @@ public abstract class TableElement {
     }
   }
   
-  public static final class SelfReferencingColumn extends hydra.langs.sql.ansi.TableElement {
+  public static final class SelfReferencingColumn extends hydra.langs.sql.ansi.TableElement implements Serializable {
     public final hydra.langs.sql.ansi.SelfReferencingColumnSpecification value;
     
     public SelfReferencingColumn (hydra.langs.sql.ansi.SelfReferencingColumnSpecification value) {
@@ -155,7 +157,7 @@ public abstract class TableElement {
     }
   }
   
-  public static final class ColumOptions extends hydra.langs.sql.ansi.TableElement {
+  public static final class ColumOptions extends hydra.langs.sql.ansi.TableElement implements Serializable {
     public final hydra.langs.sql.ansi.ColumnOptions value;
     
     public ColumOptions (hydra.langs.sql.ansi.ColumnOptions value) {

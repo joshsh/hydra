@@ -1,6 +1,8 @@
 package hydra.langs.xml.schema;
 
-public class Integer_ {
+import java.io.Serializable;
+
+public class Integer_ implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/xml/schema.Integer");
   
   public final java.math.BigInteger value;

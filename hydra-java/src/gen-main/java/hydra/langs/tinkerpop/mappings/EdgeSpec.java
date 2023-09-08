@@ -1,9 +1,11 @@
 package hydra.langs.tinkerpop.mappings;
 
+import java.io.Serializable;
+
 /**
  * A mapping specification producing edges of a specified label.
  */
-public class EdgeSpec {
+public class EdgeSpec implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/tinkerpop/mappings.EdgeSpec");
   
   /**

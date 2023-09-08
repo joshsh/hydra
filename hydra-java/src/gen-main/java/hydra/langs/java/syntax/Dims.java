@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class Dims {
+import java.io.Serializable;
+
+public class Dims implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.Dims");
   
   public final java.util.List<java.util.List<hydra.langs.java.syntax.Annotation>> value;

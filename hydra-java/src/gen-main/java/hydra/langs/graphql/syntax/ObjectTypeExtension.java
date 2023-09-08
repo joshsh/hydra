@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public abstract class ObjectTypeExtension {
+import java.io.Serializable;
+
+public abstract class ObjectTypeExtension implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.ObjectTypeExtension");
   
   private ObjectTypeExtension () {
@@ -35,7 +37,7 @@ public abstract class ObjectTypeExtension {
     }
   }
   
-  public static final class Sequence extends hydra.langs.graphql.syntax.ObjectTypeExtension {
+  public static final class Sequence extends hydra.langs.graphql.syntax.ObjectTypeExtension implements Serializable {
     public final hydra.langs.graphql.syntax.ObjectTypeExtension_Sequence value;
     
     public Sequence (hydra.langs.graphql.syntax.ObjectTypeExtension_Sequence value) {
@@ -62,7 +64,7 @@ public abstract class ObjectTypeExtension {
     }
   }
   
-  public static final class Sequence2 extends hydra.langs.graphql.syntax.ObjectTypeExtension {
+  public static final class Sequence2 extends hydra.langs.graphql.syntax.ObjectTypeExtension implements Serializable {
     public final hydra.langs.graphql.syntax.ObjectTypeExtension_Sequence2 value;
     
     public Sequence2 (hydra.langs.graphql.syntax.ObjectTypeExtension_Sequence2 value) {
@@ -89,7 +91,7 @@ public abstract class ObjectTypeExtension {
     }
   }
   
-  public static final class Sequence3 extends hydra.langs.graphql.syntax.ObjectTypeExtension {
+  public static final class Sequence3 extends hydra.langs.graphql.syntax.ObjectTypeExtension implements Serializable {
     public final hydra.langs.graphql.syntax.ObjectTypeExtension_Sequence3 value;
     
     public Sequence3 (hydra.langs.graphql.syntax.ObjectTypeExtension_Sequence3 value) {

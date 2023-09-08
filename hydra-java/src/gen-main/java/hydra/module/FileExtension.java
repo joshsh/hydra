@@ -1,6 +1,8 @@
 package hydra.module;
 
-public class FileExtension {
+import java.io.Serializable;
+
+public class FileExtension implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/module.FileExtension");
   
   public final String value;

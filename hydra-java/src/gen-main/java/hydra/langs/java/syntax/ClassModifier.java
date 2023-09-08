@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class ClassModifier {
+import java.io.Serializable;
+
+public abstract class ClassModifier implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ClassModifier");
   
   private ClassModifier () {
@@ -65,7 +67,7 @@ public abstract class ClassModifier {
     }
   }
   
-  public static final class Annotation extends hydra.langs.java.syntax.ClassModifier {
+  public static final class Annotation extends hydra.langs.java.syntax.ClassModifier implements Serializable {
     public final hydra.langs.java.syntax.Annotation value;
     
     public Annotation (hydra.langs.java.syntax.Annotation value) {
@@ -92,7 +94,7 @@ public abstract class ClassModifier {
     }
   }
   
-  public static final class Public extends hydra.langs.java.syntax.ClassModifier {
+  public static final class Public extends hydra.langs.java.syntax.ClassModifier implements Serializable {
     public Public () {
     
     }
@@ -117,7 +119,7 @@ public abstract class ClassModifier {
     }
   }
   
-  public static final class Protected extends hydra.langs.java.syntax.ClassModifier {
+  public static final class Protected extends hydra.langs.java.syntax.ClassModifier implements Serializable {
     public Protected () {
     
     }
@@ -142,7 +144,7 @@ public abstract class ClassModifier {
     }
   }
   
-  public static final class Private extends hydra.langs.java.syntax.ClassModifier {
+  public static final class Private extends hydra.langs.java.syntax.ClassModifier implements Serializable {
     public Private () {
     
     }
@@ -167,7 +169,7 @@ public abstract class ClassModifier {
     }
   }
   
-  public static final class Abstract extends hydra.langs.java.syntax.ClassModifier {
+  public static final class Abstract extends hydra.langs.java.syntax.ClassModifier implements Serializable {
     public Abstract () {
     
     }
@@ -192,7 +194,7 @@ public abstract class ClassModifier {
     }
   }
   
-  public static final class Static extends hydra.langs.java.syntax.ClassModifier {
+  public static final class Static extends hydra.langs.java.syntax.ClassModifier implements Serializable {
     public Static () {
     
     }
@@ -217,7 +219,7 @@ public abstract class ClassModifier {
     }
   }
   
-  public static final class Final extends hydra.langs.java.syntax.ClassModifier {
+  public static final class Final extends hydra.langs.java.syntax.ClassModifier implements Serializable {
     public Final () {
     
     }
@@ -242,7 +244,7 @@ public abstract class ClassModifier {
     }
   }
   
-  public static final class Strictfp extends hydra.langs.java.syntax.ClassModifier {
+  public static final class Strictfp extends hydra.langs.java.syntax.ClassModifier implements Serializable {
     public Strictfp () {
     
     }

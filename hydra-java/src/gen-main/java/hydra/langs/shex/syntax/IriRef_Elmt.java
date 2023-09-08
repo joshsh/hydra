@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class IriRef_Elmt {
+import java.io.Serializable;
+
+public abstract class IriRef_Elmt implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.IriRef.Elmt");
   
   private IriRef_Elmt () {
@@ -29,7 +31,7 @@ public abstract class IriRef_Elmt {
     }
   }
   
-  public static final class Regex extends hydra.langs.shex.syntax.IriRef_Elmt {
+  public static final class Regex extends hydra.langs.shex.syntax.IriRef_Elmt implements Serializable {
     public final String value;
     
     public Regex (String value) {
@@ -56,7 +58,7 @@ public abstract class IriRef_Elmt {
     }
   }
   
-  public static final class Uchar extends hydra.langs.shex.syntax.IriRef_Elmt {
+  public static final class Uchar extends hydra.langs.shex.syntax.IriRef_Elmt implements Serializable {
     public final hydra.langs.shex.syntax.Uchar value;
     
     public Uchar (hydra.langs.shex.syntax.Uchar value) {

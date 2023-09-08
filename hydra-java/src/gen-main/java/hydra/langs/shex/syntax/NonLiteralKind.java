@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class NonLiteralKind {
+import java.io.Serializable;
+
+public abstract class NonLiteralKind implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.NonLiteralKind");
   
   private NonLiteralKind () {
@@ -35,7 +37,7 @@ public abstract class NonLiteralKind {
     }
   }
   
-  public static final class IRI extends hydra.langs.shex.syntax.NonLiteralKind {
+  public static final class IRI extends hydra.langs.shex.syntax.NonLiteralKind implements Serializable {
     public IRI () {
     
     }
@@ -60,7 +62,7 @@ public abstract class NonLiteralKind {
     }
   }
   
-  public static final class BNODE extends hydra.langs.shex.syntax.NonLiteralKind {
+  public static final class BNODE extends hydra.langs.shex.syntax.NonLiteralKind implements Serializable {
     public BNODE () {
     
     }
@@ -85,7 +87,7 @@ public abstract class NonLiteralKind {
     }
   }
   
-  public static final class NONLITERAL extends hydra.langs.shex.syntax.NonLiteralKind {
+  public static final class NONLITERAL extends hydra.langs.shex.syntax.NonLiteralKind implements Serializable {
     public NONLITERAL () {
     
     }

@@ -1,9 +1,11 @@
 package hydra.query;
 
+import java.io.Serializable;
+
 /**
  * A query path
  */
-public abstract class Path {
+public abstract class Path implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/query.Path");
   
   private Path () {
@@ -41,7 +43,7 @@ public abstract class Path {
   /**
    * A path given by a single step
    */
-  public static final class Step extends hydra.query.Path {
+  public static final class Step extends hydra.query.Path implements Serializable {
     /**
      * A path given by a single step
      */
@@ -74,7 +76,7 @@ public abstract class Path {
   /**
    * A path given by a regular expression quantifier applied to another path
    */
-  public static final class Regex extends hydra.query.Path {
+  public static final class Regex extends hydra.query.Path implements Serializable {
     /**
      * A path given by a regular expression quantifier applied to another path
      */
@@ -107,7 +109,7 @@ public abstract class Path {
   /**
    * A path given by the inverse of another path
    */
-  public static final class Inverse extends hydra.query.Path {
+  public static final class Inverse extends hydra.query.Path implements Serializable {
     /**
      * A path given by the inverse of another path
      */

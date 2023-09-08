@@ -1,6 +1,8 @@
 package hydra.langs.parquet.format;
 
-public class EncryptionWithFooterKey {
+import java.io.Serializable;
+
+public class EncryptionWithFooterKey implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/parquet/format.EncryptionWithFooterKey");
   
   public EncryptionWithFooterKey () {

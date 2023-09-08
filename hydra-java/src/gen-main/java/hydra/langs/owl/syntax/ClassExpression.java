@@ -1,6 +1,8 @@
 package hydra.langs.owl.syntax;
 
-public abstract class ClassExpression {
+import java.io.Serializable;
+
+public abstract class ClassExpression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/owl/syntax.ClassExpression");
   
   private ClassExpression () {
@@ -119,7 +121,7 @@ public abstract class ClassExpression {
     }
   }
   
-  public static final class Class_ extends hydra.langs.owl.syntax.ClassExpression {
+  public static final class Class_ extends hydra.langs.owl.syntax.ClassExpression implements Serializable {
     public final hydra.langs.owl.syntax.Class_ value;
     
     public Class_ (hydra.langs.owl.syntax.Class_ value) {
@@ -146,7 +148,7 @@ public abstract class ClassExpression {
     }
   }
   
-  public static final class DataSomeValuesFrom extends hydra.langs.owl.syntax.ClassExpression {
+  public static final class DataSomeValuesFrom extends hydra.langs.owl.syntax.ClassExpression implements Serializable {
     public final hydra.langs.owl.syntax.DataSomeValuesFrom value;
     
     public DataSomeValuesFrom (hydra.langs.owl.syntax.DataSomeValuesFrom value) {
@@ -173,7 +175,7 @@ public abstract class ClassExpression {
     }
   }
   
-  public static final class DataAllValuesFrom extends hydra.langs.owl.syntax.ClassExpression {
+  public static final class DataAllValuesFrom extends hydra.langs.owl.syntax.ClassExpression implements Serializable {
     public final hydra.langs.owl.syntax.DataAllValuesFrom value;
     
     public DataAllValuesFrom (hydra.langs.owl.syntax.DataAllValuesFrom value) {
@@ -200,7 +202,7 @@ public abstract class ClassExpression {
     }
   }
   
-  public static final class DataHasValue extends hydra.langs.owl.syntax.ClassExpression {
+  public static final class DataHasValue extends hydra.langs.owl.syntax.ClassExpression implements Serializable {
     public final hydra.langs.owl.syntax.DataHasValue value;
     
     public DataHasValue (hydra.langs.owl.syntax.DataHasValue value) {
@@ -227,7 +229,7 @@ public abstract class ClassExpression {
     }
   }
   
-  public static final class DataMinCardinality extends hydra.langs.owl.syntax.ClassExpression {
+  public static final class DataMinCardinality extends hydra.langs.owl.syntax.ClassExpression implements Serializable {
     public final hydra.langs.owl.syntax.DataMinCardinality value;
     
     public DataMinCardinality (hydra.langs.owl.syntax.DataMinCardinality value) {
@@ -254,7 +256,7 @@ public abstract class ClassExpression {
     }
   }
   
-  public static final class DataMaxCardinality extends hydra.langs.owl.syntax.ClassExpression {
+  public static final class DataMaxCardinality extends hydra.langs.owl.syntax.ClassExpression implements Serializable {
     public final hydra.langs.owl.syntax.DataMaxCardinality value;
     
     public DataMaxCardinality (hydra.langs.owl.syntax.DataMaxCardinality value) {
@@ -281,7 +283,7 @@ public abstract class ClassExpression {
     }
   }
   
-  public static final class DataExactCardinality extends hydra.langs.owl.syntax.ClassExpression {
+  public static final class DataExactCardinality extends hydra.langs.owl.syntax.ClassExpression implements Serializable {
     public final hydra.langs.owl.syntax.DataExactCardinality value;
     
     public DataExactCardinality (hydra.langs.owl.syntax.DataExactCardinality value) {
@@ -308,7 +310,7 @@ public abstract class ClassExpression {
     }
   }
   
-  public static final class ObjectAllValuesFrom extends hydra.langs.owl.syntax.ClassExpression {
+  public static final class ObjectAllValuesFrom extends hydra.langs.owl.syntax.ClassExpression implements Serializable {
     public final hydra.langs.owl.syntax.ObjectAllValuesFrom value;
     
     public ObjectAllValuesFrom (hydra.langs.owl.syntax.ObjectAllValuesFrom value) {
@@ -335,7 +337,7 @@ public abstract class ClassExpression {
     }
   }
   
-  public static final class ObjectExactCardinality extends hydra.langs.owl.syntax.ClassExpression {
+  public static final class ObjectExactCardinality extends hydra.langs.owl.syntax.ClassExpression implements Serializable {
     public final hydra.langs.owl.syntax.ObjectExactCardinality value;
     
     public ObjectExactCardinality (hydra.langs.owl.syntax.ObjectExactCardinality value) {
@@ -362,7 +364,7 @@ public abstract class ClassExpression {
     }
   }
   
-  public static final class ObjectHasSelf extends hydra.langs.owl.syntax.ClassExpression {
+  public static final class ObjectHasSelf extends hydra.langs.owl.syntax.ClassExpression implements Serializable {
     public final hydra.langs.owl.syntax.ObjectHasSelf value;
     
     public ObjectHasSelf (hydra.langs.owl.syntax.ObjectHasSelf value) {
@@ -389,7 +391,7 @@ public abstract class ClassExpression {
     }
   }
   
-  public static final class ObjectHasValue extends hydra.langs.owl.syntax.ClassExpression {
+  public static final class ObjectHasValue extends hydra.langs.owl.syntax.ClassExpression implements Serializable {
     public final hydra.langs.owl.syntax.ObjectHasValue value;
     
     public ObjectHasValue (hydra.langs.owl.syntax.ObjectHasValue value) {
@@ -416,7 +418,7 @@ public abstract class ClassExpression {
     }
   }
   
-  public static final class ObjectIntersectionOf extends hydra.langs.owl.syntax.ClassExpression {
+  public static final class ObjectIntersectionOf extends hydra.langs.owl.syntax.ClassExpression implements Serializable {
     public final hydra.langs.owl.syntax.ObjectIntersectionOf value;
     
     public ObjectIntersectionOf (hydra.langs.owl.syntax.ObjectIntersectionOf value) {
@@ -443,7 +445,7 @@ public abstract class ClassExpression {
     }
   }
   
-  public static final class ObjectMaxCardinality extends hydra.langs.owl.syntax.ClassExpression {
+  public static final class ObjectMaxCardinality extends hydra.langs.owl.syntax.ClassExpression implements Serializable {
     public final hydra.langs.owl.syntax.ObjectMaxCardinality value;
     
     public ObjectMaxCardinality (hydra.langs.owl.syntax.ObjectMaxCardinality value) {
@@ -470,7 +472,7 @@ public abstract class ClassExpression {
     }
   }
   
-  public static final class ObjectMinCardinality extends hydra.langs.owl.syntax.ClassExpression {
+  public static final class ObjectMinCardinality extends hydra.langs.owl.syntax.ClassExpression implements Serializable {
     public final hydra.langs.owl.syntax.ObjectMinCardinality value;
     
     public ObjectMinCardinality (hydra.langs.owl.syntax.ObjectMinCardinality value) {
@@ -497,7 +499,7 @@ public abstract class ClassExpression {
     }
   }
   
-  public static final class ObjectOneOf extends hydra.langs.owl.syntax.ClassExpression {
+  public static final class ObjectOneOf extends hydra.langs.owl.syntax.ClassExpression implements Serializable {
     public final hydra.langs.owl.syntax.ObjectOneOf value;
     
     public ObjectOneOf (hydra.langs.owl.syntax.ObjectOneOf value) {
@@ -524,7 +526,7 @@ public abstract class ClassExpression {
     }
   }
   
-  public static final class ObjectSomeValuesFrom extends hydra.langs.owl.syntax.ClassExpression {
+  public static final class ObjectSomeValuesFrom extends hydra.langs.owl.syntax.ClassExpression implements Serializable {
     public final hydra.langs.owl.syntax.ObjectSomeValuesFrom value;
     
     public ObjectSomeValuesFrom (hydra.langs.owl.syntax.ObjectSomeValuesFrom value) {
@@ -551,7 +553,7 @@ public abstract class ClassExpression {
     }
   }
   
-  public static final class ObjectUnionOf extends hydra.langs.owl.syntax.ClassExpression {
+  public static final class ObjectUnionOf extends hydra.langs.owl.syntax.ClassExpression implements Serializable {
     public final hydra.langs.owl.syntax.ObjectUnionOf value;
     
     public ObjectUnionOf (hydra.langs.owl.syntax.ObjectUnionOf value) {

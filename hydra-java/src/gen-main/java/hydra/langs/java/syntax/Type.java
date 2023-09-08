@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class Type {
+import java.io.Serializable;
+
+public abstract class Type implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.Type");
   
   private Type () {
@@ -29,7 +31,7 @@ public abstract class Type {
     }
   }
   
-  public static final class Primitive extends hydra.langs.java.syntax.Type {
+  public static final class Primitive extends hydra.langs.java.syntax.Type implements Serializable {
     public final hydra.langs.java.syntax.PrimitiveTypeWithAnnotations value;
     
     public Primitive (hydra.langs.java.syntax.PrimitiveTypeWithAnnotations value) {
@@ -56,7 +58,7 @@ public abstract class Type {
     }
   }
   
-  public static final class Reference extends hydra.langs.java.syntax.Type {
+  public static final class Reference extends hydra.langs.java.syntax.Type implements Serializable {
     public final hydra.langs.java.syntax.ReferenceType value;
     
     public Reference (hydra.langs.java.syntax.ReferenceType value) {

@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class ShapeAtom {
+import java.io.Serializable;
+
+public abstract class ShapeAtom implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.ShapeAtom");
   
   private ShapeAtom () {
@@ -41,7 +43,7 @@ public abstract class ShapeAtom {
     }
   }
   
-  public static final class Sequence extends hydra.langs.shex.syntax.ShapeAtom {
+  public static final class Sequence extends hydra.langs.shex.syntax.ShapeAtom implements Serializable {
     public final hydra.langs.shex.syntax.ShapeAtom_Sequence value;
     
     public Sequence (hydra.langs.shex.syntax.ShapeAtom_Sequence value) {
@@ -68,7 +70,7 @@ public abstract class ShapeAtom {
     }
   }
   
-  public static final class ShapeOrRef extends hydra.langs.shex.syntax.ShapeAtom {
+  public static final class ShapeOrRef extends hydra.langs.shex.syntax.ShapeAtom implements Serializable {
     public final hydra.langs.shex.syntax.ShapeOrRef value;
     
     public ShapeOrRef (hydra.langs.shex.syntax.ShapeOrRef value) {
@@ -95,7 +97,7 @@ public abstract class ShapeAtom {
     }
   }
   
-  public static final class Sequence2 extends hydra.langs.shex.syntax.ShapeAtom {
+  public static final class Sequence2 extends hydra.langs.shex.syntax.ShapeAtom implements Serializable {
     public final hydra.langs.shex.syntax.ShapeExpression value;
     
     public Sequence2 (hydra.langs.shex.syntax.ShapeExpression value) {
@@ -122,7 +124,7 @@ public abstract class ShapeAtom {
     }
   }
   
-  public static final class Period extends hydra.langs.shex.syntax.ShapeAtom {
+  public static final class Period extends hydra.langs.shex.syntax.ShapeAtom implements Serializable {
     public Period () {
     
     }

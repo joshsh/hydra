@@ -1,9 +1,11 @@
 package hydra.langs.java.syntax;
 
+import java.io.Serializable;
+
 /**
  * Note: this is an approximation which ignores encoding
  */
-public class StringLiteral {
+public class StringLiteral implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.StringLiteral");
   
   /**

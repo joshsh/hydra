@@ -5,6 +5,7 @@ import qualified Hydra.Core as Core
 import qualified Hydra.Lib.Lists as Lists
 import qualified Hydra.Lib.Sets as Sets
 import qualified Hydra.Mantle as Mantle
+import qualified Hydra.Strip as Strip
 import Data.Int
 import Data.List as L
 import Data.Map as M
@@ -49,10 +50,8 @@ protobufLanguage = Coders.Language {
       Mantle.TypeVariantVariable]),
     Coders.languageConstraintsTypes = (\x -> case x of
       Core.TypeMap v -> ((\x -> case x of
-        Core.TypeLiteral v -> ((\x -> case x of
-          Core.LiteralTypeString -> True
-          _ -> False) v)
-        _ -> False) (Core.mapTypeKeys v))
+        Core.TypeOptional _ -> False
+        _ -> True) (Strip.stripType (Core.mapTypeValues v)))
       _ -> True)}}
 
 protobufReservedWords :: (Set String)

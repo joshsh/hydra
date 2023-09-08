@@ -1,6 +1,8 @@
 package hydra.langs.owl.syntax;
 
-public abstract class AnnotationSubject {
+import java.io.Serializable;
+
+public abstract class AnnotationSubject implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/owl/syntax.AnnotationSubject");
   
   private AnnotationSubject () {
@@ -29,7 +31,7 @@ public abstract class AnnotationSubject {
     }
   }
   
-  public static final class Iri extends hydra.langs.owl.syntax.AnnotationSubject {
+  public static final class Iri extends hydra.langs.owl.syntax.AnnotationSubject implements Serializable {
     public final hydra.langs.rdf.syntax.Iri value;
     
     public Iri (hydra.langs.rdf.syntax.Iri value) {
@@ -56,7 +58,7 @@ public abstract class AnnotationSubject {
     }
   }
   
-  public static final class AnonymousIndividual extends hydra.langs.owl.syntax.AnnotationSubject {
+  public static final class AnonymousIndividual extends hydra.langs.owl.syntax.AnnotationSubject implements Serializable {
     public final hydra.langs.owl.syntax.AnonymousIndividual value;
     
     public AnonymousIndividual (hydra.langs.owl.syntax.AnonymousIndividual value) {

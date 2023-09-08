@@ -1,9 +1,11 @@
 package hydra.langs.parquet.format;
 
+import java.io.Serializable;
+
 /**
  * Representation of Schemas
  */
-public abstract class FieldRepetitionType {
+public abstract class FieldRepetitionType implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/parquet/format.FieldRepetitionType");
   
   private FieldRepetitionType () {
@@ -41,7 +43,7 @@ public abstract class FieldRepetitionType {
   /**
    * This field is required (can not be null) and each record has exactly 1 value.
    */
-  public static final class Required extends hydra.langs.parquet.format.FieldRepetitionType {
+  public static final class Required extends hydra.langs.parquet.format.FieldRepetitionType implements Serializable {
     public Required () {
     
     }
@@ -69,7 +71,7 @@ public abstract class FieldRepetitionType {
   /**
    * The field is optional (can be null) and each record has 0 or 1 values.
    */
-  public static final class Optional extends hydra.langs.parquet.format.FieldRepetitionType {
+  public static final class Optional extends hydra.langs.parquet.format.FieldRepetitionType implements Serializable {
     public Optional () {
     
     }
@@ -97,7 +99,7 @@ public abstract class FieldRepetitionType {
   /**
    * The field is repeated and can contain 0 or more values
    */
-  public static final class Repeated extends hydra.langs.parquet.format.FieldRepetitionType {
+  public static final class Repeated extends hydra.langs.parquet.format.FieldRepetitionType implements Serializable {
     public Repeated () {
     
     }

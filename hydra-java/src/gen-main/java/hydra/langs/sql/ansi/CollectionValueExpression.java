@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public abstract class CollectionValueExpression {
+import java.io.Serializable;
+
+public abstract class CollectionValueExpression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.CollectionValueExpression");
   
   private CollectionValueExpression () {
@@ -29,7 +31,7 @@ public abstract class CollectionValueExpression {
     }
   }
   
-  public static final class Array extends hydra.langs.sql.ansi.CollectionValueExpression {
+  public static final class Array extends hydra.langs.sql.ansi.CollectionValueExpression implements Serializable {
     public final hydra.langs.sql.ansi.ArrayValueExpression value;
     
     public Array (hydra.langs.sql.ansi.ArrayValueExpression value) {
@@ -56,7 +58,7 @@ public abstract class CollectionValueExpression {
     }
   }
   
-  public static final class Multiset extends hydra.langs.sql.ansi.CollectionValueExpression {
+  public static final class Multiset extends hydra.langs.sql.ansi.CollectionValueExpression implements Serializable {
     public final hydra.langs.sql.ansi.MultisetValueExpression value;
     
     public Multiset (hydra.langs.sql.ansi.MultisetValueExpression value) {

@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public abstract class InputObjectTypeExtension {
+import java.io.Serializable;
+
+public abstract class InputObjectTypeExtension implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.InputObjectTypeExtension");
   
   private InputObjectTypeExtension () {
@@ -29,7 +31,7 @@ public abstract class InputObjectTypeExtension {
     }
   }
   
-  public static final class Sequence extends hydra.langs.graphql.syntax.InputObjectTypeExtension {
+  public static final class Sequence extends hydra.langs.graphql.syntax.InputObjectTypeExtension implements Serializable {
     public final hydra.langs.graphql.syntax.InputObjectTypeExtension_Sequence value;
     
     public Sequence (hydra.langs.graphql.syntax.InputObjectTypeExtension_Sequence value) {
@@ -56,7 +58,7 @@ public abstract class InputObjectTypeExtension {
     }
   }
   
-  public static final class Sequence2 extends hydra.langs.graphql.syntax.InputObjectTypeExtension {
+  public static final class Sequence2 extends hydra.langs.graphql.syntax.InputObjectTypeExtension implements Serializable {
     public final hydra.langs.graphql.syntax.InputObjectTypeExtension_Sequence2 value;
     
     public Sequence2 (hydra.langs.graphql.syntax.InputObjectTypeExtension_Sequence2 value) {

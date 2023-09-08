@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public class ShexDoc_Sequence_Option {
+import java.io.Serializable;
+
+public class ShexDoc_Sequence_Option implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.ShexDoc.Sequence.Option");
   
   public final hydra.langs.shex.syntax.ShexDoc_Sequence_Option_Alts alts;

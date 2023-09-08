@@ -1,6 +1,8 @@
 package hydra.langs.xml.schema;
 
-public class Short_ {
+import java.io.Serializable;
+
+public class Short_ implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/xml/schema.Short");
   
   public final Short value;

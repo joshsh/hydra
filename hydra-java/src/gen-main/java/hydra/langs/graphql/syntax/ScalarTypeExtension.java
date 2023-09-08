@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public class ScalarTypeExtension {
+import java.io.Serializable;
+
+public class ScalarTypeExtension implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.ScalarTypeExtension");
   
   public final hydra.langs.graphql.syntax.Name name;

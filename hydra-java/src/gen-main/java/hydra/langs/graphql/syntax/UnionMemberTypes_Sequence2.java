@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public class UnionMemberTypes_Sequence2 {
+import java.io.Serializable;
+
+public class UnionMemberTypes_Sequence2 implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.UnionMemberTypes.Sequence2");
   
   public final java.util.Optional<java.lang.Void> or;

@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public class Data_If {
+import java.io.Serializable;
+
+public class Data_If implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Data.If");
   
   public final hydra.langs.scala.meta.Data cond;

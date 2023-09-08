@@ -1,9 +1,11 @@
 package hydra.langs.rdf.syntax;
 
+import java.io.Serializable;
+
 /**
  * An RDF triple with an optional named graph component
  */
-public class Quad {
+public class Quad implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/rdf/syntax.Quad");
   
   public final hydra.langs.rdf.syntax.Resource subject;

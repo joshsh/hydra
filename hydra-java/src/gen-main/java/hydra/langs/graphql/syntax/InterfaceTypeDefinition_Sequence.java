@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public class InterfaceTypeDefinition_Sequence {
+import java.io.Serializable;
+
+public class InterfaceTypeDefinition_Sequence implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.InterfaceTypeDefinition.Sequence");
   
   public final java.util.Optional<hydra.langs.graphql.syntax.Description> description;

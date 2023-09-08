@@ -1,9 +1,11 @@
 package hydra.langs.relationalModel;
 
+import java.io.Serializable;
+
 /**
  * An abstract relation; the name and columns of a relation without its actual data
  */
-public class RelationSchema<T> {
+public class RelationSchema<T> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/relationalModel.RelationSchema");
   
   /**

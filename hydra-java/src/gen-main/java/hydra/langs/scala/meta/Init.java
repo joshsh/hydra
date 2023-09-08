@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public class Init {
+import java.io.Serializable;
+
+public class Init implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Init");
   
   public final hydra.langs.scala.meta.Type tpe;

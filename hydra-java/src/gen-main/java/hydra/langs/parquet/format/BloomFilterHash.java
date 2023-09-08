@@ -1,9 +1,11 @@
 package hydra.langs.parquet.format;
 
+import java.io.Serializable;
+
 /**
  * The hash function used in Bloom filter. This function takes the hash of a column value using plain encoding.
  */
-public abstract class BloomFilterHash {
+public abstract class BloomFilterHash implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/parquet/format.BloomFilterHash");
   
   private BloomFilterHash () {
@@ -29,7 +31,7 @@ public abstract class BloomFilterHash {
   /**
    * xxHash Strategy.
    */
-  public static final class Xxhash extends hydra.langs.parquet.format.BloomFilterHash {
+  public static final class Xxhash extends hydra.langs.parquet.format.BloomFilterHash implements Serializable {
     public Xxhash () {
     
     }

@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class InlineShapeAtom {
+import java.io.Serializable;
+
+public abstract class InlineShapeAtom implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.InlineShapeAtom");
   
   private InlineShapeAtom () {
@@ -41,7 +43,7 @@ public abstract class InlineShapeAtom {
     }
   }
   
-  public static final class Sequence extends hydra.langs.shex.syntax.InlineShapeAtom {
+  public static final class Sequence extends hydra.langs.shex.syntax.InlineShapeAtom implements Serializable {
     public final hydra.langs.shex.syntax.InlineShapeAtom_Sequence value;
     
     public Sequence (hydra.langs.shex.syntax.InlineShapeAtom_Sequence value) {
@@ -68,7 +70,7 @@ public abstract class InlineShapeAtom {
     }
   }
   
-  public static final class Sequence2 extends hydra.langs.shex.syntax.InlineShapeAtom {
+  public static final class Sequence2 extends hydra.langs.shex.syntax.InlineShapeAtom implements Serializable {
     public final hydra.langs.shex.syntax.InlineShapeAtom_Sequence2 value;
     
     public Sequence2 (hydra.langs.shex.syntax.InlineShapeAtom_Sequence2 value) {
@@ -95,7 +97,7 @@ public abstract class InlineShapeAtom {
     }
   }
   
-  public static final class Sequence3 extends hydra.langs.shex.syntax.InlineShapeAtom {
+  public static final class Sequence3 extends hydra.langs.shex.syntax.InlineShapeAtom implements Serializable {
     public final hydra.langs.shex.syntax.ShapeExpression value;
     
     public Sequence3 (hydra.langs.shex.syntax.ShapeExpression value) {
@@ -122,7 +124,7 @@ public abstract class InlineShapeAtom {
     }
   }
   
-  public static final class Period extends hydra.langs.shex.syntax.InlineShapeAtom {
+  public static final class Period extends hydra.langs.shex.syntax.InlineShapeAtom implements Serializable {
     public Period () {
     
     }

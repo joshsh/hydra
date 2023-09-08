@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class MethodBody {
+import java.io.Serializable;
+
+public abstract class MethodBody implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.MethodBody");
   
   private MethodBody () {
@@ -29,7 +31,7 @@ public abstract class MethodBody {
     }
   }
   
-  public static final class Block extends hydra.langs.java.syntax.MethodBody {
+  public static final class Block extends hydra.langs.java.syntax.MethodBody implements Serializable {
     public final hydra.langs.java.syntax.Block value;
     
     public Block (hydra.langs.java.syntax.Block value) {
@@ -56,7 +58,7 @@ public abstract class MethodBody {
     }
   }
   
-  public static final class None extends hydra.langs.java.syntax.MethodBody {
+  public static final class None extends hydra.langs.java.syntax.MethodBody implements Serializable {
     public None () {
     
     }

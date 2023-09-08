@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class PostfixExpression {
+import java.io.Serializable;
+
+public abstract class PostfixExpression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.PostfixExpression");
   
   private PostfixExpression () {
@@ -41,7 +43,7 @@ public abstract class PostfixExpression {
     }
   }
   
-  public static final class Primary extends hydra.langs.java.syntax.PostfixExpression {
+  public static final class Primary extends hydra.langs.java.syntax.PostfixExpression implements Serializable {
     public final hydra.langs.java.syntax.Primary value;
     
     public Primary (hydra.langs.java.syntax.Primary value) {
@@ -68,7 +70,7 @@ public abstract class PostfixExpression {
     }
   }
   
-  public static final class Name extends hydra.langs.java.syntax.PostfixExpression {
+  public static final class Name extends hydra.langs.java.syntax.PostfixExpression implements Serializable {
     public final hydra.langs.java.syntax.ExpressionName value;
     
     public Name (hydra.langs.java.syntax.ExpressionName value) {
@@ -95,7 +97,7 @@ public abstract class PostfixExpression {
     }
   }
   
-  public static final class PostIncrement extends hydra.langs.java.syntax.PostfixExpression {
+  public static final class PostIncrement extends hydra.langs.java.syntax.PostfixExpression implements Serializable {
     public final hydra.langs.java.syntax.PostIncrementExpression value;
     
     public PostIncrement (hydra.langs.java.syntax.PostIncrementExpression value) {
@@ -122,7 +124,7 @@ public abstract class PostfixExpression {
     }
   }
   
-  public static final class PostDecrement extends hydra.langs.java.syntax.PostfixExpression {
+  public static final class PostDecrement extends hydra.langs.java.syntax.PostfixExpression implements Serializable {
     public final hydra.langs.java.syntax.PostDecrementExpression value;
     
     public PostDecrement (hydra.langs.java.syntax.PostDecrementExpression value) {

@@ -1,6 +1,8 @@
 package hydra.langs.owl.syntax;
 
-public class InverseObjectProperties {
+import java.io.Serializable;
+
+public class InverseObjectProperties implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/owl/syntax.InverseObjectProperties");
   
   public final java.util.List<hydra.langs.owl.syntax.Annotation> annotations;

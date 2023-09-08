@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class TryWithResourcesStatement {
+import java.io.Serializable;
+
+public class TryWithResourcesStatement implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.TryWithResourcesStatement");
   
   public final hydra.langs.java.syntax.ResourceSpecification resourceSpecification;

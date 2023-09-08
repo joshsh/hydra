@@ -1,6 +1,8 @@
 package hydra.langs.haskell.ast;
 
-public class Assertion_Class {
+import java.io.Serializable;
+
+public class Assertion_Class implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.Assertion.Class");
   
   public final hydra.langs.haskell.ast.Name name;

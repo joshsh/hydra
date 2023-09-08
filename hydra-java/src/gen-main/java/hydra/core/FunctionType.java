@@ -1,9 +1,11 @@
 package hydra.core;
 
+import java.io.Serializable;
+
 /**
  * A function type, also known as an arrow type
  */
-public class FunctionType<A> {
+public class FunctionType<A> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/core.FunctionType");
   
   public final hydra.core.Type<A> domain;

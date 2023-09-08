@@ -1,6 +1,8 @@
 package hydra.langs.avro.schema;
 
-public class Named {
+import java.io.Serializable;
+
+public class Named implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/avro/schema.Named");
   
   /**

@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public abstract class Type_Ref {
+import java.io.Serializable;
+
+public abstract class Type_Ref implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Type.Ref");
   
   private Type_Ref () {
@@ -41,7 +43,7 @@ public abstract class Type_Ref {
     }
   }
   
-  public static final class Name extends hydra.langs.scala.meta.Type_Ref {
+  public static final class Name extends hydra.langs.scala.meta.Type_Ref implements Serializable {
     public final hydra.langs.scala.meta.Type_Name value;
     
     public Name (hydra.langs.scala.meta.Type_Name value) {
@@ -68,7 +70,7 @@ public abstract class Type_Ref {
     }
   }
   
-  public static final class Select extends hydra.langs.scala.meta.Type_Ref {
+  public static final class Select extends hydra.langs.scala.meta.Type_Ref implements Serializable {
     public final hydra.langs.scala.meta.Type_Select value;
     
     public Select (hydra.langs.scala.meta.Type_Select value) {
@@ -95,7 +97,7 @@ public abstract class Type_Ref {
     }
   }
   
-  public static final class Project extends hydra.langs.scala.meta.Type_Ref {
+  public static final class Project extends hydra.langs.scala.meta.Type_Ref implements Serializable {
     public final hydra.langs.scala.meta.Type_Project value;
     
     public Project (hydra.langs.scala.meta.Type_Project value) {
@@ -122,7 +124,7 @@ public abstract class Type_Ref {
     }
   }
   
-  public static final class Singleton extends hydra.langs.scala.meta.Type_Ref {
+  public static final class Singleton extends hydra.langs.scala.meta.Type_Ref implements Serializable {
     public final hydra.langs.scala.meta.Type_Singleton value;
     
     public Singleton (hydra.langs.scala.meta.Type_Singleton value) {

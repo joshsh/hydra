@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public abstract class DirectiveLocation {
+import java.io.Serializable;
+
+public abstract class DirectiveLocation implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.DirectiveLocation");
   
   private DirectiveLocation () {
@@ -29,7 +31,7 @@ public abstract class DirectiveLocation {
     }
   }
   
-  public static final class Executable extends hydra.langs.graphql.syntax.DirectiveLocation {
+  public static final class Executable extends hydra.langs.graphql.syntax.DirectiveLocation implements Serializable {
     public final hydra.langs.graphql.syntax.ExecutableDirectiveLocation value;
     
     public Executable (hydra.langs.graphql.syntax.ExecutableDirectiveLocation value) {
@@ -56,7 +58,7 @@ public abstract class DirectiveLocation {
     }
   }
   
-  public static final class TypeSystem extends hydra.langs.graphql.syntax.DirectiveLocation {
+  public static final class TypeSystem extends hydra.langs.graphql.syntax.DirectiveLocation implements Serializable {
     public final hydra.langs.graphql.syntax.TypeSystemDirectiveLocation value;
     
     public TypeSystem (hydra.langs.graphql.syntax.TypeSystemDirectiveLocation value) {

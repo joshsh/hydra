@@ -1,6 +1,8 @@
 package hydra.langs.parquet.format;
 
-public class RowGroup {
+import java.io.Serializable;
+
+public class RowGroup implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/parquet/format.RowGroup");
   
   /**

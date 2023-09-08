@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public class Pat_Tuple {
+import java.io.Serializable;
+
+public class Pat_Tuple implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Pat.Tuple");
   
   public final java.util.List<hydra.langs.scala.meta.Pat> args;

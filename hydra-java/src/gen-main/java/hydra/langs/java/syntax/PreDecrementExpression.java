@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class PreDecrementExpression {
+import java.io.Serializable;
+
+public class PreDecrementExpression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.PreDecrementExpression");
   
   public final hydra.langs.java.syntax.UnaryExpression value;

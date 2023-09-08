@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public abstract class ContextuallyTypedRowValueExpression {
+import java.io.Serializable;
+
+public abstract class ContextuallyTypedRowValueExpression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.ContextuallyTypedRowValueExpression");
   
   private ContextuallyTypedRowValueExpression () {
@@ -29,7 +31,7 @@ public abstract class ContextuallyTypedRowValueExpression {
     }
   }
   
-  public static final class SpecialCase extends hydra.langs.sql.ansi.ContextuallyTypedRowValueExpression {
+  public static final class SpecialCase extends hydra.langs.sql.ansi.ContextuallyTypedRowValueExpression implements Serializable {
     public final hydra.langs.sql.ansi.RowValueSpecialCase value;
     
     public SpecialCase (hydra.langs.sql.ansi.RowValueSpecialCase value) {
@@ -56,7 +58,7 @@ public abstract class ContextuallyTypedRowValueExpression {
     }
   }
   
-  public static final class Constructor extends hydra.langs.sql.ansi.ContextuallyTypedRowValueExpression {
+  public static final class Constructor extends hydra.langs.sql.ansi.ContextuallyTypedRowValueExpression implements Serializable {
     public final hydra.langs.sql.ansi.ContextuallyTypedRowValueConstructor value;
     
     public Constructor (hydra.langs.sql.ansi.ContextuallyTypedRowValueConstructor value) {

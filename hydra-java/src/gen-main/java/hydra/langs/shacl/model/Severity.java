@@ -1,6 +1,8 @@
 package hydra.langs.shacl.model;
 
-public abstract class Severity {
+import java.io.Serializable;
+
+public abstract class Severity implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shacl/model.Severity");
   
   private Severity () {
@@ -38,7 +40,7 @@ public abstract class Severity {
   /**
    * A non-critical constraint violation indicating an informative message
    */
-  public static final class Info extends hydra.langs.shacl.model.Severity {
+  public static final class Info extends hydra.langs.shacl.model.Severity implements Serializable {
     public Info () {
     
     }
@@ -66,7 +68,7 @@ public abstract class Severity {
   /**
    * A non-critical constraint violation indicating a warning
    */
-  public static final class Warning extends hydra.langs.shacl.model.Severity {
+  public static final class Warning extends hydra.langs.shacl.model.Severity implements Serializable {
     public Warning () {
     
     }
@@ -94,7 +96,7 @@ public abstract class Severity {
   /**
    * A constraint violation
    */
-  public static final class Violation extends hydra.langs.shacl.model.Severity {
+  public static final class Violation extends hydra.langs.shacl.model.Severity implements Serializable {
     public Violation () {
     
     }

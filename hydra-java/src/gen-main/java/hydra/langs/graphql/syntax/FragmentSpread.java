@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public class FragmentSpread {
+import java.io.Serializable;
+
+public class FragmentSpread implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.FragmentSpread");
   
   public final hydra.langs.graphql.syntax.FragmentName fragmentName;

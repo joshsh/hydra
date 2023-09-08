@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public class Predicate {
+import java.io.Serializable;
+
+public class Predicate implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.Predicate");
   
   public Predicate () {

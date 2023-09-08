@@ -1,9 +1,11 @@
 package hydra.core;
 
+import java.io.Serializable;
+
 /**
  * A symbol which stands for a term, type, or element
  */
-public class Name {
+public class Name implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/core.Name");
   
   public final String value;

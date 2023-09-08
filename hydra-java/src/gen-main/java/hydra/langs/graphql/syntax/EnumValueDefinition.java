@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public class EnumValueDefinition {
+import java.io.Serializable;
+
+public class EnumValueDefinition implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.EnumValueDefinition");
   
   public final java.util.Optional<hydra.langs.graphql.syntax.Description> description;

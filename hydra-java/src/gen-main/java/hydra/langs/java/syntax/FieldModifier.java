@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class FieldModifier {
+import java.io.Serializable;
+
+public abstract class FieldModifier implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.FieldModifier");
   
   private FieldModifier () {
@@ -65,7 +67,7 @@ public abstract class FieldModifier {
     }
   }
   
-  public static final class Annotation extends hydra.langs.java.syntax.FieldModifier {
+  public static final class Annotation extends hydra.langs.java.syntax.FieldModifier implements Serializable {
     public final hydra.langs.java.syntax.Annotation value;
     
     public Annotation (hydra.langs.java.syntax.Annotation value) {
@@ -92,7 +94,7 @@ public abstract class FieldModifier {
     }
   }
   
-  public static final class Public extends hydra.langs.java.syntax.FieldModifier {
+  public static final class Public extends hydra.langs.java.syntax.FieldModifier implements Serializable {
     public Public () {
     
     }
@@ -117,7 +119,7 @@ public abstract class FieldModifier {
     }
   }
   
-  public static final class Protected extends hydra.langs.java.syntax.FieldModifier {
+  public static final class Protected extends hydra.langs.java.syntax.FieldModifier implements Serializable {
     public Protected () {
     
     }
@@ -142,7 +144,7 @@ public abstract class FieldModifier {
     }
   }
   
-  public static final class Private extends hydra.langs.java.syntax.FieldModifier {
+  public static final class Private extends hydra.langs.java.syntax.FieldModifier implements Serializable {
     public Private () {
     
     }
@@ -167,7 +169,7 @@ public abstract class FieldModifier {
     }
   }
   
-  public static final class Static extends hydra.langs.java.syntax.FieldModifier {
+  public static final class Static extends hydra.langs.java.syntax.FieldModifier implements Serializable {
     public Static () {
     
     }
@@ -192,7 +194,7 @@ public abstract class FieldModifier {
     }
   }
   
-  public static final class Final extends hydra.langs.java.syntax.FieldModifier {
+  public static final class Final extends hydra.langs.java.syntax.FieldModifier implements Serializable {
     public Final () {
     
     }
@@ -217,7 +219,7 @@ public abstract class FieldModifier {
     }
   }
   
-  public static final class Transient extends hydra.langs.java.syntax.FieldModifier {
+  public static final class Transient extends hydra.langs.java.syntax.FieldModifier implements Serializable {
     public Transient () {
     
     }
@@ -242,7 +244,7 @@ public abstract class FieldModifier {
     }
   }
   
-  public static final class Volatile extends hydra.langs.java.syntax.FieldModifier {
+  public static final class Volatile extends hydra.langs.java.syntax.FieldModifier implements Serializable {
     public Volatile () {
     
     }

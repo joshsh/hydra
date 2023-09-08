@@ -1,9 +1,11 @@
 package hydra.langs.tinkerpop.mappings;
 
+import java.io.Serializable;
+
 /**
  * Either a vertex specification or an edge specification
  */
-public abstract class ElementSpec {
+public abstract class ElementSpec implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/tinkerpop/mappings.ElementSpec");
   
   private ElementSpec () {
@@ -32,7 +34,7 @@ public abstract class ElementSpec {
     }
   }
   
-  public static final class Vertex extends hydra.langs.tinkerpop.mappings.ElementSpec {
+  public static final class Vertex extends hydra.langs.tinkerpop.mappings.ElementSpec implements Serializable {
     public final hydra.langs.tinkerpop.mappings.VertexSpec value;
     
     public Vertex (hydra.langs.tinkerpop.mappings.VertexSpec value) {
@@ -59,7 +61,7 @@ public abstract class ElementSpec {
     }
   }
   
-  public static final class Edge extends hydra.langs.tinkerpop.mappings.ElementSpec {
+  public static final class Edge extends hydra.langs.tinkerpop.mappings.ElementSpec implements Serializable {
     public final hydra.langs.tinkerpop.mappings.EdgeSpec value;
     
     public Edge (hydra.langs.tinkerpop.mappings.EdgeSpec value) {

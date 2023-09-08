@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class Finally {
+import java.io.Serializable;
+
+public class Finally implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.Finally");
   
   public final hydra.langs.java.syntax.Block value;

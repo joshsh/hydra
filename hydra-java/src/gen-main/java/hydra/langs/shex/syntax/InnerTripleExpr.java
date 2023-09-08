@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class InnerTripleExpr {
+import java.io.Serializable;
+
+public abstract class InnerTripleExpr implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.InnerTripleExpr");
   
   private InnerTripleExpr () {
@@ -29,7 +31,7 @@ public abstract class InnerTripleExpr {
     }
   }
   
-  public static final class MultiElementGroup extends hydra.langs.shex.syntax.InnerTripleExpr {
+  public static final class MultiElementGroup extends hydra.langs.shex.syntax.InnerTripleExpr implements Serializable {
     public final hydra.langs.shex.syntax.MultiElementGroup value;
     
     public MultiElementGroup (hydra.langs.shex.syntax.MultiElementGroup value) {
@@ -56,7 +58,7 @@ public abstract class InnerTripleExpr {
     }
   }
   
-  public static final class MultiElementOneOf extends hydra.langs.shex.syntax.InnerTripleExpr {
+  public static final class MultiElementOneOf extends hydra.langs.shex.syntax.InnerTripleExpr implements Serializable {
     public final hydra.langs.shex.syntax.MultiElementOneOf value;
     
     public MultiElementOneOf (hydra.langs.shex.syntax.MultiElementOneOf value) {

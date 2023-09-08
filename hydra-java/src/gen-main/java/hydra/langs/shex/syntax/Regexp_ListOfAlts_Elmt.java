@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class Regexp_ListOfAlts_Elmt {
+import java.io.Serializable;
+
+public abstract class Regexp_ListOfAlts_Elmt implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.Regexp.ListOfAlts.Elmt");
   
   private Regexp_ListOfAlts_Elmt () {
@@ -35,7 +37,7 @@ public abstract class Regexp_ListOfAlts_Elmt {
     }
   }
   
-  public static final class Regex extends hydra.langs.shex.syntax.Regexp_ListOfAlts_Elmt {
+  public static final class Regex extends hydra.langs.shex.syntax.Regexp_ListOfAlts_Elmt implements Serializable {
     public final String value;
     
     public Regex (String value) {
@@ -62,7 +64,7 @@ public abstract class Regexp_ListOfAlts_Elmt {
     }
   }
   
-  public static final class Sequence extends hydra.langs.shex.syntax.Regexp_ListOfAlts_Elmt {
+  public static final class Sequence extends hydra.langs.shex.syntax.Regexp_ListOfAlts_Elmt implements Serializable {
     public final String value;
     
     public Sequence (String value) {
@@ -89,7 +91,7 @@ public abstract class Regexp_ListOfAlts_Elmt {
     }
   }
   
-  public static final class Uchar extends hydra.langs.shex.syntax.Regexp_ListOfAlts_Elmt {
+  public static final class Uchar extends hydra.langs.shex.syntax.Regexp_ListOfAlts_Elmt implements Serializable {
     public final hydra.langs.shex.syntax.Uchar value;
     
     public Uchar (hydra.langs.shex.syntax.Uchar value) {

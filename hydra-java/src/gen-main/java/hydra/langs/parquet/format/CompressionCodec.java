@@ -1,9 +1,11 @@
 package hydra.langs.parquet.format;
 
+import java.io.Serializable;
+
 /**
  * Supported compression algorithms. Codecs added in format version X.Y can be read by readers based on X.Y and later. Codec support may vary between readers based on the format version and libraries available at runtime. See Compression.md for a detailed specification of these algorithms.
  */
-public abstract class CompressionCodec {
+public abstract class CompressionCodec implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/parquet/format.CompressionCodec");
   
   private CompressionCodec () {
@@ -62,7 +64,7 @@ public abstract class CompressionCodec {
     }
   }
   
-  public static final class Uncompressed extends hydra.langs.parquet.format.CompressionCodec {
+  public static final class Uncompressed extends hydra.langs.parquet.format.CompressionCodec implements Serializable {
     public Uncompressed () {
     
     }
@@ -87,7 +89,7 @@ public abstract class CompressionCodec {
     }
   }
   
-  public static final class Snappy extends hydra.langs.parquet.format.CompressionCodec {
+  public static final class Snappy extends hydra.langs.parquet.format.CompressionCodec implements Serializable {
     public Snappy () {
     
     }
@@ -112,7 +114,7 @@ public abstract class CompressionCodec {
     }
   }
   
-  public static final class Gzip extends hydra.langs.parquet.format.CompressionCodec {
+  public static final class Gzip extends hydra.langs.parquet.format.CompressionCodec implements Serializable {
     public Gzip () {
     
     }
@@ -137,7 +139,7 @@ public abstract class CompressionCodec {
     }
   }
   
-  public static final class Lzo extends hydra.langs.parquet.format.CompressionCodec {
+  public static final class Lzo extends hydra.langs.parquet.format.CompressionCodec implements Serializable {
     public Lzo () {
     
     }
@@ -165,7 +167,7 @@ public abstract class CompressionCodec {
   /**
    * Added in 2.4
    */
-  public static final class Brotli extends hydra.langs.parquet.format.CompressionCodec {
+  public static final class Brotli extends hydra.langs.parquet.format.CompressionCodec implements Serializable {
     public Brotli () {
     
     }
@@ -193,7 +195,7 @@ public abstract class CompressionCodec {
   /**
    * Added in 2.4
    */
-  public static final class Zstd extends hydra.langs.parquet.format.CompressionCodec {
+  public static final class Zstd extends hydra.langs.parquet.format.CompressionCodec implements Serializable {
     public Zstd () {
     
     }
@@ -221,7 +223,7 @@ public abstract class CompressionCodec {
   /**
    * Added in 2.9
    */
-  public static final class Lz4Raw extends hydra.langs.parquet.format.CompressionCodec {
+  public static final class Lz4Raw extends hydra.langs.parquet.format.CompressionCodec implements Serializable {
     public Lz4Raw () {
     
     }

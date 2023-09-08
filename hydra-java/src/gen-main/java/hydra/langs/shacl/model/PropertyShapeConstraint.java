@@ -1,9 +1,11 @@
 package hydra.langs.shacl.model;
 
+import java.io.Serializable;
+
 /**
  * A number of constraint parameters which are specific to property shapes, and cannot be applied to node shapes
  */
-public abstract class PropertyShapeConstraint {
+public abstract class PropertyShapeConstraint implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shacl/model.PropertyShapeConstraint");
   
   private PropertyShapeConstraint () {
@@ -59,7 +61,7 @@ public abstract class PropertyShapeConstraint {
   /**
    * See https://www.w3.org/TR/shacl/#LessThanConstraintComponent
    */
-  public static final class LessThan extends hydra.langs.shacl.model.PropertyShapeConstraint {
+  public static final class LessThan extends hydra.langs.shacl.model.PropertyShapeConstraint implements Serializable {
     /**
      * See https://www.w3.org/TR/shacl/#LessThanConstraintComponent
      */
@@ -92,7 +94,7 @@ public abstract class PropertyShapeConstraint {
   /**
    * See https://www.w3.org/TR/shacl/#LessThanOrEqualsConstraintComponent
    */
-  public static final class LessThanOrEquals extends hydra.langs.shacl.model.PropertyShapeConstraint {
+  public static final class LessThanOrEquals extends hydra.langs.shacl.model.PropertyShapeConstraint implements Serializable {
     /**
      * See https://www.w3.org/TR/shacl/#LessThanOrEqualsConstraintComponent
      */
@@ -125,7 +127,7 @@ public abstract class PropertyShapeConstraint {
   /**
    * The maximum cardinality. Node shapes cannot have any value for sh:maxCount. See https://www.w3.org/TR/shacl/#MaxCountConstraintComponent
    */
-  public static final class MaxCount extends hydra.langs.shacl.model.PropertyShapeConstraint {
+  public static final class MaxCount extends hydra.langs.shacl.model.PropertyShapeConstraint implements Serializable {
     /**
      * The maximum cardinality. Node shapes cannot have any value for sh:maxCount. See https://www.w3.org/TR/shacl/#MaxCountConstraintComponent
      */
@@ -158,7 +160,7 @@ public abstract class PropertyShapeConstraint {
   /**
    * The minimum cardinality. Node shapes cannot have any value for sh:minCount. See https://www.w3.org/TR/shacl/#MinCountConstraintComponent
    */
-  public static final class MinCount extends hydra.langs.shacl.model.PropertyShapeConstraint {
+  public static final class MinCount extends hydra.langs.shacl.model.PropertyShapeConstraint implements Serializable {
     /**
      * The minimum cardinality. Node shapes cannot have any value for sh:minCount. See https://www.w3.org/TR/shacl/#MinCountConstraintComponent
      */
@@ -191,7 +193,7 @@ public abstract class PropertyShapeConstraint {
   /**
    * See https://www.w3.org/TR/shacl/#UniqueLangConstraintComponent
    */
-  public static final class UniqueLang extends hydra.langs.shacl.model.PropertyShapeConstraint {
+  public static final class UniqueLang extends hydra.langs.shacl.model.PropertyShapeConstraint implements Serializable {
     /**
      * See https://www.w3.org/TR/shacl/#UniqueLangConstraintComponent
      */
@@ -224,7 +226,7 @@ public abstract class PropertyShapeConstraint {
   /**
    * See https://www.w3.org/TR/shacl/#QualifiedValueShapeConstraintComponent
    */
-  public static final class QualifiedValueShape extends hydra.langs.shacl.model.PropertyShapeConstraint {
+  public static final class QualifiedValueShape extends hydra.langs.shacl.model.PropertyShapeConstraint implements Serializable {
     /**
      * See https://www.w3.org/TR/shacl/#QualifiedValueShapeConstraintComponent
      */

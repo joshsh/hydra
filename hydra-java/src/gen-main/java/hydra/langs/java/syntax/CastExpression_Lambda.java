@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class CastExpression_Lambda {
+import java.io.Serializable;
+
+public class CastExpression_Lambda implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.CastExpression.Lambda");
   
   public final hydra.langs.java.syntax.CastExpression_RefAndBounds refAndBounds;

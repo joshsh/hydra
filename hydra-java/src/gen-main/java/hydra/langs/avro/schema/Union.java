@@ -1,6 +1,8 @@
 package hydra.langs.avro.schema;
 
-public class Union {
+import java.io.Serializable;
+
+public class Union implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/avro/schema.Union");
   
   public final java.util.List<hydra.langs.avro.schema.Schema> value;

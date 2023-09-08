@@ -1,9 +1,11 @@
 package hydra.langs.shacl.model;
 
+import java.io.Serializable;
+
 /**
  * Either an instance of a type like sh:Shape or sh:NodeShape, or an IRI which refers to an instance of that type
  */
-public abstract class Reference<A> {
+public abstract class Reference<A> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shacl/model.Reference");
   
   private Reference () {
@@ -38,7 +40,7 @@ public abstract class Reference<A> {
     }
   }
   
-  public static final class Named<A> extends hydra.langs.shacl.model.Reference<A> {
+  public static final class Named<A> extends hydra.langs.shacl.model.Reference<A> implements Serializable {
     public final hydra.langs.rdf.syntax.Iri value;
     
     public Named (hydra.langs.rdf.syntax.Iri value) {
@@ -68,7 +70,7 @@ public abstract class Reference<A> {
   /**
    * An anonymous instance
    */
-  public static final class Anonymous<A> extends hydra.langs.shacl.model.Reference<A> {
+  public static final class Anonymous<A> extends hydra.langs.shacl.model.Reference<A> implements Serializable {
     /**
      * An anonymous instance
      */
@@ -101,7 +103,7 @@ public abstract class Reference<A> {
   /**
    * An inline definition
    */
-  public static final class Definition<A> extends hydra.langs.shacl.model.Reference<A> {
+  public static final class Definition<A> extends hydra.langs.shacl.model.Reference<A> implements Serializable {
     /**
      * An inline definition
      */

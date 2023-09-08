@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class UnaryExpressionNotPlusMinus {
+import java.io.Serializable;
+
+public abstract class UnaryExpressionNotPlusMinus implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.UnaryExpressionNotPlusMinus");
   
   private UnaryExpressionNotPlusMinus () {
@@ -41,7 +43,7 @@ public abstract class UnaryExpressionNotPlusMinus {
     }
   }
   
-  public static final class Postfix extends hydra.langs.java.syntax.UnaryExpressionNotPlusMinus {
+  public static final class Postfix extends hydra.langs.java.syntax.UnaryExpressionNotPlusMinus implements Serializable {
     public final hydra.langs.java.syntax.PostfixExpression value;
     
     public Postfix (hydra.langs.java.syntax.PostfixExpression value) {
@@ -68,7 +70,7 @@ public abstract class UnaryExpressionNotPlusMinus {
     }
   }
   
-  public static final class Tilde extends hydra.langs.java.syntax.UnaryExpressionNotPlusMinus {
+  public static final class Tilde extends hydra.langs.java.syntax.UnaryExpressionNotPlusMinus implements Serializable {
     public final hydra.langs.java.syntax.UnaryExpression value;
     
     public Tilde (hydra.langs.java.syntax.UnaryExpression value) {
@@ -95,7 +97,7 @@ public abstract class UnaryExpressionNotPlusMinus {
     }
   }
   
-  public static final class Not extends hydra.langs.java.syntax.UnaryExpressionNotPlusMinus {
+  public static final class Not extends hydra.langs.java.syntax.UnaryExpressionNotPlusMinus implements Serializable {
     public final hydra.langs.java.syntax.UnaryExpression value;
     
     public Not (hydra.langs.java.syntax.UnaryExpression value) {
@@ -122,7 +124,7 @@ public abstract class UnaryExpressionNotPlusMinus {
     }
   }
   
-  public static final class Cast extends hydra.langs.java.syntax.UnaryExpressionNotPlusMinus {
+  public static final class Cast extends hydra.langs.java.syntax.UnaryExpressionNotPlusMinus implements Serializable {
     public final hydra.langs.java.syntax.CastExpression value;
     
     public Cast (hydra.langs.java.syntax.CastExpression value) {

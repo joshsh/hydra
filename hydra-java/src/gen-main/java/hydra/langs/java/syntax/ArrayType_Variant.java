@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class ArrayType_Variant {
+import java.io.Serializable;
+
+public abstract class ArrayType_Variant implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ArrayType.Variant");
   
   private ArrayType_Variant () {
@@ -35,7 +37,7 @@ public abstract class ArrayType_Variant {
     }
   }
   
-  public static final class Primitive extends hydra.langs.java.syntax.ArrayType_Variant {
+  public static final class Primitive extends hydra.langs.java.syntax.ArrayType_Variant implements Serializable {
     public final hydra.langs.java.syntax.PrimitiveTypeWithAnnotations value;
     
     public Primitive (hydra.langs.java.syntax.PrimitiveTypeWithAnnotations value) {
@@ -62,7 +64,7 @@ public abstract class ArrayType_Variant {
     }
   }
   
-  public static final class ClassOrInterface extends hydra.langs.java.syntax.ArrayType_Variant {
+  public static final class ClassOrInterface extends hydra.langs.java.syntax.ArrayType_Variant implements Serializable {
     public final hydra.langs.java.syntax.ClassOrInterfaceType value;
     
     public ClassOrInterface (hydra.langs.java.syntax.ClassOrInterfaceType value) {
@@ -89,7 +91,7 @@ public abstract class ArrayType_Variant {
     }
   }
   
-  public static final class Variable extends hydra.langs.java.syntax.ArrayType_Variant {
+  public static final class Variable extends hydra.langs.java.syntax.ArrayType_Variant implements Serializable {
     public final hydra.langs.java.syntax.TypeVariable value;
     
     public Variable (hydra.langs.java.syntax.TypeVariable value) {

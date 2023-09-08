@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public abstract class OverrideClause {
+import java.io.Serializable;
+
+public abstract class OverrideClause implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.OverrideClause");
   
   private OverrideClause () {
@@ -29,7 +31,7 @@ public abstract class OverrideClause {
     }
   }
   
-  public static final class OVERRIDINGSpUSERSpVALUE extends hydra.langs.sql.ansi.OverrideClause {
+  public static final class OVERRIDINGSpUSERSpVALUE extends hydra.langs.sql.ansi.OverrideClause implements Serializable {
     public OVERRIDINGSpUSERSpVALUE () {
     
     }
@@ -54,7 +56,7 @@ public abstract class OverrideClause {
     }
   }
   
-  public static final class OVERRIDINGSpSYSTEMSpVALUE extends hydra.langs.sql.ansi.OverrideClause {
+  public static final class OVERRIDINGSpSYSTEMSpVALUE extends hydra.langs.sql.ansi.OverrideClause implements Serializable {
     public OVERRIDINGSpSYSTEMSpVALUE () {
     
     }

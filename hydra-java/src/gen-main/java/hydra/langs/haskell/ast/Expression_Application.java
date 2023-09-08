@@ -1,9 +1,11 @@
 package hydra.langs.haskell.ast;
 
+import java.io.Serializable;
+
 /**
  * An application expression
  */
-public class Expression_Application {
+public class Expression_Application implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.Expression.Application");
   
   public final hydra.langs.haskell.ast.Expression function;

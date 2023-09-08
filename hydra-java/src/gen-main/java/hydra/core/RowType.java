@@ -1,9 +1,11 @@
 package hydra.core;
 
+import java.io.Serializable;
+
 /**
  * A labeled record or union type
  */
-public class RowType<A> {
+public class RowType<A> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/core.RowType");
   
   /**

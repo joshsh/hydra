@@ -1,9 +1,11 @@
 package hydra.langs.haskell.ast;
 
+import java.io.Serializable;
+
 /**
  * An update record expression
  */
-public class Expression_UpdateRecord {
+public class Expression_UpdateRecord implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.Expression.UpdateRecord");
   
   public final hydra.langs.haskell.ast.Expression inner;

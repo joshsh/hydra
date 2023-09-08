@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class PrimaryNoNewArray {
+import java.io.Serializable;
+
+public abstract class PrimaryNoNewArray implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.PrimaryNoNewArray");
   
   private PrimaryNoNewArray () {
@@ -77,7 +79,7 @@ public abstract class PrimaryNoNewArray {
     }
   }
   
-  public static final class Literal extends hydra.langs.java.syntax.PrimaryNoNewArray {
+  public static final class Literal extends hydra.langs.java.syntax.PrimaryNoNewArray implements Serializable {
     public final hydra.langs.java.syntax.Literal value;
     
     public Literal (hydra.langs.java.syntax.Literal value) {
@@ -104,7 +106,7 @@ public abstract class PrimaryNoNewArray {
     }
   }
   
-  public static final class ClassLiteral extends hydra.langs.java.syntax.PrimaryNoNewArray {
+  public static final class ClassLiteral extends hydra.langs.java.syntax.PrimaryNoNewArray implements Serializable {
     public final hydra.langs.java.syntax.ClassLiteral value;
     
     public ClassLiteral (hydra.langs.java.syntax.ClassLiteral value) {
@@ -131,7 +133,7 @@ public abstract class PrimaryNoNewArray {
     }
   }
   
-  public static final class This extends hydra.langs.java.syntax.PrimaryNoNewArray {
+  public static final class This extends hydra.langs.java.syntax.PrimaryNoNewArray implements Serializable {
     public This () {
     
     }
@@ -156,7 +158,7 @@ public abstract class PrimaryNoNewArray {
     }
   }
   
-  public static final class DotThis extends hydra.langs.java.syntax.PrimaryNoNewArray {
+  public static final class DotThis extends hydra.langs.java.syntax.PrimaryNoNewArray implements Serializable {
     public final hydra.langs.java.syntax.TypeName value;
     
     public DotThis (hydra.langs.java.syntax.TypeName value) {
@@ -183,7 +185,7 @@ public abstract class PrimaryNoNewArray {
     }
   }
   
-  public static final class Parens extends hydra.langs.java.syntax.PrimaryNoNewArray {
+  public static final class Parens extends hydra.langs.java.syntax.PrimaryNoNewArray implements Serializable {
     public final hydra.langs.java.syntax.Expression value;
     
     public Parens (hydra.langs.java.syntax.Expression value) {
@@ -210,7 +212,7 @@ public abstract class PrimaryNoNewArray {
     }
   }
   
-  public static final class ClassInstance extends hydra.langs.java.syntax.PrimaryNoNewArray {
+  public static final class ClassInstance extends hydra.langs.java.syntax.PrimaryNoNewArray implements Serializable {
     public final hydra.langs.java.syntax.ClassInstanceCreationExpression value;
     
     public ClassInstance (hydra.langs.java.syntax.ClassInstanceCreationExpression value) {
@@ -237,7 +239,7 @@ public abstract class PrimaryNoNewArray {
     }
   }
   
-  public static final class FieldAccess extends hydra.langs.java.syntax.PrimaryNoNewArray {
+  public static final class FieldAccess extends hydra.langs.java.syntax.PrimaryNoNewArray implements Serializable {
     public final hydra.langs.java.syntax.FieldAccess value;
     
     public FieldAccess (hydra.langs.java.syntax.FieldAccess value) {
@@ -264,7 +266,7 @@ public abstract class PrimaryNoNewArray {
     }
   }
   
-  public static final class ArrayAccess extends hydra.langs.java.syntax.PrimaryNoNewArray {
+  public static final class ArrayAccess extends hydra.langs.java.syntax.PrimaryNoNewArray implements Serializable {
     public final hydra.langs.java.syntax.ArrayAccess value;
     
     public ArrayAccess (hydra.langs.java.syntax.ArrayAccess value) {
@@ -291,7 +293,7 @@ public abstract class PrimaryNoNewArray {
     }
   }
   
-  public static final class MethodInvocation extends hydra.langs.java.syntax.PrimaryNoNewArray {
+  public static final class MethodInvocation extends hydra.langs.java.syntax.PrimaryNoNewArray implements Serializable {
     public final hydra.langs.java.syntax.MethodInvocation value;
     
     public MethodInvocation (hydra.langs.java.syntax.MethodInvocation value) {
@@ -318,7 +320,7 @@ public abstract class PrimaryNoNewArray {
     }
   }
   
-  public static final class MethodReference extends hydra.langs.java.syntax.PrimaryNoNewArray {
+  public static final class MethodReference extends hydra.langs.java.syntax.PrimaryNoNewArray implements Serializable {
     public final hydra.langs.java.syntax.MethodReference value;
     
     public MethodReference (hydra.langs.java.syntax.MethodReference value) {

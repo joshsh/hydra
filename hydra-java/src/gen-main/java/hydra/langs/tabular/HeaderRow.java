@@ -1,9 +1,11 @@
 package hydra.langs.tabular;
 
+import java.io.Serializable;
+
 /**
  * A header row, containing column names (but no types or data)
  */
-public class HeaderRow {
+public class HeaderRow implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/tabular.HeaderRow");
   
   /**

@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public class LangTag {
+import java.io.Serializable;
+
+public class LangTag implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.LangTag");
   
   public final String value;

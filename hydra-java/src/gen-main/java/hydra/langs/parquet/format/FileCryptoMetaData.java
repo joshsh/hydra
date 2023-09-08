@@ -1,9 +1,11 @@
 package hydra.langs.parquet.format;
 
+import java.io.Serializable;
+
 /**
  * Crypto metadata for files with encrypted footer
  */
-public class FileCryptoMetaData {
+public class FileCryptoMetaData implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/parquet/format.FileCryptoMetaData");
   
   /**

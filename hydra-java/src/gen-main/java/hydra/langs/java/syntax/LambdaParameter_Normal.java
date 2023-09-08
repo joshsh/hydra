@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class LambdaParameter_Normal {
+import java.io.Serializable;
+
+public class LambdaParameter_Normal implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.LambdaParameter.Normal");
   
   public final java.util.List<hydra.langs.java.syntax.VariableModifier> modifiers;

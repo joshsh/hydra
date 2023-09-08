@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class IriRange {
+import java.io.Serializable;
+
+public abstract class IriRange implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.IriRange");
   
   private IriRange () {
@@ -29,7 +31,7 @@ public abstract class IriRange {
     }
   }
   
-  public static final class Sequence extends hydra.langs.shex.syntax.IriRange {
+  public static final class Sequence extends hydra.langs.shex.syntax.IriRange implements Serializable {
     public final hydra.langs.shex.syntax.IriRange_Sequence value;
     
     public Sequence (hydra.langs.shex.syntax.IriRange_Sequence value) {
@@ -56,7 +58,7 @@ public abstract class IriRange {
     }
   }
   
-  public static final class Sequence2 extends hydra.langs.shex.syntax.IriRange {
+  public static final class Sequence2 extends hydra.langs.shex.syntax.IriRange implements Serializable {
     public final java.util.List<hydra.langs.shex.syntax.Exclusion> value;
     
     public Sequence2 (java.util.List<hydra.langs.shex.syntax.Exclusion> value) {

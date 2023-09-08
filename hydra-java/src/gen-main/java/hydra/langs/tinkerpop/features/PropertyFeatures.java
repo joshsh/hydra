@@ -1,9 +1,11 @@
 package hydra.langs.tinkerpop.features;
 
+import java.io.Serializable;
+
 /**
  * A base interface for Edge or Vertex Property features.
  */
-public class PropertyFeatures {
+public class PropertyFeatures implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/tinkerpop/features.PropertyFeatures");
   
   public final hydra.langs.tinkerpop.features.DataTypeFeatures dataTypeFeatures;

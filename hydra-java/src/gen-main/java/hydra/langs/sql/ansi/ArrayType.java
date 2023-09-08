@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public class ArrayType {
+import java.io.Serializable;
+
+public class ArrayType implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.ArrayType");
   
   public ArrayType () {

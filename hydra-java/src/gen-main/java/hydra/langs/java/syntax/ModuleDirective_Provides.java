@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class ModuleDirective_Provides {
+import java.io.Serializable;
+
+public class ModuleDirective_Provides implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ModuleDirective.Provides");
   
   public final hydra.langs.java.syntax.TypeName to;

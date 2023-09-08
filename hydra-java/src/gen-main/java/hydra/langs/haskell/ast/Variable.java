@@ -1,6 +1,8 @@
 package hydra.langs.haskell.ast;
 
-public class Variable {
+import java.io.Serializable;
+
+public class Variable implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.Variable");
   
   public final hydra.langs.haskell.ast.Name value;

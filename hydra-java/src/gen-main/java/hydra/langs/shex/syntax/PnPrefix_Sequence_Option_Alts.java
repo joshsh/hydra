@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class PnPrefix_Sequence_Option_Alts {
+import java.io.Serializable;
+
+public abstract class PnPrefix_Sequence_Option_Alts implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.PnPrefix.Sequence.Option.Alts");
   
   private PnPrefix_Sequence_Option_Alts () {
@@ -29,7 +31,7 @@ public abstract class PnPrefix_Sequence_Option_Alts {
     }
   }
   
-  public static final class PnChars extends hydra.langs.shex.syntax.PnPrefix_Sequence_Option_Alts {
+  public static final class PnChars extends hydra.langs.shex.syntax.PnPrefix_Sequence_Option_Alts implements Serializable {
     public final hydra.langs.shex.syntax.PnChars value;
     
     public PnChars (hydra.langs.shex.syntax.PnChars value) {
@@ -56,7 +58,7 @@ public abstract class PnPrefix_Sequence_Option_Alts {
     }
   }
   
-  public static final class Period extends hydra.langs.shex.syntax.PnPrefix_Sequence_Option_Alts {
+  public static final class Period extends hydra.langs.shex.syntax.PnPrefix_Sequence_Option_Alts implements Serializable {
     public Period () {
     
     }

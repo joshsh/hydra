@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public class Type_Match {
+import java.io.Serializable;
+
+public class Type_Match implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Type.Match");
   
   public final hydra.langs.scala.meta.Type tpe;

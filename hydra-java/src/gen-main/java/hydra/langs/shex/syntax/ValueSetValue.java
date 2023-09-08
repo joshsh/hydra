@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class ValueSetValue {
+import java.io.Serializable;
+
+public abstract class ValueSetValue implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.ValueSetValue");
   
   private ValueSetValue () {
@@ -29,7 +31,7 @@ public abstract class ValueSetValue {
     }
   }
   
-  public static final class IriRange extends hydra.langs.shex.syntax.ValueSetValue {
+  public static final class IriRange extends hydra.langs.shex.syntax.ValueSetValue implements Serializable {
     public final hydra.langs.shex.syntax.IriRange value;
     
     public IriRange (hydra.langs.shex.syntax.IriRange value) {
@@ -56,7 +58,7 @@ public abstract class ValueSetValue {
     }
   }
   
-  public static final class Literal extends hydra.langs.shex.syntax.ValueSetValue {
+  public static final class Literal extends hydra.langs.shex.syntax.ValueSetValue implements Serializable {
     public final hydra.langs.shex.syntax.Literal value;
     
     public Literal (hydra.langs.shex.syntax.Literal value) {

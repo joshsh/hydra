@@ -1,9 +1,11 @@
 package hydra.ast;
 
+import java.io.Serializable;
+
 /**
  * One of several classes of whitespace
  */
-public abstract class Ws {
+public abstract class Ws implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/ast.Ws");
   
   private Ws () {
@@ -50,7 +52,7 @@ public abstract class Ws {
     }
   }
   
-  public static final class None extends hydra.ast.Ws {
+  public static final class None extends hydra.ast.Ws implements Serializable {
     public None () {
     
     }
@@ -75,7 +77,7 @@ public abstract class Ws {
     }
   }
   
-  public static final class Space extends hydra.ast.Ws {
+  public static final class Space extends hydra.ast.Ws implements Serializable {
     public Space () {
     
     }
@@ -100,7 +102,7 @@ public abstract class Ws {
     }
   }
   
-  public static final class Break extends hydra.ast.Ws {
+  public static final class Break extends hydra.ast.Ws implements Serializable {
     public Break () {
     
     }
@@ -125,7 +127,7 @@ public abstract class Ws {
     }
   }
   
-  public static final class BreakAndIndent extends hydra.ast.Ws {
+  public static final class BreakAndIndent extends hydra.ast.Ws implements Serializable {
     public final String value;
     
     public BreakAndIndent (String value) {
@@ -152,7 +154,7 @@ public abstract class Ws {
     }
   }
   
-  public static final class DoubleBreak extends hydra.ast.Ws {
+  public static final class DoubleBreak extends hydra.ast.Ws implements Serializable {
     public DoubleBreak () {
     
     }

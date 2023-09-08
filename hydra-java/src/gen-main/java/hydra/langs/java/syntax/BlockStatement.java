@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class BlockStatement {
+import java.io.Serializable;
+
+public abstract class BlockStatement implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.BlockStatement");
   
   private BlockStatement () {
@@ -35,7 +37,7 @@ public abstract class BlockStatement {
     }
   }
   
-  public static final class LocalVariableDeclaration extends hydra.langs.java.syntax.BlockStatement {
+  public static final class LocalVariableDeclaration extends hydra.langs.java.syntax.BlockStatement implements Serializable {
     public final hydra.langs.java.syntax.LocalVariableDeclarationStatement value;
     
     public LocalVariableDeclaration (hydra.langs.java.syntax.LocalVariableDeclarationStatement value) {
@@ -62,7 +64,7 @@ public abstract class BlockStatement {
     }
   }
   
-  public static final class Class_ extends hydra.langs.java.syntax.BlockStatement {
+  public static final class Class_ extends hydra.langs.java.syntax.BlockStatement implements Serializable {
     public final hydra.langs.java.syntax.ClassDeclaration value;
     
     public Class_ (hydra.langs.java.syntax.ClassDeclaration value) {
@@ -89,7 +91,7 @@ public abstract class BlockStatement {
     }
   }
   
-  public static final class Statement extends hydra.langs.java.syntax.BlockStatement {
+  public static final class Statement extends hydra.langs.java.syntax.BlockStatement implements Serializable {
     public final hydra.langs.java.syntax.Statement value;
     
     public Statement (hydra.langs.java.syntax.Statement value) {

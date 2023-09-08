@@ -1,9 +1,11 @@
 package hydra.mantle;
 
+import java.io.Serializable;
+
 /**
  * The identifier of a function constructor
  */
-public abstract class FunctionVariant {
+public abstract class FunctionVariant implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/mantle.FunctionVariant");
   
   private FunctionVariant () {
@@ -38,7 +40,7 @@ public abstract class FunctionVariant {
     }
   }
   
-  public static final class Elimination extends hydra.mantle.FunctionVariant {
+  public static final class Elimination extends hydra.mantle.FunctionVariant implements Serializable {
     public Elimination () {
     
     }
@@ -63,7 +65,7 @@ public abstract class FunctionVariant {
     }
   }
   
-  public static final class Lambda extends hydra.mantle.FunctionVariant {
+  public static final class Lambda extends hydra.mantle.FunctionVariant implements Serializable {
     public Lambda () {
     
     }
@@ -88,7 +90,7 @@ public abstract class FunctionVariant {
     }
   }
   
-  public static final class Primitive extends hydra.mantle.FunctionVariant {
+  public static final class Primitive extends hydra.mantle.FunctionVariant implements Serializable {
     public Primitive () {
     
     }

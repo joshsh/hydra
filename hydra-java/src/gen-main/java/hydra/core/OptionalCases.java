@@ -1,9 +1,11 @@
 package hydra.core;
 
+import java.io.Serializable;
+
 /**
  * A case statement for matching optional terms
  */
-public class OptionalCases<A> {
+public class OptionalCases<A> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/core.OptionalCases");
   
   /**

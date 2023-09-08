@@ -1,9 +1,11 @@
 package hydra.ast;
 
+import java.io.Serializable;
+
 /**
  * Operator associativity
  */
-public abstract class Associativity {
+public abstract class Associativity implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/ast.Associativity");
   
   private Associativity () {
@@ -44,7 +46,7 @@ public abstract class Associativity {
     }
   }
   
-  public static final class None extends hydra.ast.Associativity {
+  public static final class None extends hydra.ast.Associativity implements Serializable {
     public None () {
     
     }
@@ -69,7 +71,7 @@ public abstract class Associativity {
     }
   }
   
-  public static final class Left extends hydra.ast.Associativity {
+  public static final class Left extends hydra.ast.Associativity implements Serializable {
     public Left () {
     
     }
@@ -94,7 +96,7 @@ public abstract class Associativity {
     }
   }
   
-  public static final class Right extends hydra.ast.Associativity {
+  public static final class Right extends hydra.ast.Associativity implements Serializable {
     public Right () {
     
     }
@@ -119,7 +121,7 @@ public abstract class Associativity {
     }
   }
   
-  public static final class Both extends hydra.ast.Associativity {
+  public static final class Both extends hydra.ast.Associativity implements Serializable {
     public Both () {
     
     }

@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public class Type_ApplyInfix {
+import java.io.Serializable;
+
+public class Type_ApplyInfix implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Type.ApplyInfix");
   
   public final hydra.langs.scala.meta.Type lhs;

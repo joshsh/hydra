@@ -1,6 +1,8 @@
 package hydra.langs.avro.schema;
 
-public class Array {
+import java.io.Serializable;
+
+public class Array implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/avro/schema.Array");
   
   public final hydra.langs.avro.schema.Schema items;

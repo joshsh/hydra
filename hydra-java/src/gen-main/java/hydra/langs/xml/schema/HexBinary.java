@@ -1,6 +1,8 @@
 package hydra.langs.xml.schema;
 
-public class HexBinary {
+import java.io.Serializable;
+
+public class HexBinary implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/xml/schema.HexBinary");
   
   public final String value;

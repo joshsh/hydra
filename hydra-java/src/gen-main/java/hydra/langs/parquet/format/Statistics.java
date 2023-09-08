@@ -1,9 +1,11 @@
 package hydra.langs.parquet.format;
 
+import java.io.Serializable;
+
 /**
  * Statistics per row group and per page. All fields are optional.
  */
-public class Statistics {
+public class Statistics implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/parquet/format.Statistics");
   
   public final java.util.Optional<java.math.BigInteger> nullCount;

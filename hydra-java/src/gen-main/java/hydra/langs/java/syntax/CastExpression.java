@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class CastExpression {
+import java.io.Serializable;
+
+public abstract class CastExpression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.CastExpression");
   
   private CastExpression () {
@@ -35,7 +37,7 @@ public abstract class CastExpression {
     }
   }
   
-  public static final class Primitive extends hydra.langs.java.syntax.CastExpression {
+  public static final class Primitive extends hydra.langs.java.syntax.CastExpression implements Serializable {
     public final hydra.langs.java.syntax.CastExpression_Primitive value;
     
     public Primitive (hydra.langs.java.syntax.CastExpression_Primitive value) {
@@ -62,7 +64,7 @@ public abstract class CastExpression {
     }
   }
   
-  public static final class NotPlusMinus extends hydra.langs.java.syntax.CastExpression {
+  public static final class NotPlusMinus extends hydra.langs.java.syntax.CastExpression implements Serializable {
     public final hydra.langs.java.syntax.CastExpression_NotPlusMinus value;
     
     public NotPlusMinus (hydra.langs.java.syntax.CastExpression_NotPlusMinus value) {
@@ -89,7 +91,7 @@ public abstract class CastExpression {
     }
   }
   
-  public static final class Lambda extends hydra.langs.java.syntax.CastExpression {
+  public static final class Lambda extends hydra.langs.java.syntax.CastExpression implements Serializable {
     public final hydra.langs.java.syntax.CastExpression_Lambda value;
     
     public Lambda (hydra.langs.java.syntax.CastExpression_Lambda value) {

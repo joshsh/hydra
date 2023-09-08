@@ -1,6 +1,8 @@
 package hydra.langs.haskell.ast;
 
-public abstract class Operator {
+import java.io.Serializable;
+
+public abstract class Operator implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.Operator");
   
   private Operator () {
@@ -29,7 +31,7 @@ public abstract class Operator {
     }
   }
   
-  public static final class Backtick extends hydra.langs.haskell.ast.Operator {
+  public static final class Backtick extends hydra.langs.haskell.ast.Operator implements Serializable {
     public final hydra.langs.haskell.ast.QualifiedName value;
     
     public Backtick (hydra.langs.haskell.ast.QualifiedName value) {
@@ -56,7 +58,7 @@ public abstract class Operator {
     }
   }
   
-  public static final class Normal extends hydra.langs.haskell.ast.Operator {
+  public static final class Normal extends hydra.langs.haskell.ast.Operator implements Serializable {
     public final hydra.langs.haskell.ast.QualifiedName value;
     
     public Normal (hydra.langs.haskell.ast.QualifiedName value) {

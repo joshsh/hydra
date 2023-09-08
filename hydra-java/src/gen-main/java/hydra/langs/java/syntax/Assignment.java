@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class Assignment {
+import java.io.Serializable;
+
+public class Assignment implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.Assignment");
   
   public final hydra.langs.java.syntax.LeftHandSide lhs;

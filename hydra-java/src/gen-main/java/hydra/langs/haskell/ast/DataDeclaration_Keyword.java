@@ -1,9 +1,11 @@
 package hydra.langs.haskell.ast;
 
+import java.io.Serializable;
+
 /**
  * The 'data' versus 'newtype keyword
  */
-public abstract class DataDeclaration_Keyword {
+public abstract class DataDeclaration_Keyword implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.DataDeclaration.Keyword");
   
   private DataDeclaration_Keyword () {
@@ -32,7 +34,7 @@ public abstract class DataDeclaration_Keyword {
     }
   }
   
-  public static final class Data extends hydra.langs.haskell.ast.DataDeclaration_Keyword {
+  public static final class Data extends hydra.langs.haskell.ast.DataDeclaration_Keyword implements Serializable {
     public Data () {
     
     }
@@ -57,7 +59,7 @@ public abstract class DataDeclaration_Keyword {
     }
   }
   
-  public static final class Newtype extends hydra.langs.haskell.ast.DataDeclaration_Keyword {
+  public static final class Newtype extends hydra.langs.haskell.ast.DataDeclaration_Keyword implements Serializable {
     public Newtype () {
     
     }

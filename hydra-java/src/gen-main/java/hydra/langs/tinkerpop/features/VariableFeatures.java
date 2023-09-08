@@ -1,9 +1,11 @@
 package hydra.langs.tinkerpop.features;
 
+import java.io.Serializable;
+
 /**
  * Features for Graph.Variables.
  */
-public class VariableFeatures {
+public class VariableFeatures implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/tinkerpop/features.VariableFeatures");
   
   public final hydra.langs.tinkerpop.features.DataTypeFeatures dataTypeFeatures;

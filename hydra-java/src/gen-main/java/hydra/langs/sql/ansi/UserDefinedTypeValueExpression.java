@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public class UserDefinedTypeValueExpression {
+import java.io.Serializable;
+
+public class UserDefinedTypeValueExpression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.UserDefinedTypeValueExpression");
   
   public final hydra.langs.sql.ansi.ValueExpressionPrimary value;

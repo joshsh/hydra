@@ -1,6 +1,8 @@
 package hydra.langs.haskell.ast;
 
-public class Type_Context {
+import java.io.Serializable;
+
+public class Type_Context implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.Type.Context");
   
   public final hydra.langs.haskell.ast.Assertion ctx;

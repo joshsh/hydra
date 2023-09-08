@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public class RowValueSpecialCase {
+import java.io.Serializable;
+
+public class RowValueSpecialCase implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.RowValueSpecialCase");
   
   public final hydra.langs.sql.ansi.NonparenthesizedValueExpressionPrimary value;

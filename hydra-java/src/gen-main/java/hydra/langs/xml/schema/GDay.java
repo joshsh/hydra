@@ -1,6 +1,8 @@
 package hydra.langs.xml.schema;
 
-public class GDay {
+import java.io.Serializable;
+
+public class GDay implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/xml/schema.GDay");
   
   public final String value;

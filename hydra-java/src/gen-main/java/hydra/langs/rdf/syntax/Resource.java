@@ -1,6 +1,8 @@
 package hydra.langs.rdf.syntax;
 
-public abstract class Resource {
+import java.io.Serializable;
+
+public abstract class Resource implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/rdf/syntax.Resource");
   
   private Resource () {
@@ -29,7 +31,7 @@ public abstract class Resource {
     }
   }
   
-  public static final class Iri extends hydra.langs.rdf.syntax.Resource {
+  public static final class Iri extends hydra.langs.rdf.syntax.Resource implements Serializable {
     public final hydra.langs.rdf.syntax.Iri value;
     
     public Iri (hydra.langs.rdf.syntax.Iri value) {
@@ -56,7 +58,7 @@ public abstract class Resource {
     }
   }
   
-  public static final class Bnode extends hydra.langs.rdf.syntax.Resource {
+  public static final class Bnode extends hydra.langs.rdf.syntax.Resource implements Serializable {
     public final hydra.langs.rdf.syntax.BlankNode value;
     
     public Bnode (hydra.langs.rdf.syntax.BlankNode value) {

@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class NumericFacet {
+import java.io.Serializable;
+
+public abstract class NumericFacet implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.NumericFacet");
   
   private NumericFacet () {
@@ -29,7 +31,7 @@ public abstract class NumericFacet {
     }
   }
   
-  public static final class Sequence extends hydra.langs.shex.syntax.NumericFacet {
+  public static final class Sequence extends hydra.langs.shex.syntax.NumericFacet implements Serializable {
     public final hydra.langs.shex.syntax.NumericFacet_Sequence value;
     
     public Sequence (hydra.langs.shex.syntax.NumericFacet_Sequence value) {
@@ -56,7 +58,7 @@ public abstract class NumericFacet {
     }
   }
   
-  public static final class Sequence2 extends hydra.langs.shex.syntax.NumericFacet {
+  public static final class Sequence2 extends hydra.langs.shex.syntax.NumericFacet implements Serializable {
     public final hydra.langs.shex.syntax.NumericFacet_Sequence2 value;
     
     public Sequence2 (hydra.langs.shex.syntax.NumericFacet_Sequence2 value) {

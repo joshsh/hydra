@@ -1,6 +1,8 @@
 package hydra.langs.parquet.format;
 
-public class IndexPageHeader {
+import java.io.Serializable;
+
+public class IndexPageHeader implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/parquet/format.IndexPageHeader");
   
   public IndexPageHeader () {

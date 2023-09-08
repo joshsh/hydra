@@ -1,9 +1,11 @@
 package hydra.langs.parquet.format;
 
+import java.io.Serializable;
+
 /**
  * The compression used in the Bloom filter.
  */
-public abstract class BloomFilterCompression {
+public abstract class BloomFilterCompression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/parquet/format.BloomFilterCompression");
   
   private BloomFilterCompression () {
@@ -26,7 +28,7 @@ public abstract class BloomFilterCompression {
     }
   }
   
-  public static final class Uncompressed extends hydra.langs.parquet.format.BloomFilterCompression {
+  public static final class Uncompressed extends hydra.langs.parquet.format.BloomFilterCompression implements Serializable {
     public Uncompressed () {
     
     }

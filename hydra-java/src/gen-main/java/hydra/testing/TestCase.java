@@ -1,9 +1,11 @@
 package hydra.testing;
 
+import java.io.Serializable;
+
 /**
  * A simple test case with an input and an expected output
  */
-public class TestCase<A> {
+public class TestCase<A> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/testing.TestCase");
   
   public final java.util.Optional<String> description;

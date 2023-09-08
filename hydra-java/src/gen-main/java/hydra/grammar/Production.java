@@ -1,9 +1,11 @@
 package hydra.grammar;
 
+import java.io.Serializable;
+
 /**
  * A BNF production
  */
-public class Production {
+public class Production implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/grammar.Production");
   
   public final hydra.grammar.Symbol symbol;

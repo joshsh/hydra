@@ -1,9 +1,11 @@
 package hydra.grammar;
 
+import java.io.Serializable;
+
 /**
  * A regular expression
  */
-public class Regex {
+public class Regex implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/grammar.Regex");
   
   /**

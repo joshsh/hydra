@@ -1,9 +1,11 @@
 package hydra.core;
 
+import java.io.Serializable;
+
 /**
  * The type-level analog of an application term
  */
-public class ApplicationType<A> {
+public class ApplicationType<A> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/core.ApplicationType");
   
   /**

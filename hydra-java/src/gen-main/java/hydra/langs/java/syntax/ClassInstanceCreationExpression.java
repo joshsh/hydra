@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class ClassInstanceCreationExpression {
+import java.io.Serializable;
+
+public class ClassInstanceCreationExpression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ClassInstanceCreationExpression");
   
   public final java.util.Optional<hydra.langs.java.syntax.ClassInstanceCreationExpression_Qualifier> qualifier;

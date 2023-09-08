@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class ElementValuePair {
+import java.io.Serializable;
+
+public class ElementValuePair implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ElementValuePair");
   
   public final hydra.langs.java.syntax.Identifier key;

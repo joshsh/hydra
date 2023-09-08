@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class ConditionalOrExpression {
+import java.io.Serializable;
+
+public class ConditionalOrExpression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ConditionalOrExpression");
   
   public final java.util.List<hydra.langs.java.syntax.ConditionalAndExpression> value;

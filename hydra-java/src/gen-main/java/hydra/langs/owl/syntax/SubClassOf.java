@@ -1,6 +1,8 @@
 package hydra.langs.owl.syntax;
 
-public class SubClassOf {
+import java.io.Serializable;
+
+public class SubClassOf implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/owl/syntax.SubClassOf");
   
   public final java.util.List<hydra.langs.owl.syntax.Annotation> annotations;

@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public abstract class BooleanPrimary {
+import java.io.Serializable;
+
+public abstract class BooleanPrimary implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.BooleanPrimary");
   
   private BooleanPrimary () {
@@ -29,7 +31,7 @@ public abstract class BooleanPrimary {
     }
   }
   
-  public static final class Predicate extends hydra.langs.sql.ansi.BooleanPrimary {
+  public static final class Predicate extends hydra.langs.sql.ansi.BooleanPrimary implements Serializable {
     public final hydra.langs.sql.ansi.Predicate value;
     
     public Predicate (hydra.langs.sql.ansi.Predicate value) {
@@ -56,7 +58,7 @@ public abstract class BooleanPrimary {
     }
   }
   
-  public static final class Predicand extends hydra.langs.sql.ansi.BooleanPrimary {
+  public static final class Predicand extends hydra.langs.sql.ansi.BooleanPrimary implements Serializable {
     public final hydra.langs.sql.ansi.BooleanPredicand value;
     
     public Predicand (hydra.langs.sql.ansi.BooleanPredicand value) {

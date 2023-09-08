@@ -1,9 +1,11 @@
 package hydra.langs.relationalModel;
 
+import java.io.Serializable;
+
 /**
  * An abstract specification of the domain represented by a column in a relation; a role
  */
-public class ColumnSchema<T> {
+public class ColumnSchema<T> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/relationalModel.ColumnSchema");
   
   /**

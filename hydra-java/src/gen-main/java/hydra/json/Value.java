@@ -1,9 +1,11 @@
 package hydra.json;
 
+import java.io.Serializable;
+
 /**
  * A JSON value
  */
-public abstract class Value {
+public abstract class Value implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/json.Value");
   
   private Value () {
@@ -56,7 +58,7 @@ public abstract class Value {
     }
   }
   
-  public static final class Array extends hydra.json.Value {
+  public static final class Array extends hydra.json.Value implements Serializable {
     public final java.util.List<hydra.json.Value> value;
     
     public Array (java.util.List<hydra.json.Value> value) {
@@ -83,7 +85,7 @@ public abstract class Value {
     }
   }
   
-  public static final class Boolean_ extends hydra.json.Value {
+  public static final class Boolean_ extends hydra.json.Value implements Serializable {
     public final Boolean value;
     
     public Boolean_ (Boolean value) {
@@ -110,7 +112,7 @@ public abstract class Value {
     }
   }
   
-  public static final class Null extends hydra.json.Value {
+  public static final class Null extends hydra.json.Value implements Serializable {
     public Null () {
     
     }
@@ -135,7 +137,7 @@ public abstract class Value {
     }
   }
   
-  public static final class Number_ extends hydra.json.Value {
+  public static final class Number_ extends hydra.json.Value implements Serializable {
     public final Double value;
     
     public Number_ (Double value) {
@@ -162,7 +164,7 @@ public abstract class Value {
     }
   }
   
-  public static final class Object_ extends hydra.json.Value {
+  public static final class Object_ extends hydra.json.Value implements Serializable {
     public final java.util.Map<String, hydra.json.Value> value;
     
     public Object_ (java.util.Map<String, hydra.json.Value> value) {
@@ -189,7 +191,7 @@ public abstract class Value {
     }
   }
   
-  public static final class String_ extends hydra.json.Value {
+  public static final class String_ extends hydra.json.Value implements Serializable {
     public final String value;
     
     public String_ (String value) {

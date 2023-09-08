@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class InlineShapeOrRef {
+import java.io.Serializable;
+
+public abstract class InlineShapeOrRef implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.InlineShapeOrRef");
   
   private InlineShapeOrRef () {
@@ -41,7 +43,7 @@ public abstract class InlineShapeOrRef {
     }
   }
   
-  public static final class InlineShapeDefinition extends hydra.langs.shex.syntax.InlineShapeOrRef {
+  public static final class InlineShapeDefinition extends hydra.langs.shex.syntax.InlineShapeOrRef implements Serializable {
     public final hydra.langs.shex.syntax.InlineShapeDefinition value;
     
     public InlineShapeDefinition (hydra.langs.shex.syntax.InlineShapeDefinition value) {
@@ -68,7 +70,7 @@ public abstract class InlineShapeOrRef {
     }
   }
   
-  public static final class AtpNameLn extends hydra.langs.shex.syntax.InlineShapeOrRef {
+  public static final class AtpNameLn extends hydra.langs.shex.syntax.InlineShapeOrRef implements Serializable {
     public final hydra.langs.shex.syntax.AtpNameLn value;
     
     public AtpNameLn (hydra.langs.shex.syntax.AtpNameLn value) {
@@ -95,7 +97,7 @@ public abstract class InlineShapeOrRef {
     }
   }
   
-  public static final class AtpNameNs extends hydra.langs.shex.syntax.InlineShapeOrRef {
+  public static final class AtpNameNs extends hydra.langs.shex.syntax.InlineShapeOrRef implements Serializable {
     public final hydra.langs.shex.syntax.AtpNameNs value;
     
     public AtpNameNs (hydra.langs.shex.syntax.AtpNameNs value) {
@@ -122,7 +124,7 @@ public abstract class InlineShapeOrRef {
     }
   }
   
-  public static final class Sequence extends hydra.langs.shex.syntax.InlineShapeOrRef {
+  public static final class Sequence extends hydra.langs.shex.syntax.InlineShapeOrRef implements Serializable {
     public final hydra.langs.shex.syntax.ShapeExprLabel value;
     
     public Sequence (hydra.langs.shex.syntax.ShapeExprLabel value) {

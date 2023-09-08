@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public class BooleanTest {
+import java.io.Serializable;
+
+public class BooleanTest implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.BooleanTest");
   
   public final hydra.langs.sql.ansi.BooleanPrimary booleanPrimary;

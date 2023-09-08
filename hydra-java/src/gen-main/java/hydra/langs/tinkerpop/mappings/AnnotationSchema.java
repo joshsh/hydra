@@ -1,9 +1,11 @@
 package hydra.langs.tinkerpop.mappings;
 
+import java.io.Serializable;
+
 /**
  * Configurable annotation keys for property graph mapping specifications
  */
-public class AnnotationSchema {
+public class AnnotationSchema implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/tinkerpop/mappings.AnnotationSchema");
   
   public final String vertexLabel;

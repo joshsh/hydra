@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class ArrayCreationExpression_Primitive {
+import java.io.Serializable;
+
+public class ArrayCreationExpression_Primitive implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ArrayCreationExpression.Primitive");
   
   public final hydra.langs.java.syntax.PrimitiveTypeWithAnnotations type;

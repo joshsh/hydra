@@ -1,9 +1,11 @@
 package hydra.constraints;
 
+import java.io.Serializable;
+
 /**
  * A declared equivalence between two abstract paths in a graph
  */
-public class PathEquation {
+public class PathEquation implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/constraints.PathEquation");
   
   public final hydra.query.Path left;

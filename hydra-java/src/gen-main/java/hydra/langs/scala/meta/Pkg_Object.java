@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public class Pkg_Object {
+import java.io.Serializable;
+
+public class Pkg_Object implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Pkg.Object");
   
   public final java.util.List<hydra.langs.scala.meta.Mod> mods;

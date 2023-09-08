@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public abstract class TableContentsSource {
+import java.io.Serializable;
+
+public abstract class TableContentsSource implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.TableContentsSource");
   
   private TableContentsSource () {
@@ -35,7 +37,7 @@ public abstract class TableContentsSource {
     }
   }
   
-  public static final class List extends hydra.langs.sql.ansi.TableContentsSource {
+  public static final class List extends hydra.langs.sql.ansi.TableContentsSource implements Serializable {
     public final hydra.langs.sql.ansi.TableElementList value;
     
     public List (hydra.langs.sql.ansi.TableElementList value) {
@@ -62,7 +64,7 @@ public abstract class TableContentsSource {
     }
   }
   
-  public static final class Subtable extends hydra.langs.sql.ansi.TableContentsSource {
+  public static final class Subtable extends hydra.langs.sql.ansi.TableContentsSource implements Serializable {
     public final hydra.langs.sql.ansi.TableContentsSource_Subtable value;
     
     public Subtable (hydra.langs.sql.ansi.TableContentsSource_Subtable value) {
@@ -89,7 +91,7 @@ public abstract class TableContentsSource {
     }
   }
   
-  public static final class Subquery extends hydra.langs.sql.ansi.TableContentsSource {
+  public static final class Subquery extends hydra.langs.sql.ansi.TableContentsSource implements Serializable {
     public final hydra.langs.sql.ansi.AsSubqueryClause value;
     
     public Subquery (hydra.langs.sql.ansi.AsSubqueryClause value) {

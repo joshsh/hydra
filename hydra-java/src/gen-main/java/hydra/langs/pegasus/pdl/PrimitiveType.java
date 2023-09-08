@@ -1,6 +1,8 @@
 package hydra.langs.pegasus.pdl;
 
-public abstract class PrimitiveType {
+import java.io.Serializable;
+
+public abstract class PrimitiveType implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/pegasus/pdl.PrimitiveType");
   
   private PrimitiveType () {
@@ -59,7 +61,7 @@ public abstract class PrimitiveType {
     }
   }
   
-  public static final class Boolean_ extends hydra.langs.pegasus.pdl.PrimitiveType {
+  public static final class Boolean_ extends hydra.langs.pegasus.pdl.PrimitiveType implements Serializable {
     public Boolean_ () {
     
     }
@@ -84,7 +86,7 @@ public abstract class PrimitiveType {
     }
   }
   
-  public static final class Bytes extends hydra.langs.pegasus.pdl.PrimitiveType {
+  public static final class Bytes extends hydra.langs.pegasus.pdl.PrimitiveType implements Serializable {
     public Bytes () {
     
     }
@@ -109,7 +111,7 @@ public abstract class PrimitiveType {
     }
   }
   
-  public static final class Double_ extends hydra.langs.pegasus.pdl.PrimitiveType {
+  public static final class Double_ extends hydra.langs.pegasus.pdl.PrimitiveType implements Serializable {
     public Double_ () {
     
     }
@@ -134,7 +136,7 @@ public abstract class PrimitiveType {
     }
   }
   
-  public static final class Float_ extends hydra.langs.pegasus.pdl.PrimitiveType {
+  public static final class Float_ extends hydra.langs.pegasus.pdl.PrimitiveType implements Serializable {
     public Float_ () {
     
     }
@@ -159,7 +161,7 @@ public abstract class PrimitiveType {
     }
   }
   
-  public static final class Int extends hydra.langs.pegasus.pdl.PrimitiveType {
+  public static final class Int extends hydra.langs.pegasus.pdl.PrimitiveType implements Serializable {
     public Int () {
     
     }
@@ -184,7 +186,7 @@ public abstract class PrimitiveType {
     }
   }
   
-  public static final class Long_ extends hydra.langs.pegasus.pdl.PrimitiveType {
+  public static final class Long_ extends hydra.langs.pegasus.pdl.PrimitiveType implements Serializable {
     public Long_ () {
     
     }
@@ -209,7 +211,7 @@ public abstract class PrimitiveType {
     }
   }
   
-  public static final class String_ extends hydra.langs.pegasus.pdl.PrimitiveType {
+  public static final class String_ extends hydra.langs.pegasus.pdl.PrimitiveType implements Serializable {
     public String_ () {
     
     }

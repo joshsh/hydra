@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class ForCond {
+import java.io.Serializable;
+
+public class ForCond implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ForCond");
   
   public final java.util.Optional<hydra.langs.java.syntax.ForInit> init;

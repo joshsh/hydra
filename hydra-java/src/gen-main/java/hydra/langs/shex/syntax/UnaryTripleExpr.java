@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class UnaryTripleExpr {
+import java.io.Serializable;
+
+public abstract class UnaryTripleExpr implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.UnaryTripleExpr");
   
   private UnaryTripleExpr () {
@@ -29,7 +31,7 @@ public abstract class UnaryTripleExpr {
     }
   }
   
-  public static final class Sequence extends hydra.langs.shex.syntax.UnaryTripleExpr {
+  public static final class Sequence extends hydra.langs.shex.syntax.UnaryTripleExpr implements Serializable {
     public final hydra.langs.shex.syntax.UnaryTripleExpr_Sequence value;
     
     public Sequence (hydra.langs.shex.syntax.UnaryTripleExpr_Sequence value) {
@@ -56,7 +58,7 @@ public abstract class UnaryTripleExpr {
     }
   }
   
-  public static final class Include extends hydra.langs.shex.syntax.UnaryTripleExpr {
+  public static final class Include extends hydra.langs.shex.syntax.UnaryTripleExpr implements Serializable {
     public final hydra.langs.shex.syntax.Include value;
     
     public Include (hydra.langs.shex.syntax.Include value) {

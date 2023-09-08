@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class RequiresModifier {
+import java.io.Serializable;
+
+public abstract class RequiresModifier implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.RequiresModifier");
   
   private RequiresModifier () {
@@ -29,7 +31,7 @@ public abstract class RequiresModifier {
     }
   }
   
-  public static final class Transitive extends hydra.langs.java.syntax.RequiresModifier {
+  public static final class Transitive extends hydra.langs.java.syntax.RequiresModifier implements Serializable {
     public Transitive () {
     
     }
@@ -54,7 +56,7 @@ public abstract class RequiresModifier {
     }
   }
   
-  public static final class Static extends hydra.langs.java.syntax.RequiresModifier {
+  public static final class Static extends hydra.langs.java.syntax.RequiresModifier implements Serializable {
     public Static () {
     
     }

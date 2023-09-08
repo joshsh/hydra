@@ -111,8 +111,11 @@ constructModule mod coders pairs = do
     aliases = importAliasesForModule mod
 
     typeToClass pair@(el, _) = do
-      let imports = []
-      decl <- declarationForType aliases pair
+      isSer <- isSerializable el
+      let imports = if isSer
+                    then [Java.ImportDeclarationSingleType $ Java.SingleTypeImportDeclaration $ javaTypeName $ Java.Identifier "java.io.Serializable"]
+                    else []
+      decl <- declarationForType isSer aliases pair
       return (elementName el,
         Java.CompilationUnitOrdinary $ Java.OrdinaryCompilationUnit (Just pkg) imports [decl])
 
@@ -166,16 +169,16 @@ constructModule mod coders pairs = do
             _ -> unexpected "function term" $ show term
           _ -> unexpected "function type" $ show typ
 
-declarationForLambdaType :: (Eq a, Ord a, Read a, Show a) => Aliases
+declarationForLambdaType :: (Eq a, Ord a, Read a, Show a) => Bool -> Aliases
   -> [Java.TypeParameter] -> Name -> LambdaType a -> Flow (Graph a) Java.ClassDeclaration
-declarationForLambdaType aliases tparams elName (LambdaType (Name v) body) =
-    toClassDecl False aliases (tparams ++ [param]) elName body
+declarationForLambdaType isSer aliases tparams elName (LambdaType (Name v) body) =
+    toClassDecl False isSer aliases (tparams ++ [param]) elName body
   where
     param = javaTypeParameter $ capitalize v
 
-declarationForRecordType :: (Ord a, Read a, Show a) => Bool -> Aliases -> [Java.TypeParameter] -> Name
+declarationForRecordType :: (Ord a, Read a, Show a) => Bool -> Bool -> Aliases -> [Java.TypeParameter] -> Name
   -> [FieldType a] -> Flow (Graph a) Java.ClassDeclaration
-declarationForRecordType isInner aliases tparams elName fields = do
+declarationForRecordType isInner isSer aliases tparams elName fields = do
     memberVars <- CM.mapM toMemberVar fields
     memberVars' <- CM.zipWithM addComment memberVars fields
     withMethods <- if L.length fields > 1
@@ -186,7 +189,7 @@ declarationForRecordType isInner aliases tparams elName fields = do
       d <- typeNameDecl aliases elName
       return [d]
     let bodyDecls = tn ++ memberVars' ++ (noComment <$> [cons, equalsMethod, hashCodeMethod] ++ withMethods)
-    return $ javaClassDeclaration aliases tparams elName classModsPublic Nothing bodyDecls
+    return $ javaClassDeclaration aliases tparams elName classModsPublic Nothing (interfaceTypes isSer) bodyDecls
   where
     constructor = do
       params <- CM.mapM (fieldTypeToFormalParam aliases) fields
@@ -288,17 +291,17 @@ declarationForRecordType isInner aliases tparams elName fields = do
                 first20Primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71]
 
 declarationForType :: (Ord a, Read a, Show a)
-  => Aliases -> (Element a, TypedTerm a) -> Flow (Graph a) Java.TypeDeclarationWithComments
-declarationForType aliases (el, TypedTerm _ term) = withTrace ("element " ++ unName (elementName el)) $ do
+  => Bool -> Aliases -> (Element a, TypedTerm a) -> Flow (Graph a) Java.TypeDeclarationWithComments
+declarationForType isSer aliases (el, TypedTerm _ term) = withTrace ("element " ++ unName (elementName el)) $ do
     t <- coreDecodeType term >>= adaptType javaLanguage
-    cd <- toClassDecl False aliases [] (elementName el) t
+    cd <- toClassDecl False isSer aliases [] (elementName el) t
     comments <- commentsFromElement el
     return $ Java.TypeDeclarationWithComments (Java.TypeDeclarationClass cd) comments
 
 declarationForUnionType :: (Eq a, Ord a, Read a, Show a)
-  => Aliases
+  => Bool -> Aliases
   -> [Java.TypeParameter] -> Name -> [FieldType a] -> Flow (Graph a) Java.ClassDeclaration
-declarationForUnionType aliases tparams elName fields = do
+declarationForUnionType isSer aliases tparams elName fields = do
     variantClasses <- CM.mapM (fmap augmentVariantClass . unionFieldClass) fields
     let variantDecls = Java.ClassBodyDeclarationClassMember . Java.ClassMemberDeclarationClass <$> variantClasses
     variantDecls' <- CM.zipWithM addComment variantDecls fields
@@ -306,12 +309,12 @@ declarationForUnionType aliases tparams elName fields = do
     tn <- typeNameDecl aliases elName
     let bodyDecls = [tn] ++ otherDecls ++ variantDecls'
     let mods = classModsPublic ++ [Java.ClassModifierAbstract]
-    return $ javaClassDeclaration aliases tparams elName mods Nothing bodyDecls
+    return $ javaClassDeclaration aliases tparams elName mods Nothing (interfaceTypes isSer) bodyDecls
   where
     privateConstructor = makeConstructor aliases elName True [] []
     unionFieldClass (FieldType fname ftype) = do
       let rtype = Types.record $ if isUnitType ftype then [] else [FieldType (FieldName valueFieldName) ftype]
-      toClassDecl True aliases [] (variantClassName False elName fname) rtype
+      toClassDecl True isSer aliases [] (variantClassName False elName fname) rtype
     augmentVariantClass (Java.ClassDeclarationNormal cd) = Java.ClassDeclarationNormal $ cd {
         Java.normalClassDeclarationModifiers = [Java.ClassModifierPublic, Java.ClassModifierStatic, Java.ClassModifierFinal],
         Java.normalClassDeclarationExtends = Just $ nameToJavaClassType aliases True args elName Nothing,
@@ -419,7 +422,7 @@ encodeApplication aliases app@(Application lhs rhs) = case stripTerm fun of
 
     fallback = do
         t <- requireTermType lhs
-        (dom, cod) <- case stripTypeParameters t of
+        (dom, cod) <- case stripTypeParameters $ stripType t of
             TypeFunction (FunctionType dom cod) -> pure (dom, cod)
             t' -> fail $ "expected a function type on function " ++ show lhs ++ ", but found " ++ show t'
         case stripTerm lhs of
@@ -798,6 +801,12 @@ innerClassRef aliases name local = Java.Identifier $ id ++ "." ++ local
   where
     Java.Identifier id = nameToJavaName aliases name
 
+interfaceTypes :: Bool -> [Java.InterfaceType]
+interfaceTypes isSer = if isSer then [javaSerializableType] else []
+  where
+    javaSerializableType = Java.InterfaceType $
+      Java.ClassType [] Java.ClassTypeQualifierNone (javaTypeIdentifier "Serializable") []
+
 isLambdaBoundVariable :: Name -> Bool
 isLambdaBoundVariable (Name v) = L.length v <= 4
 
@@ -913,18 +922,18 @@ requireAnnotatedType term = case term of
       Nothing -> fail $ "expected a type annotation for term: " ++ show term
       Just t -> pure t
 
-toClassDecl :: (Eq a, Ord a, Read a, Show a) => Bool -> Aliases -> [Java.TypeParameter]
+toClassDecl :: (Eq a, Ord a, Read a, Show a) => Bool -> Bool -> Aliases -> [Java.TypeParameter]
   -> Name -> Type a -> Flow (Graph a) Java.ClassDeclaration
-toClassDecl isInner aliases tparams elName t = case stripType t of
-    TypeRecord rt -> declarationForRecordType isInner aliases tparams elName $ rowTypeFields rt
-    TypeUnion rt -> declarationForUnionType aliases tparams elName $ rowTypeFields rt
-    TypeLambda ut -> declarationForLambdaType aliases tparams elName ut
-    TypeWrap (Nominal tname wt) -> declarationForRecordType isInner aliases tparams elName
+toClassDecl isInner isSer aliases tparams elName t = case stripType t of
+    TypeRecord rt -> declarationForRecordType isInner isSer aliases tparams elName $ rowTypeFields rt
+    TypeUnion rt -> declarationForUnionType isSer aliases tparams elName $ rowTypeFields rt
+    TypeLambda ut -> declarationForLambdaType isSer aliases tparams elName ut
+    TypeWrap (Nominal tname wt) -> declarationForRecordType isInner isSer aliases tparams elName
       [FieldType (FieldName "value") wt]
     -- Other types are not supported as class declarations, so we wrap them as record types.
     _ -> wrap t -- TODO: wrap and unwrap the corresponding terms as record terms.
   where
-    wrap t' = declarationForRecordType isInner aliases tparams elName [Types.field valueFieldName t']
+    wrap t' = declarationForRecordType isInner isSer aliases tparams elName [Types.field valueFieldName t']
 
 toDataDeclaration :: Aliases -> (a, TypedTerm a) -> Flow (Graph a) a
 toDataDeclaration aliases (el, TypedTerm typ term) = do

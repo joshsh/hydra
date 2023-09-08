@@ -1,6 +1,8 @@
 package hydra.langs.pegasus.pdl;
 
-public class RecordSchema {
+import java.io.Serializable;
+
+public class RecordSchema implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/pegasus/pdl.RecordSchema");
   
   public final java.util.List<hydra.langs.pegasus.pdl.RecordField> fields;

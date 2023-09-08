@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class AdditiveExpression {
+import java.io.Serializable;
+
+public abstract class AdditiveExpression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.AdditiveExpression");
   
   private AdditiveExpression () {
@@ -35,7 +37,7 @@ public abstract class AdditiveExpression {
     }
   }
   
-  public static final class Unary extends hydra.langs.java.syntax.AdditiveExpression {
+  public static final class Unary extends hydra.langs.java.syntax.AdditiveExpression implements Serializable {
     public final hydra.langs.java.syntax.MultiplicativeExpression value;
     
     public Unary (hydra.langs.java.syntax.MultiplicativeExpression value) {
@@ -62,7 +64,7 @@ public abstract class AdditiveExpression {
     }
   }
   
-  public static final class Plus extends hydra.langs.java.syntax.AdditiveExpression {
+  public static final class Plus extends hydra.langs.java.syntax.AdditiveExpression implements Serializable {
     public final hydra.langs.java.syntax.AdditiveExpression_Binary value;
     
     public Plus (hydra.langs.java.syntax.AdditiveExpression_Binary value) {
@@ -89,7 +91,7 @@ public abstract class AdditiveExpression {
     }
   }
   
-  public static final class Minus extends hydra.langs.java.syntax.AdditiveExpression {
+  public static final class Minus extends hydra.langs.java.syntax.AdditiveExpression implements Serializable {
     public final hydra.langs.java.syntax.AdditiveExpression_Binary value;
     
     public Minus (hydra.langs.java.syntax.AdditiveExpression_Binary value) {

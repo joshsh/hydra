@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class ArrayInitializer {
+import java.io.Serializable;
+
+public class ArrayInitializer implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ArrayInitializer");
   
   public final java.util.List<java.util.List<hydra.langs.java.syntax.VariableInitializer>> value;

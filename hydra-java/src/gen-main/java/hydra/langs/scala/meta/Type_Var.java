@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public class Type_Var {
+import java.io.Serializable;
+
+public class Type_Var implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Type.Var");
   
   public final hydra.langs.scala.meta.Type_Name name;

@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public abstract class InsertColumnsAndSource {
+import java.io.Serializable;
+
+public abstract class InsertColumnsAndSource implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.InsertColumnsAndSource");
   
   private InsertColumnsAndSource () {
@@ -35,7 +37,7 @@ public abstract class InsertColumnsAndSource {
     }
   }
   
-  public static final class Subquery extends hydra.langs.sql.ansi.InsertColumnsAndSource {
+  public static final class Subquery extends hydra.langs.sql.ansi.InsertColumnsAndSource implements Serializable {
     public final hydra.langs.sql.ansi.FromSubquery value;
     
     public Subquery (hydra.langs.sql.ansi.FromSubquery value) {
@@ -62,7 +64,7 @@ public abstract class InsertColumnsAndSource {
     }
   }
   
-  public static final class Constructor extends hydra.langs.sql.ansi.InsertColumnsAndSource {
+  public static final class Constructor extends hydra.langs.sql.ansi.InsertColumnsAndSource implements Serializable {
     public final hydra.langs.sql.ansi.FromConstructor value;
     
     public Constructor (hydra.langs.sql.ansi.FromConstructor value) {
@@ -89,7 +91,7 @@ public abstract class InsertColumnsAndSource {
     }
   }
   
-  public static final class Default extends hydra.langs.sql.ansi.InsertColumnsAndSource {
+  public static final class Default extends hydra.langs.sql.ansi.InsertColumnsAndSource implements Serializable {
     public final hydra.langs.sql.ansi.FromDefault value;
     
     public Default (hydra.langs.sql.ansi.FromDefault value) {

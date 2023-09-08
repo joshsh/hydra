@@ -1,9 +1,11 @@
 package hydra.testing;
 
+import java.io.Serializable;
+
 /**
  * One of two evaluation styles: eager or lazy
  */
-public abstract class EvaluationStyle {
+public abstract class EvaluationStyle implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/testing.EvaluationStyle");
   
   private EvaluationStyle () {
@@ -32,7 +34,7 @@ public abstract class EvaluationStyle {
     }
   }
   
-  public static final class Eager extends hydra.testing.EvaluationStyle {
+  public static final class Eager extends hydra.testing.EvaluationStyle implements Serializable {
     public Eager () {
     
     }
@@ -57,7 +59,7 @@ public abstract class EvaluationStyle {
     }
   }
   
-  public static final class Lazy extends hydra.testing.EvaluationStyle {
+  public static final class Lazy extends hydra.testing.EvaluationStyle implements Serializable {
     public Lazy () {
     
     }

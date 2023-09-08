@@ -1,9 +1,11 @@
 package hydra.langs.parquet.format;
 
+import java.io.Serializable;
+
 /**
  * Description for column metadata
  */
-public class ColumnMetaData {
+public class ColumnMetaData implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/parquet/format.ColumnMetaData");
   
   /**

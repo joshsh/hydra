@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class RelationalExpression_GreaterThan {
+import java.io.Serializable;
+
+public class RelationalExpression_GreaterThan implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.RelationalExpression.GreaterThan");
   
   public final hydra.langs.java.syntax.RelationalExpression lhs;

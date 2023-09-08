@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public class ReferenceType {
+import java.io.Serializable;
+
+public class ReferenceType implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.ReferenceType");
   
   public ReferenceType () {

@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class EqualityExpression {
+import java.io.Serializable;
+
+public abstract class EqualityExpression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.EqualityExpression");
   
   private EqualityExpression () {
@@ -35,7 +37,7 @@ public abstract class EqualityExpression {
     }
   }
   
-  public static final class Unary extends hydra.langs.java.syntax.EqualityExpression {
+  public static final class Unary extends hydra.langs.java.syntax.EqualityExpression implements Serializable {
     public final hydra.langs.java.syntax.RelationalExpression value;
     
     public Unary (hydra.langs.java.syntax.RelationalExpression value) {
@@ -62,7 +64,7 @@ public abstract class EqualityExpression {
     }
   }
   
-  public static final class Equal extends hydra.langs.java.syntax.EqualityExpression {
+  public static final class Equal extends hydra.langs.java.syntax.EqualityExpression implements Serializable {
     public final hydra.langs.java.syntax.EqualityExpression_Binary value;
     
     public Equal (hydra.langs.java.syntax.EqualityExpression_Binary value) {
@@ -89,7 +91,7 @@ public abstract class EqualityExpression {
     }
   }
   
-  public static final class NotEqual extends hydra.langs.java.syntax.EqualityExpression {
+  public static final class NotEqual extends hydra.langs.java.syntax.EqualityExpression implements Serializable {
     public final hydra.langs.java.syntax.EqualityExpression_Binary value;
     
     public NotEqual (hydra.langs.java.syntax.EqualityExpression_Binary value) {

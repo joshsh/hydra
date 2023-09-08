@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class AnnotationTypeElementModifier {
+import java.io.Serializable;
+
+public abstract class AnnotationTypeElementModifier implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.AnnotationTypeElementModifier");
   
   private AnnotationTypeElementModifier () {
@@ -29,7 +31,7 @@ public abstract class AnnotationTypeElementModifier {
     }
   }
   
-  public static final class Public extends hydra.langs.java.syntax.AnnotationTypeElementModifier {
+  public static final class Public extends hydra.langs.java.syntax.AnnotationTypeElementModifier implements Serializable {
     public final hydra.langs.java.syntax.Annotation value;
     
     public Public (hydra.langs.java.syntax.Annotation value) {
@@ -56,7 +58,7 @@ public abstract class AnnotationTypeElementModifier {
     }
   }
   
-  public static final class Abstract extends hydra.langs.java.syntax.AnnotationTypeElementModifier {
+  public static final class Abstract extends hydra.langs.java.syntax.AnnotationTypeElementModifier implements Serializable {
     public Abstract () {
     
     }

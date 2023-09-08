@@ -1,6 +1,8 @@
 package hydra.langs.avro.schema;
 
-public abstract class Schema {
+import java.io.Serializable;
+
+public abstract class Schema implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/avro/schema.Schema");
   
   private Schema () {
@@ -53,7 +55,7 @@ public abstract class Schema {
     }
   }
   
-  public static final class Array extends hydra.langs.avro.schema.Schema {
+  public static final class Array extends hydra.langs.avro.schema.Schema implements Serializable {
     public final hydra.langs.avro.schema.Array value;
     
     public Array (hydra.langs.avro.schema.Array value) {
@@ -80,7 +82,7 @@ public abstract class Schema {
     }
   }
   
-  public static final class Map extends hydra.langs.avro.schema.Schema {
+  public static final class Map extends hydra.langs.avro.schema.Schema implements Serializable {
     public final hydra.langs.avro.schema.Map value;
     
     public Map (hydra.langs.avro.schema.Map value) {
@@ -107,7 +109,7 @@ public abstract class Schema {
     }
   }
   
-  public static final class Named extends hydra.langs.avro.schema.Schema {
+  public static final class Named extends hydra.langs.avro.schema.Schema implements Serializable {
     public final hydra.langs.avro.schema.Named value;
     
     public Named (hydra.langs.avro.schema.Named value) {
@@ -134,7 +136,7 @@ public abstract class Schema {
     }
   }
   
-  public static final class Primitive extends hydra.langs.avro.schema.Schema {
+  public static final class Primitive extends hydra.langs.avro.schema.Schema implements Serializable {
     public final hydra.langs.avro.schema.Primitive value;
     
     public Primitive (hydra.langs.avro.schema.Primitive value) {
@@ -164,7 +166,7 @@ public abstract class Schema {
   /**
    * A reference by name to a previously defined type
    */
-  public static final class Reference extends hydra.langs.avro.schema.Schema {
+  public static final class Reference extends hydra.langs.avro.schema.Schema implements Serializable {
     /**
      * A reference by name to a previously defined type
      */
@@ -194,7 +196,7 @@ public abstract class Schema {
     }
   }
   
-  public static final class Union extends hydra.langs.avro.schema.Schema {
+  public static final class Union extends hydra.langs.avro.schema.Schema implements Serializable {
     public final hydra.langs.avro.schema.Union value;
     
     public Union (hydra.langs.avro.schema.Union value) {

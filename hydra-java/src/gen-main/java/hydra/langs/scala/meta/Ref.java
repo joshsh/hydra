@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public abstract class Ref {
+import java.io.Serializable;
+
+public abstract class Ref implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Ref");
   
   private Ref () {
@@ -29,7 +31,7 @@ public abstract class Ref {
     }
   }
   
-  public static final class Name extends hydra.langs.scala.meta.Ref {
+  public static final class Name extends hydra.langs.scala.meta.Ref implements Serializable {
     public final hydra.langs.scala.meta.Name value;
     
     public Name (hydra.langs.scala.meta.Name value) {
@@ -56,7 +58,7 @@ public abstract class Ref {
     }
   }
   
-  public static final class Init extends hydra.langs.scala.meta.Ref {
+  public static final class Init extends hydra.langs.scala.meta.Ref implements Serializable {
     public final hydra.langs.scala.meta.Init value;
     
     public Init (hydra.langs.scala.meta.Init value) {

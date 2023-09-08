@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class ReferenceType {
+import java.io.Serializable;
+
+public abstract class ReferenceType implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ReferenceType");
   
   private ReferenceType () {
@@ -35,7 +37,7 @@ public abstract class ReferenceType {
     }
   }
   
-  public static final class ClassOrInterface extends hydra.langs.java.syntax.ReferenceType {
+  public static final class ClassOrInterface extends hydra.langs.java.syntax.ReferenceType implements Serializable {
     public final hydra.langs.java.syntax.ClassOrInterfaceType value;
     
     public ClassOrInterface (hydra.langs.java.syntax.ClassOrInterfaceType value) {
@@ -62,7 +64,7 @@ public abstract class ReferenceType {
     }
   }
   
-  public static final class Variable extends hydra.langs.java.syntax.ReferenceType {
+  public static final class Variable extends hydra.langs.java.syntax.ReferenceType implements Serializable {
     public final hydra.langs.java.syntax.TypeVariable value;
     
     public Variable (hydra.langs.java.syntax.TypeVariable value) {
@@ -89,7 +91,7 @@ public abstract class ReferenceType {
     }
   }
   
-  public static final class Array extends hydra.langs.java.syntax.ReferenceType {
+  public static final class Array extends hydra.langs.java.syntax.ReferenceType implements Serializable {
     public final hydra.langs.java.syntax.ArrayType value;
     
     public Array (hydra.langs.java.syntax.ArrayType value) {

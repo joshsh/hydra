@@ -1,9 +1,11 @@
 package hydra.langs.tinkerpop.features;
 
+import java.io.Serializable;
+
 /**
  * Features that are related to Edge operations.
  */
-public class EdgeFeatures {
+public class EdgeFeatures implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/tinkerpop/features.EdgeFeatures");
   
   public final hydra.langs.tinkerpop.features.ElementFeatures elementFeatures;

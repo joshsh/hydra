@@ -1,9 +1,11 @@
 package hydra.compute;
 
+import java.io.Serializable;
+
 /**
  * A key/value map which serves as a built-in metadata container for terms
  */
-public class Kv {
+public class Kv implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/compute.Kv");
   
   /**

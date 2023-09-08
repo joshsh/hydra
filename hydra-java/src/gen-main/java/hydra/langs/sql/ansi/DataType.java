@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public abstract class DataType {
+import java.io.Serializable;
+
+public abstract class DataType implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.DataType");
   
   private DataType () {
@@ -47,7 +49,7 @@ public abstract class DataType {
     }
   }
   
-  public static final class Predefined extends hydra.langs.sql.ansi.DataType {
+  public static final class Predefined extends hydra.langs.sql.ansi.DataType implements Serializable {
     public final hydra.langs.sql.ansi.PredefinedType value;
     
     public Predefined (hydra.langs.sql.ansi.PredefinedType value) {
@@ -74,7 +76,7 @@ public abstract class DataType {
     }
   }
   
-  public static final class Row extends hydra.langs.sql.ansi.DataType {
+  public static final class Row extends hydra.langs.sql.ansi.DataType implements Serializable {
     public final hydra.langs.sql.ansi.RowType value;
     
     public Row (hydra.langs.sql.ansi.RowType value) {
@@ -101,7 +103,7 @@ public abstract class DataType {
     }
   }
   
-  public static final class Named extends hydra.langs.sql.ansi.DataType {
+  public static final class Named extends hydra.langs.sql.ansi.DataType implements Serializable {
     public final hydra.langs.sql.ansi.PathResolvedUserDefinedTypeName value;
     
     public Named (hydra.langs.sql.ansi.PathResolvedUserDefinedTypeName value) {
@@ -128,7 +130,7 @@ public abstract class DataType {
     }
   }
   
-  public static final class Reference extends hydra.langs.sql.ansi.DataType {
+  public static final class Reference extends hydra.langs.sql.ansi.DataType implements Serializable {
     public final hydra.langs.sql.ansi.ReferenceType value;
     
     public Reference (hydra.langs.sql.ansi.ReferenceType value) {
@@ -155,7 +157,7 @@ public abstract class DataType {
     }
   }
   
-  public static final class Collection extends hydra.langs.sql.ansi.DataType {
+  public static final class Collection extends hydra.langs.sql.ansi.DataType implements Serializable {
     public final hydra.langs.sql.ansi.CollectionType value;
     
     public Collection (hydra.langs.sql.ansi.CollectionType value) {

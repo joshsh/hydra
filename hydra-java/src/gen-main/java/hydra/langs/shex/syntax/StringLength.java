@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class StringLength {
+import java.io.Serializable;
+
+public abstract class StringLength implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.StringLength");
   
   private StringLength () {
@@ -35,7 +37,7 @@ public abstract class StringLength {
     }
   }
   
-  public static final class LENGTH extends hydra.langs.shex.syntax.StringLength {
+  public static final class LENGTH extends hydra.langs.shex.syntax.StringLength implements Serializable {
     public LENGTH () {
     
     }
@@ -60,7 +62,7 @@ public abstract class StringLength {
     }
   }
   
-  public static final class MINLENGTH extends hydra.langs.shex.syntax.StringLength {
+  public static final class MINLENGTH extends hydra.langs.shex.syntax.StringLength implements Serializable {
     public MINLENGTH () {
     
     }
@@ -85,7 +87,7 @@ public abstract class StringLength {
     }
   }
   
-  public static final class MAXLENGTH extends hydra.langs.shex.syntax.StringLength {
+  public static final class MAXLENGTH extends hydra.langs.shex.syntax.StringLength implements Serializable {
     public MAXLENGTH () {
     
     }

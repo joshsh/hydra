@@ -1,6 +1,8 @@
 package hydra.langs.owl.syntax;
 
-public class DataMaxCardinality {
+import java.io.Serializable;
+
+public class DataMaxCardinality implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/owl/syntax.DataMaxCardinality");
   
   public final java.math.BigInteger bound;

@@ -1,9 +1,11 @@
 package hydra.core;
 
+import java.io.Serializable;
+
 /**
  * A set of (possibly recursive) 'let' bindings
  */
-public class Let<A> {
+public class Let<A> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/core.Let");
   
   public final java.util.Map<hydra.core.Name, hydra.core.Term<A>> bindings;

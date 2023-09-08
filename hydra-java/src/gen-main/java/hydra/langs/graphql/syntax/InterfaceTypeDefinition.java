@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public abstract class InterfaceTypeDefinition {
+import java.io.Serializable;
+
+public abstract class InterfaceTypeDefinition implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.InterfaceTypeDefinition");
   
   private InterfaceTypeDefinition () {
@@ -29,7 +31,7 @@ public abstract class InterfaceTypeDefinition {
     }
   }
   
-  public static final class Sequence extends hydra.langs.graphql.syntax.InterfaceTypeDefinition {
+  public static final class Sequence extends hydra.langs.graphql.syntax.InterfaceTypeDefinition implements Serializable {
     public final hydra.langs.graphql.syntax.InterfaceTypeDefinition_Sequence value;
     
     public Sequence (hydra.langs.graphql.syntax.InterfaceTypeDefinition_Sequence value) {
@@ -56,7 +58,7 @@ public abstract class InterfaceTypeDefinition {
     }
   }
   
-  public static final class Sequence2 extends hydra.langs.graphql.syntax.InterfaceTypeDefinition {
+  public static final class Sequence2 extends hydra.langs.graphql.syntax.InterfaceTypeDefinition implements Serializable {
     public final hydra.langs.graphql.syntax.InterfaceTypeDefinition_Sequence2 value;
     
     public Sequence2 (hydra.langs.graphql.syntax.InterfaceTypeDefinition_Sequence2 value) {

@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class Predicate {
+import java.io.Serializable;
+
+public abstract class Predicate implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.Predicate");
   
   private Predicate () {
@@ -29,7 +31,7 @@ public abstract class Predicate {
     }
   }
   
-  public static final class Iri extends hydra.langs.shex.syntax.Predicate {
+  public static final class Iri extends hydra.langs.shex.syntax.Predicate implements Serializable {
     public final hydra.langs.shex.syntax.Iri value;
     
     public Iri (hydra.langs.shex.syntax.Iri value) {
@@ -56,7 +58,7 @@ public abstract class Predicate {
     }
   }
   
-  public static final class RdfType extends hydra.langs.shex.syntax.Predicate {
+  public static final class RdfType extends hydra.langs.shex.syntax.Predicate implements Serializable {
     public final hydra.langs.shex.syntax.RdfType value;
     
     public RdfType (hydra.langs.shex.syntax.RdfType value) {

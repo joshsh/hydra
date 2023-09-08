@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class SwitchBlock_Pair {
+import java.io.Serializable;
+
+public class SwitchBlock_Pair implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.SwitchBlock.Pair");
   
   public final java.util.List<hydra.langs.java.syntax.SwitchBlockStatementGroup> statements;

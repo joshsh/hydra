@@ -1,9 +1,11 @@
 package hydra.module;
 
+import java.io.Serializable;
+
 /**
  * A prefix for element names
  */
-public class Namespace {
+public class Namespace implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/module.Namespace");
   
   /**

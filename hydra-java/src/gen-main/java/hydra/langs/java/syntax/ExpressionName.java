@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class ExpressionName {
+import java.io.Serializable;
+
+public class ExpressionName implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ExpressionName");
   
   public final java.util.Optional<hydra.langs.java.syntax.AmbiguousName> qualifier;

@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public class Data_Anonymous {
+import java.io.Serializable;
+
+public class Data_Anonymous implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Data.Anonymous");
   
   public Data_Anonymous () {

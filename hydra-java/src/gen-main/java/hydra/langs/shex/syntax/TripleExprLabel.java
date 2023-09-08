@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class TripleExprLabel {
+import java.io.Serializable;
+
+public abstract class TripleExprLabel implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.TripleExprLabel");
   
   private TripleExprLabel () {
@@ -29,7 +31,7 @@ public abstract class TripleExprLabel {
     }
   }
   
-  public static final class Iri extends hydra.langs.shex.syntax.TripleExprLabel {
+  public static final class Iri extends hydra.langs.shex.syntax.TripleExprLabel implements Serializable {
     public final hydra.langs.shex.syntax.Iri value;
     
     public Iri (hydra.langs.shex.syntax.Iri value) {
@@ -56,7 +58,7 @@ public abstract class TripleExprLabel {
     }
   }
   
-  public static final class BlankNode extends hydra.langs.shex.syntax.TripleExprLabel {
+  public static final class BlankNode extends hydra.langs.shex.syntax.TripleExprLabel implements Serializable {
     public final hydra.langs.shex.syntax.BlankNode value;
     
     public BlankNode (hydra.langs.shex.syntax.BlankNode value) {

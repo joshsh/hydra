@@ -1,9 +1,11 @@
 package hydra.langs.shacl.model;
 
+import java.io.Serializable;
+
 /**
  * See https://www.w3.org/TR/shacl/#ClosedPatterConstraintComponent
  */
-public class Closed {
+public class Closed implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shacl/model.Closed");
   
   public final Boolean isClosed;

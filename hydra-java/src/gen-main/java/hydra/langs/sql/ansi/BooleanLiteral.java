@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public abstract class BooleanLiteral {
+import java.io.Serializable;
+
+public abstract class BooleanLiteral implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.BooleanLiteral");
   
   private BooleanLiteral () {
@@ -35,7 +37,7 @@ public abstract class BooleanLiteral {
     }
   }
   
-  public static final class TRUE extends hydra.langs.sql.ansi.BooleanLiteral {
+  public static final class TRUE extends hydra.langs.sql.ansi.BooleanLiteral implements Serializable {
     public TRUE () {
     
     }
@@ -60,7 +62,7 @@ public abstract class BooleanLiteral {
     }
   }
   
-  public static final class FALSE extends hydra.langs.sql.ansi.BooleanLiteral {
+  public static final class FALSE extends hydra.langs.sql.ansi.BooleanLiteral implements Serializable {
     public FALSE () {
     
     }
@@ -85,7 +87,7 @@ public abstract class BooleanLiteral {
     }
   }
   
-  public static final class UNKNOWN extends hydra.langs.sql.ansi.BooleanLiteral {
+  public static final class UNKNOWN extends hydra.langs.sql.ansi.BooleanLiteral implements Serializable {
     public UNKNOWN () {
     
     }

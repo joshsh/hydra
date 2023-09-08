@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class MethodReference {
+import java.io.Serializable;
+
+public abstract class MethodReference implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.MethodReference");
   
   private MethodReference () {
@@ -53,7 +55,7 @@ public abstract class MethodReference {
     }
   }
   
-  public static final class Expression extends hydra.langs.java.syntax.MethodReference {
+  public static final class Expression extends hydra.langs.java.syntax.MethodReference implements Serializable {
     public final hydra.langs.java.syntax.MethodReference_Expression value;
     
     public Expression (hydra.langs.java.syntax.MethodReference_Expression value) {
@@ -80,7 +82,7 @@ public abstract class MethodReference {
     }
   }
   
-  public static final class Primary extends hydra.langs.java.syntax.MethodReference {
+  public static final class Primary extends hydra.langs.java.syntax.MethodReference implements Serializable {
     public final hydra.langs.java.syntax.MethodReference_Primary value;
     
     public Primary (hydra.langs.java.syntax.MethodReference_Primary value) {
@@ -107,7 +109,7 @@ public abstract class MethodReference {
     }
   }
   
-  public static final class ReferenceType extends hydra.langs.java.syntax.MethodReference {
+  public static final class ReferenceType extends hydra.langs.java.syntax.MethodReference implements Serializable {
     public final hydra.langs.java.syntax.MethodReference_ReferenceType value;
     
     public ReferenceType (hydra.langs.java.syntax.MethodReference_ReferenceType value) {
@@ -134,7 +136,7 @@ public abstract class MethodReference {
     }
   }
   
-  public static final class Super extends hydra.langs.java.syntax.MethodReference {
+  public static final class Super extends hydra.langs.java.syntax.MethodReference implements Serializable {
     public final hydra.langs.java.syntax.MethodReference_Super value;
     
     public Super (hydra.langs.java.syntax.MethodReference_Super value) {
@@ -161,7 +163,7 @@ public abstract class MethodReference {
     }
   }
   
-  public static final class New extends hydra.langs.java.syntax.MethodReference {
+  public static final class New extends hydra.langs.java.syntax.MethodReference implements Serializable {
     public final hydra.langs.java.syntax.MethodReference_New value;
     
     public New (hydra.langs.java.syntax.MethodReference_New value) {
@@ -188,7 +190,7 @@ public abstract class MethodReference {
     }
   }
   
-  public static final class Array extends hydra.langs.java.syntax.MethodReference {
+  public static final class Array extends hydra.langs.java.syntax.MethodReference implements Serializable {
     public final hydra.langs.java.syntax.MethodReference_Array value;
     
     public Array (hydra.langs.java.syntax.MethodReference_Array value) {

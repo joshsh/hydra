@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public class FloatValue {
+import java.io.Serializable;
+
+public class FloatValue implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.FloatValue");
   
   public final String value;

@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public abstract class Ctor {
+import java.io.Serializable;
+
+public abstract class Ctor implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Ctor");
   
   private Ctor () {
@@ -29,7 +31,7 @@ public abstract class Ctor {
     }
   }
   
-  public static final class Primary extends hydra.langs.scala.meta.Ctor {
+  public static final class Primary extends hydra.langs.scala.meta.Ctor implements Serializable {
     public final hydra.langs.scala.meta.Ctor_Primary value;
     
     public Primary (hydra.langs.scala.meta.Ctor_Primary value) {
@@ -56,7 +58,7 @@ public abstract class Ctor {
     }
   }
   
-  public static final class Secondary extends hydra.langs.scala.meta.Ctor {
+  public static final class Secondary extends hydra.langs.scala.meta.Ctor implements Serializable {
     public final hydra.langs.scala.meta.Ctor_Secondary value;
     
     public Secondary (hydra.langs.scala.meta.Ctor_Secondary value) {

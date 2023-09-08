@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public class ScalarSubquery {
+import java.io.Serializable;
+
+public class ScalarSubquery implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.ScalarSubquery");
   
   public final hydra.langs.sql.ansi.Subquery value;

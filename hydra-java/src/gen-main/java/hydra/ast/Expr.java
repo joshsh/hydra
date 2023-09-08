@@ -1,9 +1,11 @@
 package hydra.ast;
 
+import java.io.Serializable;
+
 /**
  * An abstract expression
  */
-public abstract class Expr {
+public abstract class Expr implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/ast.Expr");
   
   private Expr () {
@@ -44,7 +46,7 @@ public abstract class Expr {
     }
   }
   
-  public static final class Const extends hydra.ast.Expr {
+  public static final class Const extends hydra.ast.Expr implements Serializable {
     public final hydra.ast.Symbol value;
     
     public Const (hydra.ast.Symbol value) {
@@ -71,7 +73,7 @@ public abstract class Expr {
     }
   }
   
-  public static final class Indent extends hydra.ast.Expr {
+  public static final class Indent extends hydra.ast.Expr implements Serializable {
     public final hydra.ast.IndentedExpression value;
     
     public Indent (hydra.ast.IndentedExpression value) {
@@ -98,7 +100,7 @@ public abstract class Expr {
     }
   }
   
-  public static final class Op extends hydra.ast.Expr {
+  public static final class Op extends hydra.ast.Expr implements Serializable {
     public final hydra.ast.OpExpr value;
     
     public Op (hydra.ast.OpExpr value) {
@@ -125,7 +127,7 @@ public abstract class Expr {
     }
   }
   
-  public static final class Brackets extends hydra.ast.Expr {
+  public static final class Brackets extends hydra.ast.Expr implements Serializable {
     public final hydra.ast.BracketExpr value;
     
     public Brackets (hydra.ast.BracketExpr value) {

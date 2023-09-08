@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class ModuleDirective_ExportsOrOpens {
+import java.io.Serializable;
+
+public class ModuleDirective_ExportsOrOpens implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ModuleDirective.ExportsOrOpens");
   
   public final hydra.langs.java.syntax.PackageName package_;

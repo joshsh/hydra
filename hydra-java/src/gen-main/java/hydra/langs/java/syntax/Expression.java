@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class Expression {
+import java.io.Serializable;
+
+public abstract class Expression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.Expression");
   
   private Expression () {
@@ -29,7 +31,7 @@ public abstract class Expression {
     }
   }
   
-  public static final class Lambda extends hydra.langs.java.syntax.Expression {
+  public static final class Lambda extends hydra.langs.java.syntax.Expression implements Serializable {
     public final hydra.langs.java.syntax.LambdaExpression value;
     
     public Lambda (hydra.langs.java.syntax.LambdaExpression value) {
@@ -56,7 +58,7 @@ public abstract class Expression {
     }
   }
   
-  public static final class Assignment extends hydra.langs.java.syntax.Expression {
+  public static final class Assignment extends hydra.langs.java.syntax.Expression implements Serializable {
     public final hydra.langs.java.syntax.AssignmentExpression value;
     
     public Assignment (hydra.langs.java.syntax.AssignmentExpression value) {

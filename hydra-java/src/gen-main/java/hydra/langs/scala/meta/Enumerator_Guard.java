@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public class Enumerator_Guard {
+import java.io.Serializable;
+
+public class Enumerator_Guard implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Enumerator.Guard");
   
   public final hydra.langs.scala.meta.Data cond;

@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public class Datatype {
+import java.io.Serializable;
+
+public class Datatype implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.Datatype");
   
   public final hydra.langs.shex.syntax.Iri value;

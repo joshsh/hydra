@@ -313,7 +313,7 @@ toTypeDeclarations namespaces el term = withTrace ("type element " ++ unName (el
     let lname = localNameOfEager $ elementName el
     let hname = simpleName lname
     t <- coreDecodeType term
-    isSer <- isSerializable
+    isSer <- isSerializable el
     let deriv = H.Deriving $ if isSer
                   then rawName <$> ["Eq", "Ord", "Read", "Show"]
                   else []
@@ -339,13 +339,6 @@ toTypeDeclarations namespaces el term = withTrace ("type element " ++ unName (el
     comments <- annotationClassTermDescription (graphAnnotations g) term
     return $ [H.DeclarationWithComments decl comments] ++ constantDecls g namespaces (elementName el) t
   where
-    isSerializable = do
-        deps <- typeDependencies (elementName el)
-        let allVariants = S.fromList $ L.concat (variants <$> M.elems deps)
-        return $ not $ S.member TypeVariantFunction allVariants
-      where
-        variants typ = typeVariant <$> foldOverType TraversalOrderPre (\m t -> t:m) [] typ
-
     declHead name vars = case vars of
       [] -> H.DeclarationHeadSimple name
       ((Name h):rest) -> H.DeclarationHeadApplication $

@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public abstract class TypeSystemDirectiveLocation {
+import java.io.Serializable;
+
+public abstract class TypeSystemDirectiveLocation implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.TypeSystemDirectiveLocation");
   
   private TypeSystemDirectiveLocation () {
@@ -83,7 +85,7 @@ public abstract class TypeSystemDirectiveLocation {
     }
   }
   
-  public static final class SCHEMA extends hydra.langs.graphql.syntax.TypeSystemDirectiveLocation {
+  public static final class SCHEMA extends hydra.langs.graphql.syntax.TypeSystemDirectiveLocation implements Serializable {
     public SCHEMA () {
     
     }
@@ -108,7 +110,7 @@ public abstract class TypeSystemDirectiveLocation {
     }
   }
   
-  public static final class SCALAR extends hydra.langs.graphql.syntax.TypeSystemDirectiveLocation {
+  public static final class SCALAR extends hydra.langs.graphql.syntax.TypeSystemDirectiveLocation implements Serializable {
     public SCALAR () {
     
     }
@@ -133,7 +135,7 @@ public abstract class TypeSystemDirectiveLocation {
     }
   }
   
-  public static final class OBJECT extends hydra.langs.graphql.syntax.TypeSystemDirectiveLocation {
+  public static final class OBJECT extends hydra.langs.graphql.syntax.TypeSystemDirectiveLocation implements Serializable {
     public OBJECT () {
     
     }
@@ -158,7 +160,7 @@ public abstract class TypeSystemDirectiveLocation {
     }
   }
   
-  public static final class FIELDLowbarDEFINITION extends hydra.langs.graphql.syntax.TypeSystemDirectiveLocation {
+  public static final class FIELDLowbarDEFINITION extends hydra.langs.graphql.syntax.TypeSystemDirectiveLocation implements Serializable {
     public FIELDLowbarDEFINITION () {
     
     }
@@ -183,7 +185,7 @@ public abstract class TypeSystemDirectiveLocation {
     }
   }
   
-  public static final class ARGUMENTLowbarDEFINITION extends hydra.langs.graphql.syntax.TypeSystemDirectiveLocation {
+  public static final class ARGUMENTLowbarDEFINITION extends hydra.langs.graphql.syntax.TypeSystemDirectiveLocation implements Serializable {
     public ARGUMENTLowbarDEFINITION () {
     
     }
@@ -208,7 +210,7 @@ public abstract class TypeSystemDirectiveLocation {
     }
   }
   
-  public static final class INTERFACE extends hydra.langs.graphql.syntax.TypeSystemDirectiveLocation {
+  public static final class INTERFACE extends hydra.langs.graphql.syntax.TypeSystemDirectiveLocation implements Serializable {
     public INTERFACE () {
     
     }
@@ -233,7 +235,7 @@ public abstract class TypeSystemDirectiveLocation {
     }
   }
   
-  public static final class UNION extends hydra.langs.graphql.syntax.TypeSystemDirectiveLocation {
+  public static final class UNION extends hydra.langs.graphql.syntax.TypeSystemDirectiveLocation implements Serializable {
     public UNION () {
     
     }
@@ -258,7 +260,7 @@ public abstract class TypeSystemDirectiveLocation {
     }
   }
   
-  public static final class ENUM extends hydra.langs.graphql.syntax.TypeSystemDirectiveLocation {
+  public static final class ENUM extends hydra.langs.graphql.syntax.TypeSystemDirectiveLocation implements Serializable {
     public ENUM () {
     
     }
@@ -283,7 +285,7 @@ public abstract class TypeSystemDirectiveLocation {
     }
   }
   
-  public static final class ENUMLowbarVALUE extends hydra.langs.graphql.syntax.TypeSystemDirectiveLocation {
+  public static final class ENUMLowbarVALUE extends hydra.langs.graphql.syntax.TypeSystemDirectiveLocation implements Serializable {
     public ENUMLowbarVALUE () {
     
     }
@@ -308,7 +310,7 @@ public abstract class TypeSystemDirectiveLocation {
     }
   }
   
-  public static final class INPUTLowbarOBJECT extends hydra.langs.graphql.syntax.TypeSystemDirectiveLocation {
+  public static final class INPUTLowbarOBJECT extends hydra.langs.graphql.syntax.TypeSystemDirectiveLocation implements Serializable {
     public INPUTLowbarOBJECT () {
     
     }
@@ -333,7 +335,7 @@ public abstract class TypeSystemDirectiveLocation {
     }
   }
   
-  public static final class INPUTLowbarFIELDLowbarDEFINITION extends hydra.langs.graphql.syntax.TypeSystemDirectiveLocation {
+  public static final class INPUTLowbarFIELDLowbarDEFINITION extends hydra.langs.graphql.syntax.TypeSystemDirectiveLocation implements Serializable {
     public INPUTLowbarFIELDLowbarDEFINITION () {
     
     }

@@ -77,7 +77,7 @@ expandLambdas term = do
             where
               lhs' = annotationClassSetTermType (graphAnnotations g) mtyp lhs
               mtyp' = case mtyp of
-                Just t -> case stripTypeParameters t of
+                Just t -> case stripTypeParameters $ stripType t of
                   TypeFunction (FunctionType _ cod) -> Just cod
                   _ -> throwDebugException $ "expandLambdas: expected function type, got " ++ show t
                 Nothing -> Nothing

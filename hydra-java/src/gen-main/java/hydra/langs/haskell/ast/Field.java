@@ -1,9 +1,11 @@
 package hydra.langs.haskell.ast;
 
+import java.io.Serializable;
+
 /**
  * A field (name/type pair)
  */
-public class Field {
+public class Field implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.Field");
   
   public final hydra.langs.haskell.ast.Name name;

@@ -1,9 +1,11 @@
 package hydra.query;
 
+import java.io.Serializable;
+
 /**
  * A range from min to max, inclusive
  */
-public class Range {
+public class Range implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/query.Range");
   
   public final Integer min;

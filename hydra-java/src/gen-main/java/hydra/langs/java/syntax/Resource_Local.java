@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class Resource_Local {
+import java.io.Serializable;
+
+public class Resource_Local implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.Resource.Local");
   
   public final java.util.List<hydra.langs.java.syntax.VariableModifier> modifiers;

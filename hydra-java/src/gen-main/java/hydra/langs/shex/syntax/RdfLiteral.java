@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public class RdfLiteral {
+import java.io.Serializable;
+
+public class RdfLiteral implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.RdfLiteral");
   
   public final hydra.langs.shex.syntax.String_ string;

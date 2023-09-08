@@ -1,6 +1,8 @@
 package hydra.langs.xml.schema;
 
-public class ENTITY {
+import java.io.Serializable;
+
+public class ENTITY implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/xml/schema.ENTITY");
   
   public final String value;

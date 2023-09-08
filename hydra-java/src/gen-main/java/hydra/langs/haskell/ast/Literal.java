@@ -1,9 +1,11 @@
 package hydra.langs.haskell.ast;
 
+import java.io.Serializable;
+
 /**
  * A literal value
  */
-public abstract class Literal {
+public abstract class Literal implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.Literal");
   
   private Literal () {
@@ -56,7 +58,7 @@ public abstract class Literal {
     }
   }
   
-  public static final class Char extends hydra.langs.haskell.ast.Literal {
+  public static final class Char extends hydra.langs.haskell.ast.Literal implements Serializable {
     public final Character value;
     
     public Char (Character value) {
@@ -83,7 +85,7 @@ public abstract class Literal {
     }
   }
   
-  public static final class Double_ extends hydra.langs.haskell.ast.Literal {
+  public static final class Double_ extends hydra.langs.haskell.ast.Literal implements Serializable {
     public final Double value;
     
     public Double_ (Double value) {
@@ -110,7 +112,7 @@ public abstract class Literal {
     }
   }
   
-  public static final class Float_ extends hydra.langs.haskell.ast.Literal {
+  public static final class Float_ extends hydra.langs.haskell.ast.Literal implements Serializable {
     public final Float value;
     
     public Float_ (Float value) {
@@ -137,7 +139,7 @@ public abstract class Literal {
     }
   }
   
-  public static final class Int extends hydra.langs.haskell.ast.Literal {
+  public static final class Int extends hydra.langs.haskell.ast.Literal implements Serializable {
     public final Integer value;
     
     public Int (Integer value) {
@@ -164,7 +166,7 @@ public abstract class Literal {
     }
   }
   
-  public static final class Integer_ extends hydra.langs.haskell.ast.Literal {
+  public static final class Integer_ extends hydra.langs.haskell.ast.Literal implements Serializable {
     public final java.math.BigInteger value;
     
     public Integer_ (java.math.BigInteger value) {
@@ -191,7 +193,7 @@ public abstract class Literal {
     }
   }
   
-  public static final class String_ extends hydra.langs.haskell.ast.Literal {
+  public static final class String_ extends hydra.langs.haskell.ast.Literal implements Serializable {
     public final String value;
     
     public String_ (String value) {

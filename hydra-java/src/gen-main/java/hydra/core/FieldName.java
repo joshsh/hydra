@@ -1,9 +1,11 @@
 package hydra.core;
 
+import java.io.Serializable;
+
 /**
  * The name of a field, unique within a record or union type
  */
-public class FieldName {
+public class FieldName implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/core.FieldName");
   
   public final String value;

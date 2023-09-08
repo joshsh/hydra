@@ -1,6 +1,8 @@
 package hydra.langs.owl.syntax;
 
-public class AnonymousIndividual {
+import java.io.Serializable;
+
+public class AnonymousIndividual implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/owl/syntax.AnonymousIndividual");
   
   public AnonymousIndividual () {

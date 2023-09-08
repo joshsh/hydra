@@ -1,9 +1,11 @@
 package hydra.langs.pegasus.pdl;
 
+import java.io.Serializable;
+
 /**
  * Annotations which can be applied to record fields, aliased union members, enum symbols, or named schemas
  */
-public class Annotations {
+public class Annotations implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/pegasus/pdl.Annotations");
   
   public final java.util.Optional<String> doc;

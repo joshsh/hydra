@@ -1,9 +1,11 @@
 package hydra.langs.java.syntax;
 
+import java.io.Serializable;
+
 /**
  * A Type which does not allow annotations
  */
-public class UnannType {
+public class UnannType implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.UnannType");
   
   /**

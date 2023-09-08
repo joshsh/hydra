@@ -1,9 +1,11 @@
 package hydra.langs.haskell.ast;
 
+import java.io.Serializable;
+
 /**
  * An ordinary (positional) data constructor
  */
-public class Constructor_Ordinary {
+public class Constructor_Ordinary implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.Constructor.Ordinary");
   
   public final hydra.langs.haskell.ast.Name name;

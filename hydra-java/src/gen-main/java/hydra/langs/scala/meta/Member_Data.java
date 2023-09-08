@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public abstract class Member_Data {
+import java.io.Serializable;
+
+public abstract class Member_Data implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Member.Data");
   
   private Member_Data () {
@@ -29,7 +31,7 @@ public abstract class Member_Data {
     }
   }
   
-  public static final class Pkg extends hydra.langs.scala.meta.Member_Data {
+  public static final class Pkg extends hydra.langs.scala.meta.Member_Data implements Serializable {
     public final hydra.langs.scala.meta.Pkg value;
     
     public Pkg (hydra.langs.scala.meta.Pkg value) {
@@ -56,7 +58,7 @@ public abstract class Member_Data {
     }
   }
   
-  public static final class Object_ extends hydra.langs.scala.meta.Member_Data {
+  public static final class Object_ extends hydra.langs.scala.meta.Member_Data implements Serializable {
     public final hydra.langs.scala.meta.Pkg_Object value;
     
     public Object_ (hydra.langs.scala.meta.Pkg_Object value) {

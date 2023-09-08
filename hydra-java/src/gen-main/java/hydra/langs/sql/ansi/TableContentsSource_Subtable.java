@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public class TableContentsSource_Subtable {
+import java.io.Serializable;
+
+public class TableContentsSource_Subtable implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.TableContentsSource.Subtable");
   
   public final hydra.langs.sql.ansi.PathResolvedUserDefinedTypeName type;

@@ -1,9 +1,11 @@
 package hydra.langs.tinkerpop.features;
 
+import java.io.Serializable;
+
 /**
  * Features that are related to Vertex Property objects.
  */
-public class VertexPropertyFeatures {
+public class VertexPropertyFeatures implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/tinkerpop/features.VertexPropertyFeatures");
   
   public final hydra.langs.tinkerpop.features.DataTypeFeatures dataTypeFeatures;

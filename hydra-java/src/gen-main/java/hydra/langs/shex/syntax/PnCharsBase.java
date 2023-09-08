@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class PnCharsBase {
+import java.io.Serializable;
+
+public abstract class PnCharsBase implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.PnCharsBase");
   
   private PnCharsBase () {
@@ -29,7 +31,7 @@ public abstract class PnCharsBase {
     }
   }
   
-  public static final class Regex extends hydra.langs.shex.syntax.PnCharsBase {
+  public static final class Regex extends hydra.langs.shex.syntax.PnCharsBase implements Serializable {
     public final String value;
     
     public Regex (String value) {
@@ -56,7 +58,7 @@ public abstract class PnCharsBase {
     }
   }
   
-  public static final class Regex2 extends hydra.langs.shex.syntax.PnCharsBase {
+  public static final class Regex2 extends hydra.langs.shex.syntax.PnCharsBase implements Serializable {
     public final String value;
     
     public Regex2 (String value) {

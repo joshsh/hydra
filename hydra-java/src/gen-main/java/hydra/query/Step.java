@@ -1,9 +1,11 @@
 package hydra.query;
 
+import java.io.Serializable;
+
 /**
  * An atomic function as part of a query. When applied to a graph, steps are typed by function types.
  */
-public abstract class Step {
+public abstract class Step implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/query.Step");
   
   private Step () {
@@ -41,7 +43,7 @@ public abstract class Step {
   /**
    * An out-to-in traversal of an abstract edge
    */
-  public static final class Edge extends hydra.query.Step {
+  public static final class Edge extends hydra.query.Step implements Serializable {
     /**
      * An out-to-in traversal of an abstract edge
      */
@@ -74,7 +76,7 @@ public abstract class Step {
   /**
    * A projection from a record through one of its fields
    */
-  public static final class Project extends hydra.query.Step {
+  public static final class Project extends hydra.query.Step implements Serializable {
     /**
      * A projection from a record through one of its fields
      */
@@ -107,7 +109,7 @@ public abstract class Step {
   /**
    * A comparison of two terms
    */
-  public static final class Compare extends hydra.query.Step {
+  public static final class Compare extends hydra.query.Step implements Serializable {
     /**
      * A comparison of two terms
      */

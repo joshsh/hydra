@@ -1,9 +1,11 @@
 package hydra.mantle;
 
+import java.io.Serializable;
+
 /**
  * The identifier of a term expression constructor
  */
-public abstract class TermVariant {
+public abstract class TermVariant implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/mantle.TermVariant");
   
   private TermVariant () {
@@ -116,7 +118,7 @@ public abstract class TermVariant {
     }
   }
   
-  public static final class Annotated extends hydra.mantle.TermVariant {
+  public static final class Annotated extends hydra.mantle.TermVariant implements Serializable {
     public Annotated () {
     
     }
@@ -141,7 +143,7 @@ public abstract class TermVariant {
     }
   }
   
-  public static final class Application extends hydra.mantle.TermVariant {
+  public static final class Application extends hydra.mantle.TermVariant implements Serializable {
     public Application () {
     
     }
@@ -166,7 +168,7 @@ public abstract class TermVariant {
     }
   }
   
-  public static final class Function extends hydra.mantle.TermVariant {
+  public static final class Function extends hydra.mantle.TermVariant implements Serializable {
     public Function () {
     
     }
@@ -191,7 +193,7 @@ public abstract class TermVariant {
     }
   }
   
-  public static final class Let extends hydra.mantle.TermVariant {
+  public static final class Let extends hydra.mantle.TermVariant implements Serializable {
     public Let () {
     
     }
@@ -216,7 +218,7 @@ public abstract class TermVariant {
     }
   }
   
-  public static final class List extends hydra.mantle.TermVariant {
+  public static final class List extends hydra.mantle.TermVariant implements Serializable {
     public List () {
     
     }
@@ -241,7 +243,7 @@ public abstract class TermVariant {
     }
   }
   
-  public static final class Literal extends hydra.mantle.TermVariant {
+  public static final class Literal extends hydra.mantle.TermVariant implements Serializable {
     public Literal () {
     
     }
@@ -266,7 +268,7 @@ public abstract class TermVariant {
     }
   }
   
-  public static final class Map extends hydra.mantle.TermVariant {
+  public static final class Map extends hydra.mantle.TermVariant implements Serializable {
     public Map () {
     
     }
@@ -291,7 +293,7 @@ public abstract class TermVariant {
     }
   }
   
-  public static final class Optional extends hydra.mantle.TermVariant {
+  public static final class Optional extends hydra.mantle.TermVariant implements Serializable {
     public Optional () {
     
     }
@@ -316,7 +318,7 @@ public abstract class TermVariant {
     }
   }
   
-  public static final class Product extends hydra.mantle.TermVariant {
+  public static final class Product extends hydra.mantle.TermVariant implements Serializable {
     public Product () {
     
     }
@@ -341,7 +343,7 @@ public abstract class TermVariant {
     }
   }
   
-  public static final class Record extends hydra.mantle.TermVariant {
+  public static final class Record extends hydra.mantle.TermVariant implements Serializable {
     public Record () {
     
     }
@@ -366,7 +368,7 @@ public abstract class TermVariant {
     }
   }
   
-  public static final class Set extends hydra.mantle.TermVariant {
+  public static final class Set extends hydra.mantle.TermVariant implements Serializable {
     public Set () {
     
     }
@@ -391,7 +393,7 @@ public abstract class TermVariant {
     }
   }
   
-  public static final class Stream extends hydra.mantle.TermVariant {
+  public static final class Stream extends hydra.mantle.TermVariant implements Serializable {
     public Stream () {
     
     }
@@ -416,7 +418,7 @@ public abstract class TermVariant {
     }
   }
   
-  public static final class Sum extends hydra.mantle.TermVariant {
+  public static final class Sum extends hydra.mantle.TermVariant implements Serializable {
     public Sum () {
     
     }
@@ -441,7 +443,7 @@ public abstract class TermVariant {
     }
   }
   
-  public static final class Union extends hydra.mantle.TermVariant {
+  public static final class Union extends hydra.mantle.TermVariant implements Serializable {
     public Union () {
     
     }
@@ -466,7 +468,7 @@ public abstract class TermVariant {
     }
   }
   
-  public static final class Variable extends hydra.mantle.TermVariant {
+  public static final class Variable extends hydra.mantle.TermVariant implements Serializable {
     public Variable () {
     
     }
@@ -491,7 +493,7 @@ public abstract class TermVariant {
     }
   }
   
-  public static final class Wrap extends hydra.mantle.TermVariant {
+  public static final class Wrap extends hydra.mantle.TermVariant implements Serializable {
     public Wrap () {
     
     }

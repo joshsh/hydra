@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class ClassOrInterfaceTypeToInstantiate {
+import java.io.Serializable;
+
+public class ClassOrInterfaceTypeToInstantiate implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ClassOrInterfaceTypeToInstantiate");
   
   public final java.util.List<hydra.langs.java.syntax.AnnotatedIdentifier> identifiers;

@@ -1,9 +1,11 @@
 package hydra.phantoms;
 
+import java.io.Serializable;
+
 /**
  * An association with a term-level field with a phantom type
  */
-public class Fld<A> {
+public class Fld<A> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/phantoms.Fld");
   
   public final hydra.core.Field<hydra.compute.Kv> value;

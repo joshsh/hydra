@@ -1,9 +1,11 @@
 package hydra.langs.haskell.ast;
 
+import java.io.Serializable;
+
 /**
  * A pattern-matching alternative
  */
-public class Alternative {
+public class Alternative implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.Alternative");
   
   public final hydra.langs.haskell.ast.Pattern pattern;

@@ -1,6 +1,8 @@
 package hydra.langs.haskell.ast;
 
-public class TypedBinding {
+import java.io.Serializable;
+
+public class TypedBinding implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.TypedBinding");
   
   public final hydra.langs.haskell.ast.TypeSignature typeSignature;

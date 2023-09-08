@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public class ArrayValueExpression {
+import java.io.Serializable;
+
+public class ArrayValueExpression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.ArrayValueExpression");
   
   public ArrayValueExpression () {

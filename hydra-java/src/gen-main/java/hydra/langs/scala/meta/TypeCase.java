@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public class TypeCase {
+import java.io.Serializable;
+
+public class TypeCase implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.TypeCase");
   
   public final hydra.langs.scala.meta.Type pat;

@@ -1,9 +1,11 @@
 package hydra.ast;
 
+import java.io.Serializable;
+
 /**
  * Left and right padding for an operator
  */
-public class Padding {
+public class Padding implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/ast.Padding");
   
   public final hydra.ast.Ws left;

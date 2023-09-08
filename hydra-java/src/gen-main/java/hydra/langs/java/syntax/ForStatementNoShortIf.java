@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class ForStatementNoShortIf {
+import java.io.Serializable;
+
+public abstract class ForStatementNoShortIf implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ForStatementNoShortIf");
   
   private ForStatementNoShortIf () {
@@ -29,7 +31,7 @@ public abstract class ForStatementNoShortIf {
     }
   }
   
-  public static final class Basic extends hydra.langs.java.syntax.ForStatementNoShortIf {
+  public static final class Basic extends hydra.langs.java.syntax.ForStatementNoShortIf implements Serializable {
     public final hydra.langs.java.syntax.BasicForStatementNoShortIf value;
     
     public Basic (hydra.langs.java.syntax.BasicForStatementNoShortIf value) {
@@ -56,7 +58,7 @@ public abstract class ForStatementNoShortIf {
     }
   }
   
-  public static final class Enhanced extends hydra.langs.java.syntax.ForStatementNoShortIf {
+  public static final class Enhanced extends hydra.langs.java.syntax.ForStatementNoShortIf implements Serializable {
     public final hydra.langs.java.syntax.EnhancedForStatementNoShortIf value;
     
     public Enhanced (hydra.langs.java.syntax.EnhancedForStatementNoShortIf value) {

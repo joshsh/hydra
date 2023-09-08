@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public class NodeConstraint_Sequence3 {
+import java.io.Serializable;
+
+public class NodeConstraint_Sequence3 implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.NodeConstraint.Sequence3");
   
   public final hydra.langs.shex.syntax.Datatype datatype;

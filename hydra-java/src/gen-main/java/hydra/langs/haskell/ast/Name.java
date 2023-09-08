@@ -1,6 +1,8 @@
 package hydra.langs.haskell.ast;
 
-public abstract class Name {
+import java.io.Serializable;
+
+public abstract class Name implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.Name");
   
   private Name () {
@@ -35,7 +37,7 @@ public abstract class Name {
     }
   }
   
-  public static final class Implicit extends hydra.langs.haskell.ast.Name {
+  public static final class Implicit extends hydra.langs.haskell.ast.Name implements Serializable {
     public final hydra.langs.haskell.ast.QualifiedName value;
     
     public Implicit (hydra.langs.haskell.ast.QualifiedName value) {
@@ -62,7 +64,7 @@ public abstract class Name {
     }
   }
   
-  public static final class Normal extends hydra.langs.haskell.ast.Name {
+  public static final class Normal extends hydra.langs.haskell.ast.Name implements Serializable {
     public final hydra.langs.haskell.ast.QualifiedName value;
     
     public Normal (hydra.langs.haskell.ast.QualifiedName value) {
@@ -89,7 +91,7 @@ public abstract class Name {
     }
   }
   
-  public static final class Parens extends hydra.langs.haskell.ast.Name {
+  public static final class Parens extends hydra.langs.haskell.ast.Name implements Serializable {
     public final hydra.langs.haskell.ast.QualifiedName value;
     
     public Parens (hydra.langs.haskell.ast.QualifiedName value) {

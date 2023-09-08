@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public abstract class Defn {
+import java.io.Serializable;
+
+public abstract class Defn implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Defn");
   
   private Defn () {
@@ -101,7 +103,7 @@ public abstract class Defn {
     }
   }
   
-  public static final class Val extends hydra.langs.scala.meta.Defn {
+  public static final class Val extends hydra.langs.scala.meta.Defn implements Serializable {
     public final hydra.langs.scala.meta.Defn_Val value;
     
     public Val (hydra.langs.scala.meta.Defn_Val value) {
@@ -128,7 +130,7 @@ public abstract class Defn {
     }
   }
   
-  public static final class Var extends hydra.langs.scala.meta.Defn {
+  public static final class Var extends hydra.langs.scala.meta.Defn implements Serializable {
     public final hydra.langs.scala.meta.Defn_Var value;
     
     public Var (hydra.langs.scala.meta.Defn_Var value) {
@@ -155,7 +157,7 @@ public abstract class Defn {
     }
   }
   
-  public static final class Given extends hydra.langs.scala.meta.Defn {
+  public static final class Given extends hydra.langs.scala.meta.Defn implements Serializable {
     public final hydra.langs.scala.meta.Defn_Given value;
     
     public Given (hydra.langs.scala.meta.Defn_Given value) {
@@ -182,7 +184,7 @@ public abstract class Defn {
     }
   }
   
-  public static final class Enum_ extends hydra.langs.scala.meta.Defn {
+  public static final class Enum_ extends hydra.langs.scala.meta.Defn implements Serializable {
     public final hydra.langs.scala.meta.Defn_Enum value;
     
     public Enum_ (hydra.langs.scala.meta.Defn_Enum value) {
@@ -209,7 +211,7 @@ public abstract class Defn {
     }
   }
   
-  public static final class EnumCase extends hydra.langs.scala.meta.Defn {
+  public static final class EnumCase extends hydra.langs.scala.meta.Defn implements Serializable {
     public final hydra.langs.scala.meta.Defn_EnumCase value;
     
     public EnumCase (hydra.langs.scala.meta.Defn_EnumCase value) {
@@ -236,7 +238,7 @@ public abstract class Defn {
     }
   }
   
-  public static final class RepeatedEnumCase extends hydra.langs.scala.meta.Defn {
+  public static final class RepeatedEnumCase extends hydra.langs.scala.meta.Defn implements Serializable {
     public final hydra.langs.scala.meta.Defn_RepeatedEnumCase value;
     
     public RepeatedEnumCase (hydra.langs.scala.meta.Defn_RepeatedEnumCase value) {
@@ -263,7 +265,7 @@ public abstract class Defn {
     }
   }
   
-  public static final class GivenAlias extends hydra.langs.scala.meta.Defn {
+  public static final class GivenAlias extends hydra.langs.scala.meta.Defn implements Serializable {
     public final hydra.langs.scala.meta.Defn_GivenAlias value;
     
     public GivenAlias (hydra.langs.scala.meta.Defn_GivenAlias value) {
@@ -290,7 +292,7 @@ public abstract class Defn {
     }
   }
   
-  public static final class ExtensionGroup extends hydra.langs.scala.meta.Defn {
+  public static final class ExtensionGroup extends hydra.langs.scala.meta.Defn implements Serializable {
     public final hydra.langs.scala.meta.Defn_ExtensionGroup value;
     
     public ExtensionGroup (hydra.langs.scala.meta.Defn_ExtensionGroup value) {
@@ -317,7 +319,7 @@ public abstract class Defn {
     }
   }
   
-  public static final class Def extends hydra.langs.scala.meta.Defn {
+  public static final class Def extends hydra.langs.scala.meta.Defn implements Serializable {
     public final hydra.langs.scala.meta.Defn_Def value;
     
     public Def (hydra.langs.scala.meta.Defn_Def value) {
@@ -344,7 +346,7 @@ public abstract class Defn {
     }
   }
   
-  public static final class Macro extends hydra.langs.scala.meta.Defn {
+  public static final class Macro extends hydra.langs.scala.meta.Defn implements Serializable {
     public final hydra.langs.scala.meta.Defn_Macro value;
     
     public Macro (hydra.langs.scala.meta.Defn_Macro value) {
@@ -371,7 +373,7 @@ public abstract class Defn {
     }
   }
   
-  public static final class Type extends hydra.langs.scala.meta.Defn {
+  public static final class Type extends hydra.langs.scala.meta.Defn implements Serializable {
     public final hydra.langs.scala.meta.Defn_Type value;
     
     public Type (hydra.langs.scala.meta.Defn_Type value) {
@@ -398,7 +400,7 @@ public abstract class Defn {
     }
   }
   
-  public static final class Class_ extends hydra.langs.scala.meta.Defn {
+  public static final class Class_ extends hydra.langs.scala.meta.Defn implements Serializable {
     public final hydra.langs.scala.meta.Defn_Class value;
     
     public Class_ (hydra.langs.scala.meta.Defn_Class value) {
@@ -425,7 +427,7 @@ public abstract class Defn {
     }
   }
   
-  public static final class Trait extends hydra.langs.scala.meta.Defn {
+  public static final class Trait extends hydra.langs.scala.meta.Defn implements Serializable {
     public final hydra.langs.scala.meta.Defn_Trait value;
     
     public Trait (hydra.langs.scala.meta.Defn_Trait value) {
@@ -452,7 +454,7 @@ public abstract class Defn {
     }
   }
   
-  public static final class Object_ extends hydra.langs.scala.meta.Defn {
+  public static final class Object_ extends hydra.langs.scala.meta.Defn implements Serializable {
     public final hydra.langs.scala.meta.Defn_Object value;
     
     public Object_ (hydra.langs.scala.meta.Defn_Object value) {

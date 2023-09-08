@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class NodeConstraint {
+import java.io.Serializable;
+
+public abstract class NodeConstraint implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.NodeConstraint");
   
   private NodeConstraint () {
@@ -53,7 +55,7 @@ public abstract class NodeConstraint {
     }
   }
   
-  public static final class Sequence extends hydra.langs.shex.syntax.NodeConstraint {
+  public static final class Sequence extends hydra.langs.shex.syntax.NodeConstraint implements Serializable {
     public final java.util.List<hydra.langs.shex.syntax.XsFacet> value;
     
     public Sequence (java.util.List<hydra.langs.shex.syntax.XsFacet> value) {
@@ -80,7 +82,7 @@ public abstract class NodeConstraint {
     }
   }
   
-  public static final class Sequence2 extends hydra.langs.shex.syntax.NodeConstraint {
+  public static final class Sequence2 extends hydra.langs.shex.syntax.NodeConstraint implements Serializable {
     public final hydra.langs.shex.syntax.NodeConstraint_Sequence2 value;
     
     public Sequence2 (hydra.langs.shex.syntax.NodeConstraint_Sequence2 value) {
@@ -107,7 +109,7 @@ public abstract class NodeConstraint {
     }
   }
   
-  public static final class Sequence3 extends hydra.langs.shex.syntax.NodeConstraint {
+  public static final class Sequence3 extends hydra.langs.shex.syntax.NodeConstraint implements Serializable {
     public final hydra.langs.shex.syntax.NodeConstraint_Sequence3 value;
     
     public Sequence3 (hydra.langs.shex.syntax.NodeConstraint_Sequence3 value) {
@@ -134,7 +136,7 @@ public abstract class NodeConstraint {
     }
   }
   
-  public static final class Sequence4 extends hydra.langs.shex.syntax.NodeConstraint {
+  public static final class Sequence4 extends hydra.langs.shex.syntax.NodeConstraint implements Serializable {
     public final hydra.langs.shex.syntax.NodeConstraint_Sequence4 value;
     
     public Sequence4 (hydra.langs.shex.syntax.NodeConstraint_Sequence4 value) {
@@ -161,7 +163,7 @@ public abstract class NodeConstraint {
     }
   }
   
-  public static final class Sequence5 extends hydra.langs.shex.syntax.NodeConstraint {
+  public static final class Sequence5 extends hydra.langs.shex.syntax.NodeConstraint implements Serializable {
     public final hydra.langs.shex.syntax.NodeConstraint_Sequence5 value;
     
     public Sequence5 (hydra.langs.shex.syntax.NodeConstraint_Sequence5 value) {
@@ -188,7 +190,7 @@ public abstract class NodeConstraint {
     }
   }
   
-  public static final class ListOfXsFacet extends hydra.langs.shex.syntax.NodeConstraint {
+  public static final class ListOfXsFacet extends hydra.langs.shex.syntax.NodeConstraint implements Serializable {
     public final java.util.List<hydra.langs.shex.syntax.XsFacet> value;
     
     public ListOfXsFacet (java.util.List<hydra.langs.shex.syntax.XsFacet> value) {

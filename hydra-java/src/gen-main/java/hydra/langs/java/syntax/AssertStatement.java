@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class AssertStatement {
+import java.io.Serializable;
+
+public abstract class AssertStatement implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.AssertStatement");
   
   private AssertStatement () {
@@ -29,7 +31,7 @@ public abstract class AssertStatement {
     }
   }
   
-  public static final class Single extends hydra.langs.java.syntax.AssertStatement {
+  public static final class Single extends hydra.langs.java.syntax.AssertStatement implements Serializable {
     public final hydra.langs.java.syntax.Expression value;
     
     public Single (hydra.langs.java.syntax.Expression value) {
@@ -56,7 +58,7 @@ public abstract class AssertStatement {
     }
   }
   
-  public static final class Pair extends hydra.langs.java.syntax.AssertStatement {
+  public static final class Pair extends hydra.langs.java.syntax.AssertStatement implements Serializable {
     public final hydra.langs.java.syntax.AssertStatement_Pair value;
     
     public Pair (hydra.langs.java.syntax.AssertStatement_Pair value) {

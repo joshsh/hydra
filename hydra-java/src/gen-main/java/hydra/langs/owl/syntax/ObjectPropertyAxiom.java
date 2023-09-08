@@ -1,6 +1,8 @@
 package hydra.langs.owl.syntax;
 
-public abstract class ObjectPropertyAxiom {
+import java.io.Serializable;
+
+public abstract class ObjectPropertyAxiom implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/owl/syntax.ObjectPropertyAxiom");
   
   private ObjectPropertyAxiom () {
@@ -95,7 +97,7 @@ public abstract class ObjectPropertyAxiom {
     }
   }
   
-  public static final class AsymmetricObjectProperty extends hydra.langs.owl.syntax.ObjectPropertyAxiom {
+  public static final class AsymmetricObjectProperty extends hydra.langs.owl.syntax.ObjectPropertyAxiom implements Serializable {
     public final hydra.langs.owl.syntax.AsymmetricObjectProperty value;
     
     public AsymmetricObjectProperty (hydra.langs.owl.syntax.AsymmetricObjectProperty value) {
@@ -122,7 +124,7 @@ public abstract class ObjectPropertyAxiom {
     }
   }
   
-  public static final class DisjointObjectProperties extends hydra.langs.owl.syntax.ObjectPropertyAxiom {
+  public static final class DisjointObjectProperties extends hydra.langs.owl.syntax.ObjectPropertyAxiom implements Serializable {
     public final hydra.langs.owl.syntax.DisjointObjectProperties value;
     
     public DisjointObjectProperties (hydra.langs.owl.syntax.DisjointObjectProperties value) {
@@ -149,7 +151,7 @@ public abstract class ObjectPropertyAxiom {
     }
   }
   
-  public static final class EquivalentObjectProperties extends hydra.langs.owl.syntax.ObjectPropertyAxiom {
+  public static final class EquivalentObjectProperties extends hydra.langs.owl.syntax.ObjectPropertyAxiom implements Serializable {
     public final hydra.langs.owl.syntax.EquivalentObjectProperties value;
     
     public EquivalentObjectProperties (hydra.langs.owl.syntax.EquivalentObjectProperties value) {
@@ -176,7 +178,7 @@ public abstract class ObjectPropertyAxiom {
     }
   }
   
-  public static final class FunctionalObjectProperty extends hydra.langs.owl.syntax.ObjectPropertyAxiom {
+  public static final class FunctionalObjectProperty extends hydra.langs.owl.syntax.ObjectPropertyAxiom implements Serializable {
     public final hydra.langs.owl.syntax.FunctionalObjectProperty value;
     
     public FunctionalObjectProperty (hydra.langs.owl.syntax.FunctionalObjectProperty value) {
@@ -203,7 +205,7 @@ public abstract class ObjectPropertyAxiom {
     }
   }
   
-  public static final class InverseFunctionalObjectProperty extends hydra.langs.owl.syntax.ObjectPropertyAxiom {
+  public static final class InverseFunctionalObjectProperty extends hydra.langs.owl.syntax.ObjectPropertyAxiom implements Serializable {
     public final hydra.langs.owl.syntax.InverseFunctionalObjectProperty value;
     
     public InverseFunctionalObjectProperty (hydra.langs.owl.syntax.InverseFunctionalObjectProperty value) {
@@ -230,7 +232,7 @@ public abstract class ObjectPropertyAxiom {
     }
   }
   
-  public static final class InverseObjectProperties extends hydra.langs.owl.syntax.ObjectPropertyAxiom {
+  public static final class InverseObjectProperties extends hydra.langs.owl.syntax.ObjectPropertyAxiom implements Serializable {
     public final hydra.langs.owl.syntax.InverseObjectProperties value;
     
     public InverseObjectProperties (hydra.langs.owl.syntax.InverseObjectProperties value) {
@@ -257,7 +259,7 @@ public abstract class ObjectPropertyAxiom {
     }
   }
   
-  public static final class IrreflexiveObjectProperty extends hydra.langs.owl.syntax.ObjectPropertyAxiom {
+  public static final class IrreflexiveObjectProperty extends hydra.langs.owl.syntax.ObjectPropertyAxiom implements Serializable {
     public final hydra.langs.owl.syntax.IrreflexiveObjectProperty value;
     
     public IrreflexiveObjectProperty (hydra.langs.owl.syntax.IrreflexiveObjectProperty value) {
@@ -284,7 +286,7 @@ public abstract class ObjectPropertyAxiom {
     }
   }
   
-  public static final class ObjectPropertyDomain extends hydra.langs.owl.syntax.ObjectPropertyAxiom {
+  public static final class ObjectPropertyDomain extends hydra.langs.owl.syntax.ObjectPropertyAxiom implements Serializable {
     public final hydra.langs.owl.syntax.ObjectPropertyDomain value;
     
     public ObjectPropertyDomain (hydra.langs.owl.syntax.ObjectPropertyDomain value) {
@@ -311,7 +313,7 @@ public abstract class ObjectPropertyAxiom {
     }
   }
   
-  public static final class ObjectPropertyRange extends hydra.langs.owl.syntax.ObjectPropertyAxiom {
+  public static final class ObjectPropertyRange extends hydra.langs.owl.syntax.ObjectPropertyAxiom implements Serializable {
     public final hydra.langs.owl.syntax.ObjectPropertyRange value;
     
     public ObjectPropertyRange (hydra.langs.owl.syntax.ObjectPropertyRange value) {
@@ -338,7 +340,7 @@ public abstract class ObjectPropertyAxiom {
     }
   }
   
-  public static final class ReflexiveObjectProperty extends hydra.langs.owl.syntax.ObjectPropertyAxiom {
+  public static final class ReflexiveObjectProperty extends hydra.langs.owl.syntax.ObjectPropertyAxiom implements Serializable {
     public final hydra.langs.owl.syntax.ReflexiveObjectProperty value;
     
     public ReflexiveObjectProperty (hydra.langs.owl.syntax.ReflexiveObjectProperty value) {
@@ -365,7 +367,7 @@ public abstract class ObjectPropertyAxiom {
     }
   }
   
-  public static final class SubObjectPropertyOf extends hydra.langs.owl.syntax.ObjectPropertyAxiom {
+  public static final class SubObjectPropertyOf extends hydra.langs.owl.syntax.ObjectPropertyAxiom implements Serializable {
     public final hydra.langs.owl.syntax.SubObjectPropertyOf value;
     
     public SubObjectPropertyOf (hydra.langs.owl.syntax.SubObjectPropertyOf value) {
@@ -392,7 +394,7 @@ public abstract class ObjectPropertyAxiom {
     }
   }
   
-  public static final class SymmetricObjectProperty extends hydra.langs.owl.syntax.ObjectPropertyAxiom {
+  public static final class SymmetricObjectProperty extends hydra.langs.owl.syntax.ObjectPropertyAxiom implements Serializable {
     public final hydra.langs.owl.syntax.SymmetricObjectProperty value;
     
     public SymmetricObjectProperty (hydra.langs.owl.syntax.SymmetricObjectProperty value) {
@@ -419,7 +421,7 @@ public abstract class ObjectPropertyAxiom {
     }
   }
   
-  public static final class TransitiveObjectProperty extends hydra.langs.owl.syntax.ObjectPropertyAxiom {
+  public static final class TransitiveObjectProperty extends hydra.langs.owl.syntax.ObjectPropertyAxiom implements Serializable {
     public final hydra.langs.owl.syntax.TransitiveObjectProperty value;
     
     public TransitiveObjectProperty (hydra.langs.owl.syntax.TransitiveObjectProperty value) {

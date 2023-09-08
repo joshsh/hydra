@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class Cardinality {
+import java.io.Serializable;
+
+public abstract class Cardinality implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.Cardinality");
   
   private Cardinality () {
@@ -41,7 +43,7 @@ public abstract class Cardinality {
     }
   }
   
-  public static final class Ast extends hydra.langs.shex.syntax.Cardinality {
+  public static final class Ast extends hydra.langs.shex.syntax.Cardinality implements Serializable {
     public Ast () {
     
     }
@@ -66,7 +68,7 @@ public abstract class Cardinality {
     }
   }
   
-  public static final class Plus extends hydra.langs.shex.syntax.Cardinality {
+  public static final class Plus extends hydra.langs.shex.syntax.Cardinality implements Serializable {
     public Plus () {
     
     }
@@ -91,7 +93,7 @@ public abstract class Cardinality {
     }
   }
   
-  public static final class Quest extends hydra.langs.shex.syntax.Cardinality {
+  public static final class Quest extends hydra.langs.shex.syntax.Cardinality implements Serializable {
     public Quest () {
     
     }
@@ -116,7 +118,7 @@ public abstract class Cardinality {
     }
   }
   
-  public static final class RepeatRange extends hydra.langs.shex.syntax.Cardinality {
+  public static final class RepeatRange extends hydra.langs.shex.syntax.Cardinality implements Serializable {
     public final hydra.langs.shex.syntax.RepeatRange value;
     
     public RepeatRange (hydra.langs.shex.syntax.RepeatRange value) {

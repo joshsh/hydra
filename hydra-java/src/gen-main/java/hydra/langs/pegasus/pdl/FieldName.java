@@ -1,6 +1,8 @@
 package hydra.langs.pegasus.pdl;
 
-public class FieldName {
+import java.io.Serializable;
+
+public class FieldName implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/pegasus/pdl.FieldName");
   
   public final String value;

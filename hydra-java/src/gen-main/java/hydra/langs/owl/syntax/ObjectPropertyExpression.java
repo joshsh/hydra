@@ -1,6 +1,8 @@
 package hydra.langs.owl.syntax;
 
-public abstract class ObjectPropertyExpression {
+import java.io.Serializable;
+
+public abstract class ObjectPropertyExpression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/owl/syntax.ObjectPropertyExpression");
   
   private ObjectPropertyExpression () {
@@ -29,7 +31,7 @@ public abstract class ObjectPropertyExpression {
     }
   }
   
-  public static final class Object_ extends hydra.langs.owl.syntax.ObjectPropertyExpression {
+  public static final class Object_ extends hydra.langs.owl.syntax.ObjectPropertyExpression implements Serializable {
     public final hydra.langs.owl.syntax.ObjectProperty value;
     
     public Object_ (hydra.langs.owl.syntax.ObjectProperty value) {
@@ -56,7 +58,7 @@ public abstract class ObjectPropertyExpression {
     }
   }
   
-  public static final class InverseObject extends hydra.langs.owl.syntax.ObjectPropertyExpression {
+  public static final class InverseObject extends hydra.langs.owl.syntax.ObjectPropertyExpression implements Serializable {
     public final hydra.langs.owl.syntax.InverseObjectProperty value;
     
     public InverseObject (hydra.langs.owl.syntax.InverseObjectProperty value) {

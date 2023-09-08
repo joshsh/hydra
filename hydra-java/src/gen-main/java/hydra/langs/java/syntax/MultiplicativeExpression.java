@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class MultiplicativeExpression {
+import java.io.Serializable;
+
+public abstract class MultiplicativeExpression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.MultiplicativeExpression");
   
   private MultiplicativeExpression () {
@@ -41,7 +43,7 @@ public abstract class MultiplicativeExpression {
     }
   }
   
-  public static final class Unary extends hydra.langs.java.syntax.MultiplicativeExpression {
+  public static final class Unary extends hydra.langs.java.syntax.MultiplicativeExpression implements Serializable {
     public final hydra.langs.java.syntax.UnaryExpression value;
     
     public Unary (hydra.langs.java.syntax.UnaryExpression value) {
@@ -68,7 +70,7 @@ public abstract class MultiplicativeExpression {
     }
   }
   
-  public static final class Times extends hydra.langs.java.syntax.MultiplicativeExpression {
+  public static final class Times extends hydra.langs.java.syntax.MultiplicativeExpression implements Serializable {
     public final hydra.langs.java.syntax.MultiplicativeExpression_Binary value;
     
     public Times (hydra.langs.java.syntax.MultiplicativeExpression_Binary value) {
@@ -95,7 +97,7 @@ public abstract class MultiplicativeExpression {
     }
   }
   
-  public static final class Divide extends hydra.langs.java.syntax.MultiplicativeExpression {
+  public static final class Divide extends hydra.langs.java.syntax.MultiplicativeExpression implements Serializable {
     public final hydra.langs.java.syntax.MultiplicativeExpression_Binary value;
     
     public Divide (hydra.langs.java.syntax.MultiplicativeExpression_Binary value) {
@@ -122,7 +124,7 @@ public abstract class MultiplicativeExpression {
     }
   }
   
-  public static final class Mod extends hydra.langs.java.syntax.MultiplicativeExpression {
+  public static final class Mod extends hydra.langs.java.syntax.MultiplicativeExpression implements Serializable {
     public final hydra.langs.java.syntax.MultiplicativeExpression_Binary value;
     
     public Mod (hydra.langs.java.syntax.MultiplicativeExpression_Binary value) {

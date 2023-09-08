@@ -1,9 +1,11 @@
 package hydra.langs.tinkerpop.propertyGraph;
 
+import java.io.Serializable;
+
 /**
  * The direction of an edge
  */
-public abstract class Direction {
+public abstract class Direction implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/tinkerpop/propertyGraph.Direction");
   
   private Direction () {
@@ -38,7 +40,7 @@ public abstract class Direction {
     }
   }
   
-  public static final class Out extends hydra.langs.tinkerpop.propertyGraph.Direction {
+  public static final class Out extends hydra.langs.tinkerpop.propertyGraph.Direction implements Serializable {
     public Out () {
     
     }
@@ -63,7 +65,7 @@ public abstract class Direction {
     }
   }
   
-  public static final class In extends hydra.langs.tinkerpop.propertyGraph.Direction {
+  public static final class In extends hydra.langs.tinkerpop.propertyGraph.Direction implements Serializable {
     public In () {
     
     }
@@ -88,7 +90,7 @@ public abstract class Direction {
     }
   }
   
-  public static final class Both extends hydra.langs.tinkerpop.propertyGraph.Direction {
+  public static final class Both extends hydra.langs.tinkerpop.propertyGraph.Direction implements Serializable {
     public Both () {
     
     }

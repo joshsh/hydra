@@ -1,9 +1,11 @@
 package hydra.graph;
 
+import java.io.Serializable;
+
 /**
  * Any of a small number of built-in type classes
  */
-public abstract class TypeClass {
+public abstract class TypeClass implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/graph.TypeClass");
   
   private TypeClass () {
@@ -32,7 +34,7 @@ public abstract class TypeClass {
     }
   }
   
-  public static final class Equality extends hydra.graph.TypeClass {
+  public static final class Equality extends hydra.graph.TypeClass implements Serializable {
     public Equality () {
     
     }
@@ -57,7 +59,7 @@ public abstract class TypeClass {
     }
   }
   
-  public static final class Ordering extends hydra.graph.TypeClass {
+  public static final class Ordering extends hydra.graph.TypeClass implements Serializable {
     public Ordering () {
     
     }

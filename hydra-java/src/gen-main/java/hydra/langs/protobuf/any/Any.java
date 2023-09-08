@@ -1,9 +1,11 @@
 package hydra.langs.protobuf.any;
 
+import java.io.Serializable;
+
 /**
  * `Any` contains an arbitrary serialized protocol buffer message along with a URL that describes the type of the serialized message.
  */
-public class Any {
+public class Any implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/protobuf/any.Any");
   
   /**

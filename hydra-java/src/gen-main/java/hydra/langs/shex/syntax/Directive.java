@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class Directive {
+import java.io.Serializable;
+
+public abstract class Directive implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.Directive");
   
   private Directive () {
@@ -29,7 +31,7 @@ public abstract class Directive {
     }
   }
   
-  public static final class BaseDecl extends hydra.langs.shex.syntax.Directive {
+  public static final class BaseDecl extends hydra.langs.shex.syntax.Directive implements Serializable {
     public final hydra.langs.shex.syntax.BaseDecl value;
     
     public BaseDecl (hydra.langs.shex.syntax.BaseDecl value) {
@@ -56,7 +58,7 @@ public abstract class Directive {
     }
   }
   
-  public static final class PrefixDecl extends hydra.langs.shex.syntax.Directive {
+  public static final class PrefixDecl extends hydra.langs.shex.syntax.Directive implements Serializable {
     public final hydra.langs.shex.syntax.PrefixDecl value;
     
     public PrefixDecl (hydra.langs.shex.syntax.PrefixDecl value) {

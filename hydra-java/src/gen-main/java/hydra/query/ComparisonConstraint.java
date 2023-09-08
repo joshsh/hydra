@@ -1,9 +1,11 @@
 package hydra.query;
 
+import java.io.Serializable;
+
 /**
  * One of several comparison operators
  */
-public abstract class ComparisonConstraint {
+public abstract class ComparisonConstraint implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/query.ComparisonConstraint");
   
   private ComparisonConstraint () {
@@ -56,7 +58,7 @@ public abstract class ComparisonConstraint {
     }
   }
   
-  public static final class Equal extends hydra.query.ComparisonConstraint {
+  public static final class Equal extends hydra.query.ComparisonConstraint implements Serializable {
     public Equal () {
     
     }
@@ -81,7 +83,7 @@ public abstract class ComparisonConstraint {
     }
   }
   
-  public static final class NotEqual extends hydra.query.ComparisonConstraint {
+  public static final class NotEqual extends hydra.query.ComparisonConstraint implements Serializable {
     public NotEqual () {
     
     }
@@ -106,7 +108,7 @@ public abstract class ComparisonConstraint {
     }
   }
   
-  public static final class LessThan extends hydra.query.ComparisonConstraint {
+  public static final class LessThan extends hydra.query.ComparisonConstraint implements Serializable {
     public LessThan () {
     
     }
@@ -131,7 +133,7 @@ public abstract class ComparisonConstraint {
     }
   }
   
-  public static final class GreaterThan extends hydra.query.ComparisonConstraint {
+  public static final class GreaterThan extends hydra.query.ComparisonConstraint implements Serializable {
     public GreaterThan () {
     
     }
@@ -156,7 +158,7 @@ public abstract class ComparisonConstraint {
     }
   }
   
-  public static final class LessThanOrEqual extends hydra.query.ComparisonConstraint {
+  public static final class LessThanOrEqual extends hydra.query.ComparisonConstraint implements Serializable {
     public LessThanOrEqual () {
     
     }
@@ -181,7 +183,7 @@ public abstract class ComparisonConstraint {
     }
   }
   
-  public static final class GreaterThanOrEqual extends hydra.query.ComparisonConstraint {
+  public static final class GreaterThanOrEqual extends hydra.query.ComparisonConstraint implements Serializable {
     public GreaterThanOrEqual () {
     
     }

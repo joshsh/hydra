@@ -1,9 +1,11 @@
 package hydra.langs.shacl.model;
 
+import java.io.Serializable;
+
 /**
  * A SHACL pattern. See https://www.w3.org/TR/shacl/#PatternConstraintComponent
  */
-public class Pattern {
+public class Pattern implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shacl/model.Pattern");
   
   public final String regex;

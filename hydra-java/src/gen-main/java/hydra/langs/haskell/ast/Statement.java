@@ -1,6 +1,8 @@
 package hydra.langs.haskell.ast;
 
-public class Statement {
+import java.io.Serializable;
+
+public class Statement implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.Statement");
   
   public final hydra.langs.haskell.ast.Expression value;

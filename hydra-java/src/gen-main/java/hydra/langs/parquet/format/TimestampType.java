@@ -1,9 +1,11 @@
 package hydra.langs.parquet.format;
 
+import java.io.Serializable;
+
 /**
  * Timestamp logical type annotation. Allowed for physical types: INT64
  */
-public class TimestampType {
+public class TimestampType implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/parquet/format.TimestampType");
   
   public final Boolean isAdjustedToUtc;

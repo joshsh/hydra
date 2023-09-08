@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public abstract class ExactNumericType {
+import java.io.Serializable;
+
+public abstract class ExactNumericType implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.ExactNumericType");
   
   private ExactNumericType () {
@@ -59,7 +61,7 @@ public abstract class ExactNumericType {
     }
   }
   
-  public static final class Numeric extends hydra.langs.sql.ansi.ExactNumericType {
+  public static final class Numeric extends hydra.langs.sql.ansi.ExactNumericType implements Serializable {
     public final java.util.Optional<hydra.langs.sql.ansi.ExactNumericType_Numeric_Option> value;
     
     public Numeric (java.util.Optional<hydra.langs.sql.ansi.ExactNumericType_Numeric_Option> value) {
@@ -86,7 +88,7 @@ public abstract class ExactNumericType {
     }
   }
   
-  public static final class Decimal extends hydra.langs.sql.ansi.ExactNumericType {
+  public static final class Decimal extends hydra.langs.sql.ansi.ExactNumericType implements Serializable {
     public final java.util.Optional<hydra.langs.sql.ansi.ExactNumericType_Decimal_Option> value;
     
     public Decimal (java.util.Optional<hydra.langs.sql.ansi.ExactNumericType_Decimal_Option> value) {
@@ -113,7 +115,7 @@ public abstract class ExactNumericType {
     }
   }
   
-  public static final class Dec extends hydra.langs.sql.ansi.ExactNumericType {
+  public static final class Dec extends hydra.langs.sql.ansi.ExactNumericType implements Serializable {
     public final java.util.Optional<hydra.langs.sql.ansi.ExactNumericType_Dec_Option> value;
     
     public Dec (java.util.Optional<hydra.langs.sql.ansi.ExactNumericType_Dec_Option> value) {
@@ -140,7 +142,7 @@ public abstract class ExactNumericType {
     }
   }
   
-  public static final class Smallint extends hydra.langs.sql.ansi.ExactNumericType {
+  public static final class Smallint extends hydra.langs.sql.ansi.ExactNumericType implements Serializable {
     public Smallint () {
     
     }
@@ -165,7 +167,7 @@ public abstract class ExactNumericType {
     }
   }
   
-  public static final class Integer_ extends hydra.langs.sql.ansi.ExactNumericType {
+  public static final class Integer_ extends hydra.langs.sql.ansi.ExactNumericType implements Serializable {
     public Integer_ () {
     
     }
@@ -190,7 +192,7 @@ public abstract class ExactNumericType {
     }
   }
   
-  public static final class Int extends hydra.langs.sql.ansi.ExactNumericType {
+  public static final class Int extends hydra.langs.sql.ansi.ExactNumericType implements Serializable {
     public Int () {
     
     }
@@ -215,7 +217,7 @@ public abstract class ExactNumericType {
     }
   }
   
-  public static final class Bigint extends hydra.langs.sql.ansi.ExactNumericType {
+  public static final class Bigint extends hydra.langs.sql.ansi.ExactNumericType implements Serializable {
     public Bigint () {
     
     }

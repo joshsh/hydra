@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public class Data_PolyFunction {
+import java.io.Serializable;
+
+public class Data_PolyFunction implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Data.PolyFunction");
   
   public final java.util.List<hydra.langs.scala.meta.Type_Param> tparams;

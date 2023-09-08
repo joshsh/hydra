@@ -1,9 +1,11 @@
 package hydra.core;
 
+import java.io.Serializable;
+
 /**
  * A function abstraction (lambda)
  */
-public class Lambda<A> {
+public class Lambda<A> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/core.Lambda");
   
   /**

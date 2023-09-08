@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class SingleElementAnnotation {
+import java.io.Serializable;
+
+public class SingleElementAnnotation implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.SingleElementAnnotation");
   
   public final hydra.langs.java.syntax.TypeName name;

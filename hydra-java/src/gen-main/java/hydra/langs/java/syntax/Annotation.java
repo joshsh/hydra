@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class Annotation {
+import java.io.Serializable;
+
+public abstract class Annotation implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.Annotation");
   
   private Annotation () {
@@ -35,7 +37,7 @@ public abstract class Annotation {
     }
   }
   
-  public static final class Normal extends hydra.langs.java.syntax.Annotation {
+  public static final class Normal extends hydra.langs.java.syntax.Annotation implements Serializable {
     public final hydra.langs.java.syntax.NormalAnnotation value;
     
     public Normal (hydra.langs.java.syntax.NormalAnnotation value) {
@@ -62,7 +64,7 @@ public abstract class Annotation {
     }
   }
   
-  public static final class Marker extends hydra.langs.java.syntax.Annotation {
+  public static final class Marker extends hydra.langs.java.syntax.Annotation implements Serializable {
     public final hydra.langs.java.syntax.MarkerAnnotation value;
     
     public Marker (hydra.langs.java.syntax.MarkerAnnotation value) {
@@ -89,7 +91,7 @@ public abstract class Annotation {
     }
   }
   
-  public static final class SingleElement extends hydra.langs.java.syntax.Annotation {
+  public static final class SingleElement extends hydra.langs.java.syntax.Annotation implements Serializable {
     public final hydra.langs.java.syntax.SingleElementAnnotation value;
     
     public SingleElement (hydra.langs.java.syntax.SingleElementAnnotation value) {

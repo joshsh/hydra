@@ -1,9 +1,11 @@
 package hydra.langs.tinkerpop.features;
 
+import java.io.Serializable;
+
 /**
  * Base interface for features that relate to supporting different data types.
  */
-public class DataTypeFeatures {
+public class DataTypeFeatures implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/tinkerpop/features.DataTypeFeatures");
   
   /**

@@ -1,6 +1,8 @@
 package hydra.langs.haskell.ast;
 
-public class Type_Function {
+import java.io.Serializable;
+
+public class Type_Function implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.Type.Function");
   
   public final hydra.langs.haskell.ast.Type domain;

@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public class PnameLn {
+import java.io.Serializable;
+
+public class PnameLn implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.PnameLn");
   
   public final hydra.langs.shex.syntax.PnameNs pnameNs;

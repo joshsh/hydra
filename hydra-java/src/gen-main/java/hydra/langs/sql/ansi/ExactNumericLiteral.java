@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public class ExactNumericLiteral {
+import java.io.Serializable;
+
+public class ExactNumericLiteral implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.ExactNumericLiteral");
   
   public final String value;

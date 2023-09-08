@@ -1,9 +1,11 @@
 package hydra.langs.parquet.format;
 
+import java.io.Serializable;
+
 /**
  * Types supported by Parquet.  These types are intended to be used in combination with the encodings to control the on disk storage format. For example INT16 is not included as a type since a good encoding of INT32 would handle this.
  */
-public abstract class Type {
+public abstract class Type implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/parquet/format.Type");
   
   private Type () {
@@ -62,7 +64,7 @@ public abstract class Type {
     }
   }
   
-  public static final class Boolean_ extends hydra.langs.parquet.format.Type {
+  public static final class Boolean_ extends hydra.langs.parquet.format.Type implements Serializable {
     public Boolean_ () {
     
     }
@@ -87,7 +89,7 @@ public abstract class Type {
     }
   }
   
-  public static final class Int32 extends hydra.langs.parquet.format.Type {
+  public static final class Int32 extends hydra.langs.parquet.format.Type implements Serializable {
     public Int32 () {
     
     }
@@ -112,7 +114,7 @@ public abstract class Type {
     }
   }
   
-  public static final class Int64 extends hydra.langs.parquet.format.Type {
+  public static final class Int64 extends hydra.langs.parquet.format.Type implements Serializable {
     public Int64 () {
     
     }
@@ -137,7 +139,7 @@ public abstract class Type {
     }
   }
   
-  public static final class Float_ extends hydra.langs.parquet.format.Type {
+  public static final class Float_ extends hydra.langs.parquet.format.Type implements Serializable {
     public Float_ () {
     
     }
@@ -162,7 +164,7 @@ public abstract class Type {
     }
   }
   
-  public static final class Double_ extends hydra.langs.parquet.format.Type {
+  public static final class Double_ extends hydra.langs.parquet.format.Type implements Serializable {
     public Double_ () {
     
     }
@@ -187,7 +189,7 @@ public abstract class Type {
     }
   }
   
-  public static final class ByteArray extends hydra.langs.parquet.format.Type {
+  public static final class ByteArray extends hydra.langs.parquet.format.Type implements Serializable {
     public ByteArray () {
     
     }
@@ -212,7 +214,7 @@ public abstract class Type {
     }
   }
   
-  public static final class FixedLenByteArray extends hydra.langs.parquet.format.Type {
+  public static final class FixedLenByteArray extends hydra.langs.parquet.format.Type implements Serializable {
     public FixedLenByteArray () {
     
     }

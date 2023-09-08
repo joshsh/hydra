@@ -1,9 +1,11 @@
 package hydra.langs.relationalModel;
 
+import java.io.Serializable;
+
 /**
  * An n-tuple which is an element of a given relation
  */
-public class Row<V> {
+public class Row<V> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/relationalModel.Row");
   
   public final java.util.List<V> value;

@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class AnnotationTypeDeclaration {
+import java.io.Serializable;
+
+public class AnnotationTypeDeclaration implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.AnnotationTypeDeclaration");
   
   public final java.util.List<hydra.langs.java.syntax.InterfaceModifier> modifiers;

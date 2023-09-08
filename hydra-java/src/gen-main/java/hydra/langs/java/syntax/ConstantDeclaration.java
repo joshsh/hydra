@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class ConstantDeclaration {
+import java.io.Serializable;
+
+public class ConstantDeclaration implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ConstantDeclaration");
   
   public final java.util.List<hydra.langs.java.syntax.ConstantModifier> modifiers;

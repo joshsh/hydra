@@ -1,9 +1,11 @@
 package hydra.langs.rdf.syntax;
 
+import java.io.Serializable;
+
 /**
  * A type representing an RDF property, and encapsulating its domain, range, and subclass relationships
  */
-public class Property {
+public class Property implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/rdf/syntax.Property");
   
   /**

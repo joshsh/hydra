@@ -1,9 +1,11 @@
 package hydra.query;
 
+import java.io.Serializable;
+
 /**
  * A subject/predicate/object pattern
  */
-public class TriplePattern<A> {
+public class TriplePattern<A> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/query.TriplePattern");
   
   public final hydra.query.Node<A> subject;

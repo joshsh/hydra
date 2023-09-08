@@ -1,6 +1,8 @@
 package hydra.langs.owl.syntax;
 
-public abstract class Individual {
+import java.io.Serializable;
+
+public abstract class Individual implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/owl/syntax.Individual");
   
   private Individual () {
@@ -29,7 +31,7 @@ public abstract class Individual {
     }
   }
   
-  public static final class Named extends hydra.langs.owl.syntax.Individual {
+  public static final class Named extends hydra.langs.owl.syntax.Individual implements Serializable {
     public final hydra.langs.owl.syntax.NamedIndividual value;
     
     public Named (hydra.langs.owl.syntax.NamedIndividual value) {
@@ -56,7 +58,7 @@ public abstract class Individual {
     }
   }
   
-  public static final class Anonymous extends hydra.langs.owl.syntax.Individual {
+  public static final class Anonymous extends hydra.langs.owl.syntax.Individual implements Serializable {
     public final hydra.langs.owl.syntax.AnonymousIndividual value;
     
     public Anonymous (hydra.langs.owl.syntax.AnonymousIndividual value) {

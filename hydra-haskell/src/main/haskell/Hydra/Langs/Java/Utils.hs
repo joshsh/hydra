@@ -95,13 +95,13 @@ javaCastExpressionToJavaExpression = javaUnaryExpressionToJavaExpression . Java.
   Java.UnaryExpressionNotPlusMinusCast
 
 javaClassDeclaration :: Aliases -> [Java.TypeParameter] -> Name -> [Java.ClassModifier]
-   -> Maybe Name -> [Java.ClassBodyDeclarationWithComments] -> Java.ClassDeclaration
-javaClassDeclaration aliases tparams elName mods supname bodyDecls = Java.ClassDeclarationNormal $ Java.NormalClassDeclaration {
+   -> Maybe Name -> [Java.InterfaceType] -> [Java.ClassBodyDeclarationWithComments] -> Java.ClassDeclaration
+javaClassDeclaration aliases tparams elName mods supname impls bodyDecls = Java.ClassDeclarationNormal $ Java.NormalClassDeclaration {
   Java.normalClassDeclarationModifiers = mods,
   Java.normalClassDeclarationIdentifier = javaDeclName elName,
   Java.normalClassDeclarationParameters = tparams,
   Java.normalClassDeclarationExtends = fmap (\n -> nameToJavaClassType aliases True [] n Nothing) supname,
-  Java.normalClassDeclarationImplements = [],
+  Java.normalClassDeclarationImplements = impls,
   Java.normalClassDeclarationBody = Java.ClassBody bodyDecls}
 
 javaClassType :: [Java.ReferenceType] -> Maybe Java.PackageName -> String -> Java.ClassType

@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class ArrayAccess_Variant {
+import java.io.Serializable;
+
+public abstract class ArrayAccess_Variant implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ArrayAccess.Variant");
   
   private ArrayAccess_Variant () {
@@ -29,7 +31,7 @@ public abstract class ArrayAccess_Variant {
     }
   }
   
-  public static final class Name extends hydra.langs.java.syntax.ArrayAccess_Variant {
+  public static final class Name extends hydra.langs.java.syntax.ArrayAccess_Variant implements Serializable {
     public final hydra.langs.java.syntax.ExpressionName value;
     
     public Name (hydra.langs.java.syntax.ExpressionName value) {
@@ -56,7 +58,7 @@ public abstract class ArrayAccess_Variant {
     }
   }
   
-  public static final class Primary extends hydra.langs.java.syntax.ArrayAccess_Variant {
+  public static final class Primary extends hydra.langs.java.syntax.ArrayAccess_Variant implements Serializable {
     public final hydra.langs.java.syntax.PrimaryNoNewArray value;
     
     public Primary (hydra.langs.java.syntax.PrimaryNoNewArray value) {

@@ -1,9 +1,11 @@
 package hydra.core;
 
+import java.io.Serializable;
+
 /**
  * A floating-point type
  */
-public abstract class FloatType {
+public abstract class FloatType implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/core.FloatType");
   
   private FloatType () {
@@ -38,7 +40,7 @@ public abstract class FloatType {
     }
   }
   
-  public static final class Bigfloat extends hydra.core.FloatType {
+  public static final class Bigfloat extends hydra.core.FloatType implements Serializable {
     public Bigfloat () {
     
     }
@@ -63,7 +65,7 @@ public abstract class FloatType {
     }
   }
   
-  public static final class Float32 extends hydra.core.FloatType {
+  public static final class Float32 extends hydra.core.FloatType implements Serializable {
     public Float32 () {
     
     }
@@ -88,7 +90,7 @@ public abstract class FloatType {
     }
   }
   
-  public static final class Float64 extends hydra.core.FloatType {
+  public static final class Float64 extends hydra.core.FloatType implements Serializable {
     public Float64 () {
     
     }

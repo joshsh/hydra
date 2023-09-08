@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public class TableDefinition {
+import java.io.Serializable;
+
+public class TableDefinition implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.TableDefinition");
   
   public final java.util.Optional<hydra.langs.sql.ansi.TableScope> scope;

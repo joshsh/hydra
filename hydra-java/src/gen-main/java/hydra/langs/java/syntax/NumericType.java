@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class NumericType {
+import java.io.Serializable;
+
+public abstract class NumericType implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.NumericType");
   
   private NumericType () {
@@ -29,7 +31,7 @@ public abstract class NumericType {
     }
   }
   
-  public static final class Integral extends hydra.langs.java.syntax.NumericType {
+  public static final class Integral extends hydra.langs.java.syntax.NumericType implements Serializable {
     public final hydra.langs.java.syntax.IntegralType value;
     
     public Integral (hydra.langs.java.syntax.IntegralType value) {
@@ -56,7 +58,7 @@ public abstract class NumericType {
     }
   }
   
-  public static final class FloatingPoint extends hydra.langs.java.syntax.NumericType {
+  public static final class FloatingPoint extends hydra.langs.java.syntax.NumericType implements Serializable {
     public final hydra.langs.java.syntax.FloatingPointType value;
     
     public FloatingPoint (hydra.langs.java.syntax.FloatingPointType value) {

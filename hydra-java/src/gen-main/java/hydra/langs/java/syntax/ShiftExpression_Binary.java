@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class ShiftExpression_Binary {
+import java.io.Serializable;
+
+public class ShiftExpression_Binary implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ShiftExpression.Binary");
   
   public final hydra.langs.java.syntax.ShiftExpression lhs;

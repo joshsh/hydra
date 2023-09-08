@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public class Enumerator_Generator {
+import java.io.Serializable;
+
+public class Enumerator_Generator implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Enumerator.Generator");
   
   public final hydra.langs.scala.meta.Pat pat;

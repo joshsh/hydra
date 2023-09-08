@@ -1,6 +1,8 @@
 package hydra.langs.haskell.ast;
 
-public class ModuleName {
+import java.io.Serializable;
+
+public class ModuleName implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.ModuleName");
   
   public final String value;

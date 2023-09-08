@@ -1,9 +1,11 @@
 package hydra.langs.yaml.model;
 
+import java.io.Serializable;
+
 /**
  * A YAML node (value)
  */
-public abstract class Node {
+public abstract class Node implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/yaml/model.Node");
   
   private Node () {
@@ -38,7 +40,7 @@ public abstract class Node {
     }
   }
   
-  public static final class Mapping extends hydra.langs.yaml.model.Node {
+  public static final class Mapping extends hydra.langs.yaml.model.Node implements Serializable {
     public final java.util.Map<hydra.langs.yaml.model.Node, hydra.langs.yaml.model.Node> value;
     
     public Mapping (java.util.Map<hydra.langs.yaml.model.Node, hydra.langs.yaml.model.Node> value) {
@@ -65,7 +67,7 @@ public abstract class Node {
     }
   }
   
-  public static final class Scalar extends hydra.langs.yaml.model.Node {
+  public static final class Scalar extends hydra.langs.yaml.model.Node implements Serializable {
     public final hydra.langs.yaml.model.Scalar value;
     
     public Scalar (hydra.langs.yaml.model.Scalar value) {
@@ -92,7 +94,7 @@ public abstract class Node {
     }
   }
   
-  public static final class Sequence extends hydra.langs.yaml.model.Node {
+  public static final class Sequence extends hydra.langs.yaml.model.Node implements Serializable {
     public final java.util.List<hydra.langs.yaml.model.Node> value;
     
     public Sequence (java.util.List<hydra.langs.yaml.model.Node> value) {

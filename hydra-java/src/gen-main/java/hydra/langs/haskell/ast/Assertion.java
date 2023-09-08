@@ -1,9 +1,11 @@
 package hydra.langs.haskell.ast;
 
+import java.io.Serializable;
+
 /**
  * A type assertion
  */
-public abstract class Assertion {
+public abstract class Assertion implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.Assertion");
   
   private Assertion () {
@@ -32,7 +34,7 @@ public abstract class Assertion {
     }
   }
   
-  public static final class Class_ extends hydra.langs.haskell.ast.Assertion {
+  public static final class Class_ extends hydra.langs.haskell.ast.Assertion implements Serializable {
     public final hydra.langs.haskell.ast.Assertion_Class value;
     
     public Class_ (hydra.langs.haskell.ast.Assertion_Class value) {
@@ -59,7 +61,7 @@ public abstract class Assertion {
     }
   }
   
-  public static final class Tuple extends hydra.langs.haskell.ast.Assertion {
+  public static final class Tuple extends hydra.langs.haskell.ast.Assertion implements Serializable {
     public final java.util.List<hydra.langs.haskell.ast.Assertion> value;
     
     public Tuple (java.util.List<hydra.langs.haskell.ast.Assertion> value) {

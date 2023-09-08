@@ -1,9 +1,11 @@
 package hydra.core;
 
+import java.io.Serializable;
+
 /**
  * The unlabeled equivalent of an Injection term
  */
-public class Sum<A> {
+public class Sum<A> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/core.Sum");
   
   public final Integer index;

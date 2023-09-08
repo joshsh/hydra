@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public class ObjectTypeExtension_Sequence {
+import java.io.Serializable;
+
+public class ObjectTypeExtension_Sequence implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.ObjectTypeExtension.Sequence");
   
   public final hydra.langs.graphql.syntax.Name name;

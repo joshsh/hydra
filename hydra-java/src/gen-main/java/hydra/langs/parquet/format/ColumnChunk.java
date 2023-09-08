@@ -1,6 +1,8 @@
 package hydra.langs.parquet.format;
 
-public class ColumnChunk {
+import java.io.Serializable;
+
+public class ColumnChunk implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/parquet/format.ColumnChunk");
   
   /**

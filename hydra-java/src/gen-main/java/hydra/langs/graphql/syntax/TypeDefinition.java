@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public abstract class TypeDefinition {
+import java.io.Serializable;
+
+public abstract class TypeDefinition implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.TypeDefinition");
   
   private TypeDefinition () {
@@ -53,7 +55,7 @@ public abstract class TypeDefinition {
     }
   }
   
-  public static final class Scalar extends hydra.langs.graphql.syntax.TypeDefinition {
+  public static final class Scalar extends hydra.langs.graphql.syntax.TypeDefinition implements Serializable {
     public final hydra.langs.graphql.syntax.ScalarTypeDefinition value;
     
     public Scalar (hydra.langs.graphql.syntax.ScalarTypeDefinition value) {
@@ -80,7 +82,7 @@ public abstract class TypeDefinition {
     }
   }
   
-  public static final class Object_ extends hydra.langs.graphql.syntax.TypeDefinition {
+  public static final class Object_ extends hydra.langs.graphql.syntax.TypeDefinition implements Serializable {
     public final hydra.langs.graphql.syntax.ObjectTypeDefinition value;
     
     public Object_ (hydra.langs.graphql.syntax.ObjectTypeDefinition value) {
@@ -107,7 +109,7 @@ public abstract class TypeDefinition {
     }
   }
   
-  public static final class Interface extends hydra.langs.graphql.syntax.TypeDefinition {
+  public static final class Interface extends hydra.langs.graphql.syntax.TypeDefinition implements Serializable {
     public final hydra.langs.graphql.syntax.InterfaceTypeDefinition value;
     
     public Interface (hydra.langs.graphql.syntax.InterfaceTypeDefinition value) {
@@ -134,7 +136,7 @@ public abstract class TypeDefinition {
     }
   }
   
-  public static final class Union extends hydra.langs.graphql.syntax.TypeDefinition {
+  public static final class Union extends hydra.langs.graphql.syntax.TypeDefinition implements Serializable {
     public final hydra.langs.graphql.syntax.UnionTypeDefinition value;
     
     public Union (hydra.langs.graphql.syntax.UnionTypeDefinition value) {
@@ -161,7 +163,7 @@ public abstract class TypeDefinition {
     }
   }
   
-  public static final class Enum_ extends hydra.langs.graphql.syntax.TypeDefinition {
+  public static final class Enum_ extends hydra.langs.graphql.syntax.TypeDefinition implements Serializable {
     public final hydra.langs.graphql.syntax.EnumTypeDefinition value;
     
     public Enum_ (hydra.langs.graphql.syntax.EnumTypeDefinition value) {
@@ -188,7 +190,7 @@ public abstract class TypeDefinition {
     }
   }
   
-  public static final class InputObject extends hydra.langs.graphql.syntax.TypeDefinition {
+  public static final class InputObject extends hydra.langs.graphql.syntax.TypeDefinition implements Serializable {
     public final hydra.langs.graphql.syntax.InputObjectTypeDefinition value;
     
     public InputObject (hydra.langs.graphql.syntax.InputObjectTypeDefinition value) {

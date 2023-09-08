@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class SwitchLabel {
+import java.io.Serializable;
+
+public abstract class SwitchLabel implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.SwitchLabel");
   
   private SwitchLabel () {
@@ -35,7 +37,7 @@ public abstract class SwitchLabel {
     }
   }
   
-  public static final class Constant extends hydra.langs.java.syntax.SwitchLabel {
+  public static final class Constant extends hydra.langs.java.syntax.SwitchLabel implements Serializable {
     public final hydra.langs.java.syntax.ConstantExpression value;
     
     public Constant (hydra.langs.java.syntax.ConstantExpression value) {
@@ -62,7 +64,7 @@ public abstract class SwitchLabel {
     }
   }
   
-  public static final class EnumConstant extends hydra.langs.java.syntax.SwitchLabel {
+  public static final class EnumConstant extends hydra.langs.java.syntax.SwitchLabel implements Serializable {
     public final hydra.langs.java.syntax.EnumConstantName value;
     
     public EnumConstant (hydra.langs.java.syntax.EnumConstantName value) {
@@ -89,7 +91,7 @@ public abstract class SwitchLabel {
     }
   }
   
-  public static final class Default extends hydra.langs.java.syntax.SwitchLabel {
+  public static final class Default extends hydra.langs.java.syntax.SwitchLabel implements Serializable {
     public Default () {
     
     }

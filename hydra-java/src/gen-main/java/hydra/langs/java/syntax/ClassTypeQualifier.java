@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class ClassTypeQualifier {
+import java.io.Serializable;
+
+public abstract class ClassTypeQualifier implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ClassTypeQualifier");
   
   private ClassTypeQualifier () {
@@ -35,7 +37,7 @@ public abstract class ClassTypeQualifier {
     }
   }
   
-  public static final class None extends hydra.langs.java.syntax.ClassTypeQualifier {
+  public static final class None extends hydra.langs.java.syntax.ClassTypeQualifier implements Serializable {
     public None () {
     
     }
@@ -60,7 +62,7 @@ public abstract class ClassTypeQualifier {
     }
   }
   
-  public static final class Package_ extends hydra.langs.java.syntax.ClassTypeQualifier {
+  public static final class Package_ extends hydra.langs.java.syntax.ClassTypeQualifier implements Serializable {
     public final hydra.langs.java.syntax.PackageName value;
     
     public Package_ (hydra.langs.java.syntax.PackageName value) {
@@ -87,7 +89,7 @@ public abstract class ClassTypeQualifier {
     }
   }
   
-  public static final class Parent extends hydra.langs.java.syntax.ClassTypeQualifier {
+  public static final class Parent extends hydra.langs.java.syntax.ClassTypeQualifier implements Serializable {
     public final hydra.langs.java.syntax.ClassOrInterfaceType value;
     
     public Parent (hydra.langs.java.syntax.ClassOrInterfaceType value) {

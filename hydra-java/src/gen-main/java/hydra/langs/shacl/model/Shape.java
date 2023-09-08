@@ -1,9 +1,11 @@
 package hydra.langs.shacl.model;
 
+import java.io.Serializable;
+
 /**
  * A SHACL node or property shape. See https://www.w3.org/TR/shacl/#shapes
  */
-public abstract class Shape {
+public abstract class Shape implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shacl/model.Shape");
   
   private Shape () {
@@ -32,7 +34,7 @@ public abstract class Shape {
     }
   }
   
-  public static final class Node extends hydra.langs.shacl.model.Shape {
+  public static final class Node extends hydra.langs.shacl.model.Shape implements Serializable {
     public final hydra.langs.shacl.model.NodeShape value;
     
     public Node (hydra.langs.shacl.model.NodeShape value) {
@@ -59,7 +61,7 @@ public abstract class Shape {
     }
   }
   
-  public static final class Property extends hydra.langs.shacl.model.Shape {
+  public static final class Property extends hydra.langs.shacl.model.Shape implements Serializable {
     public final hydra.langs.shacl.model.PropertyShape value;
     
     public Property (hydra.langs.shacl.model.PropertyShape value) {

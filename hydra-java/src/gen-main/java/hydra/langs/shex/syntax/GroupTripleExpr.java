@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class GroupTripleExpr {
+import java.io.Serializable;
+
+public abstract class GroupTripleExpr implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.GroupTripleExpr");
   
   private GroupTripleExpr () {
@@ -29,7 +31,7 @@ public abstract class GroupTripleExpr {
     }
   }
   
-  public static final class SingleElementGroup extends hydra.langs.shex.syntax.GroupTripleExpr {
+  public static final class SingleElementGroup extends hydra.langs.shex.syntax.GroupTripleExpr implements Serializable {
     public final hydra.langs.shex.syntax.SingleElementGroup value;
     
     public SingleElementGroup (hydra.langs.shex.syntax.SingleElementGroup value) {
@@ -56,7 +58,7 @@ public abstract class GroupTripleExpr {
     }
   }
   
-  public static final class MultiElementGroup extends hydra.langs.shex.syntax.GroupTripleExpr {
+  public static final class MultiElementGroup extends hydra.langs.shex.syntax.GroupTripleExpr implements Serializable {
     public final hydra.langs.shex.syntax.MultiElementGroup value;
     
     public MultiElementGroup (hydra.langs.shex.syntax.MultiElementGroup value) {

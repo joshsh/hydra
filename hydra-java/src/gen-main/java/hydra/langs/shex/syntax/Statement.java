@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class Statement {
+import java.io.Serializable;
+
+public abstract class Statement implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.Statement");
   
   private Statement () {
@@ -29,7 +31,7 @@ public abstract class Statement {
     }
   }
   
-  public static final class Directive extends hydra.langs.shex.syntax.Statement {
+  public static final class Directive extends hydra.langs.shex.syntax.Statement implements Serializable {
     public final hydra.langs.shex.syntax.Directive value;
     
     public Directive (hydra.langs.shex.syntax.Directive value) {
@@ -56,7 +58,7 @@ public abstract class Statement {
     }
   }
   
-  public static final class NotStartAction extends hydra.langs.shex.syntax.Statement {
+  public static final class NotStartAction extends hydra.langs.shex.syntax.Statement implements Serializable {
     public final hydra.langs.shex.syntax.NotStartAction value;
     
     public NotStartAction (hydra.langs.shex.syntax.NotStartAction value) {

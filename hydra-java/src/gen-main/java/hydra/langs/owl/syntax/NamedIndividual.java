@@ -1,6 +1,8 @@
 package hydra.langs.owl.syntax;
 
-public class NamedIndividual {
+import java.io.Serializable;
+
+public class NamedIndividual implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/owl/syntax.NamedIndividual");
   
   public NamedIndividual () {

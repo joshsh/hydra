@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public class Ctor_Primary {
+import java.io.Serializable;
+
+public class Ctor_Primary implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Ctor.Primary");
   
   public final java.util.List<hydra.langs.scala.meta.Mod> mods;

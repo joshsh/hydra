@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public abstract class GlobalOrLocal {
+import java.io.Serializable;
+
+public abstract class GlobalOrLocal implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.GlobalOrLocal");
   
   private GlobalOrLocal () {
@@ -29,7 +31,7 @@ public abstract class GlobalOrLocal {
     }
   }
   
-  public static final class Global extends hydra.langs.sql.ansi.GlobalOrLocal {
+  public static final class Global extends hydra.langs.sql.ansi.GlobalOrLocal implements Serializable {
     public Global () {
     
     }
@@ -54,7 +56,7 @@ public abstract class GlobalOrLocal {
     }
   }
   
-  public static final class Local extends hydra.langs.sql.ansi.GlobalOrLocal {
+  public static final class Local extends hydra.langs.sql.ansi.GlobalOrLocal implements Serializable {
     public Local () {
     
     }

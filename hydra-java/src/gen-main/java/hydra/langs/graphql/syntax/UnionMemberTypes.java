@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public abstract class UnionMemberTypes {
+import java.io.Serializable;
+
+public abstract class UnionMemberTypes implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.UnionMemberTypes");
   
   private UnionMemberTypes () {
@@ -29,7 +31,7 @@ public abstract class UnionMemberTypes {
     }
   }
   
-  public static final class Sequence extends hydra.langs.graphql.syntax.UnionMemberTypes {
+  public static final class Sequence extends hydra.langs.graphql.syntax.UnionMemberTypes implements Serializable {
     public final hydra.langs.graphql.syntax.UnionMemberTypes_Sequence value;
     
     public Sequence (hydra.langs.graphql.syntax.UnionMemberTypes_Sequence value) {
@@ -56,7 +58,7 @@ public abstract class UnionMemberTypes {
     }
   }
   
-  public static final class Sequence2 extends hydra.langs.graphql.syntax.UnionMemberTypes {
+  public static final class Sequence2 extends hydra.langs.graphql.syntax.UnionMemberTypes implements Serializable {
     public final hydra.langs.graphql.syntax.UnionMemberTypes_Sequence2 value;
     
     public Sequence2 (hydra.langs.graphql.syntax.UnionMemberTypes_Sequence2 value) {

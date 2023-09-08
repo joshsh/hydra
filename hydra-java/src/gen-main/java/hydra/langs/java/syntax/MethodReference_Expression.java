@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class MethodReference_Expression {
+import java.io.Serializable;
+
+public class MethodReference_Expression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.MethodReference.Expression");
   
   public final hydra.langs.java.syntax.ExpressionName name;

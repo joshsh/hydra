@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public class Decl_Type {
+import java.io.Serializable;
+
+public class Decl_Type implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Decl.Type");
   
   public final java.util.List<hydra.langs.scala.meta.Mod> mods;

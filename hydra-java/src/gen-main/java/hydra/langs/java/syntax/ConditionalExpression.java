@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class ConditionalExpression {
+import java.io.Serializable;
+
+public abstract class ConditionalExpression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ConditionalExpression");
   
   private ConditionalExpression () {
@@ -35,7 +37,7 @@ public abstract class ConditionalExpression {
     }
   }
   
-  public static final class Simple extends hydra.langs.java.syntax.ConditionalExpression {
+  public static final class Simple extends hydra.langs.java.syntax.ConditionalExpression implements Serializable {
     public final hydra.langs.java.syntax.ConditionalOrExpression value;
     
     public Simple (hydra.langs.java.syntax.ConditionalOrExpression value) {
@@ -62,7 +64,7 @@ public abstract class ConditionalExpression {
     }
   }
   
-  public static final class TernaryCond extends hydra.langs.java.syntax.ConditionalExpression {
+  public static final class TernaryCond extends hydra.langs.java.syntax.ConditionalExpression implements Serializable {
     public final hydra.langs.java.syntax.ConditionalExpression_TernaryCond value;
     
     public TernaryCond (hydra.langs.java.syntax.ConditionalExpression_TernaryCond value) {
@@ -89,7 +91,7 @@ public abstract class ConditionalExpression {
     }
   }
   
-  public static final class TernaryLambda extends hydra.langs.java.syntax.ConditionalExpression {
+  public static final class TernaryLambda extends hydra.langs.java.syntax.ConditionalExpression implements Serializable {
     public final hydra.langs.java.syntax.ConditionalExpression_TernaryLambda value;
     
     public TernaryLambda (hydra.langs.java.syntax.ConditionalExpression_TernaryLambda value) {

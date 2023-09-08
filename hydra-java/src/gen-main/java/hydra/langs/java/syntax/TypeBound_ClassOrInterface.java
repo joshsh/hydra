@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class TypeBound_ClassOrInterface {
+import java.io.Serializable;
+
+public class TypeBound_ClassOrInterface implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.TypeBound.ClassOrInterface");
   
   public final hydra.langs.java.syntax.ClassOrInterfaceType type;

@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public class StringLiteral2 {
+import java.io.Serializable;
+
+public class StringLiteral2 implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.StringLiteral2");
   
   public final java.util.List<hydra.langs.shex.syntax.StringLiteral2_Elmt> value;

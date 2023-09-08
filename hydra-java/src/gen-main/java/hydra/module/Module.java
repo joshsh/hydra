@@ -1,9 +1,11 @@
 package hydra.module;
 
+import java.io.Serializable;
+
 /**
  * A logical collection of elements in the same namespace, having dependencies on zero or more other modules
  */
-public class Module<A> {
+public class Module<A> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/module.Module");
   
   /**

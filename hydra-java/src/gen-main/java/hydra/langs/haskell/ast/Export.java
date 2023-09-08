@@ -1,9 +1,11 @@
 package hydra.langs.haskell.ast;
 
+import java.io.Serializable;
+
 /**
  * An export statement
  */
-public abstract class Export {
+public abstract class Export implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.Export");
   
   private Export () {
@@ -32,7 +34,7 @@ public abstract class Export {
     }
   }
   
-  public static final class Declaration extends hydra.langs.haskell.ast.Export {
+  public static final class Declaration extends hydra.langs.haskell.ast.Export implements Serializable {
     public final hydra.langs.haskell.ast.ImportExportSpec value;
     
     public Declaration (hydra.langs.haskell.ast.ImportExportSpec value) {
@@ -59,7 +61,7 @@ public abstract class Export {
     }
   }
   
-  public static final class Module extends hydra.langs.haskell.ast.Export {
+  public static final class Module extends hydra.langs.haskell.ast.Export implements Serializable {
     public final hydra.langs.haskell.ast.ModuleName value;
     
     public Module (hydra.langs.haskell.ast.ModuleName value) {

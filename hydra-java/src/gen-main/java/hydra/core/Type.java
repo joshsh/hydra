@@ -1,9 +1,11 @@
 package hydra.core;
 
+import java.io.Serializable;
+
 /**
  * A data type
  */
-public abstract class Type<A> {
+public abstract class Type<A> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/core.Type");
   
   private Type () {
@@ -119,7 +121,7 @@ public abstract class Type<A> {
   /**
    * A type annotated with metadata
    */
-  public static final class Annotated<A> extends hydra.core.Type<A> {
+  public static final class Annotated<A> extends hydra.core.Type<A> implements Serializable {
     /**
      * A type annotated with metadata
      */
@@ -149,7 +151,7 @@ public abstract class Type<A> {
     }
   }
   
-  public static final class Application<A> extends hydra.core.Type<A> {
+  public static final class Application<A> extends hydra.core.Type<A> implements Serializable {
     public final hydra.core.ApplicationType<A> value;
     
     public Application (hydra.core.ApplicationType<A> value) {
@@ -176,7 +178,7 @@ public abstract class Type<A> {
     }
   }
   
-  public static final class Function<A> extends hydra.core.Type<A> {
+  public static final class Function<A> extends hydra.core.Type<A> implements Serializable {
     public final hydra.core.FunctionType<A> value;
     
     public Function (hydra.core.FunctionType<A> value) {
@@ -203,7 +205,7 @@ public abstract class Type<A> {
     }
   }
   
-  public static final class Lambda<A> extends hydra.core.Type<A> {
+  public static final class Lambda<A> extends hydra.core.Type<A> implements Serializable {
     public final hydra.core.LambdaType<A> value;
     
     public Lambda (hydra.core.LambdaType<A> value) {
@@ -230,7 +232,7 @@ public abstract class Type<A> {
     }
   }
   
-  public static final class List<A> extends hydra.core.Type<A> {
+  public static final class List<A> extends hydra.core.Type<A> implements Serializable {
     public final hydra.core.Type<A> value;
     
     public List (hydra.core.Type<A> value) {
@@ -257,7 +259,7 @@ public abstract class Type<A> {
     }
   }
   
-  public static final class Literal<A> extends hydra.core.Type<A> {
+  public static final class Literal<A> extends hydra.core.Type<A> implements Serializable {
     public final hydra.core.LiteralType value;
     
     public Literal (hydra.core.LiteralType value) {
@@ -284,7 +286,7 @@ public abstract class Type<A> {
     }
   }
   
-  public static final class Map<A> extends hydra.core.Type<A> {
+  public static final class Map<A> extends hydra.core.Type<A> implements Serializable {
     public final hydra.core.MapType<A> value;
     
     public Map (hydra.core.MapType<A> value) {
@@ -311,7 +313,7 @@ public abstract class Type<A> {
     }
   }
   
-  public static final class Optional<A> extends hydra.core.Type<A> {
+  public static final class Optional<A> extends hydra.core.Type<A> implements Serializable {
     public final hydra.core.Type<A> value;
     
     public Optional (hydra.core.Type<A> value) {
@@ -338,7 +340,7 @@ public abstract class Type<A> {
     }
   }
   
-  public static final class Product<A> extends hydra.core.Type<A> {
+  public static final class Product<A> extends hydra.core.Type<A> implements Serializable {
     public final java.util.List<hydra.core.Type<A>> value;
     
     public Product (java.util.List<hydra.core.Type<A>> value) {
@@ -365,7 +367,7 @@ public abstract class Type<A> {
     }
   }
   
-  public static final class Record<A> extends hydra.core.Type<A> {
+  public static final class Record<A> extends hydra.core.Type<A> implements Serializable {
     public final hydra.core.RowType<A> value;
     
     public Record (hydra.core.RowType<A> value) {
@@ -392,7 +394,7 @@ public abstract class Type<A> {
     }
   }
   
-  public static final class Set<A> extends hydra.core.Type<A> {
+  public static final class Set<A> extends hydra.core.Type<A> implements Serializable {
     public final hydra.core.Type<A> value;
     
     public Set (hydra.core.Type<A> value) {
@@ -419,7 +421,7 @@ public abstract class Type<A> {
     }
   }
   
-  public static final class Stream<A> extends hydra.core.Type<A> {
+  public static final class Stream<A> extends hydra.core.Type<A> implements Serializable {
     public final hydra.core.Type<A> value;
     
     public Stream (hydra.core.Type<A> value) {
@@ -446,7 +448,7 @@ public abstract class Type<A> {
     }
   }
   
-  public static final class Sum<A> extends hydra.core.Type<A> {
+  public static final class Sum<A> extends hydra.core.Type<A> implements Serializable {
     public final java.util.List<hydra.core.Type<A>> value;
     
     public Sum (java.util.List<hydra.core.Type<A>> value) {
@@ -473,7 +475,7 @@ public abstract class Type<A> {
     }
   }
   
-  public static final class Union<A> extends hydra.core.Type<A> {
+  public static final class Union<A> extends hydra.core.Type<A> implements Serializable {
     public final hydra.core.RowType<A> value;
     
     public Union (hydra.core.RowType<A> value) {
@@ -500,7 +502,7 @@ public abstract class Type<A> {
     }
   }
   
-  public static final class Variable<A> extends hydra.core.Type<A> {
+  public static final class Variable<A> extends hydra.core.Type<A> implements Serializable {
     public final hydra.core.Name value;
     
     public Variable (hydra.core.Name value) {
@@ -527,7 +529,7 @@ public abstract class Type<A> {
     }
   }
   
-  public static final class Wrap<A> extends hydra.core.Type<A> {
+  public static final class Wrap<A> extends hydra.core.Type<A> implements Serializable {
     public final hydra.core.Nominal<hydra.core.Type<A>> value;
     
     public Wrap (hydra.core.Nominal<hydra.core.Type<A>> value) {

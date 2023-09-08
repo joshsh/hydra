@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class FieldDeclaration {
+import java.io.Serializable;
+
+public class FieldDeclaration implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.FieldDeclaration");
   
   public final java.util.List<hydra.langs.java.syntax.FieldModifier> modifiers;

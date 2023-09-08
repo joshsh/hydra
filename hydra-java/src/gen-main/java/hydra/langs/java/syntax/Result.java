@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class Result {
+import java.io.Serializable;
+
+public abstract class Result implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.Result");
   
   private Result () {
@@ -29,7 +31,7 @@ public abstract class Result {
     }
   }
   
-  public static final class Type extends hydra.langs.java.syntax.Result {
+  public static final class Type extends hydra.langs.java.syntax.Result implements Serializable {
     public final hydra.langs.java.syntax.UnannType value;
     
     public Type (hydra.langs.java.syntax.UnannType value) {
@@ -56,7 +58,7 @@ public abstract class Result {
     }
   }
   
-  public static final class Void_ extends hydra.langs.java.syntax.Result {
+  public static final class Void_ extends hydra.langs.java.syntax.Result implements Serializable {
     public Void_ () {
     
     }

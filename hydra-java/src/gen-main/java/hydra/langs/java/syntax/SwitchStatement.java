@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class SwitchStatement {
+import java.io.Serializable;
+
+public class SwitchStatement implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.SwitchStatement");
   
   public final hydra.langs.java.syntax.Expression cond;

@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public class Pat_Extract {
+import java.io.Serializable;
+
+public class Pat_Extract implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Pat.Extract");
   
   public final hydra.langs.scala.meta.Data fun;

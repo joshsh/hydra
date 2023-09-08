@@ -1,9 +1,11 @@
 package hydra.testing;
 
+import java.io.Serializable;
+
 /**
  * A collection of test cases with a name and optional description
  */
-public class TestGroup<A> {
+public class TestGroup<A> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/testing.TestGroup");
   
   public final String name;

@@ -1,9 +1,11 @@
 package hydra.core;
 
+import java.io.Serializable;
+
 /**
  * A term constant; an instance of a literal type
  */
-public abstract class Literal {
+public abstract class Literal implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/core.Literal");
   
   private Literal () {
@@ -50,7 +52,7 @@ public abstract class Literal {
     }
   }
   
-  public static final class Binary extends hydra.core.Literal {
+  public static final class Binary extends hydra.core.Literal implements Serializable {
     public final String value;
     
     public Binary (String value) {
@@ -80,7 +82,7 @@ public abstract class Literal {
   /**
    * A boolean literal
    */
-  public static final class Boolean_ extends hydra.core.Literal {
+  public static final class Boolean_ extends hydra.core.Literal implements Serializable {
     /**
      * A boolean literal
      */
@@ -113,7 +115,7 @@ public abstract class Literal {
   /**
    * A floating-point literal
    */
-  public static final class Float_ extends hydra.core.Literal {
+  public static final class Float_ extends hydra.core.Literal implements Serializable {
     /**
      * A floating-point literal
      */
@@ -146,7 +148,7 @@ public abstract class Literal {
   /**
    * An integer literal
    */
-  public static final class Integer_ extends hydra.core.Literal {
+  public static final class Integer_ extends hydra.core.Literal implements Serializable {
     /**
      * An integer literal
      */
@@ -179,7 +181,7 @@ public abstract class Literal {
   /**
    * A string literal
    */
-  public static final class String_ extends hydra.core.Literal {
+  public static final class String_ extends hydra.core.Literal implements Serializable {
     /**
      * A string literal
      */

@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public abstract class Tree {
+import java.io.Serializable;
+
+public abstract class Tree implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Tree");
   
   private Tree () {
@@ -107,7 +109,7 @@ public abstract class Tree {
     }
   }
   
-  public static final class Ref extends hydra.langs.scala.meta.Tree {
+  public static final class Ref extends hydra.langs.scala.meta.Tree implements Serializable {
     public final hydra.langs.scala.meta.Ref value;
     
     public Ref (hydra.langs.scala.meta.Ref value) {
@@ -134,7 +136,7 @@ public abstract class Tree {
     }
   }
   
-  public static final class Stat extends hydra.langs.scala.meta.Tree {
+  public static final class Stat extends hydra.langs.scala.meta.Tree implements Serializable {
     public final hydra.langs.scala.meta.Stat value;
     
     public Stat (hydra.langs.scala.meta.Stat value) {
@@ -161,7 +163,7 @@ public abstract class Tree {
     }
   }
   
-  public static final class Type extends hydra.langs.scala.meta.Tree {
+  public static final class Type extends hydra.langs.scala.meta.Tree implements Serializable {
     public final hydra.langs.scala.meta.Type value;
     
     public Type (hydra.langs.scala.meta.Type value) {
@@ -188,7 +190,7 @@ public abstract class Tree {
     }
   }
   
-  public static final class Bounds extends hydra.langs.scala.meta.Tree {
+  public static final class Bounds extends hydra.langs.scala.meta.Tree implements Serializable {
     public final hydra.langs.scala.meta.Type_Bounds value;
     
     public Bounds (hydra.langs.scala.meta.Type_Bounds value) {
@@ -215,7 +217,7 @@ public abstract class Tree {
     }
   }
   
-  public static final class Pat extends hydra.langs.scala.meta.Tree {
+  public static final class Pat extends hydra.langs.scala.meta.Tree implements Serializable {
     public final hydra.langs.scala.meta.Pat value;
     
     public Pat (hydra.langs.scala.meta.Pat value) {
@@ -242,7 +244,7 @@ public abstract class Tree {
     }
   }
   
-  public static final class Member extends hydra.langs.scala.meta.Tree {
+  public static final class Member extends hydra.langs.scala.meta.Tree implements Serializable {
     public final hydra.langs.scala.meta.Member value;
     
     public Member (hydra.langs.scala.meta.Member value) {
@@ -269,7 +271,7 @@ public abstract class Tree {
     }
   }
   
-  public static final class Ctor extends hydra.langs.scala.meta.Tree {
+  public static final class Ctor extends hydra.langs.scala.meta.Tree implements Serializable {
     public final hydra.langs.scala.meta.Ctor value;
     
     public Ctor (hydra.langs.scala.meta.Ctor value) {
@@ -296,7 +298,7 @@ public abstract class Tree {
     }
   }
   
-  public static final class Template extends hydra.langs.scala.meta.Tree {
+  public static final class Template extends hydra.langs.scala.meta.Tree implements Serializable {
     public final hydra.langs.scala.meta.Template value;
     
     public Template (hydra.langs.scala.meta.Template value) {
@@ -323,7 +325,7 @@ public abstract class Tree {
     }
   }
   
-  public static final class Mod extends hydra.langs.scala.meta.Tree {
+  public static final class Mod extends hydra.langs.scala.meta.Tree implements Serializable {
     public final hydra.langs.scala.meta.Mod value;
     
     public Mod (hydra.langs.scala.meta.Mod value) {
@@ -350,7 +352,7 @@ public abstract class Tree {
     }
   }
   
-  public static final class Enumerator extends hydra.langs.scala.meta.Tree {
+  public static final class Enumerator extends hydra.langs.scala.meta.Tree implements Serializable {
     public final hydra.langs.scala.meta.Enumerator value;
     
     public Enumerator (hydra.langs.scala.meta.Enumerator value) {
@@ -377,7 +379,7 @@ public abstract class Tree {
     }
   }
   
-  public static final class Importer extends hydra.langs.scala.meta.Tree {
+  public static final class Importer extends hydra.langs.scala.meta.Tree implements Serializable {
     public final hydra.langs.scala.meta.Importer value;
     
     public Importer (hydra.langs.scala.meta.Importer value) {
@@ -404,7 +406,7 @@ public abstract class Tree {
     }
   }
   
-  public static final class Importee extends hydra.langs.scala.meta.Tree {
+  public static final class Importee extends hydra.langs.scala.meta.Tree implements Serializable {
     public final hydra.langs.scala.meta.Importee value;
     
     public Importee (hydra.langs.scala.meta.Importee value) {
@@ -431,7 +433,7 @@ public abstract class Tree {
     }
   }
   
-  public static final class CaseTree extends hydra.langs.scala.meta.Tree {
+  public static final class CaseTree extends hydra.langs.scala.meta.Tree implements Serializable {
     public final hydra.langs.scala.meta.CaseTree value;
     
     public CaseTree (hydra.langs.scala.meta.CaseTree value) {
@@ -458,7 +460,7 @@ public abstract class Tree {
     }
   }
   
-  public static final class Source extends hydra.langs.scala.meta.Tree {
+  public static final class Source extends hydra.langs.scala.meta.Tree implements Serializable {
     public final hydra.langs.scala.meta.Source value;
     
     public Source (hydra.langs.scala.meta.Source value) {
@@ -485,7 +487,7 @@ public abstract class Tree {
     }
   }
   
-  public static final class Quasi extends hydra.langs.scala.meta.Tree {
+  public static final class Quasi extends hydra.langs.scala.meta.Tree implements Serializable {
     public final hydra.langs.scala.meta.Quasi value;
     
     public Quasi (hydra.langs.scala.meta.Quasi value) {

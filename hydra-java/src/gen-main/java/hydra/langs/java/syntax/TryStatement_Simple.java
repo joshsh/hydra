@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class TryStatement_Simple {
+import java.io.Serializable;
+
+public class TryStatement_Simple implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.TryStatement.Simple");
   
   public final hydra.langs.java.syntax.Block block;

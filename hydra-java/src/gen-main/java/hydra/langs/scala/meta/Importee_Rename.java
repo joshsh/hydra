@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public class Importee_Rename {
+import java.io.Serializable;
+
+public class Importee_Rename implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Importee.Rename");
   
   public final hydra.langs.scala.meta.Name name;

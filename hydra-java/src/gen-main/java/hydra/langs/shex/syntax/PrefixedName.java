@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class PrefixedName {
+import java.io.Serializable;
+
+public abstract class PrefixedName implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.PrefixedName");
   
   private PrefixedName () {
@@ -29,7 +31,7 @@ public abstract class PrefixedName {
     }
   }
   
-  public static final class PnameLn extends hydra.langs.shex.syntax.PrefixedName {
+  public static final class PnameLn extends hydra.langs.shex.syntax.PrefixedName implements Serializable {
     public final hydra.langs.shex.syntax.PnameLn value;
     
     public PnameLn (hydra.langs.shex.syntax.PnameLn value) {
@@ -56,7 +58,7 @@ public abstract class PrefixedName {
     }
   }
   
-  public static final class PnameNs extends hydra.langs.shex.syntax.PrefixedName {
+  public static final class PnameNs extends hydra.langs.shex.syntax.PrefixedName implements Serializable {
     public final hydra.langs.shex.syntax.PnameNs value;
     
     public PnameNs (hydra.langs.shex.syntax.PnameNs value) {

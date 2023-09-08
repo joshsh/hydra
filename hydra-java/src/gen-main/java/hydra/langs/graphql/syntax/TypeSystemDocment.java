@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public class TypeSystemDocment {
+import java.io.Serializable;
+
+public class TypeSystemDocment implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.TypeSystemDocment");
   
   public final java.util.List<hydra.langs.graphql.syntax.TypeSystemDefinition> value;

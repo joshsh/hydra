@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public abstract class BinaryLargeObjectStringType {
+import java.io.Serializable;
+
+public abstract class BinaryLargeObjectStringType implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.BinaryLargeObjectStringType");
   
   private BinaryLargeObjectStringType () {
@@ -29,7 +31,7 @@ public abstract class BinaryLargeObjectStringType {
     }
   }
   
-  public static final class Binary extends hydra.langs.sql.ansi.BinaryLargeObjectStringType {
+  public static final class Binary extends hydra.langs.sql.ansi.BinaryLargeObjectStringType implements Serializable {
     public final java.util.Optional<hydra.langs.sql.ansi.LargeObjectLength> value;
     
     public Binary (java.util.Optional<hydra.langs.sql.ansi.LargeObjectLength> value) {
@@ -56,7 +58,7 @@ public abstract class BinaryLargeObjectStringType {
     }
   }
   
-  public static final class Blob extends hydra.langs.sql.ansi.BinaryLargeObjectStringType {
+  public static final class Blob extends hydra.langs.sql.ansi.BinaryLargeObjectStringType implements Serializable {
     public final java.util.Optional<hydra.langs.sql.ansi.LargeObjectLength> value;
     
     public Blob (java.util.Optional<hydra.langs.sql.ansi.LargeObjectLength> value) {

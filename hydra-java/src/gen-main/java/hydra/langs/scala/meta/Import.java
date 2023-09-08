@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public class Import {
+import java.io.Serializable;
+
+public class Import implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Import");
   
   public final java.util.List<hydra.langs.scala.meta.Importer> importers;

@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public class FromConstructor {
+import java.io.Serializable;
+
+public class FromConstructor implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.FromConstructor");
   
   public final java.util.Optional<hydra.langs.sql.ansi.InsertColumnList> columns;

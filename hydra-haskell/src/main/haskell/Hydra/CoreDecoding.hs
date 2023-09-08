@@ -16,6 +16,7 @@ module Hydra.CoreDecoding (
   dereferenceType,
   elementAsTypedTerm,
   fieldTypes,
+  isSerializable,
   moduleDependencyNamespaces,
   requireRecordType,
   requireType,
@@ -178,6 +179,14 @@ getField :: M.Map FieldName (Term a) -> FieldName -> (Term a -> Flow (Graph a) b
 getField m fname decode = case M.lookup fname m of
   Nothing -> fail $ "expected field " ++ show fname ++ " not found"
   Just val -> decode val
+
+isSerializable :: Show a => Element a -> Flow (Graph a) Bool
+isSerializable el = do
+    deps <- typeDependencies (elementName el)
+    let allVariants = S.fromList $ L.concat (variants <$> M.elems deps)
+    return $ not $ S.member TypeVariantFunction allVariants
+  where
+    variants typ = typeVariant <$> foldOverType TraversalOrderPre (\m t -> t:m) [] typ
 
 matchEnum :: Show a => Name -> [(FieldName, b)] -> Term a -> Flow (Graph a) b
 matchEnum tname = matchUnion tname . fmap (uncurry matchUnitField)

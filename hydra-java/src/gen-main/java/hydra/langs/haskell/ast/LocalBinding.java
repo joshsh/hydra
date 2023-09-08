@@ -1,6 +1,8 @@
 package hydra.langs.haskell.ast;
 
-public abstract class LocalBinding {
+import java.io.Serializable;
+
+public abstract class LocalBinding implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.LocalBinding");
   
   private LocalBinding () {
@@ -29,7 +31,7 @@ public abstract class LocalBinding {
     }
   }
   
-  public static final class Signature extends hydra.langs.haskell.ast.LocalBinding {
+  public static final class Signature extends hydra.langs.haskell.ast.LocalBinding implements Serializable {
     public final hydra.langs.haskell.ast.TypeSignature value;
     
     public Signature (hydra.langs.haskell.ast.TypeSignature value) {
@@ -56,7 +58,7 @@ public abstract class LocalBinding {
     }
   }
   
-  public static final class Value extends hydra.langs.haskell.ast.LocalBinding {
+  public static final class Value extends hydra.langs.haskell.ast.LocalBinding implements Serializable {
     public final hydra.langs.haskell.ast.ValueBinding value;
     
     public Value (hydra.langs.haskell.ast.ValueBinding value) {

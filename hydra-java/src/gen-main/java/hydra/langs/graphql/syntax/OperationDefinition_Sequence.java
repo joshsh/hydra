@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public class OperationDefinition_Sequence {
+import java.io.Serializable;
+
+public class OperationDefinition_Sequence implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.OperationDefinition.Sequence");
   
   public final hydra.langs.graphql.syntax.OperationType operationType;

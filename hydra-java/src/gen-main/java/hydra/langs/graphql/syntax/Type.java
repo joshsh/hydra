@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public abstract class Type {
+import java.io.Serializable;
+
+public abstract class Type implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.Type");
   
   private Type () {
@@ -35,7 +37,7 @@ public abstract class Type {
     }
   }
   
-  public static final class Named extends hydra.langs.graphql.syntax.Type {
+  public static final class Named extends hydra.langs.graphql.syntax.Type implements Serializable {
     public final hydra.langs.graphql.syntax.NamedType value;
     
     public Named (hydra.langs.graphql.syntax.NamedType value) {
@@ -62,7 +64,7 @@ public abstract class Type {
     }
   }
   
-  public static final class List extends hydra.langs.graphql.syntax.Type {
+  public static final class List extends hydra.langs.graphql.syntax.Type implements Serializable {
     public final hydra.langs.graphql.syntax.ListType value;
     
     public List (hydra.langs.graphql.syntax.ListType value) {
@@ -89,7 +91,7 @@ public abstract class Type {
     }
   }
   
-  public static final class NonNull extends hydra.langs.graphql.syntax.Type {
+  public static final class NonNull extends hydra.langs.graphql.syntax.Type implements Serializable {
     public final hydra.langs.graphql.syntax.NonNullType value;
     
     public NonNull (hydra.langs.graphql.syntax.NonNullType value) {

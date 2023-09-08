@@ -1,12 +1,14 @@
 package hydra.langs.parquet.format;
 
+import java.io.Serializable;
+
 /**
  * Represents a element inside a schema definition.
  * - if it is a group (inner node) then type is undefined and num_children is defined
  * - if it is a primitive type (leaf) then type is defined and num_children is undefined
  * the nodes are listed in depth first traversal order.
  */
-public class SchemaElement {
+public class SchemaElement implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/parquet/format.SchemaElement");
   
   /**

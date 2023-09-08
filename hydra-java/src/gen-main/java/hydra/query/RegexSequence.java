@@ -1,9 +1,11 @@
 package hydra.query;
 
+import java.io.Serializable;
+
 /**
  * A path with a regex quantifier
  */
-public class RegexSequence {
+public class RegexSequence implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/query.RegexSequence");
   
   public final hydra.query.Path path;

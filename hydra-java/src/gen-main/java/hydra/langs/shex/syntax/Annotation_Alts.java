@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class Annotation_Alts {
+import java.io.Serializable;
+
+public abstract class Annotation_Alts implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.Annotation.Alts");
   
   private Annotation_Alts () {
@@ -29,7 +31,7 @@ public abstract class Annotation_Alts {
     }
   }
   
-  public static final class Iri extends hydra.langs.shex.syntax.Annotation_Alts {
+  public static final class Iri extends hydra.langs.shex.syntax.Annotation_Alts implements Serializable {
     public final hydra.langs.shex.syntax.Iri value;
     
     public Iri (hydra.langs.shex.syntax.Iri value) {
@@ -56,7 +58,7 @@ public abstract class Annotation_Alts {
     }
   }
   
-  public static final class Literal extends hydra.langs.shex.syntax.Annotation_Alts {
+  public static final class Literal extends hydra.langs.shex.syntax.Annotation_Alts implements Serializable {
     public final hydra.langs.shex.syntax.Literal value;
     
     public Literal (hydra.langs.shex.syntax.Literal value) {

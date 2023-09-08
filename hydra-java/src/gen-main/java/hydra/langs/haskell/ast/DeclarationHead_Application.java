@@ -1,9 +1,11 @@
 package hydra.langs.haskell.ast;
 
+import java.io.Serializable;
+
 /**
  * An application-style declaration head
  */
-public class DeclarationHead_Application {
+public class DeclarationHead_Application implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.DeclarationHead.Application");
   
   public final hydra.langs.haskell.ast.DeclarationHead function;

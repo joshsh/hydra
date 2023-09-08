@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class ForStatement {
+import java.io.Serializable;
+
+public abstract class ForStatement implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ForStatement");
   
   private ForStatement () {
@@ -29,7 +31,7 @@ public abstract class ForStatement {
     }
   }
   
-  public static final class Basic extends hydra.langs.java.syntax.ForStatement {
+  public static final class Basic extends hydra.langs.java.syntax.ForStatement implements Serializable {
     public final hydra.langs.java.syntax.BasicForStatement value;
     
     public Basic (hydra.langs.java.syntax.BasicForStatement value) {
@@ -56,7 +58,7 @@ public abstract class ForStatement {
     }
   }
   
-  public static final class Enhanced extends hydra.langs.java.syntax.ForStatement {
+  public static final class Enhanced extends hydra.langs.java.syntax.ForStatement implements Serializable {
     public final hydra.langs.java.syntax.EnhancedForStatement value;
     
     public Enhanced (hydra.langs.java.syntax.EnhancedForStatement value) {

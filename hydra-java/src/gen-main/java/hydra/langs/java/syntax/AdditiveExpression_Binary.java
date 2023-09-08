@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class AdditiveExpression_Binary {
+import java.io.Serializable;
+
+public class AdditiveExpression_Binary implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.AdditiveExpression.Binary");
   
   public final hydra.langs.java.syntax.AdditiveExpression lhs;

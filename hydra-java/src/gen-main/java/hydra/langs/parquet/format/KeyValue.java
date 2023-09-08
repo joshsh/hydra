@@ -1,9 +1,11 @@
 package hydra.langs.parquet.format;
 
+import java.io.Serializable;
+
 /**
  * Wrapper struct to store key values
  */
-public class KeyValue {
+public class KeyValue implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/parquet/format.KeyValue");
   
   public final String key;

@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class TypeVariable {
+import java.io.Serializable;
+
+public class TypeVariable implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.TypeVariable");
   
   public final java.util.List<hydra.langs.java.syntax.Annotation> annotations;

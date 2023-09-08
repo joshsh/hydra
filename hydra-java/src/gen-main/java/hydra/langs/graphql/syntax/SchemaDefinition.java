@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public class SchemaDefinition {
+import java.io.Serializable;
+
+public class SchemaDefinition implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.SchemaDefinition");
   
   public final java.util.Optional<hydra.langs.graphql.syntax.Description> description;

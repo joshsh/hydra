@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public abstract class DatetimeLiteral {
+import java.io.Serializable;
+
+public abstract class DatetimeLiteral implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.DatetimeLiteral");
   
   private DatetimeLiteral () {
@@ -35,7 +37,7 @@ public abstract class DatetimeLiteral {
     }
   }
   
-  public static final class Date extends hydra.langs.sql.ansi.DatetimeLiteral {
+  public static final class Date extends hydra.langs.sql.ansi.DatetimeLiteral implements Serializable {
     public final hydra.langs.sql.ansi.DateLiteral value;
     
     public Date (hydra.langs.sql.ansi.DateLiteral value) {
@@ -62,7 +64,7 @@ public abstract class DatetimeLiteral {
     }
   }
   
-  public static final class Time extends hydra.langs.sql.ansi.DatetimeLiteral {
+  public static final class Time extends hydra.langs.sql.ansi.DatetimeLiteral implements Serializable {
     public final hydra.langs.sql.ansi.TimeLiteral value;
     
     public Time (hydra.langs.sql.ansi.TimeLiteral value) {
@@ -89,7 +91,7 @@ public abstract class DatetimeLiteral {
     }
   }
   
-  public static final class Timestamp extends hydra.langs.sql.ansi.DatetimeLiteral {
+  public static final class Timestamp extends hydra.langs.sql.ansi.DatetimeLiteral implements Serializable {
     public final hydra.langs.sql.ansi.TimestampLiteral value;
     
     public Timestamp (hydra.langs.sql.ansi.TimestampLiteral value) {

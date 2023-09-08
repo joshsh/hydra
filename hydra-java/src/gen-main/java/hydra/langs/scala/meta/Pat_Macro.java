@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public class Pat_Macro {
+import java.io.Serializable;
+
+public class Pat_Macro implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Pat.Macro");
   
   public final hydra.langs.scala.meta.Data body;

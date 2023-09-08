@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public abstract class BooleanValue {
+import java.io.Serializable;
+
+public abstract class BooleanValue implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.BooleanValue");
   
   private BooleanValue () {
@@ -29,7 +31,7 @@ public abstract class BooleanValue {
     }
   }
   
-  public static final class True extends hydra.langs.graphql.syntax.BooleanValue {
+  public static final class True extends hydra.langs.graphql.syntax.BooleanValue implements Serializable {
     public True () {
     
     }
@@ -54,7 +56,7 @@ public abstract class BooleanValue {
     }
   }
   
-  public static final class False extends hydra.langs.graphql.syntax.BooleanValue {
+  public static final class False extends hydra.langs.graphql.syntax.BooleanValue implements Serializable {
     public False () {
     
     }

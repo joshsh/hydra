@@ -1,6 +1,8 @@
 package hydra.langs.owl.syntax;
 
-public abstract class Assertion {
+import java.io.Serializable;
+
+public abstract class Assertion implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/owl/syntax.Assertion");
   
   private Assertion () {
@@ -59,7 +61,7 @@ public abstract class Assertion {
     }
   }
   
-  public static final class ClassAssertion extends hydra.langs.owl.syntax.Assertion {
+  public static final class ClassAssertion extends hydra.langs.owl.syntax.Assertion implements Serializable {
     public final hydra.langs.owl.syntax.ClassAssertion value;
     
     public ClassAssertion (hydra.langs.owl.syntax.ClassAssertion value) {
@@ -86,7 +88,7 @@ public abstract class Assertion {
     }
   }
   
-  public static final class DataPropertyAssertion extends hydra.langs.owl.syntax.Assertion {
+  public static final class DataPropertyAssertion extends hydra.langs.owl.syntax.Assertion implements Serializable {
     public final hydra.langs.owl.syntax.DataPropertyAssertion value;
     
     public DataPropertyAssertion (hydra.langs.owl.syntax.DataPropertyAssertion value) {
@@ -113,7 +115,7 @@ public abstract class Assertion {
     }
   }
   
-  public static final class DifferentIndividuals extends hydra.langs.owl.syntax.Assertion {
+  public static final class DifferentIndividuals extends hydra.langs.owl.syntax.Assertion implements Serializable {
     public final hydra.langs.owl.syntax.DifferentIndividuals value;
     
     public DifferentIndividuals (hydra.langs.owl.syntax.DifferentIndividuals value) {
@@ -140,7 +142,7 @@ public abstract class Assertion {
     }
   }
   
-  public static final class ObjectPropertyAssertion extends hydra.langs.owl.syntax.Assertion {
+  public static final class ObjectPropertyAssertion extends hydra.langs.owl.syntax.Assertion implements Serializable {
     public final hydra.langs.owl.syntax.ObjectPropertyAssertion value;
     
     public ObjectPropertyAssertion (hydra.langs.owl.syntax.ObjectPropertyAssertion value) {
@@ -167,7 +169,7 @@ public abstract class Assertion {
     }
   }
   
-  public static final class NegativeDataPropertyAssertion extends hydra.langs.owl.syntax.Assertion {
+  public static final class NegativeDataPropertyAssertion extends hydra.langs.owl.syntax.Assertion implements Serializable {
     public final hydra.langs.owl.syntax.NegativeDataPropertyAssertion value;
     
     public NegativeDataPropertyAssertion (hydra.langs.owl.syntax.NegativeDataPropertyAssertion value) {
@@ -194,7 +196,7 @@ public abstract class Assertion {
     }
   }
   
-  public static final class NegativeObjectPropertyAssertion extends hydra.langs.owl.syntax.Assertion {
+  public static final class NegativeObjectPropertyAssertion extends hydra.langs.owl.syntax.Assertion implements Serializable {
     public final hydra.langs.owl.syntax.NegativeObjectPropertyAssertion value;
     
     public NegativeObjectPropertyAssertion (hydra.langs.owl.syntax.NegativeObjectPropertyAssertion value) {
@@ -221,7 +223,7 @@ public abstract class Assertion {
     }
   }
   
-  public static final class SameIndividual extends hydra.langs.owl.syntax.Assertion {
+  public static final class SameIndividual extends hydra.langs.owl.syntax.Assertion implements Serializable {
     public final hydra.langs.owl.syntax.SameIndividual value;
     
     public SameIndividual (hydra.langs.owl.syntax.SameIndividual value) {

@@ -1,9 +1,11 @@
 package hydra.core;
 
+import java.io.Serializable;
+
 /**
  * An instance of a union type; i.e. a string-indexed generalization of inl() or inr()
  */
-public class Injection<A> {
+public class Injection<A> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/core.Injection");
   
   public final hydra.core.Name typeName;

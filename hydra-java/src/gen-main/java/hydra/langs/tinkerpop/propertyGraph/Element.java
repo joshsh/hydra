@@ -1,9 +1,11 @@
 package hydra.langs.tinkerpop.propertyGraph;
 
+import java.io.Serializable;
+
 /**
  * Either a vertex or an edge
  */
-public abstract class Element<V> {
+public abstract class Element<V> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/tinkerpop/propertyGraph.Element");
   
   private Element () {
@@ -32,7 +34,7 @@ public abstract class Element<V> {
     }
   }
   
-  public static final class Vertex<V> extends hydra.langs.tinkerpop.propertyGraph.Element<V> {
+  public static final class Vertex<V> extends hydra.langs.tinkerpop.propertyGraph.Element<V> implements Serializable {
     public final hydra.langs.tinkerpop.propertyGraph.Vertex<V> value;
     
     public Vertex (hydra.langs.tinkerpop.propertyGraph.Vertex<V> value) {
@@ -59,7 +61,7 @@ public abstract class Element<V> {
     }
   }
   
-  public static final class Edge<V> extends hydra.langs.tinkerpop.propertyGraph.Element<V> {
+  public static final class Edge<V> extends hydra.langs.tinkerpop.propertyGraph.Element<V> implements Serializable {
     public final hydra.langs.tinkerpop.propertyGraph.Edge<V> value;
     
     public Edge (hydra.langs.tinkerpop.propertyGraph.Edge<V> value) {

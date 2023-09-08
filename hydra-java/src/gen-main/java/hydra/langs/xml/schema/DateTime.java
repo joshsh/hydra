@@ -1,6 +1,8 @@
 package hydra.langs.xml.schema;
 
-public class DateTime {
+import java.io.Serializable;
+
+public class DateTime implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/xml/schema.DateTime");
   
   public final String value;

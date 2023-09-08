@@ -1,9 +1,11 @@
 package hydra.core;
 
+import java.io.Serializable;
+
 /**
  * A tuple elimination; a projection from an integer-indexed product
  */
-public class TupleProjection {
+public class TupleProjection implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/core.TupleProjection");
   
   /**

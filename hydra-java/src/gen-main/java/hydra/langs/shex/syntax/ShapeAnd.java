@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public class ShapeAnd {
+import java.io.Serializable;
+
+public class ShapeAnd implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.ShapeAnd");
   
   public final hydra.langs.shex.syntax.ShapeNot shapeNot;

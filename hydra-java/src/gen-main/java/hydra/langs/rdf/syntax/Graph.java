@@ -1,6 +1,8 @@
 package hydra.langs.rdf.syntax;
 
-public class Graph {
+import java.io.Serializable;
+
+public class Graph implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/rdf/syntax.Graph");
   
   public final java.util.Set<hydra.langs.rdf.syntax.Triple> value;

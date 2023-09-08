@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class PostDecrementExpression {
+import java.io.Serializable;
+
+public class PostDecrementExpression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.PostDecrementExpression");
   
   public final hydra.langs.java.syntax.PostfixExpression value;

@@ -1,6 +1,8 @@
 package hydra.langs.scala.meta;
 
-public class Data_ApplyUsing {
+import java.io.Serializable;
+
+public class Data_ApplyUsing implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/scala/meta.Data.ApplyUsing");
   
   public final hydra.langs.scala.meta.Data fun;

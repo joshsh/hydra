@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class TypeBound {
+import java.io.Serializable;
+
+public abstract class TypeBound implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.TypeBound");
   
   private TypeBound () {
@@ -29,7 +31,7 @@ public abstract class TypeBound {
     }
   }
   
-  public static final class Variable extends hydra.langs.java.syntax.TypeBound {
+  public static final class Variable extends hydra.langs.java.syntax.TypeBound implements Serializable {
     public final hydra.langs.java.syntax.TypeVariable value;
     
     public Variable (hydra.langs.java.syntax.TypeVariable value) {
@@ -56,7 +58,7 @@ public abstract class TypeBound {
     }
   }
   
-  public static final class ClassOrInterface extends hydra.langs.java.syntax.TypeBound {
+  public static final class ClassOrInterface extends hydra.langs.java.syntax.TypeBound implements Serializable {
     public final hydra.langs.java.syntax.TypeBound_ClassOrInterface value;
     
     public ClassOrInterface (hydra.langs.java.syntax.TypeBound_ClassOrInterface value) {

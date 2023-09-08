@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public abstract class ShiftExpression {
+import java.io.Serializable;
+
+public abstract class ShiftExpression implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.ShiftExpression");
   
   private ShiftExpression () {
@@ -41,7 +43,7 @@ public abstract class ShiftExpression {
     }
   }
   
-  public static final class Unary extends hydra.langs.java.syntax.ShiftExpression {
+  public static final class Unary extends hydra.langs.java.syntax.ShiftExpression implements Serializable {
     public final hydra.langs.java.syntax.AdditiveExpression value;
     
     public Unary (hydra.langs.java.syntax.AdditiveExpression value) {
@@ -68,7 +70,7 @@ public abstract class ShiftExpression {
     }
   }
   
-  public static final class ShiftLeft extends hydra.langs.java.syntax.ShiftExpression {
+  public static final class ShiftLeft extends hydra.langs.java.syntax.ShiftExpression implements Serializable {
     public final hydra.langs.java.syntax.ShiftExpression_Binary value;
     
     public ShiftLeft (hydra.langs.java.syntax.ShiftExpression_Binary value) {
@@ -95,7 +97,7 @@ public abstract class ShiftExpression {
     }
   }
   
-  public static final class ShiftRight extends hydra.langs.java.syntax.ShiftExpression {
+  public static final class ShiftRight extends hydra.langs.java.syntax.ShiftExpression implements Serializable {
     public final hydra.langs.java.syntax.ShiftExpression_Binary value;
     
     public ShiftRight (hydra.langs.java.syntax.ShiftExpression_Binary value) {
@@ -122,7 +124,7 @@ public abstract class ShiftExpression {
     }
   }
   
-  public static final class ShiftRightZeroFill extends hydra.langs.java.syntax.ShiftExpression {
+  public static final class ShiftRightZeroFill extends hydra.langs.java.syntax.ShiftExpression implements Serializable {
     public final hydra.langs.java.syntax.ShiftExpression_Binary value;
     
     public ShiftRightZeroFill (hydra.langs.java.syntax.ShiftExpression_Binary value) {

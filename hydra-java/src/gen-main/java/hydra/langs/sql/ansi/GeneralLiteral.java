@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public abstract class GeneralLiteral {
+import java.io.Serializable;
+
+public abstract class GeneralLiteral implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.GeneralLiteral");
   
   private GeneralLiteral () {
@@ -59,7 +61,7 @@ public abstract class GeneralLiteral {
     }
   }
   
-  public static final class String_ extends hydra.langs.sql.ansi.GeneralLiteral {
+  public static final class String_ extends hydra.langs.sql.ansi.GeneralLiteral implements Serializable {
     public final hydra.langs.sql.ansi.CharacterStringLiteral value;
     
     public String_ (hydra.langs.sql.ansi.CharacterStringLiteral value) {
@@ -86,7 +88,7 @@ public abstract class GeneralLiteral {
     }
   }
   
-  public static final class NationalString extends hydra.langs.sql.ansi.GeneralLiteral {
+  public static final class NationalString extends hydra.langs.sql.ansi.GeneralLiteral implements Serializable {
     public final hydra.langs.sql.ansi.NationalCharacterStringLiteral value;
     
     public NationalString (hydra.langs.sql.ansi.NationalCharacterStringLiteral value) {
@@ -113,7 +115,7 @@ public abstract class GeneralLiteral {
     }
   }
   
-  public static final class Unicode extends hydra.langs.sql.ansi.GeneralLiteral {
+  public static final class Unicode extends hydra.langs.sql.ansi.GeneralLiteral implements Serializable {
     public final hydra.langs.sql.ansi.UnicodeCharacterStringLiteral value;
     
     public Unicode (hydra.langs.sql.ansi.UnicodeCharacterStringLiteral value) {
@@ -140,7 +142,7 @@ public abstract class GeneralLiteral {
     }
   }
   
-  public static final class Binary extends hydra.langs.sql.ansi.GeneralLiteral {
+  public static final class Binary extends hydra.langs.sql.ansi.GeneralLiteral implements Serializable {
     public final hydra.langs.sql.ansi.BinaryStringLiteral value;
     
     public Binary (hydra.langs.sql.ansi.BinaryStringLiteral value) {
@@ -167,7 +169,7 @@ public abstract class GeneralLiteral {
     }
   }
   
-  public static final class DateTime extends hydra.langs.sql.ansi.GeneralLiteral {
+  public static final class DateTime extends hydra.langs.sql.ansi.GeneralLiteral implements Serializable {
     public final hydra.langs.sql.ansi.DatetimeLiteral value;
     
     public DateTime (hydra.langs.sql.ansi.DatetimeLiteral value) {
@@ -194,7 +196,7 @@ public abstract class GeneralLiteral {
     }
   }
   
-  public static final class Interval extends hydra.langs.sql.ansi.GeneralLiteral {
+  public static final class Interval extends hydra.langs.sql.ansi.GeneralLiteral implements Serializable {
     public final hydra.langs.sql.ansi.IntervalLiteral value;
     
     public Interval (hydra.langs.sql.ansi.IntervalLiteral value) {
@@ -221,7 +223,7 @@ public abstract class GeneralLiteral {
     }
   }
   
-  public static final class Boolean_ extends hydra.langs.sql.ansi.GeneralLiteral {
+  public static final class Boolean_ extends hydra.langs.sql.ansi.GeneralLiteral implements Serializable {
     public final hydra.langs.sql.ansi.BooleanLiteral value;
     
     public Boolean_ (hydra.langs.sql.ansi.BooleanLiteral value) {

@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public class WindowFunction {
+import java.io.Serializable;
+
+public class WindowFunction implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.WindowFunction");
   
   public WindowFunction () {

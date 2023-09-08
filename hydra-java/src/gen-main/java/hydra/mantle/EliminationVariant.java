@@ -1,9 +1,11 @@
 package hydra.mantle;
 
+import java.io.Serializable;
+
 /**
  * The identifier of an elimination constructor
  */
-public abstract class EliminationVariant {
+public abstract class EliminationVariant implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/mantle.EliminationVariant");
   
   private EliminationVariant () {
@@ -56,7 +58,7 @@ public abstract class EliminationVariant {
     }
   }
   
-  public static final class List extends hydra.mantle.EliminationVariant {
+  public static final class List extends hydra.mantle.EliminationVariant implements Serializable {
     public List () {
     
     }
@@ -81,7 +83,7 @@ public abstract class EliminationVariant {
     }
   }
   
-  public static final class Optional extends hydra.mantle.EliminationVariant {
+  public static final class Optional extends hydra.mantle.EliminationVariant implements Serializable {
     public Optional () {
     
     }
@@ -106,7 +108,7 @@ public abstract class EliminationVariant {
     }
   }
   
-  public static final class Product extends hydra.mantle.EliminationVariant {
+  public static final class Product extends hydra.mantle.EliminationVariant implements Serializable {
     public Product () {
     
     }
@@ -131,7 +133,7 @@ public abstract class EliminationVariant {
     }
   }
   
-  public static final class Record extends hydra.mantle.EliminationVariant {
+  public static final class Record extends hydra.mantle.EliminationVariant implements Serializable {
     public Record () {
     
     }
@@ -156,7 +158,7 @@ public abstract class EliminationVariant {
     }
   }
   
-  public static final class Union extends hydra.mantle.EliminationVariant {
+  public static final class Union extends hydra.mantle.EliminationVariant implements Serializable {
     public Union () {
     
     }
@@ -181,7 +183,7 @@ public abstract class EliminationVariant {
     }
   }
   
-  public static final class Wrap extends hydra.mantle.EliminationVariant {
+  public static final class Wrap extends hydra.mantle.EliminationVariant implements Serializable {
     public Wrap () {
     
     }

@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public abstract class Selection {
+import java.io.Serializable;
+
+public abstract class Selection implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.Selection");
   
   private Selection () {
@@ -35,7 +37,7 @@ public abstract class Selection {
     }
   }
   
-  public static final class Field extends hydra.langs.graphql.syntax.Selection {
+  public static final class Field extends hydra.langs.graphql.syntax.Selection implements Serializable {
     public final hydra.langs.graphql.syntax.Field value;
     
     public Field (hydra.langs.graphql.syntax.Field value) {
@@ -62,7 +64,7 @@ public abstract class Selection {
     }
   }
   
-  public static final class FragmentSpread extends hydra.langs.graphql.syntax.Selection {
+  public static final class FragmentSpread extends hydra.langs.graphql.syntax.Selection implements Serializable {
     public final hydra.langs.graphql.syntax.FragmentSpread value;
     
     public FragmentSpread (hydra.langs.graphql.syntax.FragmentSpread value) {
@@ -89,7 +91,7 @@ public abstract class Selection {
     }
   }
   
-  public static final class InlineFragment extends hydra.langs.graphql.syntax.Selection {
+  public static final class InlineFragment extends hydra.langs.graphql.syntax.Selection implements Serializable {
     public final hydra.langs.graphql.syntax.InlineFragment value;
     
     public InlineFragment (hydra.langs.graphql.syntax.InlineFragment value) {

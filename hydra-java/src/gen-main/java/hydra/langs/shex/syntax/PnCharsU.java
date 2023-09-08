@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class PnCharsU {
+import java.io.Serializable;
+
+public abstract class PnCharsU implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.PnCharsU");
   
   private PnCharsU () {
@@ -29,7 +31,7 @@ public abstract class PnCharsU {
     }
   }
   
-  public static final class PnCharsBase extends hydra.langs.shex.syntax.PnCharsU {
+  public static final class PnCharsBase extends hydra.langs.shex.syntax.PnCharsU implements Serializable {
     public final hydra.langs.shex.syntax.PnCharsBase value;
     
     public PnCharsBase (hydra.langs.shex.syntax.PnCharsBase value) {
@@ -56,7 +58,7 @@ public abstract class PnCharsU {
     }
   }
   
-  public static final class Lowbar extends hydra.langs.shex.syntax.PnCharsU {
+  public static final class Lowbar extends hydra.langs.shex.syntax.PnCharsU implements Serializable {
     public Lowbar () {
     
     }

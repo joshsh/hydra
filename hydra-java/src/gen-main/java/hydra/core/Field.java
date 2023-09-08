@@ -1,9 +1,11 @@
 package hydra.core;
 
+import java.io.Serializable;
+
 /**
  * A labeled term
  */
-public class Field<A> {
+public class Field<A> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/core.Field");
   
   public final hydra.core.FieldName name;

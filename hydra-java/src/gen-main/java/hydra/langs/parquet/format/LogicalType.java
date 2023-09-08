@@ -1,9 +1,11 @@
 package hydra.langs.parquet.format;
 
+import java.io.Serializable;
+
 /**
  * LogicalType annotations to replace ConvertedType. To maintain compatibility, implementations using LogicalType for a SchemaElement aust also set the corresponding ConvertedType (if any) from the following table.
  */
-public abstract class LogicalType {
+public abstract class LogicalType implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/parquet/format.LogicalType");
   
   private LogicalType () {
@@ -101,7 +103,7 @@ public abstract class LogicalType {
   /**
    * use ConvertedType UTF8
    */
-  public static final class String_ extends hydra.langs.parquet.format.LogicalType {
+  public static final class String_ extends hydra.langs.parquet.format.LogicalType implements Serializable {
     public String_ () {
     
     }
@@ -129,7 +131,7 @@ public abstract class LogicalType {
   /**
    * use ConvertedType MAP
    */
-  public static final class Map extends hydra.langs.parquet.format.LogicalType {
+  public static final class Map extends hydra.langs.parquet.format.LogicalType implements Serializable {
     public Map () {
     
     }
@@ -157,7 +159,7 @@ public abstract class LogicalType {
   /**
    * use ConvertedType LIST
    */
-  public static final class List extends hydra.langs.parquet.format.LogicalType {
+  public static final class List extends hydra.langs.parquet.format.LogicalType implements Serializable {
     public List () {
     
     }
@@ -185,7 +187,7 @@ public abstract class LogicalType {
   /**
    * use ConvertedType ENUM
    */
-  public static final class Enum_ extends hydra.langs.parquet.format.LogicalType {
+  public static final class Enum_ extends hydra.langs.parquet.format.LogicalType implements Serializable {
     public Enum_ () {
     
     }
@@ -213,7 +215,7 @@ public abstract class LogicalType {
   /**
    * use ConvertedType DECIMAL + SchemaElement.{scale, precision}
    */
-  public static final class Decimal extends hydra.langs.parquet.format.LogicalType {
+  public static final class Decimal extends hydra.langs.parquet.format.LogicalType implements Serializable {
     /**
      * use ConvertedType DECIMAL + SchemaElement.{scale, precision}
      */
@@ -246,7 +248,7 @@ public abstract class LogicalType {
   /**
    * use ConvertedType DATE
    */
-  public static final class Date extends hydra.langs.parquet.format.LogicalType {
+  public static final class Date extends hydra.langs.parquet.format.LogicalType implements Serializable {
     public Date () {
     
     }
@@ -274,7 +276,7 @@ public abstract class LogicalType {
   /**
    * use ConvertedType TIME_MICROS for TIME(isAdjustedToUTC = *, unit = MICROS). use ConvertedType TIME_MILLIS for TIME(isAdjustedToUTC = *, unit = MILLIS)
    */
-  public static final class Time extends hydra.langs.parquet.format.LogicalType {
+  public static final class Time extends hydra.langs.parquet.format.LogicalType implements Serializable {
     /**
      * use ConvertedType TIME_MICROS for TIME(isAdjustedToUTC = *, unit = MICROS). use ConvertedType TIME_MILLIS for TIME(isAdjustedToUTC = *, unit = MILLIS)
      */
@@ -307,7 +309,7 @@ public abstract class LogicalType {
   /**
    * use ConvertedType TIMESTAMP_MICROS for TIMESTAMP(isAdjustedToUTC = *, unit = MICROS). use ConvertedType TIMESTAMP_MILLIS for TIMESTAMP(isAdjustedToUTC = *, unit = MILLIS)
    */
-  public static final class Timestamp extends hydra.langs.parquet.format.LogicalType {
+  public static final class Timestamp extends hydra.langs.parquet.format.LogicalType implements Serializable {
     /**
      * use ConvertedType TIMESTAMP_MICROS for TIMESTAMP(isAdjustedToUTC = *, unit = MICROS). use ConvertedType TIMESTAMP_MILLIS for TIMESTAMP(isAdjustedToUTC = *, unit = MILLIS)
      */
@@ -340,7 +342,7 @@ public abstract class LogicalType {
   /**
    * use ConvertedType INT_* or UINT_*
    */
-  public static final class Integer_ extends hydra.langs.parquet.format.LogicalType {
+  public static final class Integer_ extends hydra.langs.parquet.format.LogicalType implements Serializable {
     /**
      * use ConvertedType INT_* or UINT_*
      */
@@ -373,7 +375,7 @@ public abstract class LogicalType {
   /**
    * no compatible ConvertedType
    */
-  public static final class Unknown extends hydra.langs.parquet.format.LogicalType {
+  public static final class Unknown extends hydra.langs.parquet.format.LogicalType implements Serializable {
     public Unknown () {
     
     }
@@ -401,7 +403,7 @@ public abstract class LogicalType {
   /**
    * use ConvertedType JSON
    */
-  public static final class Json extends hydra.langs.parquet.format.LogicalType {
+  public static final class Json extends hydra.langs.parquet.format.LogicalType implements Serializable {
     public Json () {
     
     }
@@ -429,7 +431,7 @@ public abstract class LogicalType {
   /**
    * use ConvertedType BSON
    */
-  public static final class Bson extends hydra.langs.parquet.format.LogicalType {
+  public static final class Bson extends hydra.langs.parquet.format.LogicalType implements Serializable {
     public Bson () {
     
     }
@@ -457,7 +459,7 @@ public abstract class LogicalType {
   /**
    * no compatible ConvertedType
    */
-  public static final class Uuid extends hydra.langs.parquet.format.LogicalType {
+  public static final class Uuid extends hydra.langs.parquet.format.LogicalType implements Serializable {
     public Uuid () {
     
     }

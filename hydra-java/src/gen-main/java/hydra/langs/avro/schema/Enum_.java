@@ -1,6 +1,8 @@
 package hydra.langs.avro.schema;
 
-public class Enum_ {
+import java.io.Serializable;
+
+public class Enum_ implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/avro/schema.Enum");
   
   /**

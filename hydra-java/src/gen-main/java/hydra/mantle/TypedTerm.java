@@ -1,9 +1,11 @@
 package hydra.mantle;
 
+import java.io.Serializable;
+
 /**
  * A type together with an instance of the type
  */
-public class TypedTerm<A> {
+public class TypedTerm<A> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/mantle.TypedTerm");
   
   public final hydra.core.Type<A> type;

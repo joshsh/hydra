@@ -1,9 +1,11 @@
 package hydra.langs.haskell.ast;
 
+import java.io.Serializable;
+
 /**
  * The left-hand side of a declaration
  */
-public abstract class DeclarationHead {
+public abstract class DeclarationHead implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.DeclarationHead");
   
   private DeclarationHead () {
@@ -38,7 +40,7 @@ public abstract class DeclarationHead {
     }
   }
   
-  public static final class Application extends hydra.langs.haskell.ast.DeclarationHead {
+  public static final class Application extends hydra.langs.haskell.ast.DeclarationHead implements Serializable {
     public final hydra.langs.haskell.ast.DeclarationHead_Application value;
     
     public Application (hydra.langs.haskell.ast.DeclarationHead_Application value) {
@@ -65,7 +67,7 @@ public abstract class DeclarationHead {
     }
   }
   
-  public static final class Parens extends hydra.langs.haskell.ast.DeclarationHead {
+  public static final class Parens extends hydra.langs.haskell.ast.DeclarationHead implements Serializable {
     public final hydra.langs.haskell.ast.DeclarationHead value;
     
     public Parens (hydra.langs.haskell.ast.DeclarationHead value) {
@@ -92,7 +94,7 @@ public abstract class DeclarationHead {
     }
   }
   
-  public static final class Simple extends hydra.langs.haskell.ast.DeclarationHead {
+  public static final class Simple extends hydra.langs.haskell.ast.DeclarationHead implements Serializable {
     public final hydra.langs.haskell.ast.Name value;
     
     public Simple (hydra.langs.haskell.ast.Name value) {

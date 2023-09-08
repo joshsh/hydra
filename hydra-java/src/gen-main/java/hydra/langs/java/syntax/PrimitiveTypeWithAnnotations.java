@@ -1,6 +1,8 @@
 package hydra.langs.java.syntax;
 
-public class PrimitiveTypeWithAnnotations {
+import java.io.Serializable;
+
+public class PrimitiveTypeWithAnnotations implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/java/syntax.PrimitiveTypeWithAnnotations");
   
   public final hydra.langs.java.syntax.PrimitiveType type;

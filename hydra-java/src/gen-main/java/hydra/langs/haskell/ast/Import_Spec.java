@@ -1,9 +1,11 @@
 package hydra.langs.haskell.ast;
 
+import java.io.Serializable;
+
 /**
  * An import specification
  */
-public abstract class Import_Spec {
+public abstract class Import_Spec implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.Import.Spec");
   
   private Import_Spec () {
@@ -32,7 +34,7 @@ public abstract class Import_Spec {
     }
   }
   
-  public static final class List extends hydra.langs.haskell.ast.Import_Spec {
+  public static final class List extends hydra.langs.haskell.ast.Import_Spec implements Serializable {
     public final java.util.List<hydra.langs.haskell.ast.ImportExportSpec> value;
     
     public List (java.util.List<hydra.langs.haskell.ast.ImportExportSpec> value) {
@@ -59,7 +61,7 @@ public abstract class Import_Spec {
     }
   }
   
-  public static final class Hiding extends hydra.langs.haskell.ast.Import_Spec {
+  public static final class Hiding extends hydra.langs.haskell.ast.Import_Spec implements Serializable {
     public final java.util.List<hydra.langs.haskell.ast.ImportExportSpec> value;
     
     public Hiding (java.util.List<hydra.langs.haskell.ast.ImportExportSpec> value) {

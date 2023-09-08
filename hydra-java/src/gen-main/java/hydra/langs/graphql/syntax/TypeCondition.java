@@ -1,6 +1,8 @@
 package hydra.langs.graphql.syntax;
 
-public abstract class TypeCondition {
+import java.io.Serializable;
+
+public abstract class TypeCondition implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/graphql/syntax.TypeCondition");
   
   private TypeCondition () {
@@ -29,7 +31,7 @@ public abstract class TypeCondition {
     }
   }
   
-  public static final class On extends hydra.langs.graphql.syntax.TypeCondition {
+  public static final class On extends hydra.langs.graphql.syntax.TypeCondition implements Serializable {
     public On () {
     
     }
@@ -54,7 +56,7 @@ public abstract class TypeCondition {
     }
   }
   
-  public static final class NamedType extends hydra.langs.graphql.syntax.TypeCondition {
+  public static final class NamedType extends hydra.langs.graphql.syntax.TypeCondition implements Serializable {
     public final hydra.langs.graphql.syntax.NamedType value;
     
     public NamedType (hydra.langs.graphql.syntax.NamedType value) {

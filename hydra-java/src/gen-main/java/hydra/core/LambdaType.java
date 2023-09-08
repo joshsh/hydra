@@ -1,9 +1,11 @@
 package hydra.core;
 
+import java.io.Serializable;
+
 /**
  * A type abstraction; the type-level analog of a lambda term
  */
-public class LambdaType<A> {
+public class LambdaType<A> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/core.LambdaType");
   
   /**

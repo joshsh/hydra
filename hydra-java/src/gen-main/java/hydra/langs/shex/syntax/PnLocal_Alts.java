@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public abstract class PnLocal_Alts {
+import java.io.Serializable;
+
+public abstract class PnLocal_Alts implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.PnLocal.Alts");
   
   private PnLocal_Alts () {
@@ -41,7 +43,7 @@ public abstract class PnLocal_Alts {
     }
   }
   
-  public static final class PnCharsU extends hydra.langs.shex.syntax.PnLocal_Alts {
+  public static final class PnCharsU extends hydra.langs.shex.syntax.PnLocal_Alts implements Serializable {
     public final hydra.langs.shex.syntax.PnCharsU value;
     
     public PnCharsU (hydra.langs.shex.syntax.PnCharsU value) {
@@ -68,7 +70,7 @@ public abstract class PnLocal_Alts {
     }
   }
   
-  public static final class Colon extends hydra.langs.shex.syntax.PnLocal_Alts {
+  public static final class Colon extends hydra.langs.shex.syntax.PnLocal_Alts implements Serializable {
     public Colon () {
     
     }
@@ -93,7 +95,7 @@ public abstract class PnLocal_Alts {
     }
   }
   
-  public static final class Regex extends hydra.langs.shex.syntax.PnLocal_Alts {
+  public static final class Regex extends hydra.langs.shex.syntax.PnLocal_Alts implements Serializable {
     public final String value;
     
     public Regex (String value) {
@@ -120,7 +122,7 @@ public abstract class PnLocal_Alts {
     }
   }
   
-  public static final class Plx extends hydra.langs.shex.syntax.PnLocal_Alts {
+  public static final class Plx extends hydra.langs.shex.syntax.PnLocal_Alts implements Serializable {
     public final hydra.langs.shex.syntax.Plx value;
     
     public Plx (hydra.langs.shex.syntax.Plx value) {

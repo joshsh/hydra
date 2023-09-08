@@ -1,6 +1,8 @@
 package hydra.langs.xml.schema;
 
-public class PositiveInteger {
+import java.io.Serializable;
+
+public class PositiveInteger implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/xml/schema.PositiveInteger");
   
   public final java.math.BigInteger value;

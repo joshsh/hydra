@@ -1,6 +1,8 @@
 package hydra.langs.shex.syntax;
 
-public class Code {
+import java.io.Serializable;
+
+public class Code implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/shex/syntax.Code");
   
   public final java.util.List<hydra.langs.shex.syntax.Code_Elmt> value;

@@ -1,9 +1,11 @@
 package hydra.core;
 
+import java.io.Serializable;
+
 /**
  * A record, or labeled tuple; a map of field names to terms
  */
-public class Record<A> {
+public class Record<A> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/core.Record");
   
   public final hydra.core.Name typeName;

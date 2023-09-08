@@ -1,6 +1,8 @@
 package hydra.langs.sql.ansi;
 
-public abstract class CollectionValueConstructor {
+import java.io.Serializable;
+
+public abstract class CollectionValueConstructor implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/sql/ansi.CollectionValueConstructor");
   
   private CollectionValueConstructor () {
@@ -29,7 +31,7 @@ public abstract class CollectionValueConstructor {
     }
   }
   
-  public static final class Array extends hydra.langs.sql.ansi.CollectionValueConstructor {
+  public static final class Array extends hydra.langs.sql.ansi.CollectionValueConstructor implements Serializable {
     public final hydra.langs.sql.ansi.ArrayValueConstructor value;
     
     public Array (hydra.langs.sql.ansi.ArrayValueConstructor value) {
@@ -56,7 +58,7 @@ public abstract class CollectionValueConstructor {
     }
   }
   
-  public static final class Multiset extends hydra.langs.sql.ansi.CollectionValueConstructor {
+  public static final class Multiset extends hydra.langs.sql.ansi.CollectionValueConstructor implements Serializable {
     public final hydra.langs.sql.ansi.MultisetValueConstructor value;
     
     public Multiset (hydra.langs.sql.ansi.MultisetValueConstructor value) {

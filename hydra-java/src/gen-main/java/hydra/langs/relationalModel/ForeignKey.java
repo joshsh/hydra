@@ -1,9 +1,11 @@
 package hydra.langs.relationalModel;
 
+import java.io.Serializable;
+
 /**
  * A mapping from certain columns of a source relation to primary key columns of a target relation
  */
-public class ForeignKey {
+public class ForeignKey implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/relationalModel.ForeignKey");
   
   /**

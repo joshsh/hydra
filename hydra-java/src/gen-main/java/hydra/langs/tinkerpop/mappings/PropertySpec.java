@@ -1,9 +1,11 @@
 package hydra.langs.tinkerpop.mappings;
 
+import java.io.Serializable;
+
 /**
  * A mapping specification producing properties of a specified key, and values of the appropriate type.
  */
-public class PropertySpec {
+public class PropertySpec implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/tinkerpop/mappings.PropertySpec");
   
   /**

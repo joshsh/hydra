@@ -1,9 +1,11 @@
 package hydra.langs.owl.syntax;
 
+import java.io.Serializable;
+
 /**
  * See https://www.w3.org/TR/owl2-syntax/#Axioms
  */
-public abstract class Axiom {
+public abstract class Axiom implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/owl/syntax.Axiom");
   
   private Axiom () {
@@ -68,7 +70,7 @@ public abstract class Axiom {
     }
   }
   
-  public static final class AnnotationAxiom extends hydra.langs.owl.syntax.Axiom {
+  public static final class AnnotationAxiom extends hydra.langs.owl.syntax.Axiom implements Serializable {
     public final hydra.langs.owl.syntax.AnnotationAxiom value;
     
     public AnnotationAxiom (hydra.langs.owl.syntax.AnnotationAxiom value) {
@@ -95,7 +97,7 @@ public abstract class Axiom {
     }
   }
   
-  public static final class Assertion extends hydra.langs.owl.syntax.Axiom {
+  public static final class Assertion extends hydra.langs.owl.syntax.Axiom implements Serializable {
     public final hydra.langs.owl.syntax.Assertion value;
     
     public Assertion (hydra.langs.owl.syntax.Assertion value) {
@@ -122,7 +124,7 @@ public abstract class Axiom {
     }
   }
   
-  public static final class ClassAxiom extends hydra.langs.owl.syntax.Axiom {
+  public static final class ClassAxiom extends hydra.langs.owl.syntax.Axiom implements Serializable {
     public final hydra.langs.owl.syntax.ClassAxiom value;
     
     public ClassAxiom (hydra.langs.owl.syntax.ClassAxiom value) {
@@ -149,7 +151,7 @@ public abstract class Axiom {
     }
   }
   
-  public static final class DataPropertyAxiom extends hydra.langs.owl.syntax.Axiom {
+  public static final class DataPropertyAxiom extends hydra.langs.owl.syntax.Axiom implements Serializable {
     public final hydra.langs.owl.syntax.DataPropertyAxiom value;
     
     public DataPropertyAxiom (hydra.langs.owl.syntax.DataPropertyAxiom value) {
@@ -176,7 +178,7 @@ public abstract class Axiom {
     }
   }
   
-  public static final class DatatypeDefinition extends hydra.langs.owl.syntax.Axiom {
+  public static final class DatatypeDefinition extends hydra.langs.owl.syntax.Axiom implements Serializable {
     public final hydra.langs.owl.syntax.DatatypeDefinition value;
     
     public DatatypeDefinition (hydra.langs.owl.syntax.DatatypeDefinition value) {
@@ -203,7 +205,7 @@ public abstract class Axiom {
     }
   }
   
-  public static final class Declaration extends hydra.langs.owl.syntax.Axiom {
+  public static final class Declaration extends hydra.langs.owl.syntax.Axiom implements Serializable {
     public final hydra.langs.owl.syntax.Declaration value;
     
     public Declaration (hydra.langs.owl.syntax.Declaration value) {
@@ -230,7 +232,7 @@ public abstract class Axiom {
     }
   }
   
-  public static final class HasKey extends hydra.langs.owl.syntax.Axiom {
+  public static final class HasKey extends hydra.langs.owl.syntax.Axiom implements Serializable {
     public final hydra.langs.owl.syntax.HasKey value;
     
     public HasKey (hydra.langs.owl.syntax.HasKey value) {
@@ -257,7 +259,7 @@ public abstract class Axiom {
     }
   }
   
-  public static final class ObjectPropertyAxiom extends hydra.langs.owl.syntax.Axiom {
+  public static final class ObjectPropertyAxiom extends hydra.langs.owl.syntax.Axiom implements Serializable {
     public final hydra.langs.owl.syntax.ObjectPropertyAxiom value;
     
     public ObjectPropertyAxiom (hydra.langs.owl.syntax.ObjectPropertyAxiom value) {

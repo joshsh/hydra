@@ -1,9 +1,11 @@
 package hydra.langs.parquet.format;
 
+import java.io.Serializable;
+
 /**
  * Encodings supported by Parquet.  Not all encodings are valid for all types.  These enums are also used to specify the encoding of definition and repetition levels. See the accompanying doc for the details of the more complicated encodings.
  */
-public abstract class Encoding {
+public abstract class Encoding implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/parquet/format.Encoding");
   
   private Encoding () {
@@ -78,7 +80,7 @@ public abstract class Encoding {
    * BYTE_ARRAY - 4 byte length stored as little endian, followed by bytes.
    * FIXED_LEN_BYTE_ARRAY - Just the bytes.
    */
-  public static final class Plain extends hydra.langs.parquet.format.Encoding {
+  public static final class Plain extends hydra.langs.parquet.format.Encoding implements Serializable {
     public Plain () {
     
     }
@@ -106,7 +108,7 @@ public abstract class Encoding {
   /**
    * Group packed run length encoding. Usable for definition/repetition levels encoding and Booleans (on one bit: 0 is false; 1 is true.)
    */
-  public static final class Rle extends hydra.langs.parquet.format.Encoding {
+  public static final class Rle extends hydra.langs.parquet.format.Encoding implements Serializable {
     public Rle () {
     
     }
@@ -134,7 +136,7 @@ public abstract class Encoding {
   /**
    * Bit packed encoding.  This can only be used if the data has a known max width.  Usable for definition/repetition levels encoding.
    */
-  public static final class BitPacked extends hydra.langs.parquet.format.Encoding {
+  public static final class BitPacked extends hydra.langs.parquet.format.Encoding implements Serializable {
     public BitPacked () {
     
     }
@@ -162,7 +164,7 @@ public abstract class Encoding {
   /**
    * Delta encoding for integers. This can be used for int columns and works best on sorted data
    */
-  public static final class DeltaBinaryPacked extends hydra.langs.parquet.format.Encoding {
+  public static final class DeltaBinaryPacked extends hydra.langs.parquet.format.Encoding implements Serializable {
     public DeltaBinaryPacked () {
     
     }
@@ -190,7 +192,7 @@ public abstract class Encoding {
   /**
    * Encoding for byte arrays to separate the length values and the data. The lengths are encoded using DELTA_BINARY_PACKED
    */
-  public static final class DeltaLengthByteArray extends hydra.langs.parquet.format.Encoding {
+  public static final class DeltaLengthByteArray extends hydra.langs.parquet.format.Encoding implements Serializable {
     public DeltaLengthByteArray () {
     
     }
@@ -218,7 +220,7 @@ public abstract class Encoding {
   /**
    * Incremental-encoded byte array. Prefix lengths are encoded using DELTA_BINARY_PACKED. Suffixes are stored as delta length byte arrays.
    */
-  public static final class DeltaByteArray extends hydra.langs.parquet.format.Encoding {
+  public static final class DeltaByteArray extends hydra.langs.parquet.format.Encoding implements Serializable {
     public DeltaByteArray () {
     
     }
@@ -246,7 +248,7 @@ public abstract class Encoding {
   /**
    * Dictionary encoding: the ids are encoded using the RLE encoding
    */
-  public static final class RleDictionary extends hydra.langs.parquet.format.Encoding {
+  public static final class RleDictionary extends hydra.langs.parquet.format.Encoding implements Serializable {
     public RleDictionary () {
     
     }
@@ -274,7 +276,7 @@ public abstract class Encoding {
   /**
    * Encoding for floating-point data. K byte-streams are created where K is the size in bytes of the data type. The individual bytes of an FP value are scattered to the corresponding stream and the streams are concatenated. This itself does not reduce the size of the data but can lead to better compression afterwards.
    */
-  public static final class ByteStreamSplit extends hydra.langs.parquet.format.Encoding {
+  public static final class ByteStreamSplit extends hydra.langs.parquet.format.Encoding implements Serializable {
     public ByteStreamSplit () {
     
     }

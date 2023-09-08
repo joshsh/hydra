@@ -1,6 +1,8 @@
 package hydra.langs.xml.schema;
 
-public class QName {
+import java.io.Serializable;
+
+public class QName implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/xml/schema.QName");
   
   public final String value;

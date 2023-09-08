@@ -1,9 +1,11 @@
 package hydra.langs.haskell.ast;
 
+import java.io.Serializable;
+
 /**
  * A 'let' expression
  */
-public class Expression_Let {
+public class Expression_Let implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/haskell/ast.Expression.Let");
   
   public final java.util.List<hydra.langs.haskell.ast.LocalBinding> bindings;

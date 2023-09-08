@@ -1,6 +1,8 @@
 package hydra.langs.owl.syntax;
 
-public class ObjectComplementOf {
+import java.io.Serializable;
+
+public class ObjectComplementOf implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/langs/owl/syntax.ObjectComplementOf");
   
   public final hydra.langs.owl.syntax.ClassExpression value;
