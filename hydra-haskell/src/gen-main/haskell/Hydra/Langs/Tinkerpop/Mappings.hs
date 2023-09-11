@@ -6,9 +6,9 @@ import qualified Hydra.Compute as Compute
 import qualified Hydra.Core as Core
 import qualified Hydra.Langs.Tinkerpop.PropertyGraph as PropertyGraph
 import Data.Int
-import Data.List
-import Data.Map
-import Data.Set
+import Data.List as L
+import Data.Map as M
+import Data.Set as S
 
 -- | Configurable annotation keys for property graph mapping specifications
 data AnnotationSchema = 

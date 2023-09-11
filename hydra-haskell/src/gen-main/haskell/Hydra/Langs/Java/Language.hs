@@ -8,9 +8,9 @@ import qualified Hydra.Lib.Lists as Lists
 import qualified Hydra.Lib.Sets as Sets
 import qualified Hydra.Mantle as Mantle
 import Data.Int
-import Data.List
-import Data.Map
-import Data.Set
+import Data.List as L
+import Data.Map as M
+import Data.Set as S
 
 -- | The maximum supported length of a tuple in Hydra-Java. Note: if this constant is changed, also change Tuples.java correspondingly
 javaMaxTupleLength :: Int

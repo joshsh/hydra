@@ -10,9 +10,9 @@ module Hydra.Langs.Tinkerpop.Features where
 
 import qualified Hydra.Core as Core
 import Data.Int
-import Data.List
-import Data.Map
-import Data.Set
+import Data.List as L
+import Data.Map as M
+import Data.Set as S
 
 -- | Base interface for features that relate to supporting different data types.
 data DataTypeFeatures = 

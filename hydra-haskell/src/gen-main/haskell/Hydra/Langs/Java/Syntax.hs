@@ -6,9 +6,9 @@ module Hydra.Langs.Java.Syntax where
 
 import qualified Hydra.Core as Core
 import Data.Int
-import Data.List
-import Data.Map
-import Data.Set
+import Data.List as L
+import Data.Map as M
+import Data.Set as S
 
 newtype Identifier = 
   Identifier {

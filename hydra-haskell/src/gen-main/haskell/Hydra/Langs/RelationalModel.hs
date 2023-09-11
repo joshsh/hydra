@@ -4,9 +4,9 @@ module Hydra.Langs.RelationalModel where
 
 import qualified Hydra.Core as Core
 import Data.Int
-import Data.List
-import Data.Map
-import Data.Set
+import Data.List as L
+import Data.Map as M
+import Data.Set as S
 
 -- | A name for a domain which serves to identify the role played by that domain in the given relation; a 'role name' in Codd
 newtype ColumnName = 

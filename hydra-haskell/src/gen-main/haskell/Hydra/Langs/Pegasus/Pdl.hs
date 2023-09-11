@@ -4,11 +4,11 @@
 module Hydra.Langs.Pegasus.Pdl where
 
 import qualified Hydra.Core as Core
-import qualified Hydra.Langs.Json.Model as Model
+import qualified Hydra.Json as Json
 import Data.Int
-import Data.List
-import Data.Map
-import Data.Set
+import Data.List as L
+import Data.Map as M
+import Data.Set as S
 
 -- | Annotations which can be applied to record fields, aliased union members, enum symbols, or named schemas
 data Annotations = 
@@ -144,7 +144,7 @@ _PropertyKey = (Core.Name "hydra/langs/pegasus/pdl.PropertyKey")
 data Property = 
   Property {
     propertyKey :: PropertyKey,
-    propertyValue :: (Maybe Model.Value)}
+    propertyValue :: (Maybe Json.Value)}
   deriving (Eq, Ord, Read, Show)
 
 _Property = (Core.Name "hydra/langs/pegasus/pdl.Property")
@@ -170,7 +170,7 @@ data RecordField =
     recordFieldName :: FieldName,
     recordFieldValue :: Schema,
     recordFieldOptional :: Bool,
-    recordFieldDefault :: (Maybe Model.Value),
+    recordFieldDefault :: (Maybe Json.Value),
     recordFieldAnnotations :: Annotations}
   deriving (Eq, Ord, Read, Show)
 

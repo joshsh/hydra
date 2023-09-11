@@ -4,11 +4,11 @@
 module Hydra.Langs.Avro.Schema where
 
 import qualified Hydra.Core as Core
-import qualified Hydra.Langs.Json.Model as Model
+import qualified Hydra.Json as Json
 import Data.Int
-import Data.List
-import Data.Map
-import Data.Set
+import Data.List as L
+import Data.Map as M
+import Data.Set as S
 
 data Array = 
   Array {
@@ -42,13 +42,13 @@ data Field =
     -- | a schema
     fieldType :: Schema,
     -- | default value for this field, only used when reading instances that lack the field for schema evolution purposes
-    fieldDefault :: (Maybe Model.Value),
+    fieldDefault :: (Maybe Json.Value),
     -- | specifies how this field impacts sort ordering of this record
     fieldOrder :: (Maybe Order),
     -- | a JSON array of strings, providing alternate names for this field
     fieldAliases :: (Maybe [String]),
     -- | Any additional key/value pairs attached to the field
-    fieldAnnotations :: (Map String Model.Value)}
+    fieldAnnotations :: (Map String Json.Value)}
   deriving (Eq, Ord, Read, Show)
 
 _Field = (Core.Name "hydra/langs/avro/schema.Field")
@@ -98,7 +98,7 @@ data Named =
     namedDoc :: (Maybe String),
     namedType :: NamedType,
     -- | Any additional key/value pairs attached to the type
-    namedAnnotations :: (Map String Model.Value)}
+    namedAnnotations :: (Map String Json.Value)}
   deriving (Eq, Ord, Read, Show)
 
 _Named = (Core.Name "hydra/langs/avro/schema.Named")
