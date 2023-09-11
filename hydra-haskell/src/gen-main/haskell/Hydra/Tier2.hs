@@ -8,9 +8,9 @@ import qualified Hydra.Graph as Graph
 import qualified Hydra.Lib.Flows as Flows
 import qualified Hydra.Lib.Strings as Strings
 import Data.Int
-import Data.List
-import Data.Map
-import Data.Set
+import Data.List as L
+import Data.Map as M
+import Data.Set as S
 
 -- | Get the state of the current flow
 getState :: (Compute.Flow s s)

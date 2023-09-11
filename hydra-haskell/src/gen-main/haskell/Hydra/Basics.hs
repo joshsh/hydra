@@ -13,9 +13,9 @@ import qualified Hydra.Mantle as Mantle
 import qualified Hydra.Module as Module
 import qualified Hydra.Strip as Strip
 import Data.Int
-import Data.List
-import Data.Map
-import Data.Set
+import Data.List as L
+import Data.Map as M
+import Data.Set as S
 
 -- | Find the elimination variant (constructor) for a given elimination term
 eliminationVariant :: (Core.Elimination a -> Mantle.EliminationVariant)

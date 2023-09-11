@@ -11,9 +11,9 @@ import qualified Hydra.Lib.Math as Math
 import qualified Hydra.Lib.Strings as Strings
 import qualified Hydra.Module as Module
 import Data.Int
-import Data.List
-import Data.Map
-import Data.Set
+import Data.List as L
+import Data.Map as M
+import Data.Set as S
 
 functionArity :: (Core.Function a -> Int)
 functionArity x = case x of
@@ -59,7 +59,7 @@ uncurryType t = ((\x -> case x of
   _ -> [
     t]) t)
 
-emptyKv :: Compute.Kv
+emptyKv :: (Compute.Kv)
 emptyKv = Compute.Kv {
   Compute.kvAnnotations = Maps.empty}
 
