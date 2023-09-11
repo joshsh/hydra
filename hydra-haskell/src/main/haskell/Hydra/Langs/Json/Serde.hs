@@ -5,7 +5,7 @@ import Hydra.Compute
 import Hydra.Graph
 import Hydra.Langs.Json.Coder
 import Hydra.Tools.Bytestrings
-import qualified Hydra.Langs.Json.Model as Json
+import qualified Hydra.Json as Json
 
 import qualified Data.ByteString.Lazy as BS
 import qualified Control.Monad as CM

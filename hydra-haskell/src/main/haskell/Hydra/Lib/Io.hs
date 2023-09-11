@@ -15,7 +15,7 @@ import Hydra.CoreEncoding
 import Hydra.Rewriting
 import Hydra.Kv
 import Hydra.Tier1
-import qualified Hydra.Langs.Json.Model as Json
+import qualified Hydra.Json as Json
 import qualified Hydra.Dsl.Terms as Terms
 import qualified Hydra.Dsl.Types as Types
 

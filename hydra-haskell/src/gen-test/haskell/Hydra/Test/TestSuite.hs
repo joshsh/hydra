@@ -6,9 +6,9 @@ import qualified Hydra.Compute as Compute
 import qualified Hydra.Core as Core
 import qualified Hydra.Testing as Testing
 import Data.Int
-import Data.List
-import Data.Map
-import Data.Set
+import Data.List as L
+import Data.Map as M
+import Data.Set as S
 
 allTests :: (Testing.TestGroup Compute.Kv)
 allTests = Testing.TestGroup {

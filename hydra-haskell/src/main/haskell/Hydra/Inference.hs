@@ -171,7 +171,9 @@ sortGraphElements g = do
 substituteAndNormalizeAnnotations :: Ord a => Subst a -> Term (InfAnn a) -> Term (InfAnn a)
 substituteAndNormalizeAnnotations subst = rewriteTermMeta rewrite
   where
-    rewrite (x, typ, c) = (x, normalizeType $ substituteTypeVariables subst typ, c)
+    -- Note: normalizing each annotation separately results in different variable names for corresponding types
+    rewrite (x, typ, c) = (x, normalizeTypeVariables $ normalizeType $ substituteTypeVariables subst typ, c)
+--    rewrite (x, typ, c) = (x, normalizeType $ substituteTypeVariables subst typ, c)
 
 withInferenceContext flow = do
     g <- getState

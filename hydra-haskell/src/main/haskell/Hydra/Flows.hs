@@ -1,4 +1,4 @@
--- | Functions and type class implementations for working with Hydra's built-in Flow monad
+-- | Non-kernel functions for working with Hydra's built-in Flow monad in Haskell
 
 module Hydra.Flows where
 

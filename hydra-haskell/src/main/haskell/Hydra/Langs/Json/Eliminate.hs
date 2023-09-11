@@ -1,7 +1,7 @@
 module Hydra.Langs.Json.Eliminate where
 
 import Hydra.Kernel
-import qualified Hydra.Langs.Json.Model as Json
+import qualified Hydra.Json as Json
 
 import qualified Data.Map as M
 

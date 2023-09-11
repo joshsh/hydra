@@ -12,7 +12,7 @@ import Hydra.TermAdapters
 import Hydra.Langs.Json.Language
 import Hydra.Lib.Literals
 import Hydra.AdapterUtils
-import qualified Hydra.Langs.Json.Model as Json
+import qualified Hydra.Json as Json
 import qualified Hydra.Dsl.Terms as Terms
 import qualified Hydra.Dsl.Types as Types
 

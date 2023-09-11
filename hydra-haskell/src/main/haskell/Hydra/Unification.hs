@@ -77,10 +77,10 @@ unify ltyp rtyp = do
       (t1, TypeVariable v) -> bind v t1
       (TypeLambda lt, t2) -> unifyLambda lt t2
       (t1, TypeLambda lt) -> unifyLambda lt t1
+--      -- E.g. (record "RowType" ...) is allowed to unify with (wrap "RowType" @ "a")
+      (TypeApplication (ApplicationType lhs rhs), t2) -> unify lhs t2
+      (t1, TypeApplication (ApplicationType lhs rhs)) -> unify t1 lhs
 
---      -- TODO; temporary "slop", e.g. (record "RowType" ...) is allowed to unify with (wrap "RowType" @ "a")
---      (TypeApplication (ApplicationType lhs rhs), t2) -> unify lhs t2
---      (t1, TypeApplication (ApplicationType lhs rhs)) -> unify t1 lhs
 --      -- TODO; temporary "slop", e.g. (record "RowType" ...) is allowed to unify with (wrap "RowType")
 --      (TypeWrap _, _) -> return M.empty -- TODO
 --      (_, TypeWrap name) -> return M.empty -- TODO

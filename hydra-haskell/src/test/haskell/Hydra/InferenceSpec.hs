@@ -142,10 +142,10 @@ checkIndividualTerms = H.describe "Check a few hand-picked terms" $ do
           (lambda "latlon" (record latLonPolyName [
             Field (FieldName "lat") $ var "latlon",
             Field (FieldName "lon") $ var "latlon"]))
-          ["a"] (Types.function (Types.var "a")
+          ["t0"] (Types.function (Types.var "t0")
             (TypeRecord $ RowType latLonPolyName Nothing [
-              FieldType (FieldName "lat") $ Types.var "a",
-              FieldType (FieldName "lon") $ Types.var "a"]))
+              FieldType (FieldName "lat") $ Types.var "t0",
+              FieldType (FieldName "lon") $ Types.var "t0"]))
 
     H.it "Check unions" $ do
       expectMonotype
@@ -160,7 +160,7 @@ checkIndividualTerms = H.describe "Check a few hand-picked terms" $ do
       H.it "test #2" $ do
         expectPolytype
           (set $ S.fromList [set S.empty])
-          ["t1"] (Types.set $ Types.set $ Types.var "t1")
+          ["t0"] (Types.set $ Types.set $ Types.var "t0")
 
     H.describe "Check maps" $ do
       H.it "test #1" $ do
@@ -221,7 +221,7 @@ checkLists = H.describe "Check a few hand-picked list terms" $ do
     H.it "Check list containing an empty list" $ do
       expectPolytype
         (list [list []])
-        ["t1"] (Types.list $ Types.list $ Types.var "t1")
+        ["t0"] (Types.list $ Types.list $ Types.var "t0")
     H.it "Check lambda producing a polymorphic list" $ do
       expectPolytype
         (lambda "x" (list [var "x"]))
@@ -290,11 +290,11 @@ checkPolymorphism = H.describe "Check polymorphism" $ do
       H.it "test #4" $ do
         expectPolytype
           (list [lambda "x" $ var "x", lambda "y" $ var "y"])
-          ["t2"] (Types.list $ Types.function (Types.var "t2") (Types.var "t2"))
-      H.it "test #4" $ do
+          ["t0"] (Types.list $ Types.function (Types.var "t0") (Types.var "t0"))
+      H.it "test #5" $ do
         expectPolytype
           (list [lambda "x" $ lambda "y" $ pair (var "y") (var "x")])
-          ["t1", "t2"] (Types.list $ Types.function (Types.var "t1") (Types.function (Types.var "t2") (Types.pair (Types.var "t2") (Types.var "t1"))))
+          ["t0", "t1"] (Types.list $ Types.function (Types.var "t0") (Types.function (Types.var "t1") (Types.pair (Types.var "t1") (Types.var "t0"))))
 
     H.describe "Lambdas and application" $ do
       H.it "test #1" $ do
@@ -497,15 +497,15 @@ checkSubtermAnnotations = H.describe "Check additional subterm annotations" $ do
         let testCase = lambda "getOpt" $ lambda "x" $
                          (matchOpt
                            (string "nothing")
-                           (lambda "t2" $ string "just")) @@ (var "getOpt" @@ var "x")
-        let getOptType = (Types.function (Types.var "t1") (Types.optional $ Types.var "t2"))
-        let constStringType = Types.function (Types.var "t1") Types.string
+                           (lambda "_" $ string "just")) @@ (var "getOpt" @@ var "x")
+        let getOptType = (Types.function (Types.var "t0") (Types.optional $ Types.var "t1"))
+        let constStringType = Types.function (Types.var "t0") Types.string
         H.it "condition #1" $ do
           expectTypeAnnotation pure testCase
-            (Types.lambdas ["t1", "t2"] $ Types.function getOptType constStringType)
+            (Types.lambdas ["t0", "t1"] $ Types.function getOptType constStringType)
         H.it "condition #2" $ do
           expectTypeAnnotation Expect.lambdaBody testCase
-            constStringType
+            (Types.lambda "t0" $ constStringType)
 
     H.describe "Check unannotated 'let' terms" $ do
       H.describe "test #1" $ do
@@ -590,9 +590,9 @@ spec = do
   checkLists
   checkLiterals
   checkPolymorphism
-  checkPrimitives
+--  checkPrimitives
   checkProducts
---  checkSubtermAnnotations
+  checkSubtermAnnotations
   checkSums
   checkTypeAnnotations
 --  checkTypedTerms

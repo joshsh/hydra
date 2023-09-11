@@ -32,9 +32,6 @@ import Hydra.Sources.Tier4.Langs.Yaml.Model
 import Hydra.Sources.Tier4.Test.TestSuite
 
 
-allModules :: [Module Kv]
-allModules = mainModules ++ testModules
-
 mainModules :: [Module Kv]
 mainModules = kernelModules ++ tier4LangModules
 
@@ -70,4 +67,4 @@ tier4LangModules = [
   yamlModelModule]
 
 tier4Modules :: [Module Kv]
-tier4Modules = tier4LangModules ++ testModules
+tier4Modules = tier4LangModules

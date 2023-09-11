@@ -13,7 +13,7 @@ import qualified Hydra.Dsl.Expect as Expect
 import qualified Hydra.Dsl.Types as Types
 import qualified Hydra.Dsl.Terms as Terms
 import qualified Hydra.Langs.Avro.Schema as Avro
-import qualified Hydra.Langs.Json.Model as Json
+import qualified Hydra.Json as Json
 
 import qualified Text.Read as TR
 import qualified Control.Monad as CM
