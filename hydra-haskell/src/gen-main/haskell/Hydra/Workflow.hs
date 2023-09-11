@@ -7,9 +7,9 @@ import qualified Hydra.Core as Core
 import qualified Hydra.Graph as Graph
 import qualified Hydra.Module as Module
 import Data.Int
-import Data.List
-import Data.Map
-import Data.Set
+import Data.List as L
+import Data.Map as M
+import Data.Set as S
 
 -- | The specification of a Hydra schema, provided as a set of modules and a distinguished type
 data HydraSchemaSpec = 

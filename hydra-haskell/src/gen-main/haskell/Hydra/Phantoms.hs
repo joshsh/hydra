@@ -5,9 +5,9 @@ module Hydra.Phantoms where
 import qualified Hydra.Compute as Compute
 import qualified Hydra.Core as Core
 import Data.Int
-import Data.List
-import Data.Map
-import Data.Set
+import Data.List as L
+import Data.Map as M
+import Data.Set as S
 
 -- | An association of a field name (as in a case statement) with a phantom type
 newtype Case a = 

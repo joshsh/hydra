@@ -4,9 +4,9 @@ module Hydra.Compute where
 
 import qualified Hydra.Core as Core
 import Data.Int
-import Data.List
-import Data.Map
-import Data.Set
+import Data.List as L
+import Data.Map as M
+import Data.Set as S
 
 -- | A two-level bidirectional encoder which adapts types to types and terms to terms
 data Adapter s1 s2 t1 t2 v1 v2 = 
