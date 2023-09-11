@@ -6,9 +6,9 @@ import qualified Hydra.Core as Core
 import qualified Hydra.Lib.Lists as Lists
 import qualified Hydra.Lib.Optionals as Optionals
 import Data.Int
-import Data.List
-import Data.Map
-import Data.Set
+import Data.List as L
+import Data.Map as M
+import Data.Set as S
 
 coreEncodeAnnotatedTerm :: (Core.Annotated (Core.Term a) a -> Core.Term a)
 coreEncodeAnnotatedTerm a = (Core.TermAnnotated (Core.Annotated {

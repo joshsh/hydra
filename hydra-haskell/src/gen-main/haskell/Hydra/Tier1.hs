@@ -171,7 +171,7 @@ subtypes x = case x of
   Core.TypeWrap v -> [
     Core.nominalObject v]
 
-emptyTrace :: Compute.Trace
+emptyTrace :: (Compute.Trace)
 emptyTrace = Compute.Trace {
   Compute.traceStack = [],
   Compute.traceMessages = [],
