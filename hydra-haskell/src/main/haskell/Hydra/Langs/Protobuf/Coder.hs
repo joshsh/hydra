@@ -45,7 +45,7 @@ constructModule mod@(Module ns els _ desc) _ pairs = do
     definitions <- CM.mapM toDef types
     let pfile = P3.ProtoFile {
       P3.protoFilePackage = namespaceToPackageName ns,
-      P3.protoFileImports = schemaImports ++ (defaultImports $ snd <$> types),
+      P3.protoFileImports = schemaImports ++ (wrapperImport $ snd <$> types) ++ (emptyImport $ snd <$> types),
       P3.protoFileTypes = definitions,
       P3.protoFileOptions = []}
     return $ M.singleton path pfile
@@ -58,20 +58,35 @@ constructModule mod@(Module ns els _ desc) _ pairs = do
           return (el, t)
         else fail $ "mapping of non-type elements to PDL is not yet supported: " ++ unName (elementName el)
     toDef (el, typ) = adaptAndEncodeType protobufLanguage (encodeDefinition ns (elementName el)) $ flattenType typ
-    defaultImports types = if L.foldl (||) False (hasWrappers <$> types)
+    checkFields checkType checkFieldType types = L.foldl (||) False (hasMatches <$> types)
+      where
+        hasMatches = foldOverType TraversalOrderPre (\b t -> b || hasMatch t) False
+        hasMatch typ = case checkType typ of
+          Just b -> b
+          Nothing -> case typ of
+            TypeRecord rt -> checkRowType rt
+            TypeUnion rt -> checkRowType rt
+            _ -> False
+        checkRowType (RowType _ _ fields) = L.foldl (||) False (checkField <$> fields)
+        checkField (FieldType _ typ) = checkFieldType $ stripType typ
+    wrapperImport types = if checkFields (const Nothing) isOptionalScalarField types
         then [P3.FileReference "google/protobuf/wrappers.proto"]
         else []
       where
-        hasWrappers = foldOverType TraversalOrderPre (\b t -> b || isWrapperType t) False
-        isWrapperType typ = case typ of
-          TypeRecord rt -> checkRowType rt
-          TypeUnion rt -> checkRowType rt
-          _ -> False
-        checkRowType (RowType _ _ fields) = L.foldl (||) False (checkFieldType <$> fields)
-        checkFieldType (FieldType _ typ) = case stripType typ of
+        isOptionalScalarField typ = case typ of
           TypeOptional ot -> case stripType ot of
             TypeLiteral _ -> True
             _ -> False
+          _ -> False
+    emptyImport types = if checkFields checkType isUnitField types
+        then [P3.FileReference "google/protobuf/empty.proto"]
+        else []
+      where
+        checkType typ = if isEnumDefinition typ
+          then Just False
+          else Nothing
+        isUnitField typ = case typ of
+          TypeRecord (RowType name _ _) -> name == _UnitType
           _ -> False
 
 encodeDefinition :: (Eq a, Ord a, Show a) => Namespace -> Name -> Type a -> Flow (Graph a) P3.Definition
@@ -145,7 +160,9 @@ encodeFieldType localNs (FieldType fname ftype) = withTrace ("encode field " ++ 
         P3.FieldTypeSimple <$> encodeSimpleType typ
     encodeSimpleType typ = case simplifyType typ of
       TypeLiteral lt -> P3.SimpleTypeScalar <$> encodeScalarType lt
-      TypeRecord (RowType name _ _) -> forNominal name
+      TypeRecord (RowType name _ _) -> if name == _UnitType
+        then pure $ P3.SimpleTypeReference $ P3.TypeName $ "google.protobuf.Empty"
+        else forNominal name
       TypeUnion (RowType name _ _) -> forNominal name
       TypeVariable name -> forNominal name
       t -> unexpected "simple type" $ show $ removeTypeAnnotations t

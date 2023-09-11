@@ -26,14 +26,11 @@ import Data.String (String)
 data JavaSymbolClass = JavaSymbolClassConstant | JavaSymbolClassNullaryFunction | JavaSymbolClassUnaryFunction | JavaSymbolLocalVariable
 
 moduleToJava :: (Ord a, Read a, Show a) => Module a -> Flow (Graph a) (M.Map FilePath String)
-moduleToJava mod = do
-    withTrace "encode in Java" $ do
-      units <- moduleToJavaCompilationUnit mod
-      return $ M.fromList $ forPair <$> M.toList units
+moduleToJava mod = withTrace "encode module in Java" $ do
+    units <- moduleToJavaCompilationUnit mod
+    return $ M.fromList $ forPair <$> M.toList units
   where
-    forPair (name, unit) = (
-      elementNameToFilePath name,
-      printExpr $ parenthesize $ writeCompilationUnit unit)
+    forPair (name, unit) = (elementNameToFilePath name, printExpr $ parenthesize $ writeCompilationUnit unit)
 
 adaptTypeToJavaAndEncode :: (Ord a, Read a, Show a) => Aliases -> Type a -> Flow (Graph a) Java.Type
 adaptTypeToJavaAndEncode aliases = adaptAndEncodeType javaLanguage (encodeType aliases)
