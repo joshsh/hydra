@@ -11,13 +11,15 @@ sourceCompatibility = '1.11'
 targetCompatibility = '1.11'
 
 dependencies {
-  implementation group: 'org.apache.commons', name: 'commons-text', version: '1.10.0'
-  implementation 'org.eclipse.rdf4j:rdf4j-rio-ntriples:4.2.3'
-//  implementation 'com.linkedin.pegasus:generator:29.22.13'
+    implementation group: 'org.apache.commons', name: 'commons-text', version: '1.10.0'
+    //implementation 'com.linkedin.pegasus:generator:29.22.13'
 
-  testImplementation(platform('org.junit:junit-bom:5.9.2'))
-  testImplementation('org.junit.jupiter:junit-jupiter')
-  testImplementation('org.junit.jupiter:junit-jupiter-params:5.9.2')
+    // We use RDF4j 3.x rather than 4.x or 5.x for compatibility with Java 8
+    implementation 'org.eclipse.rdf4j:rdf4j-rio-ntriples:3.7.7'
+
+    testImplementation(platform('org.junit:junit-bom:5.9.2'))
+    testImplementation('org.junit.jupiter:junit-jupiter')
+    testImplementation('org.junit.jupiter:junit-jupiter-params:5.9.2')
 }
 
 sourceSets {
