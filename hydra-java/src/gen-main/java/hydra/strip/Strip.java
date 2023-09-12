@@ -13,7 +13,7 @@ public interface Strip {
   }
   
   static <A> hydra.core.Term<A> stripTerm(hydra.core.Term<A> x) {
-    return (hydra.strip.Strip.skipAnnotations((java.util.function.Function<hydra.core.Term<A>, java.util.Optional<hydra.core.Annotated<hydra.core.Term<A>, A>>>) (v1 -> ((v1)).accept(new hydra.core.Term.PartialVisitor<>() {
+    return (hydra.strip.Strip.skipAnnotations((java.util.function.Function<hydra.core.Term<A>, java.util.Optional<hydra.core.Annotated<hydra.core.Term<A>, A>>>) (v1 -> ((v1)).accept(new hydra.core.Term.PartialVisitor<A, java.util.Optional<hydra.core.Annotated<hydra.core.Term<A>, A>>>() {
       @Override
       public java.util.Optional<hydra.core.Annotated<hydra.core.Term<A>, A>> otherwise(hydra.core.Term<A> instance) {
         return java.util.Optional.empty();
@@ -27,7 +27,7 @@ public interface Strip {
   }
   
   static <A> hydra.core.Type<A> stripType(hydra.core.Type<A> x) {
-    return (hydra.strip.Strip.skipAnnotations((java.util.function.Function<hydra.core.Type<A>, java.util.Optional<hydra.core.Annotated<hydra.core.Type<A>, A>>>) (v1 -> ((v1)).accept(new hydra.core.Type.PartialVisitor<>() {
+    return (hydra.strip.Strip.skipAnnotations((java.util.function.Function<hydra.core.Type<A>, java.util.Optional<hydra.core.Annotated<hydra.core.Type<A>, A>>>) (v1 -> ((v1)).accept(new hydra.core.Type.PartialVisitor<A, java.util.Optional<hydra.core.Annotated<hydra.core.Type<A>, A>>>() {
       @Override
       public java.util.Optional<hydra.core.Annotated<hydra.core.Type<A>, A>> otherwise(hydra.core.Type<A> instance) {
         return java.util.Optional.empty();
@@ -41,7 +41,7 @@ public interface Strip {
   }
   
   static <A> hydra.core.Type<A> stripTypeParameters(hydra.core.Type<A> t) {
-    return (hydra.strip.Strip.stripType((t))).accept(new hydra.core.Type.PartialVisitor<>() {
+    return (hydra.strip.Strip.stripType((t))).accept(new hydra.core.Type.PartialVisitor<A, hydra.core.Type<A>>() {
       @Override
       public hydra.core.Type<A> otherwise(hydra.core.Type<A> instance) {
         return (t);

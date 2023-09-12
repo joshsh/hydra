@@ -79,7 +79,7 @@ public class RewritingTest {
     private static <A> Flow<Integer, Term<A>> capitalizeFieldNames(
         Function<Term<A>, Flow<Integer, Term<A>>> recurse,
         Term<A> original) {
-        return original.accept(new Term.PartialVisitor<>() {
+        return original.accept(new Term.PartialVisitor<A, Flow<Integer, Term<A>>>() {
             @Override
             public Flow<Integer, Term<A>> otherwise(Term instance) {
                 Term<A> inst = instance;
@@ -105,7 +105,7 @@ public class RewritingTest {
     private static <S> Flow<S, Term<String>> failOnSpecialAnnotation(
         Function<Term<String>, Flow<S, Term<String>>> recurse,
         Term<String> original) {
-        return original.accept(new Term.PartialVisitor<>() {
+        return original.accept(new Term.PartialVisitor<String, Flow<S, Term<String>>>() {
             @Override
             public Flow<S, Term<String>> otherwise(Term instance) {
                 return recurse.apply(instance);

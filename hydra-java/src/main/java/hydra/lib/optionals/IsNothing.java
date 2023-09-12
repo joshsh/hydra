@@ -35,6 +35,6 @@ public class IsNothing<A> extends PrimitiveFunction<A> {
     }
 
     public static <X> boolean apply(Optional<X> opt) {
-        return opt.isEmpty();
+        return !opt.isPresent();
     }
 }

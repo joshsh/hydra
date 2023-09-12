@@ -1,4 +1,8 @@
-module Hydra.Langs.Java.Coder (moduleToJava) where
+module Hydra.Langs.Java.Coder (
+  JavaFeatures(..),
+  java8Features,
+  moduleToJava,
+) where
 
 import Hydra.Kernel
 import Hydra.Reduction
@@ -24,6 +28,17 @@ import Data.String (String)
 
 
 data JavaSymbolClass = JavaSymbolClassConstant | JavaSymbolClassNullaryFunction | JavaSymbolClassUnaryFunction | JavaSymbolLocalVariable
+
+data JavaFeatures = JavaFeatures {
+  supportsDiamondOperator :: Bool
+}
+
+java8Features = JavaFeatures {
+  supportsDiamondOperator = False
+}
+
+-- For now, the supported features are hard-coded to those of Java 8, rather than being configurable.
+javaFeatures = java8Features
 
 moduleToJava :: (Ord a, Read a, Show a) => Module a -> Flow (Graph a) (M.Map FilePath String)
 moduleToJava mod = withTrace "encode module in Java" $ do
@@ -502,7 +517,8 @@ encodeElimination aliases marg dom cod elm = case elm of
                 Nothing -> visitorName
                 Just _ -> partialVisitorName
           jcod <- adaptTypeToJavaAndEncode aliases cod
-          let targs = Java.TypeArgumentsOrDiamondDiamond
+          rt <- javaTypeToJavaReferenceType jcod
+          let targs = typeArgsOrDiamond $ javaTypeArgumentsForType dom ++ [Java.TypeArgumentReference rt]
           otherwiseBranches <- case def of
             Nothing -> pure []
             Just d -> do
@@ -858,12 +874,11 @@ maybeLet aliases term cons = helper [] term
 
               let pkg = javaPackageName ["java", "util", "concurrent", "atomic"]
               let arid = Java.Identifier "java.util.concurrent.atomic.AtomicReference" -- TODO
-              let targs = Java.TypeArgumentsOrDiamondDiamond
               let aid = Java.AnnotatedIdentifier [] arid
+              rt <- javaTypeToJavaReferenceType jtype
+              let targs = typeArgsOrDiamond [Java.TypeArgumentReference rt]
               let ci = Java.ClassOrInterfaceTypeToInstantiate [aid] (Just targs)
               let body = javaConstructorCall ci [] Nothing
-
-              rt <- javaTypeToJavaReferenceType jtype
               let artype = javaRefType [rt] (Just pkg) "AtomicReference"
               return $ Just $ variableDeclarationStatement aliasesWithRecursive artype id body
             else pure Nothing
@@ -935,6 +950,11 @@ toClassDecl isInner isSer aliases tparams elName t = case stripType t of
 toDataDeclaration :: Aliases -> (a, TypedTerm a) -> Flow (Graph a) a
 toDataDeclaration aliases (el, TypedTerm typ term) = do
   fail "not implemented" -- TODO
+
+typeArgsOrDiamond :: [Java.TypeArgument] -> Java.TypeArgumentsOrDiamond
+typeArgsOrDiamond args = if supportsDiamondOperator javaFeatures
+  then Java.TypeArgumentsOrDiamondDiamond
+  else Java.TypeArgumentsOrDiamondArguments args
 
 typeNameDecl :: (Ord a, Read a, Show a) => Aliases -> Name -> Flow (Graph a) Java.ClassBodyDeclarationWithComments
 typeNameDecl aliases name = do

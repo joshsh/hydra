@@ -12,7 +12,7 @@ import java.util.function.Function;
  */
 public interface Tier1 {
   static Double floatValueToBigfloat(hydra.core.FloatValue v1) {
-    return ((v1)).accept(new hydra.core.FloatValue.Visitor<>() {
+    return ((v1)).accept(new hydra.core.FloatValue.Visitor<Double>() {
       @Override
       public Double visit(hydra.core.FloatValue.Bigfloat instance) {
         return hydra.lib.equality.Identity.apply((instance.value));
@@ -31,7 +31,7 @@ public interface Tier1 {
   }
   
   static java.math.BigInteger integerValueToBigint(hydra.core.IntegerValue v1) {
-    return ((v1)).accept(new hydra.core.IntegerValue.Visitor<>() {
+    return ((v1)).accept(new hydra.core.IntegerValue.Visitor<java.math.BigInteger>() {
       @Override
       public java.math.BigInteger visit(hydra.core.IntegerValue.Bigint instance) {
         return hydra.lib.equality.Identity.apply((instance.value));
@@ -80,7 +80,7 @@ public interface Tier1 {
   }
   
   static <A> Boolean isLambda(hydra.core.Term<A> term) {
-    return (hydra.strip.Strip.stripTerm((term))).accept(new hydra.core.Term.PartialVisitor<>() {
+    return (hydra.strip.Strip.stripTerm((term))).accept(new hydra.core.Term.PartialVisitor<A, Boolean>() {
       @Override
       public Boolean otherwise(hydra.core.Term<A> instance) {
         return false;
@@ -88,7 +88,7 @@ public interface Tier1 {
       
       @Override
       public Boolean visit(hydra.core.Term.Function<A> instance) {
-        return ((instance.value)).accept(new hydra.core.Function.PartialVisitor<>() {
+        return ((instance.value)).accept(new hydra.core.Function.PartialVisitor<A, Boolean>() {
           @Override
           public Boolean otherwise(hydra.core.Function<A> instance) {
             return false;

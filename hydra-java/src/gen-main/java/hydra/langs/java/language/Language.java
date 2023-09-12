@@ -43,7 +43,7 @@ public interface Language {
       new hydra.mantle.TypeVariant.Set(),
       new hydra.mantle.TypeVariant.Union(),
       new hydra.mantle.TypeVariant.Variable(),
-      new hydra.mantle.TypeVariant.Wrap())), (java.util.function.Function<hydra.core.Type<A>, Boolean>) (v1 -> ((v1)).accept(new hydra.core.Type.PartialVisitor<>() {
+      new hydra.mantle.TypeVariant.Wrap())), (java.util.function.Function<hydra.core.Type<A>, Boolean>) (v1 -> ((v1)).accept(new hydra.core.Type.PartialVisitor<A, Boolean>() {
       @Override
       public Boolean otherwise(hydra.core.Type<A> instance) {
         return true;

@@ -60,7 +60,7 @@ public class TypesTest {
 
   @Test
   public void demonstrateVisitor() {
-    Type.PartialVisitor<String, Integer> countFields = new Type.PartialVisitor<>() {
+    Type.PartialVisitor<String, Integer> countFields = new Type.PartialVisitor<String, Integer>() {
         @Override
         public Integer visit(Type.Record<String> instance) {
             return instance.value.fields.size();

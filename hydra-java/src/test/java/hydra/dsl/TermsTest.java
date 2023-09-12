@@ -45,7 +45,7 @@ public class TermsTest {
   private final Term<String> longitudeAnnotated = annot("Gets the longitude from a LatLon", longitude);
 
   private <A> Term.PartialVisitor<A, Integer> countBoundVariables() {
-      return new Term.PartialVisitor<>() {
+      return new Term.PartialVisitor<A, Integer>() {
           @Override
           public Integer visit(Term.Annotated<A> instance) {
               return instance.value.subject.accept(countBoundVariables());
@@ -53,7 +53,7 @@ public class TermsTest {
 
           @Override
           public Integer visit(Term.Function<A> instance) {
-              return instance.value.accept(new Function.PartialVisitor<>() {
+              return instance.value.accept(new Function.PartialVisitor<A, Integer>() {
                   @Override
                   public Integer otherwise(Function<A> instance) {
                       return 0;

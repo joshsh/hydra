@@ -17,7 +17,7 @@ public interface Printing {
   }
   
   static String describeLiteralType(hydra.core.LiteralType v1) {
-    return ((v1)).accept(new hydra.core.LiteralType.Visitor<>() {
+    return ((v1)).accept(new hydra.core.LiteralType.Visitor<String>() {
       @Override
       public String visit(hydra.core.LiteralType.Binary instance) {
         return "binary strings";
@@ -46,7 +46,7 @@ public interface Printing {
   }
   
   static String describePrecision(hydra.mantle.Precision v1) {
-    return ((v1)).accept(new hydra.mantle.Precision.Visitor<>() {
+    return ((v1)).accept(new hydra.mantle.Precision.Visitor<String>() {
       @Override
       public String visit(hydra.mantle.Precision.Arbitrary instance) {
         return "arbitrary-precision";
@@ -62,7 +62,7 @@ public interface Printing {
   }
   
   static <A> String describeType(hydra.core.Type<A> v1) {
-    return ((v1)).accept(new hydra.core.Type.Visitor<>() {
+    return ((v1)).accept(new hydra.core.Type.Visitor<A, String>() {
       @Override
       public String visit(hydra.core.Type.Annotated<A> instance) {
         return hydra.lib.strings.Cat.apply(java.util.Arrays.asList(

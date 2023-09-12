@@ -36,7 +36,7 @@ public interface CoreEncoding {
   }
   
   static <A> hydra.core.Term<A> coreEncodeElimination(hydra.core.Elimination<A> v1) {
-    return ((v1)).accept(new hydra.core.Elimination.Visitor<>() {
+    return ((v1)).accept(new hydra.core.Elimination.Visitor<A, hydra.core.Term<A>>() {
       @Override
       public hydra.core.Term<A> visit(hydra.core.Elimination.List<A> instance) {
         return new hydra.core.Term.Union(new hydra.core.Injection(new hydra.core.Name("hydra/core.Elimination"), new hydra.core.Field(new hydra.core.FieldName("list"), hydra.coreEncoding.CoreEncoding.coreEncodeTerm((instance.value)))));
@@ -86,7 +86,7 @@ public interface CoreEncoding {
   }
   
   static <A> hydra.core.Term<A> coreEncodeFloatType(hydra.core.FloatType v1) {
-    return ((v1)).accept(new hydra.core.FloatType.Visitor<>() {
+    return ((v1)).accept(new hydra.core.FloatType.Visitor<hydra.core.Term<A>>() {
       @Override
       public hydra.core.Term<A> visit(hydra.core.FloatType.Bigfloat instance) {
         return new hydra.core.Term.Union(new hydra.core.Injection(new hydra.core.Name("hydra/core.FloatType"), new hydra.core.Field(new hydra.core.FieldName("bigfloat"), new hydra.core.Term.Record(new hydra.core.Record(new hydra.core.Name("hydra/core.UnitType"), java.util.Arrays.asList())))));
@@ -105,7 +105,7 @@ public interface CoreEncoding {
   }
   
   static <A> hydra.core.Term<A> coreEncodeFloatValue(hydra.core.FloatValue v1) {
-    return ((v1)).accept(new hydra.core.FloatValue.Visitor<>() {
+    return ((v1)).accept(new hydra.core.FloatValue.Visitor<hydra.core.Term<A>>() {
       @Override
       public hydra.core.Term<A> visit(hydra.core.FloatValue.Bigfloat instance) {
         return new hydra.core.Term.Union(new hydra.core.Injection(new hydra.core.Name("hydra/core.FloatValue"), new hydra.core.Field(new hydra.core.FieldName("bigfloat"), new hydra.core.Term.Literal(new hydra.core.Literal.Float_(new hydra.core.FloatValue.Bigfloat((instance.value)))))));
@@ -124,7 +124,7 @@ public interface CoreEncoding {
   }
   
   static <A> hydra.core.Term<A> coreEncodeFunction(hydra.core.Function<A> v1) {
-    return ((v1)).accept(new hydra.core.Function.Visitor<>() {
+    return ((v1)).accept(new hydra.core.Function.Visitor<A, hydra.core.Term<A>>() {
       @Override
       public hydra.core.Term<A> visit(hydra.core.Function.Elimination<A> instance) {
         return new hydra.core.Term.Union(new hydra.core.Injection(new hydra.core.Name("hydra/core.Function"), new hydra.core.Field(new hydra.core.FieldName("elimination"), hydra.coreEncoding.CoreEncoding.coreEncodeElimination((instance.value)))));
@@ -155,7 +155,7 @@ public interface CoreEncoding {
   }
   
   static <A> hydra.core.Term<A> coreEncodeIntegerType(hydra.core.IntegerType v1) {
-    return ((v1)).accept(new hydra.core.IntegerType.Visitor<>() {
+    return ((v1)).accept(new hydra.core.IntegerType.Visitor<hydra.core.Term<A>>() {
       @Override
       public hydra.core.Term<A> visit(hydra.core.IntegerType.Bigint instance) {
         return new hydra.core.Term.Union(new hydra.core.Injection(new hydra.core.Name("hydra/core.IntegerType"), new hydra.core.Field(new hydra.core.FieldName("bigint"), new hydra.core.Term.Record(new hydra.core.Record(new hydra.core.Name("hydra/core.UnitType"), java.util.Arrays.asList())))));
@@ -204,7 +204,7 @@ public interface CoreEncoding {
   }
   
   static <A> hydra.core.Term<A> coreEncodeIntegerValue(hydra.core.IntegerValue v1) {
-    return ((v1)).accept(new hydra.core.IntegerValue.Visitor<>() {
+    return ((v1)).accept(new hydra.core.IntegerValue.Visitor<hydra.core.Term<A>>() {
       @Override
       public hydra.core.Term<A> visit(hydra.core.IntegerValue.Bigint instance) {
         return new hydra.core.Term.Union(new hydra.core.Injection(new hydra.core.Name("hydra/core.IntegerValue"), new hydra.core.Field(new hydra.core.FieldName("bigint"), new hydra.core.Term.Literal(new hydra.core.Literal.Integer_(new hydra.core.IntegerValue.Bigint((instance.value)))))));
@@ -265,7 +265,7 @@ public interface CoreEncoding {
   }
   
   static <A> hydra.core.Term<A> coreEncodeLiteral(hydra.core.Literal v1) {
-    return ((v1)).accept(new hydra.core.Literal.Visitor<>() {
+    return ((v1)).accept(new hydra.core.Literal.Visitor<hydra.core.Term<A>>() {
       @Override
       public hydra.core.Term<A> visit(hydra.core.Literal.Binary instance) {
         return new hydra.core.Term.Union(new hydra.core.Injection(new hydra.core.Name("hydra/core.Literal"), new hydra.core.Field(new hydra.core.FieldName("binary"), new hydra.core.Term.Literal(new hydra.core.Literal.Binary((instance.value))))));
@@ -294,7 +294,7 @@ public interface CoreEncoding {
   }
   
   static <A> hydra.core.Term<A> coreEncodeLiteralType(hydra.core.LiteralType v1) {
-    return ((v1)).accept(new hydra.core.LiteralType.Visitor<>() {
+    return ((v1)).accept(new hydra.core.LiteralType.Visitor<hydra.core.Term<A>>() {
       @Override
       public hydra.core.Term<A> visit(hydra.core.LiteralType.Binary instance) {
         return new hydra.core.Term.Union(new hydra.core.Injection(new hydra.core.Name("hydra/core.LiteralType"), new hydra.core.Field(new hydra.core.FieldName("binary"), new hydra.core.Term.Record(new hydra.core.Record(new hydra.core.Name("hydra/core.UnitType"), java.util.Arrays.asList())))));
@@ -383,7 +383,7 @@ public interface CoreEncoding {
   }
   
   static <A> hydra.core.Term<A> coreEncodeTerm(hydra.core.Term<A> v1) {
-    return ((v1)).accept(new hydra.core.Term.PartialVisitor<>() {
+    return ((v1)).accept(new hydra.core.Term.PartialVisitor<A, hydra.core.Term<A>>() {
       @Override
       public hydra.core.Term<A> otherwise(hydra.core.Term<A> instance) {
         return new hydra.core.Term.Literal(new hydra.core.Literal.String_("not implemented"));
@@ -464,7 +464,7 @@ public interface CoreEncoding {
   }
   
   static <A> hydra.core.Term<A> coreEncodeType(hydra.core.Type<A> v1) {
-    return ((v1)).accept(new hydra.core.Type.Visitor<>() {
+    return ((v1)).accept(new hydra.core.Type.Visitor<A, hydra.core.Term<A>>() {
       @Override
       public hydra.core.Term<A> visit(hydra.core.Type.Annotated<A> instance) {
         return new hydra.core.Term.Annotated(new hydra.core.Annotated(hydra.coreEncoding.CoreEncoding.coreEncodeType(((instance.value)).subject), ((instance.value)).annotation));

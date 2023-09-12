@@ -5,7 +5,7 @@ package hydra.extras;
  */
 public interface Extras {
   static <A> Integer functionArity(hydra.core.Function<A> v1) {
-    return ((v1)).accept(new hydra.core.Function.Visitor<>() {
+    return ((v1)).accept(new hydra.core.Function.Visitor<A, Integer>() {
       @Override
       public Integer visit(hydra.core.Function.Elimination<A> instance) {
         return 1;
@@ -43,7 +43,7 @@ public interface Extras {
   }
   
   static <A> Integer termArity(hydra.core.Term<A> v1) {
-    return ((v1)).accept(new hydra.core.Term.PartialVisitor<>() {
+    return ((v1)).accept(new hydra.core.Term.PartialVisitor<A, Integer>() {
       @Override
       public Integer otherwise(hydra.core.Term<A> instance) {
         return 0;
@@ -64,7 +64,7 @@ public interface Extras {
   }
   
   static <A> Integer typeArity(hydra.core.Type<A> v1) {
-    return ((v1)).accept(new hydra.core.Type.PartialVisitor<>() {
+    return ((v1)).accept(new hydra.core.Type.PartialVisitor<A, Integer>() {
       @Override
       public Integer otherwise(hydra.core.Type<A> instance) {
         return 0;

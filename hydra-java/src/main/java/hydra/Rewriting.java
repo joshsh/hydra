@@ -38,7 +38,7 @@ public interface Rewriting {
 
     static <A, B, S> Flow<S, Elimination<B>> rewriteEliminationM(Function<Term<A>, Flow<S, Term<B>>> recurse,
         Elimination<A> original) {
-        return original.accept(new Elimination.Visitor<>() {
+        return original.accept(new Elimination.Visitor<A, Flow<S, Elimination<B>>>() {
             @Override
             public Flow<S, Elimination<B>> visit(Elimination.List<A> instance) {
                 // TODO: this is incorrect in Hydra Core
@@ -85,7 +85,7 @@ public interface Rewriting {
 
     static <A, B, S> Flow<S, hydra.core.Function<B>> rewriteFunctionM(Function<Term<A>, Flow<S, Term<B>>> recurse,
         hydra.core.Function<A> original) {
-        return original.accept(new hydra.core.Function.Visitor<>() {
+        return original.accept(new hydra.core.Function.Visitor<A, Flow<S, hydra.core.Function<B>>>() {
             @Override
             public Flow<S, hydra.core.Function<B>> visit(hydra.core.Function.Elimination<A> instance) {
                 Elimination<A> elimA = instance.value;

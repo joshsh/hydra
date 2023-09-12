@@ -1,14 +1,14 @@
 plugins {
-  id 'java-library'
-  id 'maven-publish'
+    id 'java-library'
+    id 'maven-publish'
 }
 
 group 'hydra'
 version '0.2'
 
-// JDK 11+ is needed for RDF4j compatibility
-sourceCompatibility = '1.11'
-targetCompatibility = '1.11'
+// We use Java 8 for maximum compatibility with legacy systems, such as certain Spark deployments
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
 
 dependencies {
     implementation group: 'org.apache.commons', name: 'commons-text', version: '1.10.0'
@@ -23,39 +23,39 @@ dependencies {
 }
 
 sourceSets {
-  main {
-    java {
-      srcDirs 'src/main/java'
-      srcDirs 'src/gen-main/java'
+    main {
+        java {
+            srcDirs 'src/main/java'
+            srcDirs 'src/gen-main/java'
+        }
     }
-  }
-  test {
-    java {
-      srcDirs 'src/test/java'
-      srcDirs 'src/gen-test/java'
+    test {
+        java {
+            srcDirs 'src/test/java'
+            srcDirs 'src/gen-test/java'
+        }
     }
-  }
 }
 
 test {
-  useJUnitPlatform()
+    useJUnitPlatform()
 }
 
 repositories {
-  mavenCentral()
-  mavenLocal()
-  maven {
-    url "https://linkedin.jfrog.io/artifactory/open-source/" // For Pegasus dependencies
-  }
+    mavenCentral()
+    mavenLocal()
+    maven {
+        url "https://linkedin.jfrog.io/artifactory/open-source/" // For Pegasus dependencies
+    }
 }
 
 publishing {
-  publications {
-    mavenJava(MavenPublication) {
-      from components.java
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
     }
-  }
-  repositories {
-    mavenLocal()
-  }
+    repositories {
+        mavenLocal()
+    }
 }

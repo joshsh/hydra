@@ -38,7 +38,7 @@ public class Reduction {
     }
 
     private static <A> Flow<Graph<A>, Term<A>> applyIfNullary(boolean eager, Term<A> original, LList<Term<A>> args) {
-        return stripTerm(original).accept(new Term.PartialVisitor<>() {
+        return stripTerm(original).accept(new Term.PartialVisitor<A, Flow<Graph<A>, Term<A>>>() {
             @Override
             public Flow<Graph<A>, Term<A>> otherwise(Term<A> instance) {
                 return pure(applyToArguments(original, args));
@@ -53,7 +53,7 @@ public class Reduction {
             @Override
             public Flow<Graph<A>, Term<A>> visit(Term.Function<A> instance) {
                 hydra.core.Function<A> fun = instance.value;
-                return fun.accept(new hydra.core.Function.Visitor<>() {
+                return fun.accept(new hydra.core.Function.Visitor<A, Flow<Graph<A>, Term<A>>>() {
                     @Override
                     public Flow<Graph<A>, Term<A>> visit(hydra.core.Function.Elimination<A> instance) {
                         if (LList.isEmpty(args)) {
@@ -117,7 +117,7 @@ public class Reduction {
     }
 
     private static <A> Flow<Graph<A>, Term<A>> applyElimination(Elimination<A> elm, Term<A> reducedArg) {
-        return elm.accept(new Elimination.Visitor<>() {
+        return elm.accept(new Elimination.Visitor<A, Flow<Graph<A>, Term<A>>>() {
             @Override
             public Flow<Graph<A>, Term<A>> visit(Elimination.List<A> instance) {
                 throw new UnsupportedOperationException();
@@ -135,7 +135,7 @@ public class Reduction {
 
             @Override
             public Flow<Graph<A>, Term<A>> visit(Elimination.Record<A> elim) {
-                return reducedArg.accept(new Term.PartialVisitor<>() {
+                return reducedArg.accept(new Term.PartialVisitor<A, Flow<Graph<A>, Term<A>>>() {
                     @Override
                     public Flow<Graph<A>, Term<A>> otherwise(Term<A> instance) {
                         return unexpected("record", instance);
@@ -162,7 +162,7 @@ public class Reduction {
 
             @Override
             public Flow<Graph<A>, Term<A>> visit(Elimination.Union<A> elim) {
-                return reducedArg.accept(new Term.PartialVisitor<>() {
+                return reducedArg.accept(new Term.PartialVisitor<A, Flow<Graph<A>, Term<A>>>() {
                     @Override
                     public Flow<Graph<A>, Term<A>> otherwise(Term<A> instance) {
                         return unexpected("injection", instance);
@@ -189,7 +189,7 @@ public class Reduction {
 
             @Override
             public Flow<Graph<A>, Term<A>> visit(Elimination.Wrap<A> instance) {
-                return reducedArg.accept(new Term.PartialVisitor<>() {
+                return reducedArg.accept(new Term.PartialVisitor<A, Flow<Graph<A>, Term<A>>>() {
                     @Override
                     public Flow<Graph<A>, Term<A>> otherwise(Term<A> instance) {
                         return unexpected("wrapped term", instance);
@@ -218,7 +218,7 @@ public class Reduction {
     }
 
     private static <A> boolean doRecurse(boolean eager, Term<A> term) {
-        boolean isLambda = term.accept(new Term.PartialVisitor<>() {
+        boolean isLambda = term.accept(new Term.PartialVisitor<A, Boolean>() {
             @Override
             public Boolean otherwise(Term<A> instance) {
                 return false;
@@ -227,7 +227,7 @@ public class Reduction {
             @Override
             public Boolean visit(Term.Function<A> instance) {
                 hydra.core.Function<A> fun = instance.value;
-                return fun.accept(new hydra.core.Function.PartialVisitor<>() {
+                return fun.accept(new hydra.core.Function.PartialVisitor<A, Boolean>() {
                     @Override
                     public Boolean otherwise(hydra.core.Function<A> instance) {
                         return false;
@@ -278,7 +278,7 @@ public class Reduction {
             @Override
             public Term<A> visit(Term.Function<A> instance) {
                 hydra.core.Function<A> fun = instance.value;
-                return fun.accept(new hydra.core.Function.PartialVisitor<>() {
+                return fun.accept(new hydra.core.Function.PartialVisitor<A, Term<A>>() {
                     @Override
                     public Term<A> otherwise(hydra.core.Function<A> instance) {
                         return recurse.apply(inner);

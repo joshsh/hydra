@@ -32,7 +32,7 @@ public class HydraTestBase {
 
     protected static <S, X> void assertFails(Flow<S, X> flow, S initialState) {
         FlowState<S, X> result = flow.value.apply(initialState).apply(EMPTY_TRACE);
-        assertTrue(result.value.isEmpty());
+        assertTrue(!result.value.isPresent());
         //assertTrue(result.trace.messages.size() > 1);
     }
 

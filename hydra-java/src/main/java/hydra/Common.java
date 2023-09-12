@@ -6,7 +6,7 @@ import hydra.core.Type;
 
 public interface Common {
     static <A> Term<A> stripTerm(Term<A> term) {
-        return term.accept(new Term.PartialVisitor<>() {
+        return term.accept(new Term.PartialVisitor<A, Term<A>>() {
             @Override
             public Term<A> otherwise(Term<A> ignored) {
                 return term;
@@ -20,7 +20,7 @@ public interface Common {
     }
 
     static <A> Type<A> stripType(Type<A> type) {
-        return type.accept(new Type.PartialVisitor<>() {
+        return type.accept(new Type.PartialVisitor<A, Type<A>>() {
             @Override
             public Type<A> otherwise(Type<A> ignored) {
                 return type;

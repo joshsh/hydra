@@ -5,7 +5,7 @@ package hydra.basics;
  */
 public interface Basics {
   static <A> hydra.mantle.EliminationVariant eliminationVariant(hydra.core.Elimination<A> v1) {
-    return ((v1)).accept(new hydra.core.Elimination.Visitor<>() {
+    return ((v1)).accept(new hydra.core.Elimination.Visitor<A, hydra.mantle.EliminationVariant>() {
       @Override
       public hydra.mantle.EliminationVariant visit(hydra.core.Elimination.List<A> instance) {
         return new hydra.mantle.EliminationVariant.List();
@@ -47,7 +47,7 @@ public interface Basics {
     new hydra.mantle.EliminationVariant.Union());
   
   static hydra.mantle.Precision floatTypePrecision(hydra.core.FloatType v1) {
-    return ((v1)).accept(new hydra.core.FloatType.Visitor<>() {
+    return ((v1)).accept(new hydra.core.FloatType.Visitor<hydra.mantle.Precision>() {
       @Override
       public hydra.mantle.Precision visit(hydra.core.FloatType.Bigfloat instance) {
         return new hydra.mantle.Precision.Arbitrary();
@@ -71,7 +71,7 @@ public interface Basics {
     new hydra.core.FloatType.Float64());
   
   static hydra.core.FloatType floatValueType(hydra.core.FloatValue v1) {
-    return ((v1)).accept(new hydra.core.FloatValue.Visitor<>() {
+    return ((v1)).accept(new hydra.core.FloatValue.Visitor<hydra.core.FloatType>() {
       @Override
       public hydra.core.FloatType visit(hydra.core.FloatValue.Bigfloat instance) {
         return new hydra.core.FloatType.Bigfloat();
@@ -90,7 +90,7 @@ public interface Basics {
   }
   
   static <A> hydra.mantle.FunctionVariant functionVariant(hydra.core.Function<A> v1) {
-    return ((v1)).accept(new hydra.core.Function.Visitor<>() {
+    return ((v1)).accept(new hydra.core.Function.Visitor<A, hydra.mantle.FunctionVariant>() {
       @Override
       public hydra.mantle.FunctionVariant visit(hydra.core.Function.Elimination<A> instance) {
         return new hydra.mantle.FunctionVariant.Elimination();
@@ -118,7 +118,7 @@ public interface Basics {
   }
   
   static Boolean integerTypeIsSigned(hydra.core.IntegerType v1) {
-    return ((v1)).accept(new hydra.core.IntegerType.Visitor<>() {
+    return ((v1)).accept(new hydra.core.IntegerType.Visitor<Boolean>() {
       @Override
       public Boolean visit(hydra.core.IntegerType.Bigint instance) {
         return true;
@@ -167,7 +167,7 @@ public interface Basics {
   }
   
   static hydra.mantle.Precision integerTypePrecision(hydra.core.IntegerType v1) {
-    return ((v1)).accept(new hydra.core.IntegerType.Visitor<>() {
+    return ((v1)).accept(new hydra.core.IntegerType.Visitor<hydra.mantle.Precision>() {
       @Override
       public hydra.mantle.Precision visit(hydra.core.IntegerType.Bigint instance) {
         return new hydra.mantle.Precision.Arbitrary();
@@ -227,7 +227,7 @@ public interface Basics {
     new hydra.core.IntegerType.Uint64());
   
   static hydra.core.IntegerType integerValueType(hydra.core.IntegerValue v1) {
-    return ((v1)).accept(new hydra.core.IntegerValue.Visitor<>() {
+    return ((v1)).accept(new hydra.core.IntegerValue.Visitor<hydra.core.IntegerType>() {
       @Override
       public hydra.core.IntegerType visit(hydra.core.IntegerValue.Bigint instance) {
         return new hydra.core.IntegerType.Bigint();
@@ -276,7 +276,7 @@ public interface Basics {
   }
   
   static hydra.core.LiteralType literalType(hydra.core.Literal v1) {
-    return ((v1)).accept(new hydra.core.Literal.Visitor<>() {
+    return ((v1)).accept(new hydra.core.Literal.Visitor<hydra.core.LiteralType>() {
       @Override
       public hydra.core.LiteralType visit(hydra.core.Literal.Binary instance) {
         return new hydra.core.LiteralType.Binary();
@@ -305,7 +305,7 @@ public interface Basics {
   }
   
   static hydra.mantle.LiteralVariant literalTypeVariant(hydra.core.LiteralType v1) {
-    return ((v1)).accept(new hydra.core.LiteralType.Visitor<>() {
+    return ((v1)).accept(new hydra.core.LiteralType.Visitor<hydra.mantle.LiteralVariant>() {
       @Override
       public hydra.mantle.LiteralVariant visit(hydra.core.LiteralType.Binary instance) {
         return new hydra.mantle.LiteralVariant.Binary();
@@ -349,7 +349,7 @@ public interface Basics {
   }
   
   static <A> hydra.mantle.TermVariant termVariant(hydra.core.Term<A> v1) {
-    return ((v1)).accept(new hydra.core.Term.Visitor<>() {
+    return ((v1)).accept(new hydra.core.Term.Visitor<A, hydra.mantle.TermVariant>() {
       @Override
       public hydra.mantle.TermVariant visit(hydra.core.Term.Annotated<A> instance) {
         return new hydra.mantle.TermVariant.Annotated();
@@ -450,7 +450,7 @@ public interface Basics {
     new hydra.mantle.TermVariant.Wrap());
   
   static <A> hydra.mantle.TypeVariant typeVariant(hydra.core.Type<A> v1) {
-    return ((v1)).accept(new hydra.core.Type.Visitor<>() {
+    return ((v1)).accept(new hydra.core.Type.Visitor<A, hydra.mantle.TypeVariant>() {
       @Override
       public hydra.mantle.TypeVariant visit(hydra.core.Type.Annotated<A> instance) {
         return new hydra.mantle.TypeVariant.Annotated();
@@ -587,7 +587,7 @@ public interface Basics {
   }
   
   static <A> Boolean isEncodedType(hydra.core.Term<A> t) {
-    return (hydra.strip.Strip.stripTerm((t))).accept(new hydra.core.Term.PartialVisitor<>() {
+    return (hydra.strip.Strip.stripTerm((t))).accept(new hydra.core.Term.PartialVisitor<A, Boolean>() {
       @Override
       public Boolean otherwise(hydra.core.Term<A> instance) {
         return false;
@@ -608,7 +608,7 @@ public interface Basics {
   }
   
   static <A> Boolean isType(hydra.core.Type<A> t) {
-    return (hydra.strip.Strip.stripType((t))).accept(new hydra.core.Type.PartialVisitor<>() {
+    return (hydra.strip.Strip.stripType((t))).accept(new hydra.core.Type.PartialVisitor<A, Boolean>() {
       @Override
       public Boolean otherwise(hydra.core.Type<A> instance) {
         return false;

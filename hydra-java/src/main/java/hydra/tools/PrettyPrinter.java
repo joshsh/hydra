@@ -48,7 +48,7 @@ public class PrettyPrinter {
     }
 
     private static Consumer<StringBuilder> floatValue(FloatValue f) {
-        return f.accept(new FloatValue.Visitor<>() {
+        return f.accept(new FloatValue.Visitor<Consumer<StringBuilder>>() {
             @Override
             public Consumer<StringBuilder> visit(FloatValue.Bigfloat instance) {
                 return sb -> sb.append(instance.value);
@@ -67,7 +67,7 @@ public class PrettyPrinter {
     }
 
     private static <A> Consumer<StringBuilder> function(hydra.core.Function<A> function) {
-        return function.accept(new Function.Visitor<>() {
+        return function.accept(new Function.Visitor<A, Consumer<StringBuilder>>() {
             @Override
             public Consumer<StringBuilder> visit(Function.Elimination<A> instance) {
                 return notImplemented("elimination");
@@ -90,7 +90,7 @@ public class PrettyPrinter {
     }
 
     private static Consumer<StringBuilder> integerValue(IntegerValue i) {
-        return i.accept(new IntegerValue.Visitor<>() {
+        return i.accept(new IntegerValue.Visitor<Consumer<StringBuilder>>() {
             @Override
             public Consumer<StringBuilder> visit(IntegerValue.Bigint instance) {
                 return sb -> sb.append(instance.value);
@@ -139,7 +139,7 @@ public class PrettyPrinter {
     }
 
     private static Consumer<StringBuilder> literal(Literal l) {
-        return l.accept(new Literal.Visitor<>() {
+        return l.accept(new Literal.Visitor<Consumer<StringBuilder>>() {
             @Override
             public Consumer<StringBuilder> visit(Literal.Binary instance) {
                 return sb -> sb.append(instance.value);
@@ -191,7 +191,7 @@ public class PrettyPrinter {
 
     private static <A> Consumer<StringBuilder> term(Term<A> t) {
         return sb -> {
-            Consumer<StringBuilder> c = t.accept(new Term.Visitor<>() {
+            Consumer<StringBuilder> c = t.accept(new Term.Visitor<A, Consumer<StringBuilder>>() {
                 @Override
                 public Consumer<StringBuilder> visit(Term.Annotated<A> instance) {
                     Annotated<Term<A>, A> ann = instance.value;

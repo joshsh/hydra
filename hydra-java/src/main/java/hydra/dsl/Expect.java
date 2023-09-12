@@ -223,7 +223,7 @@ public class Expect {
     }
 
     public static <S, A, X> Flow<S, List<X>> list(final Function<Term<A>, Flow<S, X>> elems, final Term<A> term) {
-        return term.accept(new Term.PartialVisitor<>() {
+        return term.accept(new Term.PartialVisitor<A, Flow<S, List<X>>>() {
             @Override
             public Flow<S, List<X>> otherwise(Term<A> instance) {
                 return wrongType("list", term);
@@ -237,7 +237,7 @@ public class Expect {
     }
 
     public static <S, A> Flow<S, Literal> literal(final Term<A> term) {
-        return term.accept(new Term.PartialVisitor<>() {
+        return term.accept(new Term.PartialVisitor<A, Flow<S, Literal>>() {
             @Override
             public Flow<S, Literal> otherwise(Term<A> instance) {
                 return wrongType("literal", term);
@@ -254,7 +254,7 @@ public class Expect {
             final Function<Term<A>, Flow<S, K>> keys,
             final Function<Term<A>, Flow<S, V>> values,
             final Term<A> term) {
-        return term.accept(new Term.PartialVisitor<>() {
+        return term.accept(new Term.PartialVisitor<A, Flow<S, Map<K, V>>>() {
             @Override
             public Flow<S, Map<K, V>> otherwise(Term<A> instance) {
                 return wrongType("map", term);
@@ -276,7 +276,7 @@ public class Expect {
     }
 
     public static <S, A, X> Flow<S, Optional<X>> optional(final Function<Term<A>, Flow<S, X>> elems, final Term<A> term) {
-        return term.accept(new Term.PartialVisitor<>() {
+        return term.accept(new Term.PartialVisitor<A, Flow<S, Optional<X>>>() {
             @Override
             public Flow<S, Optional<X>> otherwise(Term<A> instance) {
                 return wrongType("optional", term);
@@ -294,7 +294,7 @@ public class Expect {
             final Function<Term<A>, Flow<S, T1>> first,
             final Function<Term<A>, Flow<S, T2>> second,
             final Term<A> term) {
-        return term.accept(new Term.PartialVisitor<>() {
+        return term.accept(new Term.PartialVisitor<A, Flow<S, Tuple.Tuple2<T1, T2>>>() {
             @Override
             public Flow<S, Tuple.Tuple2<T1, T2>> otherwise(Term<A> instance) {
                 return wrongType("tuple", term);
@@ -312,7 +312,7 @@ public class Expect {
     }
 
     public static <S, A> Flow<S, List<Field<A>>> record(final Name tname, final Term<A> term) {
-        return term.accept(new Term.PartialVisitor<>() {
+        return term.accept(new Term.PartialVisitor<A, Flow<S, List<Field<A>>>>() {
             @Override
             public Flow<S, List<Field<A>>> otherwise(Term<A> instance) {
                 return wrongType("record", term);
@@ -340,7 +340,7 @@ public class Expect {
     }
 
     public static <S, A, X> Flow<S, Set<X>> set(final Function<Term<A>, Flow<S, X>> elems, final Term<A> term) {
-        return term.accept(new Term.PartialVisitor<>() {
+        return term.accept(new Term.PartialVisitor<A, Flow<S, Set<X>>>() {
             @Override
             public Flow<S, Set<X>> otherwise(Term<A> instance) {
                 return wrongType("set", term);
