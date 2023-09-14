@@ -296,6 +296,7 @@ elementsToGraph parent schema elements =
   in Graph.Graph {
     Graph.graphElements = (Maps.fromList (Lists.map toPair elements)),
     Graph.graphEnvironment = (Graph.graphEnvironment parent),
+    Graph.graphTypes = (Graph.graphTypes parent),
     Graph.graphBody = (Graph.graphBody parent),
     Graph.graphPrimitives = (Graph.graphPrimitives parent),
     Graph.graphAnnotations = (Graph.graphAnnotations parent),

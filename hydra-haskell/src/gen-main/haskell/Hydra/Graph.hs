@@ -85,6 +85,8 @@ data Graph a =
     graphElements :: (Map Core.Name (Element a)),
     -- | The lambda environment of this graph context; it indicates whether a variable is bound by a lambda (Nothing) or a let (Just term)
     graphEnvironment :: (Map Core.Name (Maybe (Core.Term a))),
+    -- | The typing environment of the graph
+    graphTypes :: (Map Core.Name (Core.Type a)),
     -- | The body of the term which generated this context
     graphBody :: (Core.Term a),
     -- | All supported primitive constants and functions, by name
@@ -99,6 +101,8 @@ _Graph = (Core.Name "hydra/graph.Graph")
 _Graph_elements = (Core.FieldName "elements")
 
 _Graph_environment = (Core.FieldName "environment")
+
+_Graph_types = (Core.FieldName "types")
 
 _Graph_body = (Core.FieldName "body")
 

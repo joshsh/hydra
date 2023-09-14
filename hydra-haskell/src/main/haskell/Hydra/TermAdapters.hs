@@ -205,7 +205,6 @@ passFunction t@(TypeFunction (FunctionType dom cod)) = do
                 getCoder fname = Y.maybe idCoder adapterCoder $ M.lookup fname caseAds
           FunctionLambda (Lambda var body) -> FunctionLambda <$> (Lambda var <$> encodeDecode dir (adapterCoder codAd) body)
           FunctionPrimitive name -> pure $ FunctionPrimitive name
-          _ -> unexpected "lambda or elimination" $ show f
         _ -> unexpected "function term" $ show term
 
 passLambda :: (Ord a, Read a, Show a) => TypeAdapter a

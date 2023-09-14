@@ -80,6 +80,9 @@ hydraGraphModule = Module ns elements [hydraComputeModule] $
           "environment">:
             doc "The lambda environment of this graph context; it indicates whether a variable is bound by a lambda (Nothing) or a let (Just term)" $
             Types.map (core "Name") (optional $ core "Term" @@ "a"),
+          "types">:
+            doc "The typing environment of the graph" $
+            Types.map (core "Name") (core "Type" @@ "a"),
           "body">:
             doc "The body of the term which generated this context" $
             core "Term" @@ "a",

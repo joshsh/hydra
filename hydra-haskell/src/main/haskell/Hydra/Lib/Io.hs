@@ -27,6 +27,7 @@ noGraph :: Graph Kv
 noGraph = Graph {
   graphElements = M.empty,
   graphEnvironment = M.empty,
+  graphTypes = M.empty,
   graphBody = Terms.list [],
   graphPrimitives = M.empty,
   graphAnnotations = kvAnnotationClass,

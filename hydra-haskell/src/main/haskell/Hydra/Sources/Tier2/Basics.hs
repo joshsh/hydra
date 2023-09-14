@@ -412,6 +412,7 @@ elementsToGraphDef = basicsDefinition "elementsToGraph" $
     Graph.graph
       (Maps.fromList @@ (Lists.map @@ var "toPair" @@ var "elements"))
       (Graph.graphEnvironment @@ var "parent")
+      (Graph.graphTypes @@ var "parent")
       (Graph.graphBody @@ var "parent")
       (Graph.graphPrimitives @@ var "parent")
       (Graph.graphAnnotations @@ var "parent")

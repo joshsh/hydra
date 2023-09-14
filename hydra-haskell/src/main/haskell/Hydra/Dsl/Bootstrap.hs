@@ -24,6 +24,7 @@ bootstrapGraph :: Graph Kv
 bootstrapGraph = Graph {
   graphElements = M.empty,
   graphEnvironment = M.empty,
+  graphTypes = M.empty,
   graphBody = Terms.list [], -- Note: the bootstrap body is arbitrary
   graphPrimitives = M.fromList $ fmap (\p -> (primitiveName p, p)) standardPrimitives,
   graphAnnotations = kvAnnotationClass,
