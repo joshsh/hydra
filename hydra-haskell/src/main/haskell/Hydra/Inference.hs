@@ -34,13 +34,13 @@ import qualified Data.Maybe as Y
 
 
 annotateElements :: (Ord a, Show a) => Graph a -> [Element a] -> Flow (Graph a) [Element a]
-annotateElements g sortedEls = withInferenceContext $ do
+annotateElements g sortedEls = initializeGraph $ do
     iels <- annotate sortedEls []
 
     -- Note: inference occurs over the entire graph at once,
     --       but unification and substitution occur within elements in isolation
     let constraints = termConstraints . elementData <$> iels
-    subst <- withGraphContext $ withSchemaContext $ CM.mapM solveConstraints constraints
+    subst <- withSchemaContext $ CM.mapM solveConstraints constraints
 
     CM.zipWithM rewriteElement subst iels
   where
@@ -52,7 +52,7 @@ annotateElements g sortedEls = withInferenceContext $ do
       where
         annotType (ann, typ, _) = do
           let anns = graphAnnotations g
-          mtyp <- withGraphContext $ annotationClassTypeOf anns ann
+          mtyp <- annotationClassTypeOf anns ann
           let typ' = Y.fromMaybe typ mtyp
           return $ annotationClassSetTypeOf anns (Just typ') ann
 
@@ -72,7 +72,7 @@ annotateTermWithTypes term0 = do
   let term2 = rewriteTermMeta annotType term1
   return term2
 
-inferElementType :: (Ord a, Show a) => Element a -> Flow (InferenceContext a) (Element (InfAnn a))
+inferElementType :: (Ord a, Show a) => Element a -> Flow (Graph a) (Element (InfAnn a))
 inferElementType el = withTrace ("infer type of " ++ unName (elementName el)) $ do
   iterm <- infer $ elementData el
   return $ el {elementData = iterm}
@@ -94,14 +94,21 @@ inferType term = (simplifyUniversalTypes . termType) <$> inferTypeAndConstraints
 -- TODO: deprecated; inference is performed on graphs, not individual terms. Update tests to use inferElementType
 -- | Solve for the top-level type of an expression in a given environment
 inferTypeAndConstraints :: (Ord a, Show a) => Term a -> Flow (Graph a) (Term (InfAnn a))
-inferTypeAndConstraints term = withTrace ("infer type") $ withInferenceContext $ do
+inferTypeAndConstraints term = withTrace ("infer type") $ initializeGraph $ do
     iterm <- infer term
-    subst <- withGraphContext $ withSchemaContext $ solveConstraints (termConstraints iterm)
+    subst <- withSchemaContext $ solveConstraints (termConstraints iterm)
     return $ substituteAndNormalizeAnnotations subst iterm
---    return (term2, closeOver $ termType term2)
---  where
---    -- | Canonicalize and return the polymorphic top-level type.
---    closeOver = normalizeScheme . generalize M.empty . reduceType
+
+initializeGraph flow = do
+    g <- getState
+    env <- initialEnv g $ graphAnnotations g
+    withState (g {graphTypes = env}) flow
+  where
+    initialEnv g anns = M.fromList . Y.catMaybes <$> (CM.mapM toPair $ M.elems $ graphElements g)
+      where
+        toPair el = do
+          mt <- annotationClassTermType anns $ elementData el
+          return $ (\t -> (elementName el, t)) <$> mt
 
 normalizeType :: Ord a => Type a -> Type a
 normalizeType = rewriteType f id
@@ -175,14 +182,3 @@ substituteAndNormalizeAnnotations subst = rewriteTermMeta rewrite
 --    rewrite (x, typ, c) = (x, normalizeTypeVariables $ normalizeType $ substituteTypeVariables subst typ, c) -- TODO: restore this
     rewrite (x, typ, c) = (x, normalizeType $ substituteTypeVariables subst typ, c)
 --    rewrite (x, typ, c) = (x, normalizeType $ substituteTypeVariables subst typ, c)
-
-withInferenceContext flow = do
-    g <- getState
-    env <- initialEnv g $ graphAnnotations g
-    withState (InferenceContext g env) flow
-  where
-    initialEnv g anns = M.fromList . Y.catMaybes <$> (CM.mapM toPair $ M.elems $ graphElements g)
-      where
-        toPair el = do
-          mt <- annotationClassTermType anns $ elementData el
-          return $ (\t -> (elementName el, t)) <$> mt
