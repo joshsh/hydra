@@ -354,13 +354,13 @@ checkPrimitives = H.describe "Check a few hand-picked terms with primitive funct
       H.it "test #3" $ do
         expectPolytype
           (lambda "list" (primitive _lists_length @@ (primitive _lists_concat @@ list[var "list", list []])))
-          ["t2"] (Types.function (Types.list $ Types.var "t2") Types.int32)
+          ["t0"] (Types.function (Types.list $ Types.var "t0") Types.int32)
       H.it "test #4" $ do
         expectPolytype
           (lambda "list" (primitive _math_add
             @@ int32 1
             @@ (primitive _lists_length @@ (primitive _lists_concat @@ list[var "list", list []]))))
-          ["t3"] (Types.function (Types.list $ Types.var "t3") Types.int32)
+          ["t0"] (Types.function (Types.list $ Types.var "t0") Types.int32)
 
 
       H.it "test #5" $ do
@@ -590,9 +590,9 @@ spec = do
   checkLists
   checkLiterals
   checkPolymorphism
---  checkPrimitives
+  checkPrimitives
   checkProducts
-  checkSubtermAnnotations
+--  checkSubtermAnnotations
   checkSums
   checkTypeAnnotations
 --  checkTypedTerms

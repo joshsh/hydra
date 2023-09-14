@@ -172,7 +172,8 @@ substituteAndNormalizeAnnotations :: Ord a => Subst a -> Term (InfAnn a) -> Term
 substituteAndNormalizeAnnotations subst = rewriteTermMeta rewrite
   where
     -- Note: normalizing each annotation separately results in different variable names for corresponding types
-    rewrite (x, typ, c) = (x, normalizeTypeVariables $ normalizeType $ substituteTypeVariables subst typ, c)
+--    rewrite (x, typ, c) = (x, normalizeTypeVariables $ normalizeType $ substituteTypeVariables subst typ, c) -- TODO: restore this
+    rewrite (x, typ, c) = (x, normalizeType $ substituteTypeVariables subst typ, c)
 --    rewrite (x, typ, c) = (x, normalizeType $ substituteTypeVariables subst typ, c)
 
 withInferenceContext flow = do

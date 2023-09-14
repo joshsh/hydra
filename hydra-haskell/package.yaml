@@ -6,10 +6,9 @@ license-file: LICENSE
 category:     Data
 synopsis:     Type-aware transformations for data and programs
 description:  >
-  Hydra is a transformation toolkit along the lines of Dragon (Uber), but open source,
-  and with a more advanced type system and other new features.
-  Hydra maps data and schemas between languages in a way which maintains type conformance.
-  It will even map functional programs between selected languages, including parts of its own source code.
+  Hydra is a domain-specific language for data models and data transformations.
+  It is based on a typed lambda calculus, and transforms data and schemas between languages in a way which maintains type conformance.
+  Hydra will even transform functional programs between selected languages, including much of its own source code.
 github:       CategoricalData/hydra
 
 extra-source-files:

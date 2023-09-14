@@ -93,7 +93,7 @@ public interface Flows {
     /**
      * Extract the value from a flow, returning a default value instead if the flow failed.
      */
-    static <S, X> X fromFlow(X dflt, S state, Flow<S, X> flow) throws FlowException {
+    static <S, X> X fromFlow(X dflt, S state, Flow<S, X> flow) {
         Function<S, Function<Flow<S, X>, X>> helper = Tier1.fromFlow(dflt);
         return helper.apply(state).apply(flow);
     }

@@ -61,12 +61,12 @@ freshName = normalVariable <$> nextCount "hyInf"
 freshTypeVariable :: Flow (InferenceContext a) (Type a)
 freshTypeVariable = TypeVariable <$> freshName
 
-generalize :: Show a => TypingEnvironment a -> Type a -> Type a
-generalize env t  = L.foldl (\body n -> TypeLambda $ LambdaType n body) t vars
-  where
-    vars = S.toList $ S.difference -- TODO: preserve order
-      (freeVariablesInType t)
-      (L.foldr (S.union . freeVariablesInType) S.empty $ M.elems env)
+--generalize :: Show a => TypingEnvironment a -> Type a -> Type a
+--generalize env t  = L.foldl (\body n -> TypeLambda $ LambdaType n body) t vars
+--  where
+--    vars = S.toList $ S.difference -- TODO: preserve order
+--      (freeVariablesInType t)
+--      (L.foldr (S.union . freeVariablesInType) S.empty $ M.elems env)
 
 infer :: (Eq a, Ord a, Show a) => Term a -> Flow (InferenceContext a) (Term (InfAnn a))
 infer term = withTrace ("infer for " ++ show (termVariant term)) $ case term of

@@ -4,7 +4,7 @@ import Hydra.Kernel
 import Hydra.Lib.Literals
 import Hydra.Langs.Json.Coder
 import qualified Hydra.Dsl.Terms as Terms
-import qualified Hydra.Langs.Json.Model as Json
+import qualified Hydra.Json as Json
 import qualified Hydra.Dsl.Types as Types
 import Hydra.Dsl.Tests
 
