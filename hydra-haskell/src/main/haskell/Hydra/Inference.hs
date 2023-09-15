@@ -35,47 +35,32 @@ import qualified Data.Maybe as Y
 
 annotateElements :: (Ord a, Show a) => Graph a -> [Element a] -> Flow (Graph a) [Element a]
 annotateElements g sortedEls = initializeGraph $ do
-    iels <- annotate sortedEls []
+    rels <- annotate sortedEls []
 
     -- Note: inference occurs over the entire graph at once,
     --       but unification and substitution occur within elements in isolation
-    let constraints = termConstraints . elementData <$> iels
+    let constraints = inferredConstraints . snd <$> rels
     subst <- withSchemaContext $ CM.mapM solveConstraints constraints
-
-    CM.zipWithM rewriteElement subst iels
+    CM.zipWithM rewriteElement subst rels
   where
-    rewriteElement subst el = do
-        let itm = substituteAndNormalizeAnnotations subst $ elementData el
-        term <- rewriteTermMetaM annotType itm
-        return el {
-          elementData = term}
-      where
-        annotType (ann, typ, _) = do
-          let anns = graphAnnotations g
-          mtyp <- annotationClassTypeOf anns ann
-          let typ' = Y.fromMaybe typ mtyp
-          return $ annotationClassSetTypeOf anns (Just typ') ann
+    rewriteElement subst (name, rel) = do
+        anns <- graphAnnotations <$> getState
+        term <- substituteAndNormalizeAnnotations anns subst $ inferredTerm rel
+        return $ Element name term
 
     annotate original annotated = case original of
       [] -> pure $ L.reverse annotated
-      (el:r) -> do
-        iel <- inferElementType el
-        withBinding (elementName el) (termType $ elementData iel) $ annotate r (iel:annotated)
+      (el:rest) -> do
+        rel <- inferElementType el
+        withBinding (fst rel) (inferredType $ snd rel) $ annotate rest (rel:annotated)
 
 annotateTermWithTypes :: (Ord a, Show a) => Term a -> Flow (Graph a) (Term a)
-annotateTermWithTypes term0 = do
-  term1 <- inferTypeAndConstraints term0
+annotateTermWithTypes = inferTypeAndConstraints
 
-  g <- getState
-  let anns = graphAnnotations g
-  let annotType (ann, typ, _) = annotationClassSetTypeOf anns (Just typ) ann
-  let term2 = rewriteTermMeta annotType term1
-  return term2
-
-inferElementType :: (Ord a, Show a) => Element a -> Flow (Graph a) (Element (InfAnn a))
+inferElementType :: (Ord a, Show a) => Element a -> Flow (Graph a) (Name, Inferred a)
 inferElementType el = withTrace ("infer type of " ++ unName (elementName el)) $ do
-  iterm <- infer $ elementData el
-  return $ el {elementData = iterm}
+  rterm <- infer $ elementData el
+  return (elementName el, rterm)
 
 inferGraphTypes :: (Ord a, Show a) => Flow (Graph a) (Graph a)
 inferGraphTypes = getState >>= annotateGraph
@@ -89,15 +74,21 @@ inferGraphTypes = getState >>= annotateGraph
 
 -- TODO: deprecated; inference is performed on graphs, not individual terms. Update the Haskell coder to use inferElementType
 inferType :: (Ord a, Show a) => Term a -> Flow (Graph a) (Type a)
-inferType term = (simplifyUniversalTypes . termType) <$> inferTypeAndConstraints term
+--inferType term = (simplifyUniversalTypes . termType) <$> inferTypeAndConstraints term
+inferType term = do
+  term1 <- inferTypeAndConstraints term
+  anns <- graphAnnotations <$> getState
+  mtyp <- annotationClassTermType anns term1
+  return $ Y.fromJust mtyp
 
 -- TODO: deprecated; inference is performed on graphs, not individual terms. Update tests to use inferElementType
 -- | Solve for the top-level type of an expression in a given environment
-inferTypeAndConstraints :: (Ord a, Show a) => Term a -> Flow (Graph a) (Term (InfAnn a))
+inferTypeAndConstraints :: (Ord a, Show a) => Term a -> Flow (Graph a) (Term a)
 inferTypeAndConstraints term = withTrace ("infer type") $ initializeGraph $ do
-    iterm <- infer term
-    subst <- withSchemaContext $ solveConstraints (termConstraints iterm)
-    return $ substituteAndNormalizeAnnotations subst iterm
+    rterm <- infer term
+    subst <- withSchemaContext $ solveConstraints (inferredConstraints rterm)
+    anns <- graphAnnotations <$> getState
+    substituteAndNormalizeAnnotations anns subst $ inferredTerm rterm
 
 initializeGraph flow = do
     g <- getState
@@ -175,10 +166,14 @@ sortGraphElements g = do
         -- No need for an inference dependency on an element which is already annotated with a type
         isNotAnnotated name = not $ S.member name annotated
 
-substituteAndNormalizeAnnotations :: Ord a => Subst a -> Term (InfAnn a) -> Term (InfAnn a)
-substituteAndNormalizeAnnotations subst = rewriteTermMeta rewrite
+substituteAndNormalizeAnnotations :: Ord a => AnnotationClass a -> Subst a -> Term a -> Flow (Graph a) (Term a)
+substituteAndNormalizeAnnotations anns subst = rewriteTermMetaM rewrite
   where
     -- Note: normalizing each annotation separately results in different variable names for corresponding types
 --    rewrite (x, typ, c) = (x, normalizeTypeVariables $ normalizeType $ substituteTypeVariables subst typ, c) -- TODO: restore this
-    rewrite (x, typ, c) = (x, normalizeType $ substituteTypeVariables subst typ, c)
+    rewrite ann = do
+      mtyp <- annotationClassTypeOf anns ann
+      let ntyp = (normalizeType . substituteTypeVariables subst) <$> mtyp
+      return $ annotationClassSetTypeOf anns ntyp ann
+--    rewrite (x, typ, c) = (x, normalizeType $ substituteTypeVariables subst typ, c)
 --    rewrite (x, typ, c) = (x, normalizeType $ substituteTypeVariables subst typ, c)

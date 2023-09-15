@@ -28,8 +28,14 @@ import qualified Data.Set as S
 import qualified Data.Maybe as Y
 
 
--- | Annotation type used during inference, containing a native annotation, an inferred type, and a list of constraints
-type InfAnn a = (a, Type a, [Constraint a])
+data Inferred a = Inferred {
+  -- The original term, possibly annotated with the inferred type
+  inferredTerm :: Term a,
+  -- The inferred type
+  inferredType :: Type a,
+  -- Any constraints introduced by the inference process
+  inferredConstraints :: [Constraint a]
+}
 
 -- Decode a type, eliminating nominal types for the sake of unification
 decodeStructuralType :: Show a => Term a -> Flow (Graph a) (Type a)
@@ -42,9 +48,6 @@ decodeStructuralType term = do
       decodeStructuralType $ elementData el
     _ -> pure typ
 
-fieldType :: Field (InfAnn a) -> FieldType a
-fieldType (Field fname term) = FieldType fname $ termType term
-
 findMatchingField :: Show a => FieldName -> [FieldType a] -> Flow (Graph a) (FieldType a)
 findMatchingField fname sfields = case L.filter (\f -> fieldTypeName f == fname) sfields of
   []    -> fail $ "no such field: " ++ unFieldName fname
@@ -56,26 +59,26 @@ freshName = normalVariable <$> nextCount "hyInf"
 freshTypeVariable :: Flow (Graph a) (Type a)
 freshTypeVariable = TypeVariable <$> freshName
 
-infer :: (Eq a, Ord a, Show a) => Term a -> Flow (Graph a) (Term (InfAnn a))
-infer term = withTrace ("infer for " ++ show (termVariant term)) $ case term of
-    TermAnnotated (Annotated term1 ann) -> do
-      iterm <- infer term1
+infer :: (Eq a, Ord a, Show a) => Term a -> Flow (Graph a) (Inferred a)
+infer term = case term of
+    TermAnnotated (Annotated subj ann) -> do
+      rsubj <- infer subj
+
       anns <- graphAnnotations <$> getState
       otyp <- annotationClassTermType anns term
-      return $ case iterm of
-        -- `yieldTerm` produces the default annotation, which can just be replaced
-        TermAnnotated (Annotated trm (_, t, c)) -> TermAnnotated (Annotated trm (ann, t, infEqAnn ++ c))
-          where
-            infEqAnn = case otyp of
-              Nothing -> []
-              Just t' -> [(t, t')]
+      let constraints = (inferredConstraints rsubj) ++ case otyp of
+            Nothing -> []
+            Just t -> [(inferredType rsubj, t)]
+
+      yieldTerm (TermAnnotated $ Annotated (inferredTerm rsubj) ann) (inferredType rsubj) constraints
 
     TermApplication (Application fun arg) -> do
-      ifun <- infer fun
-      iarg <- infer arg
+      rfun <- infer fun
+      rarg <- infer arg
       cod <- freshTypeVariable
-      let constraints = (termConstraints ifun) ++ (termConstraints iarg) ++ [(termType ifun, Types.function (termType iarg) cod)]
-      yieldTerm (TermApplication $ Application ifun iarg) cod constraints
+      let constraints = (inferredConstraints rfun) ++ (inferredConstraints rarg)
+            ++ [(inferredType rfun, Types.function (inferredType rarg) cod)]
+      yieldTerm (TermApplication $ Application (inferredTerm rfun) (inferredTerm rarg)) cod constraints
 
     TermFunction f -> case f of
 
@@ -85,19 +88,20 @@ infer term = withTrace ("infer for " ++ show (termVariant term)) $ case term of
           a <- freshTypeVariable
           b <- freshTypeVariable
           let expected = Types.function b (Types.function a b)
-          i <- infer fun
+          rfun <- infer fun
           let elim = Types.function b (Types.function (Types.list a) b)
-          yieldElimination (EliminationList i) elim [(expected, termType i)]
+          yieldElimination (EliminationList $ inferredTerm rfun) elim [(expected, inferredType rfun)]
 
         EliminationOptional (OptionalCases n j) -> do
           dom <- freshName
           cod <- freshName
-          ni <- infer n
-          ji <- infer j
+          rn <- infer n
+          rj <- infer j
           let t = TypeLambda $ LambdaType dom $ Types.function (Types.optional $ TypeVariable dom) (TypeVariable cod)
-          let constraints = termConstraints ni ++ termConstraints ji
-                              ++ [(TypeVariable cod, termType ni), (Types.function (TypeVariable dom) (TypeVariable cod), termType ji)]
-          yieldElimination (EliminationOptional $ OptionalCases ni ji) t constraints
+          let constraints = inferredConstraints rn ++ inferredConstraints rj
+                              ++ [(TypeVariable cod, inferredType rn),
+                                  (Types.function (TypeVariable dom) (TypeVariable cod), inferredType rj)]
+          yieldElimination (EliminationOptional $ OptionalCases (inferredTerm rn) (inferredTerm rj)) t constraints
 
         EliminationProduct (TupleProjection arity idx) -> do
           types <- CM.replicateM arity freshTypeVariable
@@ -112,38 +116,50 @@ infer term = withTrace ("infer for " ++ show (termVariant term)) $ case term of
             (Types.function (TypeRecord rt) $ fieldTypeType sfield) []
 
         EliminationUnion (CaseStatement tname def cases) -> do
-            -- Default value
-            (idef, dfltConstraints) <- case def of
-              Nothing -> pure (Nothing, [])
-              Just d -> do
-                idf <- infer d
-                return (Just idf, termConstraints idf)
-
-            -- Cases
-            icases <- CM.mapM inferFieldType cases
-            let icasesMap = fieldMap icases
-            rt <- requireUnionType True tname
-            let sfields = fieldTypeMap  $ rowTypeFields rt
-            checkCasesAgainstSchema tname icasesMap sfields
-            let pairMap = productOfMaps icasesMap sfields
-
             cod <- freshTypeVariable
-            let outerConstraints = (\(d, s) -> (termType d, Types.function s cod)) <$> M.elems pairMap
-            let innerConstraints = dfltConstraints ++ L.concat (termConstraints <$> M.elems icasesMap)
 
-            yieldElimination (EliminationUnion (CaseStatement tname idef icases))
+            -- Union type
+            rt <- requireUnionType True tname
+            checkCaseNames tname def cases $ rowTypeFields rt
+            
+            -- Default value
+            rdef <- case def of
+              Nothing -> pure Nothing
+              Just d -> Just <$> infer d
+            
+            -- Cases
+            rcases <- CM.mapM inferFieldType cases
+            let pairMap = productOfMaps (M.fromList rcases) (fieldTypeMap $ rowTypeFields rt)
+
+            let defConstraints = Y.maybe [] (\d -> [(cod, inferredType d)]) rdef
+            let codConstraints = (\(d, s) -> (inferredType d, Types.function s cod)) <$> M.elems pairMap
+            let subtermConstraints = L.concat (inferredConstraints . snd <$> rcases)
+            let constraints = defConstraints ++ codConstraints ++ subtermConstraints
+            yieldElimination (EliminationUnion (CaseStatement tname (inferredTerm <$> rdef) (inferredToField <$> rcases)))
               (Types.function (TypeUnion rt) cod)
-              (innerConstraints ++ outerConstraints)
+              constraints
           where
             productOfMaps ml mr = M.fromList $ Y.catMaybes (toPair <$> M.toList mr)
               where
                 toPair (k, vr) = (\vl -> (k, (vl, vr))) <$> M.lookup k ml
-            checkCasesAgainstSchema tname icases sfields = if M.null diff
-                then pure ()
-                else fail $ "case(s) in case statement which do not exist in type " ++ unName tname ++ ": "
-                  ++ L.intercalate ", " (unFieldName <$> M.keys diff)
+            checkCaseNames tname def cases fields = do
+                checkCasesAreSufficient
+                checkCasesAreNotSuperfluous
               where
-                diff = M.difference icases sfields
+                caseNames = S.fromList (fieldName <$> cases)
+                fieldNames = S.fromList (fieldTypeName <$> fields)
+                checkCasesAreSufficient = if S.null diff || Y.isJust def
+                    then pure ()
+                    else fail $ "cases(s) missing with respect to variant of type " ++ unName tname ++ ": "
+                      ++ L.intercalate ", " (unFieldName <$> S.toList diff)
+                  where
+                    diff = S.difference fieldNames caseNames
+                checkCasesAreNotSuperfluous = if S.null diff
+                    then pure ()
+                    else fail $ "case(s) in case statement which do not exist in type " ++ unName tname ++ ": "
+                      ++ L.intercalate ", " (unFieldName <$> S.toList diff)
+                  where
+                    diff = S.difference caseNames fieldNames
 
         EliminationWrap name -> do
           typ <- requireWrappedType name
@@ -152,11 +168,11 @@ infer term = withTrace ("infer for " ++ show (termVariant term)) $ case term of
       FunctionLambda (Lambda v body) -> do
         vdom <- freshName
         let dom = TypeVariable vdom
-        i <- withBinding v dom $ infer body
-        let cod = termType i
-        yieldFunction (FunctionLambda $ Lambda v i)
+        rbody <- withBinding v dom $ infer body
+        let cod = inferredType rbody
+        yieldFunction (FunctionLambda $ Lambda v $ inferredTerm rbody)
           (TypeLambda $ LambdaType vdom $ Types.function dom cod)
-          (termConstraints i)
+          (inferredConstraints rbody)
 
       FunctionPrimitive name -> do
           t <- typeOfPrimitive name >>= replaceFreeVariables
@@ -179,10 +195,10 @@ infer term = withTrace ("infer for " ++ show (termVariant term)) $ case term of
         if L.null els
           then yieldTerm (TermList []) (TypeLambda $ LambdaType v $ TypeList $ TypeVariable v) []
           else do
-            iels <- CM.mapM infer els
-            let co = (\e -> (TypeVariable v, termType e)) <$> iels
-            let ci = L.concat (termConstraints <$> iels)
-            yieldTerm (TermList iels) (Types.list $ TypeVariable v) (co ++ ci)
+            rels <- CM.mapM infer els
+            let co = (\e -> (TypeVariable v, inferredType e)) <$> rels
+            let ci = L.concat (inferredConstraints <$> rels)
+            yieldTerm (TermList (inferredTerm <$> rels)) (Types.list $ TypeVariable v) (co ++ ci)
 
     TermLiteral l -> yieldTerm (TermLiteral l) (Types.literal $ literalType l) []
 
@@ -194,55 +210,63 @@ infer term = withTrace ("infer for " ++ show (termVariant term)) $ case term of
             $ Types.map (TypeVariable kv) (TypeVariable vv)) []
           else do
             pairs <- CM.mapM toPair $ M.toList m
-            let co = L.concat ((\(k, v) -> [(TypeVariable kv, termType k), (TypeVariable vv, termType v)]) <$> pairs)
-            let ci = L.concat ((\(k, v) -> termConstraints k ++ termConstraints v) <$> pairs)
-            yieldTerm (TermMap $ M.fromList pairs) (Types.map (TypeVariable kv) (TypeVariable vv)) (co ++ ci)
+            let co = L.concat ((\(k, v) -> [(TypeVariable kv, inferredType k), (TypeVariable vv, inferredType v)]) <$> pairs)
+            let ci = L.concat ((\(k, v) -> inferredConstraints k ++ inferredConstraints v) <$> pairs)
+            yieldTerm (TermMap $ M.fromList (fromPair <$> pairs)) (Types.map (TypeVariable kv) (TypeVariable vv)) (co ++ ci)
       where
+        fromPair (k, v) = (inferredTerm k, inferredTerm v)
         toPair (k, v) = do
-          ik <- infer k
-          iv <- infer v
-          return (ik, iv)
+          rk <- infer k
+          rv <- infer v
+          return (rk, rv)
 
     TermOptional m -> do
       v <- freshName
       case m of
         Nothing -> yieldTerm (TermOptional Nothing) (TypeLambda $ LambdaType v $ TypeOptional $ TypeVariable v) []
         Just e -> do
-          i <- infer e
-          let ci = termConstraints i
-          yieldTerm (TermOptional $ Just i) (Types.optional $ TypeVariable v) ((TypeVariable v, termType i):ci)
+          re <- infer e
+          let constraints = ((TypeVariable v, inferredType re):(inferredConstraints re))
+          yieldTerm
+            (TermOptional $ Just $ inferredTerm re)
+            (Types.optional $ TypeVariable v)
+            constraints
 
     TermProduct tuple -> do
-      is <- CM.mapM infer tuple
-      yieldTerm (TermProduct is) (TypeProduct $ fmap termType is) (L.concat $ fmap termConstraints is)
+      rtuple <- CM.mapM infer tuple
+      yieldTerm
+        (TermProduct (inferredTerm <$> rtuple))
+        (TypeProduct (inferredType <$> rtuple))
+        (L.concat (inferredConstraints <$> rtuple))
 
     TermRecord (Record n fields) -> do
         rt <- requireRecordType True n
-        ifields <- CM.mapM inferFieldType fields
-        let ci = L.concat (termConstraints . fieldTerm <$> ifields)
-        let irt = TypeRecord $ RowType n Nothing (fieldType <$> ifields)
-        yieldTerm (TermRecord $ Record n ifields) irt ((TypeRecord rt, irt):ci)
+
+        rfields <- CM.mapM inferFieldType fields
+        let ci = L.concat (inferredConstraints . snd <$> rfields)
+        let irt = TypeRecord $ RowType n Nothing (inferredToFieldType <$> rfields)
+        yieldTerm (TermRecord $ Record n (inferredToField <$> rfields)) irt ((TypeRecord rt, irt):ci)
 
     TermSet els -> do
       v <- freshName
       if S.null els
         then yieldTerm (TermSet S.empty) (TypeLambda $ LambdaType v $ Types.set $ TypeVariable v) []
         else do
-          iels <- CM.mapM infer $ S.toList els
-          let co = (\e -> (TypeVariable v, termType e)) <$> iels
-          let ci = L.concat (termConstraints <$> iels)
-          yieldTerm (TermSet $ S.fromList iels) (Types.set $ TypeVariable v) (co ++ ci)
+          rels <- CM.mapM infer $ S.toList els
+          let co = (\e -> (TypeVariable v, inferredType e)) <$> rels
+          let ci = L.concat (inferredConstraints <$> rels)
+          yieldTerm (TermSet $ S.fromList (inferredTerm <$> rels)) (Types.set $ TypeVariable v) (co ++ ci)
 
     TermSum (Sum i s trm) -> do
-        it <- infer trm
-        vot <- CM.sequence (varOrTerm it <$> [0..(s-1)])
+        rtrm <- infer trm
+        vot <- CM.sequence (varOrTerm rtrm <$> [0..(s-1)])
         let types = fst <$> vot
         let vars = Y.catMaybes (snd <$> vot)
         let typ = L.foldl (\t v -> TypeLambda $ LambdaType v t) (TypeSum types) vars
-        yieldTerm (TermSum $ Sum i s it) typ (termConstraints it)
+        yieldTerm (TermSum $ Sum i s $ inferredTerm rtrm) typ (inferredConstraints rtrm)
       where
-        varOrTerm it j = if i == j
-          then pure (termType it, Nothing)
+        varOrTerm rtrm j = if i == j
+          then pure (inferredType rtrm, Nothing)
           else do
             v <- freshName
             return (TypeVariable v, Just v)
@@ -250,11 +274,12 @@ infer term = withTrace ("infer for " ++ show (termVariant term)) $ case term of
     TermUnion (Injection n field) -> do
         rt <- requireUnionType True n
         sfield <- findMatchingField (fieldName field) (rowTypeFields rt)
-        ifield <- inferFieldType field
-        let ci = termConstraints $ fieldTerm ifield
-        let co = (termType $ fieldTerm ifield, fieldTypeType sfield)
 
-        yieldTerm (TermUnion $ Injection n ifield) (TypeUnion rt) (co:ci)
+        rfield <- inferFieldType field
+        let ci = inferredConstraints $ snd rfield
+        let co = (inferredType $ snd rfield, fieldTypeType sfield)
+
+        yieldTerm (TermUnion $ Injection n $ inferredToField rfield) (TypeUnion rt) (co:ci)
 
     TermVariable v -> do
       t <- requireName v
@@ -262,14 +287,19 @@ infer term = withTrace ("infer for " ++ show (termVariant term)) $ case term of
 
     TermWrap (Nominal name term1) -> do
       typ <- requireWrappedType name
-      i <- infer term1
-      yieldTerm (TermWrap $ Nominal name i) (TypeWrap $ Nominal name typ) (termConstraints i ++ [(typ, termType i)])
+      rterm1 <- infer term1
+      yieldTerm
+        (TermWrap $ Nominal name $ inferredTerm rterm1)
+        (TypeWrap $ Nominal name typ)
+        (inferredConstraints rterm1 ++ [(typ, inferredType rterm1)])
 
-inferFieldType :: (Ord a, Show a) => Field a -> Flow (Graph a) (Field (InfAnn a))
-inferFieldType (Field fname term) = Field fname <$> infer term
+inferFieldType :: (Ord a, Show a) => Field a -> Flow (Graph a) (FieldName, Inferred a)
+inferFieldType (Field fname term) = do
+  rterm <- infer term
+  return (fname, rterm)
 
-inferLet :: (Ord a, Show a) => Let a -> Flow (Graph a) (Term (InfAnn a))
-inferLet (Let bindings env) = withTrace ("let(" ++ L.intercalate "," (unName . fst <$> M.toList bindings) ++ ")") $ do
+inferLet :: (Ord a, Show a) => Let a -> Flow (Graph a) (Inferred a)
+inferLet (Let bindings env) = do
     state0 <- getState
     e <- preExtendEnv bindings $ graphTypes state0
     let state1 = state0 {graphTypes = e}
@@ -278,14 +308,17 @@ inferLet (Let bindings env) = withTrace ("let(" ++ L.intercalate "," (unName . f
       let bl = M.toList bindings
 
       -- Infer types of bindings in the pre-extended environment
-      ivalues <- CM.mapM infer (snd <$> bl)
-      let ibindings = M.fromList (L.zip (fst <$> bl) ivalues)
-      let bc = L.concat (termConstraints <$> ivalues)
+      rvalues <- CM.mapM infer (snd <$> bl)
+      let rbindings = M.fromList (L.zip (fst <$> bl) (inferredTerm <$> rvalues))
+      let bc = L.concat (inferredConstraints <$> rvalues)
 
-      let tbindings = M.map termType ibindings
-      ienv <- withBindings tbindings $ infer env
+      let tbindings = M.fromList (L.zip (fst <$> bl) (inferredType <$> rvalues))
+      renv <- withBindings tbindings $ infer env
 
-      yieldTerm (TermLet $ Let ibindings ienv) (termType ienv) (bc ++ termConstraints ienv)
+      yieldTerm
+        (TermLet $ Let rbindings $ inferredTerm renv)
+        (inferredType renv)
+        (bc ++ inferredConstraints renv)
   where
     -- Add any manual type annotations for the bindings to the environment, enabling type inference over recursive definitions
     preExtendEnv bindings e = CM.foldM addPair e $ M.toList bindings
@@ -299,6 +332,9 @@ inferLet (Let bindings env) = withTrace ("let(" ++ L.intercalate "," (unName . f
             annotatedType term = do
               anns <- graphAnnotations <$> getState
               annotationClassTypeOf anns $ annotationClassTermAnnotation anns term
+
+inferredToField (fname, inferred) = Field fname $ inferredTerm inferred
+inferredToFieldType (fname, inferred) = FieldType fname $ inferredType inferred
 
 instantiate :: Type a -> Flow (Graph a) (Type a)
 instantiate typ = case typ of
@@ -320,14 +356,6 @@ requireName v = do
       ++ L.intercalate ", " (unName <$> M.keys env)
     Just s  -> instantiate s
 
-termConstraints :: Show a => Term (InfAnn a) -> [Constraint a]
-termConstraints term = case term of
-  (TermAnnotated (Annotated _ (_, _, constraints))) -> constraints
-  _ -> throwDebugException $ "expected an annotated term. Found: " ++ show term
-
-termType :: Term (InfAnn a) -> Type a
-termType (TermAnnotated (Annotated _ (_, typ, _))) = typ
-
 typeOfPrimitive :: Name -> Flow (Graph a) (Type a)
 typeOfPrimitive name = primitiveType <$> requirePrimitive name
 
@@ -342,17 +370,18 @@ withEnvironment m flow = do
   g <- getState
   withState (g {graphTypes = m $ graphTypes g}) flow
 
-yieldFunction :: (Eq a, Ord a, Show a) => Function (InfAnn a) -> Type a -> [Constraint a] -> Flow (Graph a) (Term (InfAnn a))
+yieldFunction :: (Eq a, Ord a, Show a) => Function a -> Type a -> [Constraint a] -> Flow (Graph a) (Inferred a)
 yieldFunction fun = yieldTerm (TermFunction fun)
 
-yieldElimination :: (Eq a, Ord a, Show a) => Elimination (InfAnn a) -> Type a -> [Constraint a] -> Flow (Graph a) (Term (InfAnn a))
+yieldElimination :: (Eq a, Ord a, Show a) => Elimination a -> Type a -> [Constraint a] -> Flow (Graph a) (Inferred a)
 yieldElimination e = yieldTerm (TermFunction $ FunctionElimination e)
 
-yieldTerm :: (Eq a, Ord a, Show a) => Term (InfAnn a) -> Type a -> [Constraint a] -> Flow (Graph a) (Term (InfAnn a))
+yieldTerm :: (Eq a, Ord a, Show a) => Term a -> Type a -> [Constraint a] -> Flow (Graph a) (Inferred a)
 yieldTerm term typ constraints = do
-  case term of
-    TermAnnotated _ -> fail "doubly-annotated term"
-    _ -> pure ()
   g <- getState
-  let defAnn = annotationClassDefault $ graphAnnotations g
-  return $ TermAnnotated $ Annotated term (defAnn, typ, constraints)
+  -- For now, we simply annotate each and every subterm, except annotation terms.
+  -- In the future, we might choose only to annotate certain subterms as needed, e.g. function terms
+  let annTerm = case term of
+        TermAnnotated _ -> term
+        _ -> annotationClassSetTermType (graphAnnotations g) (Just typ) term
+  return $ Inferred annTerm typ constraints
