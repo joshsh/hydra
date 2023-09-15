@@ -56,21 +56,21 @@ skipAnnotationsDef = stripDefinition "skipAnnotations" $
       (Types.var "x")
       (Types.optional $ Types.apply (Types.apply (TypeVariable _Annotated) (Types.var "x")) (Types.var "a")))
 
-stripTermDef :: Definition (Term a -> Term a)
+stripTermDef :: Definition (Term Kv -> Term Kv)
 stripTermDef = stripDefinition "stripTerm" $
     doc "Strip all annotations from a term" $
     function termA termA $
       lambda "x" (ref skipAnnotationsDef @@ (match _Term (Just nothing) [
         Case _Term_annotated --> lambda "ann" (just $ var "ann")]) @@ var "x")
 
-stripTypeDef :: Definition (Type a -> Type a)
+stripTypeDef :: Definition (Type Kv -> Type Kv)
 stripTypeDef = stripDefinition "stripType" $
     doc "Strip all annotations from a type" $
     function typeA typeA $
       lambda "x" (ref skipAnnotationsDef @@ (match _Type (Just nothing) [
         Case _Type_annotated --> lambda "ann" (just $ var "ann")]) @@ var "x")
         
-stripTypeParametersDef :: Definition (Type a -> Type a)
+stripTypeParametersDef :: Definition (Type Kv -> Type Kv)
 stripTypeParametersDef = stripDefinition "stripTypeParameters" $
     doc "Strip any top-level type lambdas from a type, extracting the (possibly nested) type body" $
     function typeA typeA $

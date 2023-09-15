@@ -22,9 +22,9 @@ data Module a =
     -- | A common prefix for all element names in the module
     moduleNamespace :: Namespace,
     -- | The elements defined in this module
-    moduleElements :: [Graph.Element a],
+    moduleElements :: [Graph.Element Core.Kv],
     -- | Any additional modules this one has a direct dependency upon
-    moduleDependencies :: [Module a],
+    moduleDependencies :: [Module Core.Kv],
     -- | An optional human-readable description of the module
     moduleDescription :: (Maybe String)}
   deriving (Eq, Ord, Read, Show)

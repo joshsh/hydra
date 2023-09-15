@@ -52,10 +52,10 @@ equalUint64 = (==)
 equalString :: String -> String -> Bool
 equalString = (==)
 
-equalTerm :: Eq a => Term a -> Term a -> Bool
+equalTerm :: Term Kv -> Term Kv -> Bool
 equalTerm = (==)
 
-equalType :: Eq a => Type a -> Type a -> Bool
+equalType :: Type Kv -> Type Kv -> Bool
 equalType = (==)
 
 gtInt32 :: Int -> Int -> Bool

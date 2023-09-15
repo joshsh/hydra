@@ -69,7 +69,7 @@ _GraphPattern_patterns = (Core.FieldName "patterns")
 -- | A node in a query expression; it may be a term, a variable, or a wildcard
 data Node a = 
   -- | A graph term; an expression which is valid in the graph being matched
-  NodeTerm (Core.Term a) |
+  NodeTerm (Core.Term Core.Kv) |
   -- | A query variable, not to be confused with a variable term
   NodeVariable Variable |
   -- | An anonymous variable which we do not care to join across patterns

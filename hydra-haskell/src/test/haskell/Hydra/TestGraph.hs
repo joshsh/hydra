@@ -22,17 +22,17 @@ latLonName = Name "LatLon"
 latLonPolyName :: Name
 latLonPolyName = Name "LatLonPoly"
 
-latlonRecord :: Float -> Float -> Term a
+latlonRecord :: Float -> Float -> Term Kv
 latlonRecord lat lon = record latLonName [Field (FieldName "lat") $ float32 lat, Field (FieldName "lon") $ float32 lon]
 
-latLonType :: Type a
+latLonType :: Type Kv
 latLonType = TypeRecord $ RowType latLonName Nothing [Types.field "lat" Types.float32, Types.field "lon" Types.float32]
 
-latLonPolyType :: Type a
+latLonPolyType :: Type Kv
 latLonPolyType = TypeLambda $ LambdaType (Name "a") $
   TypeRecord $ RowType latLonPolyName Nothing [Types.field "lat" $ Types.var "a", Types.field "lon" $ Types.var "a"]
 
-stringAliasType :: Type a
+stringAliasType :: Type Kv
 stringAliasType = TypeWrap $ Nominal stringAliasTypeName Types.string
 
 stringAliasTypeName :: Name
@@ -77,7 +77,7 @@ testDataArthur = record testTypePersonName [
   Field (FieldName "lastName") $ string "Dent",
   Field (FieldName "age") $ int32 42]
 
-testTypeComparison :: Type a
+testTypeComparison :: Type Kv
 testTypeComparison = TypeUnion $ RowType testTypeComparisonName Nothing [
   Types.field "lessThan" Types.unit,
   Types.field "equalTo" Types.unit,
@@ -86,7 +86,7 @@ testTypeComparison = TypeUnion $ RowType testTypeComparisonName Nothing [
 testTypeComparisonName :: Name
 testTypeComparisonName = Name "Comparison"
 
-testTypeFoobarValue :: Type a
+testTypeFoobarValue :: Type Kv
 testTypeFoobarValue = TypeUnion $ RowType testTypeFoobarValueName Nothing [
   Types.field "bool" Types.boolean,
   Types.field "string" Types.string,

@@ -211,7 +211,7 @@ whenFlag flag fthen felse = do
     else felse
 
 -- TODO: move out of Kv and into Rewriting
-unshadowVariables :: Ord a => Term a -> Term a
+unshadowVariables :: Term Kv -> Term Kv
 unshadowVariables term = Y.fromJust $ flowStateValue $ unFlow (rewriteTermM rewrite (pure . id) term) (S.empty, M.empty) emptyTrace
   where
     rewrite recurse term = do

@@ -14,9 +14,9 @@ import Data.Set as S
 -- | An evaluation context together with a source language and a target language
 data AdapterContext a = 
   AdapterContext {
-    adapterContextGraph :: (Graph.Graph a),
-    adapterContextLanguage :: (Language a),
-    adapterContextAdapters :: (Map Core.Name (Compute.Adapter (AdapterContext a) (AdapterContext a) (Core.Type a) (Core.Type a) (Core.Term a) (Core.Term a)))}
+    adapterContextGraph :: (Graph.Graph Core.Kv),
+    adapterContextLanguage :: (Language Core.Kv),
+    adapterContextAdapters :: (Map Core.Name (Compute.Adapter (AdapterContext Core.Kv) (AdapterContext Core.Kv) (Core.Type Core.Kv) (Core.Type Core.Kv) (Core.Term Core.Kv) (Core.Term Core.Kv)))}
 
 _AdapterContext = (Core.Name "hydra/coders.AdapterContext")
 
@@ -68,7 +68,7 @@ data LanguageConstraints a =
     -- | All supported type variants
     languageConstraintsTypeVariants :: (Set Mantle.TypeVariant),
     -- | A logical set of types, as a predicate which tests a type for inclusion
-    languageConstraintsTypes :: (Core.Type a -> Bool)}
+    languageConstraintsTypes :: (Core.Type Core.Kv -> Bool)}
 
 _LanguageConstraints = (Core.Name "hydra/coders.LanguageConstraints")
 

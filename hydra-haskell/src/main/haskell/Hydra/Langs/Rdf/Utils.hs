@@ -20,7 +20,7 @@ emptyGraph = Rdf.Graph S.empty
 emptyLangStrings :: Rdf.LangStrings
 emptyLangStrings = Rdf.LangStrings M.empty
 
-encodeLiteral :: Literal -> Flow (Graph a) Rdf.Literal
+encodeLiteral :: Literal -> Flow (Graph Kv) Rdf.Literal
 encodeLiteral lit = case lit of
     LiteralBinary s -> fail "base 64 encoding not yet implemented"
     LiteralBoolean b -> pure $ xsd (\b -> if b then "true" else "false") b "boolean"
@@ -58,7 +58,7 @@ mergeGraphs graphs = Rdf.Graph $ L.foldl S.union S.empty (Rdf.unGraph <$> graphs
 nameToIri :: Name -> Rdf.Iri
 nameToIri name = Rdf.Iri $ "urn:" ++ unName name
 
-nextBlankNode :: Show a => Flow (Graph a) Rdf.Resource
+nextBlankNode :: Flow (Graph Kv) Rdf.Resource
 nextBlankNode = do
   count <- nextCount "rdfBlankNodeCounter"
   return $ Rdf.ResourceBnode $ Rdf.BlankNode $ "b" ++ show count

@@ -6,7 +6,7 @@ import qualified Data.List as L
 import qualified Data.Set as S
 
 
-graphqlLanguage :: Language a
+graphqlLanguage :: Language Kv
 graphqlLanguage = Language (LanguageName "hydra/langs/graphql") $ LanguageConstraints {
   -- Note: this language is for schemas and data only; support for queries may be added later
   languageConstraintsEliminationVariants = S.empty,

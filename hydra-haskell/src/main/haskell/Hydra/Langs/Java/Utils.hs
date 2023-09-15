@@ -24,7 +24,7 @@ addExpressions exprs = L.foldl add (Java.AdditiveExpressionUnary $ L.head exprs)
   where
     add ae me = Java.AdditiveExpressionPlus $ Java.AdditiveExpression_Binary ae me
 
-addJavaTypeParameter :: Java.ReferenceType -> Java.Type -> Flow (Graph a) Java.Type
+addJavaTypeParameter :: Java.ReferenceType -> Java.Type -> Flow (Graph Kv) Java.Type
 addJavaTypeParameter rt t = case t of
   Java.TypeReference rt1 -> case rt1 of
     Java.ReferenceTypeClassOrInterface cit -> case cit of
@@ -52,7 +52,7 @@ fieldNameToJavaVariableDeclarator (FieldName n) = javaVariableDeclarator (javaId
 fieldNameToJavaVariableDeclaratorId :: FieldName -> Java.VariableDeclaratorId
 fieldNameToJavaVariableDeclaratorId (FieldName n) = javaVariableDeclaratorId $ javaIdentifier n
 
-importAliasesForModule :: Module a -> Aliases
+importAliasesForModule :: Module Kv -> Aliases
 importAliasesForModule mod = Aliases (moduleNamespace mod) M.empty S.empty
 
 interfaceMethodDeclaration :: [Java.InterfaceMethodModifier] -> [Java.TypeParameter] -> String -> [Java.FormalParameter]
@@ -321,7 +321,7 @@ javaTypeToJavaFormalParameter jt fname = Java.FormalParameterSimple $ Java.Forma
     argType = Java.UnannType jt
     argId = fieldNameToJavaVariableDeclaratorId fname
 
-javaTypeToJavaReferenceType :: Java.Type -> Flow (Graph a) Java.ReferenceType
+javaTypeToJavaReferenceType :: Java.Type -> Flow (Graph Kv) Java.ReferenceType
 javaTypeToJavaReferenceType t = case t of
   Java.TypeReference rt -> pure rt
   _ -> fail $ "expected a Java reference type. Found: " ++ show t
@@ -480,7 +480,7 @@ toAssignStmt fname = javaAssignmentStatement lhs rhs
     rhs = fieldNameToJavaExpression fname
     thisField = Java.FieldAccess $ Java.FieldAccess_QualifierPrimary $ Java.PrimaryNoNewArray Java.PrimaryNoNewArrayThis
 
-toJavaArrayType :: Java.Type -> Flow (Graph a) Java.Type
+toJavaArrayType :: Java.Type -> Flow (Graph Kv) Java.Type
 toJavaArrayType t = Java.TypeReference . Java.ReferenceTypeArray <$> case t of
   Java.TypeReference rt -> case rt of
     Java.ReferenceTypeClassOrInterface cit -> pure $

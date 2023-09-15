@@ -12,7 +12,7 @@ import qualified Data.Maybe as Y
 --       for Hydra we cannot support a term or type pattern unless it is provably safe in the target environment.
 --       Otherwise, generated expressions could cause failure during runtime operations.
 -- Also note that extra features are required on top of Graph.Features, again for reasons of completeness.
-tinkerpopLanguage :: LanguageName -> Features -> ExtraFeatures a -> Language a
+tinkerpopLanguage :: LanguageName -> Features -> ExtraFeatures a -> Language Kv
 tinkerpopLanguage name features extras = Language name $ LanguageConstraints {
     languageConstraintsEliminationVariants = S.empty,
 

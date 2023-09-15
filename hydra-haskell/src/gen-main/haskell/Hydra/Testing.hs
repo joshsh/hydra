@@ -25,8 +25,8 @@ data TestCase a =
   TestCase {
     testCaseDescription :: (Maybe String),
     testCaseEvaluationStyle :: EvaluationStyle,
-    testCaseInput :: (Core.Term a),
-    testCaseOutput :: (Core.Term a)}
+    testCaseInput :: (Core.Term Core.Kv),
+    testCaseOutput :: (Core.Term Core.Kv)}
   deriving (Eq, Ord, Read, Show)
 
 _TestCase = (Core.Name "hydra/testing.TestCase")
@@ -44,8 +44,8 @@ data TestGroup a =
   TestGroup {
     testGroupName :: String,
     testGroupDescription :: (Maybe String),
-    testGroupSubgroups :: [TestGroup a],
-    testGroupCases :: [TestCase a]}
+    testGroupSubgroups :: [TestGroup Core.Kv],
+    testGroupCases :: [TestCase Core.Kv]}
   deriving (Eq, Ord, Read, Show)
 
 _TestGroup = (Core.Name "hydra/testing.TestGroup")

@@ -16,25 +16,25 @@ checkStripTerm :: H.SpecWith ()
 checkStripTerm = do
   H.describe "Tests for stripping annotations from terms" $ do
     H.it "Un-annotated terms are not affected" $
-      QC.property $ \term -> case (term :: Term ()) of
+      QC.property $ \term -> case (term :: Term Kv) of
         TermAnnotated _ -> True
         _ -> stripTerm term == term
     H.it "Terms are stripped recursively" $
-      QC.property $ \term -> case (term :: Term ()) of
+      QC.property $ \term -> case (term :: Term Kv) of
         TermAnnotated _ -> True
-        _ -> stripTerm (Terms.annot () (Terms.annot () term)) == term
+        _ -> stripTerm (Terms.annot emptyKv (Terms.annot emptyKv term)) == term
 
 checkStripType :: H.SpecWith ()
 checkStripType = do
   H.describe "Tests for stripping annotations from types" $ do
     H.it "Un-annotated types are not affected" $
-      QC.property $ \typ -> case (typ :: Type ()) of
+      QC.property $ \typ -> case (typ :: Type Kv) of
         TypeAnnotated _ -> True
         _ -> stripType typ == typ
     H.it "Types are stripped recursively" $
-      QC.property $ \typ -> case (typ :: Type ()) of
+      QC.property $ \typ -> case (typ :: Type Kv) of
         TypeAnnotated _ -> True
-        _ -> stripType (Types.annot () (Types.annot () typ)) == typ
+        _ -> stripType (Types.annot emptyKv (Types.annot emptyKv typ)) == typ
 
 spec :: H.Spec
 spec = do

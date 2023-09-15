@@ -42,7 +42,7 @@ bytesToAesonValue = A.eitherDecode
 bytesToJsonValue :: BS.ByteString -> Either String Json.Value
 bytesToJsonValue bs = aesonValueToJsonValue <$> bytesToAesonValue bs
 
-jsonByteStringCoder :: (Eq a, Ord a, Read a, Show a) => Type a -> Flow (Graph a) (Coder (Graph a) (Graph a) (Term a) BS.ByteString)
+jsonByteStringCoder :: Type Kv -> Flow (Graph Kv) (Coder (Graph Kv) (Graph Kv) (Term Kv) BS.ByteString)
 jsonByteStringCoder typ = do
   coder <- jsonCoder typ
   return Coder {
@@ -52,7 +52,7 @@ jsonByteStringCoder typ = do
         Right v -> coderDecode coder v}
 
 -- | A convenience which maps typed terms to and from pretty-printed JSON strings, as opposed to JSON objects
-jsonStringCoder :: (Eq a, Ord a, Read a, Show a) => Type a -> Flow (Graph a) (Coder (Graph a) (Graph a) (Term a) String)
+jsonStringCoder :: Type Kv -> Flow (Graph Kv) (Coder (Graph Kv) (Graph Kv) (Term Kv) String)
 jsonStringCoder typ = do
   serde <- jsonByteStringCoder typ
   return Coder {

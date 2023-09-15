@@ -24,9 +24,9 @@ _Annotated_annotation = (FieldName "annotation")
 data Application a = 
   Application {
     -- | The left-hand side of the application
-    applicationFunction :: (Term a),
+    applicationFunction :: (Term Kv),
     -- | The right-hand side of the application
-    applicationArgument :: (Term a)}
+    applicationArgument :: (Term Kv)}
   deriving (Eq, Ord, Read, Show)
 
 _Application = (Name "hydra/core.Application")
@@ -39,9 +39,9 @@ _Application_argument = (FieldName "argument")
 data ApplicationType a = 
   ApplicationType {
     -- | The left-hand side of the application
-    applicationTypeFunction :: (Type a),
+    applicationTypeFunction :: (Type Kv),
     -- | The right-hand side of the application
-    applicationTypeArgument :: (Type a)}
+    applicationTypeArgument :: (Type Kv)}
   deriving (Eq, Ord, Read, Show)
 
 _ApplicationType = (Name "hydra/core.ApplicationType")
@@ -54,8 +54,8 @@ _ApplicationType_argument = (FieldName "argument")
 data CaseStatement a = 
   CaseStatement {
     caseStatementTypeName :: Name,
-    caseStatementDefault :: (Maybe (Term a)),
-    caseStatementCases :: [Field a]}
+    caseStatementDefault :: (Maybe (Term Kv)),
+    caseStatementCases :: [Field Kv]}
   deriving (Eq, Ord, Read, Show)
 
 _CaseStatement = (Name "hydra/core.CaseStatement")
@@ -69,15 +69,15 @@ _CaseStatement_cases = (FieldName "cases")
 -- | A corresponding elimination for an introduction term
 data Elimination a = 
   -- | Eliminates a list using a fold function; this function has the signature b -> [a] -> b
-  EliminationList (Term a) |
+  EliminationList (Term Kv) |
   -- | Eliminates an optional term by matching over the two possible cases
-  EliminationOptional (OptionalCases a) |
+  EliminationOptional (OptionalCases Kv) |
   -- | Eliminates a tuple by projecting the component at a given 0-indexed offset
   EliminationProduct TupleProjection |
   -- | Eliminates a record by projecting a given field
   EliminationRecord Projection |
   -- | Eliminates a union term by matching over the fields of the union. This is a case statement.
-  EliminationUnion (CaseStatement a) |
+  EliminationUnion (CaseStatement Kv) |
   -- | Unwrap a wrapped term
   EliminationWrap Name
   deriving (Eq, Ord, Read, Show)
@@ -100,7 +100,7 @@ _Elimination_wrap = (FieldName "wrap")
 data Field a = 
   Field {
     fieldName :: FieldName,
-    fieldTerm :: (Term a)}
+    fieldTerm :: (Term Kv)}
   deriving (Eq, Ord, Read, Show)
 
 _Field = (Name "hydra/core.Field")
@@ -121,7 +121,7 @@ _FieldName = (Name "hydra/core.FieldName")
 data FieldType a = 
   FieldType {
     fieldTypeName :: FieldName,
-    fieldTypeType :: (Type a)}
+    fieldTypeType :: (Type Kv)}
   deriving (Eq, Ord, Read, Show)
 
 _FieldType = (Name "hydra/core.FieldType")
@@ -166,9 +166,9 @@ _FloatValue_float64 = (FieldName "float64")
 -- | A function
 data Function a = 
   -- | An elimination for any of a few term variants
-  FunctionElimination (Elimination a) |
+  FunctionElimination (Elimination Kv) |
   -- | A function abstraction (lambda)
-  FunctionLambda (Lambda a) |
+  FunctionLambda (Lambda Kv) |
   -- | A reference to a built-in (primitive) function
   FunctionPrimitive Name
   deriving (Eq, Ord, Read, Show)
@@ -184,8 +184,8 @@ _Function_primitive = (FieldName "primitive")
 -- | A function type, also known as an arrow type
 data FunctionType a = 
   FunctionType {
-    functionTypeDomain :: (Type a),
-    functionTypeCodomain :: (Type a)}
+    functionTypeDomain :: (Type Kv),
+    functionTypeCodomain :: (Type Kv)}
   deriving (Eq, Ord, Read, Show)
 
 _FunctionType = (Name "hydra/core.FunctionType")
@@ -198,7 +198,7 @@ _FunctionType_codomain = (FieldName "codomain")
 data Injection a = 
   Injection {
     injectionTypeName :: Name,
-    injectionField :: (Field a)}
+    injectionField :: (Field Kv)}
   deriving (Eq, Ord, Read, Show)
 
 _Injection = (Name "hydra/core.Injection")
@@ -299,7 +299,7 @@ data Lambda a =
     -- | The parameter of the lambda
     lambdaParameter :: Name,
     -- | The body of the lambda
-    lambdaBody :: (Term a)}
+    lambdaBody :: (Term Kv)}
   deriving (Eq, Ord, Read, Show)
 
 _Lambda = (Name "hydra/core.Lambda")
@@ -314,7 +314,7 @@ data LambdaType a =
     -- | The variable which is bound by the lambda
     lambdaTypeParameter :: Name,
     -- | The body of the lambda
-    lambdaTypeBody :: (Type a)}
+    lambdaTypeBody :: (Type Kv)}
   deriving (Eq, Ord, Read, Show)
 
 _LambdaType = (Name "hydra/core.LambdaType")
@@ -326,8 +326,8 @@ _LambdaType_body = (FieldName "body")
 -- | A set of (possibly recursive) 'let' bindings
 data Let a = 
   Let {
-    letBindings :: (Map Name (Term a)),
-    letEnvironment :: (Term a)}
+    letBindings :: (Map Name (Term Kv)),
+    letEnvironment :: (Term Kv)}
   deriving (Eq, Ord, Read, Show)
 
 _Let = (Name "hydra/core.Let")
@@ -386,8 +386,8 @@ _LiteralType_string = (FieldName "string")
 -- | A map type
 data MapType a = 
   MapType {
-    mapTypeKeys :: (Type a),
-    mapTypeValues :: (Type a)}
+    mapTypeKeys :: (Type Kv),
+    mapTypeValues :: (Type Kv)}
   deriving (Eq, Ord, Read, Show)
 
 _MapType = (Name "hydra/core.MapType")
@@ -421,9 +421,9 @@ _Nominal_object = (FieldName "object")
 data OptionalCases a = 
   OptionalCases {
     -- | A term provided if the optional value is nothing
-    optionalCasesNothing :: (Term a),
+    optionalCasesNothing :: (Term Kv),
     -- | A function which is applied if the optional value is non-nothing
-    optionalCasesJust :: (Term a)}
+    optionalCasesJust :: (Term Kv)}
   deriving (Eq, Ord, Read, Show)
 
 _OptionalCases = (Name "hydra/core.OptionalCases")
@@ -449,7 +449,7 @@ _Projection_field = (FieldName "field")
 data Record a = 
   Record {
     recordTypeName :: Name,
-    recordFields :: [Field a]}
+    recordFields :: [Field Kv]}
   deriving (Eq, Ord, Read, Show)
 
 _Record = (Name "hydra/core.Record")
@@ -466,7 +466,7 @@ data RowType a =
     -- | Optionally, the name of another row type which this one extends. If/when field order is preserved, the inherited fields of the extended type precede those of the extension.
     rowTypeExtends :: (Maybe Name),
     -- | The fields of this row type, excluding any inherited fields
-    rowTypeFields :: [FieldType a]}
+    rowTypeFields :: [FieldType Kv]}
   deriving (Eq, Ord, Read, Show)
 
 _RowType = (Name "hydra/core.RowType")
@@ -480,7 +480,7 @@ _RowType_fields = (FieldName "fields")
 -- | An infinite stream of terms
 data Stream a = 
   Stream {
-    streamFirst :: (Term a),
+    streamFirst :: (Term Kv),
     streamRest :: (Stream a)}
   deriving (Eq, Ord, Read, Show)
 
@@ -495,7 +495,7 @@ data Sum a =
   Sum {
     sumIndex :: Int,
     sumSize :: Int,
-    sumTerm :: (Term a)}
+    sumTerm :: (Term Kv)}
   deriving (Eq, Ord, Read, Show)
 
 _Sum = (Name "hydra/core.Sum")
@@ -509,26 +509,26 @@ _Sum_term = (FieldName "term")
 -- | A data term
 data Term a = 
   -- | A term annotated with metadata
-  TermAnnotated (Annotated (Term a) a) |
+  TermAnnotated (Annotated (Term Kv) a) |
   -- | A function application
-  TermApplication (Application a) |
+  TermApplication (Application Kv) |
   -- | A function term
-  TermFunction (Function a) |
-  TermLet (Let a) |
+  TermFunction (Function Kv) |
+  TermLet (Let Kv) |
   -- | A list
-  TermList [Term a] |
+  TermList [Term Kv] |
   -- | A literal value
   TermLiteral Literal |
   -- | A map of keys to values
-  TermMap (Map (Term a) (Term a)) |
+  TermMap (Map (Term Kv) (Term Kv)) |
   -- | An optional value
-  TermOptional (Maybe (Term a)) |
+  TermOptional (Maybe (Term Kv)) |
   -- | A tuple
-  TermProduct [Term a] |
+  TermProduct [Term Kv] |
   -- | A record term
   TermRecord (Record a) |
   -- | A set of values
-  TermSet (Set (Term a)) |
+  TermSet (Set (Term Kv)) |
   -- | An infinite stream of terms
   TermStream (Stream a) |
   -- | A variant tuple
@@ -537,7 +537,7 @@ data Term a =
   TermUnion (Injection a) |
   -- | A variable reference
   TermVariable Name |
-  TermWrap (Nominal (Term a))
+  TermWrap (Nominal (Term Kv))
   deriving (Eq, Ord, Read, Show)
 
 _Term = (Name "hydra/core.Term")
@@ -592,22 +592,22 @@ _TupleProjection_index = (FieldName "index")
 -- | A data type
 data Type a = 
   -- | A type annotated with metadata
-  TypeAnnotated (Annotated (Type a) a) |
-  TypeApplication (ApplicationType a) |
-  TypeFunction (FunctionType a) |
-  TypeLambda (LambdaType a) |
-  TypeList (Type a) |
+  TypeAnnotated (Annotated (Type Kv) a) |
+  TypeApplication (ApplicationType Kv) |
+  TypeFunction (FunctionType Kv) |
+  TypeLambda (LambdaType Kv) |
+  TypeList (Type Kv) |
   TypeLiteral LiteralType |
-  TypeMap (MapType a) |
-  TypeOptional (Type a) |
-  TypeProduct [Type a] |
-  TypeRecord (RowType a) |
-  TypeSet (Type a) |
-  TypeStream (Type a) |
-  TypeSum [Type a] |
-  TypeUnion (RowType a) |
+  TypeMap (MapType Kv) |
+  TypeOptional (Type Kv) |
+  TypeProduct [Type Kv] |
+  TypeRecord (RowType Kv) |
+  TypeSet (Type Kv) |
+  TypeStream (Type Kv) |
+  TypeSum [Type Kv] |
+  TypeUnion (RowType Kv) |
   TypeVariable Name |
-  TypeWrap (Nominal (Type a))
+  TypeWrap (Nominal (Type Kv))
   deriving (Eq, Ord, Read, Show)
 
 _Type = (Name "hydra/core.Type")

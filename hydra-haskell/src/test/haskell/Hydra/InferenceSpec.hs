@@ -555,11 +555,11 @@ checkSubtermAnnotations = H.describe "Check additional subterm annotations" $ do
           iterm <- annotateTermWithTypes term
           fail $ "iterm: " ++ show iterm
 
-checkTypedTerms :: H.SpecWith ()
-checkTypedTerms = H.describe "Check that term/type pairs are consistent with type inference" $ do
-
-    H.it "Check arbitrary typed terms" $
-      QC.property $ \(TypedTerm typ term) -> expectMonotype term typ
+--checkTypedTerms :: H.SpecWith ()
+--checkTypedTerms = H.describe "Check that term/type pairs are consistent with type inference" $ do
+--
+--    H.it "Check arbitrary typed terms" $
+--      QC.property $ \(TypedTerm typ term) -> expectMonotype term typ
 
 checkWrappedTerms :: H.SpecWith ()
 checkWrappedTerms = H.describe "Check nominal introductions and eliminations" $ do

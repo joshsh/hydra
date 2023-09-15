@@ -150,7 +150,7 @@ _TermVariant_wrap = (Core.FieldName "wrap")
 data TypeScheme a = 
   TypeScheme {
     typeSchemeVariables :: [Core.Name],
-    typeSchemeType :: (Core.Type a)}
+    typeSchemeType :: (Core.Type Core.Kv)}
   deriving (Eq, Ord, Read, Show)
 
 _TypeScheme = (Core.Name "hydra/mantle.TypeScheme")
@@ -214,10 +214,10 @@ _TypeVariant_variable = (Core.FieldName "variable")
 _TypeVariant_wrap = (Core.FieldName "wrap")
 
 -- | A type together with an instance of the type
-data TypedTerm a = 
+data TypedTerm a =
   TypedTerm {
-    typedTermType :: (Core.Type a),
-    typedTermTerm :: (Core.Term a)}
+    typedTermType :: (Core.Type Core.Kv),
+    typedTermTerm :: (Core.Term Core.Kv)}
   deriving (Eq, Ord, Read, Show)
 
 _TypedTerm = (Core.Name "hydra/mantle.TypedTerm")

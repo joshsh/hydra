@@ -46,7 +46,7 @@ hydraExtrasModule = Module (Namespace "hydra/extras") elements [hydraGraphModule
 --      el getAttrDef
       ]
 
-functionArityDef :: Definition (Function a -> Int)
+functionArityDef :: Definition (Function Kv -> Int)
 functionArityDef = hydraExtrasDefinition "functionArity" $
   function (Types.apply (TypeVariable _Function) (Types.var "a")) Types.int32 $
   match _Function Nothing [
@@ -55,7 +55,7 @@ functionArityDef = hydraExtrasDefinition "functionArity" $
     Case _Function_primitive --> constant $
       doc "TODO: This function needs to be monadic, so we can look up the primitive" (int32 42)]
 
-lookupPrimitiveDef :: Definition (Graph a -> Name -> Maybe (Primitive a))
+lookupPrimitiveDef :: Definition (Graph Kv -> Name -> Maybe (Primitive Kv))
 lookupPrimitiveDef = hydraExtrasDefinition "lookupPrimitive" $
   function
     (Types.apply (TypeVariable _Graph) (Types.var "a"))
@@ -63,7 +63,7 @@ lookupPrimitiveDef = hydraExtrasDefinition "lookupPrimitive" $
   lambda "g" $ lambda "name" $
     apply (Maps.lookup @@ var "name") (project _Graph _Graph_primitives @@ var "g")
 
-primitiveArityDef :: Definition (Primitive a -> Int)
+primitiveArityDef :: Definition (Primitive Kv -> Int)
 primitiveArityDef = hydraExtrasDefinition "primitiveArity" $
   doc "Find the arity (expected number of arguments) of a primitive constant or function" $
   function (Types.apply (TypeVariable _Primitive) (Types.var "a")) Types.int32 $
@@ -77,7 +77,7 @@ qnameDef = hydraExtrasDefinition "qname" $
       apply Strings.cat $
         list [apply (unwrap _Namespace) (var "ns"), string ".", var "name"]
 
-termArityDef :: Definition (Term a -> Int)
+termArityDef :: Definition (Term Kv -> Int)
 termArityDef = hydraExtrasDefinition "termArity" $
   function (Types.apply (TypeVariable _Term) (Types.var "a")) Types.int32 $
   match _Term (Just $ int32 0) [
@@ -85,7 +85,7 @@ termArityDef = hydraExtrasDefinition "termArity" $
     Case _Term_function --> ref functionArityDef]
     -- Note: ignoring variables which might resolve to functions
 
-typeArityDef :: Definition (Type a -> Int)
+typeArityDef :: Definition (Type Kv -> Int)
 typeArityDef = hydraExtrasDefinition "typeArity" $
   function (Types.apply (TypeVariable _Type) (Types.var "a")) Types.int32 $
   match _Type (Just $ int32 0) [
@@ -95,7 +95,7 @@ typeArityDef = hydraExtrasDefinition "typeArity" $
     Case _Type_function --> lambda "f" $
       Math.add @@ (int32 1) @@ (ref typeArityDef @@ (apply (project _FunctionType _FunctionType_codomain) (var "f")))]
 
-uncurryTypeDef :: Definition (Type a -> [Type a])
+uncurryTypeDef :: Definition (Type Kv -> [Type Kv])
 uncurryTypeDef = hydraExtrasDefinition "uncurryType" $
   function typeA (listT typeA) $
   doc "Uncurry a type expression into a list of types, turning a function type a -> b into cons a (uncurryType b)" $

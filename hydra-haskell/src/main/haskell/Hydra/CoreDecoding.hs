@@ -49,36 +49,36 @@ import qualified Data.Set as S
 import qualified Data.Maybe as Y
 
 
-coreDecodeApplicationType :: Show a => Term a -> Flow (Graph a) (ApplicationType a)
+coreDecodeApplicationType :: Term Kv -> Flow (Graph Kv) (ApplicationType Kv)
 coreDecodeApplicationType = matchRecord $ \m -> ApplicationType
   <$> getField m _ApplicationType_function coreDecodeType
   <*> getField m _ApplicationType_argument coreDecodeType
 
-coreDecodeFieldName :: Show a => Term a -> Flow (Graph a) FieldName
+coreDecodeFieldName :: Term Kv -> Flow (Graph Kv) FieldName
 coreDecodeFieldName term = FieldName <$> (Expect.wrap _FieldName term >>= Expect.string)
 
-coreDecodeFieldType :: Show a => Term a -> Flow (Graph a) (FieldType a)
+coreDecodeFieldType :: Term Kv -> Flow (Graph Kv) (FieldType Kv)
 coreDecodeFieldType = matchRecord $ \m -> FieldType
   <$> getField m _FieldType_name coreDecodeFieldName
   <*> getField m _FieldType_type coreDecodeType
 
-coreDecodeFieldTypes :: Show a => Term a -> Flow (Graph a) [FieldType a]
+coreDecodeFieldTypes :: Term Kv -> Flow (Graph Kv) [FieldType Kv]
 coreDecodeFieldTypes term = case stripTerm term of
   TermList els -> CM.mapM coreDecodeFieldType els
   _ -> unexpected "list" $ show term
 
-coreDecodeFloatType :: Show a => Term a -> Flow (Graph a) FloatType
+coreDecodeFloatType :: Term Kv -> Flow (Graph Kv) FloatType
 coreDecodeFloatType = matchEnum _FloatType [
   (_FloatType_bigfloat, FloatTypeBigfloat),
   (_FloatType_float32, FloatTypeFloat32),
   (_FloatType_float64, FloatTypeFloat64)]
 
-coreDecodeFunctionType :: Show a => Term a -> Flow (Graph a) (FunctionType a)
+coreDecodeFunctionType :: Term Kv -> Flow (Graph Kv) (FunctionType Kv)
 coreDecodeFunctionType = matchRecord $ \m -> FunctionType
   <$> getField m _FunctionType_domain coreDecodeType
   <*> getField m _FunctionType_codomain coreDecodeType
 
-coreDecodeIntegerType :: Show a => Term a -> Flow (Graph a) IntegerType
+coreDecodeIntegerType :: Term Kv -> Flow (Graph Kv) IntegerType
 coreDecodeIntegerType = matchEnum _IntegerType [
   (_IntegerType_bigint, IntegerTypeBigint),
   (_IntegerType_int8, IntegerTypeInt8),
@@ -90,12 +90,12 @@ coreDecodeIntegerType = matchEnum _IntegerType [
   (_IntegerType_uint32, IntegerTypeUint32),
   (_IntegerType_uint64, IntegerTypeUint64)]
 
-coreDecodeLambdaType :: Show a => Term a -> Flow (Graph a) (LambdaType a)
+coreDecodeLambdaType :: Term Kv -> Flow (Graph Kv) (LambdaType Kv)
 coreDecodeLambdaType = matchRecord $ \m -> LambdaType
   <$> (getField m _LambdaType_parameter coreDecodeName)
   <*> getField m _LambdaType_body coreDecodeType
 
-coreDecodeLiteralType :: Show a => Term a -> Flow (Graph a) LiteralType
+coreDecodeLiteralType :: Term Kv -> Flow (Graph Kv) LiteralType
 coreDecodeLiteralType = matchUnion _LiteralType [
   matchUnitField _LiteralType_binary LiteralTypeBinary,
   matchUnitField _LiteralType_boolean LiteralTypeBoolean,
@@ -103,31 +103,31 @@ coreDecodeLiteralType = matchUnion _LiteralType [
   (_LiteralType_integer, fmap LiteralTypeInteger . coreDecodeIntegerType),
   matchUnitField _LiteralType_string LiteralTypeString]
 
-coreDecodeMapType :: Show a => Term a -> Flow (Graph a) (MapType a)
+coreDecodeMapType :: Term Kv -> Flow (Graph Kv) (MapType Kv)
 coreDecodeMapType = matchRecord $ \m -> MapType
   <$> getField m _MapType_keys coreDecodeType
   <*> getField m _MapType_values coreDecodeType
 
-coreDecodeName :: Show a => Term a -> Flow (Graph a) Name
+coreDecodeName :: Term Kv -> Flow (Graph Kv) Name
 coreDecodeName term = Name <$> (Expect.wrap _Name term >>= Expect.string)
 
-coreDecodeNominal :: Show a => (Term a -> Flow (Graph a) x) -> Term a -> Flow (Graph a) (Nominal x)
+coreDecodeNominal :: (Term Kv -> Flow (Graph Kv) x) -> Term Kv -> Flow (Graph Kv) (Nominal x)
 coreDecodeNominal mapping term = do
   fields <- Expect.recordWithName _Nominal term
   name <- Expect.field _Nominal_typeName coreDecodeName fields
   obj <- Expect.field _Nominal_object mapping fields
   pure $ Nominal name obj
 
-coreDecodeRowType :: Show a => Term a -> Flow (Graph a) (RowType a)
+coreDecodeRowType :: Term Kv -> Flow (Graph Kv) (RowType Kv)
 coreDecodeRowType = matchRecord $ \m -> RowType
   <$> getField m _RowType_typeName coreDecodeName
   <*> getField m _RowType_extends (Expect.optional coreDecodeName)
   <*> getField m _RowType_fields coreDecodeFieldTypes
 
-coreDecodeString :: Show a => Term a -> Flow (Graph a) String
+coreDecodeString :: Term Kv -> Flow (Graph Kv) String
 coreDecodeString = Expect.string . stripTerm
 
-coreDecodeType :: Show a => Term a -> Flow (Graph a) (Type a)
+coreDecodeType :: Term Kv -> Flow (Graph Kv) (Type Kv)
 coreDecodeType dat = case dat of
   TermAnnotated (Annotated term ann) -> (\t -> TypeAnnotated $ Annotated t ann) <$> coreDecodeType term
   _ -> matchUnion _Type [
@@ -149,19 +149,19 @@ coreDecodeType dat = case dat of
     (_Type_variable, fmap TypeVariable . coreDecodeName),
     (_Type_wrap, fmap TypeWrap . (coreDecodeNominal coreDecodeType))] dat
 
-dereferenceType :: Show a => Name -> Flow (Graph a) (Maybe (Type a))
+dereferenceType :: Name -> Flow (Graph Kv) (Maybe (Type Kv))
 dereferenceType name = do
   mel <- dereferenceElement name
   case mel of
     Nothing -> return Nothing
     Just el -> Just <$> coreDecodeType (elementData el)
 
-elementAsTypedTerm :: (Show a) => Element a -> Flow (Graph a) (TypedTerm a)
+elementAsTypedTerm :: Element Kv -> Flow (Graph Kv) (TypedTerm Kv)
 elementAsTypedTerm el = do
   typ <- requireTermType (elementData el)
   return $ TypedTerm typ (elementData el)
 
-fieldTypes :: Show a => Type a -> Flow (Graph a) (M.Map FieldName (Type a))
+fieldTypes :: Type Kv -> Flow (Graph Kv) (M.Map FieldName (Type Kv))
 fieldTypes t = case stripType t of
     TypeLambda (LambdaType _ body) -> fieldTypes body
     TypeRecord rt -> pure $ toMap $ rowTypeFields rt
@@ -175,12 +175,12 @@ fieldTypes t = case stripType t of
     toMap fields = M.fromList (toPair <$> fields)
     toPair (FieldType fname ftype) = (fname, ftype)
 
-getField :: M.Map FieldName (Term a) -> FieldName -> (Term a -> Flow (Graph a) b) -> Flow (Graph a) b
+getField :: M.Map FieldName (Term Kv) -> FieldName -> (Term Kv -> Flow (Graph Kv) b) -> Flow (Graph Kv) b
 getField m fname decode = case M.lookup fname m of
   Nothing -> fail $ "expected field " ++ show fname ++ " not found"
   Just val -> decode val
 
-isSerializable :: Show a => Element a -> Flow (Graph a) Bool
+isSerializable :: Element Kv -> Flow (Graph Kv) Bool
 isSerializable el = do
     deps <- typeDependencies (elementName el)
     let allVariants = S.fromList $ L.concat (variants <$> M.elems deps)
@@ -188,15 +188,15 @@ isSerializable el = do
   where
     variants typ = typeVariant <$> foldOverType TraversalOrderPre (\m t -> t:m) [] typ
 
-matchEnum :: Show a => Name -> [(FieldName, b)] -> Term a -> Flow (Graph a) b
+matchEnum :: Name -> [(FieldName, b)] -> Term Kv -> Flow (Graph Kv) b
 matchEnum tname = matchUnion tname . fmap (uncurry matchUnitField)
 
-matchRecord :: Show a => (M.Map FieldName (Term a) -> Flow (Graph a) b) -> Term a -> Flow (Graph a) b
+matchRecord :: (M.Map FieldName (Term Kv) -> Flow (Graph Kv) b) -> Term Kv -> Flow (Graph Kv) b
 matchRecord decode term = case stripTerm term of
   TermRecord (Record _ fields) -> decode $ M.fromList $ fmap (\(Field fname val) -> (fname, val)) fields
   _ -> unexpected "record" $ show term
 
-matchUnion :: Show a => Name -> [(FieldName, Term a -> Flow (Graph a) b)] -> Term a -> Flow (Graph a) b
+matchUnion :: Name -> [(FieldName, Term Kv -> Flow (Graph Kv) b)] -> Term Kv -> Flow (Graph Kv) b
 matchUnion tname pairs term = case stripTerm term of
     TermVariable name -> do
       el <- requireElement name
@@ -210,11 +210,11 @@ matchUnion tname pairs term = case stripTerm term of
   where
     mapping = M.fromList pairs
 
-matchUnitField :: FieldName -> y -> (FieldName, x -> Flow (Graph a) y)
+matchUnitField :: FieldName -> y -> (FieldName, x -> Flow (Graph Kv) y)
 matchUnitField fname x = (fname, \_ -> pure x)
 
 -- | Find dependency namespaces in various dimensions of a term: va
-moduleDependencyNamespaces :: (Ord a, Show a) => Bool -> Bool -> Bool -> Bool -> Module a -> Flow (Graph a) (S.Set Namespace)
+moduleDependencyNamespaces :: Bool -> Bool -> Bool -> Bool -> Module Kv -> Flow (Graph Kv) (S.Set Namespace)
 moduleDependencyNamespaces withVars withPrims withNoms withSchema mod = do
     allNames <- S.unions <$> (CM.mapM elNames $ moduleElements mod)
     let namespaces = S.fromList $ Y.catMaybes (namespaceOfEager <$> S.toList allNames)
@@ -232,12 +232,12 @@ moduleDependencyNamespaces withVars withPrims withNoms withSchema mod = do
         else pure S.empty
       return $ S.unions [dataNames, schemaNames, typeNames]
 
-requireRecordType :: Show a => Bool -> Name -> Flow (Graph a) (RowType a)
+requireRecordType :: Bool -> Name -> Flow (Graph Kv) (RowType Kv)
 requireRecordType infer = requireRowType "record" infer $ \t -> case t of
   TypeRecord rt -> Just rt
   _ -> Nothing
 
-requireRowType :: Show a => String -> Bool -> (Type a -> Maybe (RowType a)) -> Name -> Flow (Graph a) (RowType a)
+requireRowType :: String -> Bool -> (Type Kv -> Maybe (RowType Kv)) -> Name -> Flow (Graph Kv) (RowType Kv)
 requireRowType label infer getter name = do
   t <- withSchemaContext $ requireType name
   case getter (rawType t) of
@@ -255,15 +255,15 @@ requireRowType label infer getter name = do
       TypeLambda (LambdaType _ body) -> rawType body -- Note: throwing away quantification here
       _ -> t
 
-requireType :: Show a => Name -> Flow (Graph a) (Type a)
+requireType :: Name -> Flow (Graph Kv) (Type Kv)
 requireType name = withTrace ("require type " ++ unName name) $ requireElement name >>= (coreDecodeType . elementData)
 
-requireUnionType :: Show a => Bool -> Name -> Flow (Graph a) (RowType a)
+requireUnionType :: Bool -> Name -> Flow (Graph Kv) (RowType Kv)
 requireUnionType infer = requireRowType "union" infer $ \t -> case t of
   TypeUnion rt -> Just rt
   _ -> Nothing
 
-requireWrappedType :: Show a => Name -> Flow (Graph a) (Type a)
+requireWrappedType :: Name -> Flow (Graph Kv) (Type Kv)
 requireWrappedType name = do
   typ <- withSchemaContext $ requireType name
   case stripType typ of
@@ -271,7 +271,7 @@ requireWrappedType name = do
     _ -> return typ -- TODO: stop allowing this "slop" once typedefs are clearly separated from newtypes
 --     _ -> fail $ "expected wrapped type for " ++ unName name ++ " but got " ++ show typ
 
-resolveType :: Show a => Type a -> Flow (Graph a) (Maybe (Type a))
+resolveType :: Type Kv -> Flow (Graph Kv) (Maybe (Type Kv))
 resolveType typ = case stripType typ of
     TypeVariable name -> withSchemaContext $ do
       mterm <- resolveTerm name
@@ -280,7 +280,7 @@ resolveType typ = case stripType typ of
         Just t -> Just <$> coreDecodeType t
     _ -> pure $ Just typ
 
-typeDependencies :: Show a => Name -> Flow (Graph a) (M.Map Name (Type a))
+typeDependencies :: Name -> Flow (Graph Kv) (M.Map Name (Type Kv))
 typeDependencies name = deps (S.fromList [name]) M.empty
   where
     deps seeds names = if S.null seeds

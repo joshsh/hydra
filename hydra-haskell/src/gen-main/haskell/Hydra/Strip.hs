@@ -16,19 +16,19 @@ skipAnnotations getAnn t =
   in (skip t)
 
 -- | Strip all annotations from a term
-stripTerm :: (Core.Term a -> Core.Term a)
+stripTerm :: (Core.Term Core.Kv -> Core.Term Core.Kv)
 stripTerm x = (skipAnnotations (\x -> case x of
   Core.TermAnnotated v -> (Just v)
   _ -> Nothing) x)
 
 -- | Strip all annotations from a type
-stripType :: (Core.Type a -> Core.Type a)
+stripType :: (Core.Type Core.Kv -> Core.Type Core.Kv)
 stripType x = (skipAnnotations (\x -> case x of
   Core.TypeAnnotated v -> (Just v)
   _ -> Nothing) x)
 
 -- | Strip any top-level type lambdas from a type, extracting the (possibly nested) type body
-stripTypeParameters :: (Core.Type a -> Core.Type a)
+stripTypeParameters :: (Core.Type Core.Kv -> Core.Type Core.Kv)
 stripTypeParameters t = ((\x -> case x of
   Core.TypeLambda v -> (stripTypeParameters (Core.lambdaTypeBody v))
   _ -> t) (stripType t))

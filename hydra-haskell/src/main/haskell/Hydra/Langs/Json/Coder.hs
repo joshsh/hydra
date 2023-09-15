@@ -21,13 +21,13 @@ import qualified Data.Map as M
 import qualified Data.Maybe as Y
 
 
-jsonCoder :: (Eq a, Ord a, Read a, Show a) => Type a -> Flow (Graph a) (Coder (Graph a) (Graph a) (Term a) Json.Value)
+jsonCoder :: Type Kv -> Flow (Graph Kv) (Coder (Graph Kv) (Graph Kv) (Term Kv) Json.Value)
 jsonCoder typ = do
   adapter <- languageAdapter jsonLanguage typ
   coder <- termCoder $ adapterTarget adapter
   return $ composeCoders (adapterCoder adapter) coder
 
-literalJsonCoder :: LiteralType -> Flow (Graph a) (Coder (Graph a) (Graph a) Literal Json.Value)
+literalJsonCoder :: LiteralType -> Flow (Graph Kv) (Coder (Graph Kv) (Graph Kv) Literal Json.Value)
 literalJsonCoder at = pure $ case at of
   LiteralTypeBoolean -> Coder {
     coderEncode = \(LiteralBoolean b) -> pure $ Json.ValueBoolean b,
@@ -50,7 +50,7 @@ literalJsonCoder at = pure $ case at of
       Json.ValueString s' -> pure $ LiteralString s'
       _ -> unexpected "string" $ show s}
 
-recordCoder :: (Eq a, Ord a, Read a, Show a) => RowType a -> Flow (Graph a) (Coder (Graph a) (Graph a) (Term a) Json.Value)
+recordCoder :: RowType Kv -> Flow (Graph Kv) (Coder (Graph Kv) (Graph Kv) (Term Kv) Json.Value)
 recordCoder rt = do
     coders <- CM.mapM (\f -> (,) <$> pure f <*> termCoder (fieldTypeType f)) (rowTypeFields rt)
     return $ Coder (encode coders) (decode coders)
@@ -73,7 +73,7 @@ recordCoder rt = do
       where
         error = fail $ "no such field: " ++ fname
 
-termCoder :: (Eq a, Ord a, Read a, Show a) => Type a -> Flow (Graph a) (Coder (Graph a) (Graph a) (Term a) Json.Value)
+termCoder :: Type Kv -> Flow (Graph Kv) (Coder (Graph Kv) (Graph Kv) (Term Kv) Json.Value)
 termCoder typ = case stripType typ of
   TypeLiteral at -> do
     ac <- literalJsonCoder at
@@ -123,7 +123,7 @@ termCoder typ = case stripType typ of
   _ -> fail $ "unsupported type in JSON: " ++ show (typeVariant typ)
 
 -- | A simplistic, unidirectional encoding for terms as JSON values. Not type-aware; best used for human consumption.
-untypedTermToJson :: Show a => Term a -> Flow s Json.Value
+untypedTermToJson :: Term Kv -> Flow s Json.Value
 untypedTermToJson term = case stripTerm term of
       TermList terms -> Json.ValueArray <$> (CM.mapM untypedTermToJson terms)
       TermLiteral lit -> pure $ case lit of

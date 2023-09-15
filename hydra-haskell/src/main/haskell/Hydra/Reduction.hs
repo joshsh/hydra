@@ -24,7 +24,7 @@ import qualified Data.Set as S
 import qualified Data.Maybe as Y
 
 
-alphaConvertTerm :: Ord a => Name -> Term a -> Term a -> Term a
+alphaConvertTerm :: Name -> Term Kv -> Term Kv -> Term Kv
 alphaConvertTerm vold tnew = rewriteTerm rewrite id
   where
     rewrite recurse term = case term of
@@ -34,7 +34,7 @@ alphaConvertTerm vold tnew = rewriteTerm rewrite id
       TermVariable v -> if v == vold then tnew else TermVariable v
       _ -> recurse term
 
-alphaConvertType :: Ord a => Name -> Type a -> Type a -> Type a
+alphaConvertType :: Name -> Type Kv -> Type Kv -> Type Kv
 alphaConvertType vold tnew = rewriteType rewrite id
   where
     rewrite recurse typ = case typ of
@@ -49,7 +49,7 @@ countPrimitiveInvocations :: Bool
 countPrimitiveInvocations = True
 
 -- A term evaluation function which is alternatively lazy or eager
-reduceTerm :: (Ord a, Show a) => Bool -> M.Map Name (Term a) -> Term a -> Flow (Graph a) (Term a)
+reduceTerm :: Bool -> M.Map Name (Term Kv) -> Term Kv -> Flow (Graph Kv) (Term Kv)
 reduceTerm eager env = rewriteTermM mapping pure
   where
     reduce eager = reduceTerm eager M.empty
@@ -128,9 +128,9 @@ reduceTerm eager env = rewriteTermM mapping pure
 
 -- Note: this is eager beta reduction, in that we always descend into subtypes,
 --       and always reduce the right-hand side of an application prior to substitution
-betaReduceType :: (Ord a, Show a) => Type a -> Flow (Graph a) (Type a)
+betaReduceType :: Type Kv -> Flow (Graph Kv) (Type Kv)
 betaReduceType typ = do
-    g <- getState :: Flow (Graph a) (Graph a)
+    g <- getState :: Flow (Graph Kv) (Graph Kv)
     rewriteTypeM mapExpr (pure . id) typ
   where
     mapExpr recurse t = do
@@ -154,7 +154,7 @@ betaReduceType typ = do
 --   and
 --     ((\x.e1) e2) = e1[x/e2]
 --  These are both limited forms of beta reduction which help to "clean up" a term without fully evaluating it.
-contractTerm :: Ord a => Term a -> Term a
+contractTerm :: Term Kv -> Term Kv
 contractTerm = rewriteTerm rewrite id
   where
     rewrite recurse term = case rec of
@@ -168,7 +168,7 @@ contractTerm = rewriteTerm rewrite id
         rec = recurse term
 
 -- Note: unused / untested
-etaReduceTerm :: Ord a => Term a -> Term a
+etaReduceTerm :: Term Kv -> Term Kv
 etaReduceTerm term = case term of
     TermAnnotated (Annotated term1 ann) -> TermAnnotated (Annotated (etaReduceTerm term1) ann)
     TermFunction (FunctionLambda l) -> reduceLambda l
@@ -188,11 +188,11 @@ etaReduceTerm term = case term of
     noChange = term
 
 -- | Whether a term is closed, i.e. represents a complete program
-termIsClosed :: Ord a => Term a -> Bool
+termIsClosed :: Term Kv -> Bool
 termIsClosed = S.null . freeVariablesInTerm
 
 -- | Whether a term has been fully reduced to a "value"
-termIsValue :: Graph a -> Term a -> Bool
+termIsValue :: Graph Kv -> Term Kv -> Bool
 termIsValue g term = case stripTerm term of
     TermApplication _ -> False
     TermLiteral _ -> True

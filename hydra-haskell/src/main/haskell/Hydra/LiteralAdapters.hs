@@ -22,7 +22,7 @@ import qualified Data.List as L
 import qualified Data.Set as S
 
 
-literalAdapter :: LiteralType -> Flow (AdapterContext a) (SymmetricAdapter s LiteralType Literal)
+literalAdapter :: LiteralType -> Flow (AdapterContext Kv) (SymmetricAdapter s LiteralType Literal)
 literalAdapter lt = do
     cx <- getState
     chooseAdapter (alts cx) (supported cx) describeLiteralType lt
@@ -98,7 +98,7 @@ disclaimer :: Bool -> String -> String -> String
 disclaimer lossy source target = "replace " ++ source ++ " with " ++ target
   ++ if lossy then " (lossy)" else ""
 
-floatAdapter :: FloatType -> Flow (AdapterContext a) (SymmetricAdapter s FloatType FloatValue)
+floatAdapter :: FloatType -> Flow (AdapterContext Kv) (SymmetricAdapter s FloatType FloatValue)
 floatAdapter ft = do
     cx <- getState
     let supported = floatTypeIsSupported $ languageConstraints $ adapterContextLanguage cx
@@ -115,7 +115,7 @@ floatAdapter ft = do
             step = Coder (pure . convertFloatValue target) (pure . convertFloatValue source)
             msg = disclaimer lossy (describeFloatType source) (describeFloatType target)
 
-integerAdapter :: IntegerType -> Flow (AdapterContext a) (SymmetricAdapter s IntegerType IntegerValue)
+integerAdapter :: IntegerType -> Flow (AdapterContext Kv) (SymmetricAdapter s IntegerType IntegerValue)
 integerAdapter it = do
     cx <- getState
     let supported = integerTypeIsSupported $ languageConstraints $ adapterContextLanguage cx

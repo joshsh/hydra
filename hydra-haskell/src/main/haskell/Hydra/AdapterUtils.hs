@@ -25,7 +25,7 @@ import Control.Monad
 
 type SymmetricAdapter s t v = Adapter s s t t v v
 
-type TypeAdapter a = Type a -> Flow (AdapterContext a) (SymmetricAdapter (AdapterContext a) (Type a) (Term a))
+type TypeAdapter a = Type Kv -> Flow (AdapterContext Kv) (SymmetricAdapter (AdapterContext Kv) (Type Kv) (Term Kv))
 
 bidirectional :: (CoderDirection -> b -> Flow s b) -> Coder s s b b
 bidirectional f = Coder (f CoderDirectionEncode) (f CoderDirectionDecode)
@@ -107,7 +107,7 @@ nameToFilePath caps ext name = namespaceToFilePath caps ext $ Namespace $ prefix
     QualifiedName ns local = qualifyNameEager name
     prefix = Y.maybe "" (\(Namespace gname) -> gname ++ "/") ns
 
-typeIsSupported :: LanguageConstraints a -> Type a -> Bool
+typeIsSupported :: LanguageConstraints a -> Type Kv -> Bool
 typeIsSupported constraints t = languageConstraintsTypes constraints t -- these are *additional* type constraints
   && isSupportedVariant (typeVariant t)
   && case t of

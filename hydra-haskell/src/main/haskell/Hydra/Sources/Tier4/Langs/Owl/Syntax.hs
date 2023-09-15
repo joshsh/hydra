@@ -15,7 +15,7 @@ key_iri = "iri"
 withIri :: String -> Type Kv -> Type Kv
 withIri iriStr = annotateType key_iri (Just $ Terms.string iriStr)
 
-nonNegativeInteger :: Type a
+nonNegativeInteger :: Type Kv
 nonNegativeInteger = Types.bigint
 
 owlIri :: [Char] -> Type Kv -> Type Kv

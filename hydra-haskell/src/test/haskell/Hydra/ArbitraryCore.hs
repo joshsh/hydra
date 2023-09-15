@@ -1,3 +1,5 @@
+
+{-# LANGUAGE FlexibleInstances #-} -- TODO: temporary, for QC.Arbitrary (Term Kv) and QC.Arbitrary (Type Kv)
 module Hydra.ArbitraryCore where
 
 import Hydra.Kernel
@@ -75,7 +77,7 @@ instance QC.Arbitrary IntegerValue
       IntegerValueUint32 <$> QC.arbitrary,
       IntegerValueUint64 <$> QC.arbitrary]
 
-instance (Eq a, Ord a, Read a, Show a) => QC.Arbitrary (Term a) where
+instance QC.Arbitrary (Term Kv) where
   arbitrary = (\(TypedTerm _ term) -> term) <$> QC.sized arbitraryTypedTerm
 
 instance QC.Arbitrary Name
@@ -83,7 +85,7 @@ instance QC.Arbitrary Name
     arbitrary = Name <$> QC.arbitrary
     shrink (Name name)= Name <$> QC.shrink name
 
-instance QC.Arbitrary (Type a) where
+instance QC.Arbitrary (Type Kv) where
   arbitrary = QC.sized arbitraryType
   shrink typ = case typ of
     TypeLiteral at -> Types.literal <$> case at of
@@ -92,7 +94,7 @@ instance QC.Arbitrary (Type a) where
       _ -> []
     _ -> [] -- TODO
 
-instance (Eq a, Ord a, Read a, Show a) => QC.Arbitrary (TypedTerm a) where
+instance QC.Arbitrary (TypedTerm Kv) where
   arbitrary = QC.sized arbitraryTypedTerm
   shrink (TypedTerm typ term) = L.concat ((\(t, m) -> TypedTerm t <$> m term) <$> shrinkers typ)
 
@@ -104,10 +106,10 @@ arbitraryLiteral at = case at of
   LiteralTypeInteger it -> LiteralInteger <$> arbitraryIntegerValue it
   LiteralTypeString -> LiteralString <$> QC.arbitrary
 
-arbitraryField :: (Eq a, Ord a, Read a, Show a) => FieldType a -> Int -> QC.Gen (Field a)
+arbitraryField :: FieldType Kv -> Int -> QC.Gen (Field Kv)
 arbitraryField (FieldType fn ft) n = Field fn <$> arbitraryTerm ft n
 
-arbitraryFieldType :: Int -> QC.Gen (FieldType a)
+arbitraryFieldType :: Int -> QC.Gen (FieldType Kv)
 arbitraryFieldType n = FieldType <$> QC.arbitrary <*> arbitraryType n
 
 arbitraryFloatValue :: FloatType -> QC.Gen FloatValue
@@ -117,7 +119,7 @@ arbitraryFloatValue ft = case ft of
   FloatTypeFloat64 -> FloatValueFloat64 <$> QC.arbitrary
 
 -- Note: primitive functions and data terms are not currently generated, as they require a context.
-arbitraryFunction :: (Eq a, Ord a, Read a, Show a) => FunctionType a -> Int -> QC.Gen (Function a)
+arbitraryFunction :: FunctionType Kv -> Int -> QC.Gen (Function Kv)
 arbitraryFunction (FunctionType dom cod) n = QC.oneof $ defaults ++ domainSpecific
   where
     n' = decr n
@@ -175,7 +177,7 @@ arbitraryPair c g n = c <$> g n' <*> g n'
   where n' = div n 2
 
 -- Note: variables and function applications are not (currently) generated
-arbitraryTerm :: (Eq a, Ord a, Read a, Show a) => Type a -> Int -> QC.Gen (Term a)
+arbitraryTerm :: Type Kv -> Int -> QC.Gen (Term Kv)
 arbitraryTerm typ n = case typ of
     TypeLiteral at -> literal <$> arbitraryLiteral at
     TypeFunction ft -> TermFunction <$> arbitraryFunction ft n'
@@ -205,7 +207,7 @@ arbitraryTerm typ n = case typ of
         n2 = div n' $ L.length sfields
 
 -- Note: nominal types and element types are not currently generated, as instantiating them requires a context
-arbitraryType :: Int -> QC.Gen (Type a)
+arbitraryType :: Int -> QC.Gen (Type Kv)
 arbitraryType n = if n == 0 then pure Types.unit else QC.oneof [
     TypeLiteral <$> QC.arbitrary,
     TypeFunction <$> arbitraryPair FunctionType arbitraryType n',
@@ -217,7 +219,7 @@ arbitraryType n = if n == 0 then pure Types.unit else QC.oneof [
 --    TypeUnion <$> arbitraryList True arbitraryFieldType n'] -- TODO: avoid duplicate field names
   where n' = decr n
 
-arbitraryTypedTerm :: (Eq a, Ord a, Read a, Show a) => Int -> QC.Gen (TypedTerm a)
+arbitraryTypedTerm :: Int -> QC.Gen (TypedTerm Kv)
 arbitraryTypedTerm n = do
     typ <- arbitraryType n'
     term <- arbitraryTerm typ n'
@@ -229,7 +231,7 @@ decr :: Int -> Int
 decr n = max 0 (n-1)
 
 -- Note: shrinking currently discards any metadata
-shrinkers :: (Eq a, Ord a, Read a, Show a) => Type a -> [(Type a, Term a -> [Term a])]
+shrinkers :: Type Kv -> [(Type Kv, Term Kv -> [Term Kv])]
 shrinkers typ = trivialShrinker ++ case typ of
     TypeLiteral at -> case at of
       LiteralTypeBinary -> [(Types.binary, \(TermLiteral (LiteralBinary s)) -> binary <$> QC.shrink s)]

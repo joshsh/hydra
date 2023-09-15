@@ -39,14 +39,14 @@ import qualified Data.Maybe as Y
 
 data Inferred a = Inferred {
   -- The original term, possibly annotated with the inferred type
-  inferredTerm :: Term a,
+  inferredTerm :: Term Kv,
   -- The inferred type
-  inferredType :: Type a,
+  inferredType :: Type Kv,
   -- Any constraints introduced by the inference process
-  inferredConstraints :: [Constraint a]
+  inferredConstraints :: [Constraint Kv]
 }
 
-annotateElements :: (Ord a, Show a) => Graph a -> [Element a] -> Flow (Graph a) [Element a]
+annotateElements :: Graph Kv -> [Element Kv] -> Flow (Graph Kv) [Element Kv]
 annotateElements g sortedEls = initializeGraph $ do
     rels <- annotate sortedEls []
 
@@ -67,11 +67,11 @@ annotateElements g sortedEls = initializeGraph $ do
         rel <- inferElementType el
         withBinding (fst rel) (inferredType $ snd rel) $ annotate rest (rel:annotated)
 
-annotateTermWithTypes :: (Ord a, Show a) => Term a -> Flow (Graph a) (Term a)
+annotateTermWithTypes :: Term Kv -> Flow (Graph Kv) (Term Kv)
 annotateTermWithTypes = inferTypeAndConstraints
 
 -- Decode a type, eliminating nominal types for the sake of unification
-decodeStructuralType :: Show a => Term a -> Flow (Graph a) (Type a)
+decodeStructuralType :: Term Kv -> Flow (Graph Kv) (Type Kv)
 decodeStructuralType term = do
   typ <- coreDecodeType term
   let typ' = stripType typ
@@ -81,18 +81,18 @@ decodeStructuralType term = do
       decodeStructuralType $ elementData el
     _ -> pure typ
 
-findMatchingField :: Show a => FieldName -> [FieldType a] -> Flow (Graph a) (FieldType a)
+findMatchingField :: FieldName -> [FieldType Kv] -> Flow (Graph Kv) (FieldType Kv)
 findMatchingField fname sfields = case L.filter (\f -> fieldTypeName f == fname) sfields of
   []    -> fail $ "no such field: " ++ unFieldName fname
   (h:_) -> return h
 
-freshName :: Flow (Graph a) Name
+freshName :: Flow (Graph Kv) Name
 freshName = normalVariable <$> nextCount "hyInf"
 
-freshTypeVariable :: Flow (Graph a) (Type a)
+freshTypeVariable :: Flow (Graph Kv) (Type Kv)
 freshTypeVariable = TypeVariable <$> freshName
 
-infer :: (Eq a, Ord a, Show a) => Term a -> Flow (Graph a) (Inferred a)
+infer :: Term Kv -> Flow (Graph Kv) (Inferred Kv)
 infer term = case term of
     TermAnnotated (Annotated subj ann) -> do
       rsubj <- infer subj
@@ -326,17 +326,17 @@ infer term = case term of
         (TypeWrap $ Nominal name typ)
         (inferredConstraints rterm1 ++ [(typ, inferredType rterm1)])
 
-inferElementType :: (Ord a, Show a) => Element a -> Flow (Graph a) (Name, Inferred a)
+inferElementType :: Element Kv -> Flow (Graph Kv) (Name, Inferred Kv)
 inferElementType el = withTrace ("infer type of " ++ unName (elementName el)) $ do
   rterm <- infer $ elementData el
   return (elementName el, rterm)
 
-inferFieldType :: (Ord a, Show a) => Field a -> Flow (Graph a) (FieldName, Inferred a)
+inferFieldType :: Field Kv -> Flow (Graph Kv) (FieldName, Inferred Kv)
 inferFieldType (Field fname term) = do
   rterm <- infer term
   return (fname, rterm)
 
-inferGraphTypes :: (Ord a, Show a) => Flow (Graph a) (Graph a)
+inferGraphTypes :: Flow (Graph Kv) (Graph Kv)
 inferGraphTypes = getState >>= annotateGraph
   where
     annotateGraph g = withTrace ("infer graph types") $ do
@@ -346,7 +346,7 @@ inferGraphTypes = getState >>= annotateGraph
       where
         toPair el = (elementName el, el)
 
-inferLet :: (Ord a, Show a) => Let a -> Flow (Graph a) (Inferred a)
+inferLet :: Let Kv -> Flow (Graph Kv) (Inferred Kv)
 inferLet (Let bindings env) = do
     state0 <- getState
     e <- preExtendEnv bindings $ graphTypes state0
@@ -382,7 +382,7 @@ inferLet (Let bindings env) = do
               annotationClassTypeOf anns $ annotationClassTermAnnotation anns term
 
 -- TODO: deprecated; inference is performed on graphs, not individual terms. Update the Haskell coder to use inferElementType
-inferType :: (Ord a, Show a) => Term a -> Flow (Graph a) (Type a)
+inferType :: Term Kv -> Flow (Graph Kv) (Type Kv)
 --inferType term = (simplifyUniversalTypes . termType) <$> inferTypeAndConstraints term
 inferType term = do
   term1 <- inferTypeAndConstraints term
@@ -392,7 +392,7 @@ inferType term = do
 
 -- TODO: deprecated; inference is performed on graphs, not individual terms. Update tests to use inferElementType
 -- | Solve for the top-level type of an expression in a given environment
-inferTypeAndConstraints :: (Ord a, Show a) => Term a -> Flow (Graph a) (Term a)
+inferTypeAndConstraints :: Term Kv -> Flow (Graph Kv) (Term Kv)
 inferTypeAndConstraints term = withTrace ("infer type") $ initializeGraph $ do
     rterm <- infer term
     subst <- withSchemaContext $ solveConstraints (inferredConstraints rterm)
@@ -413,7 +413,7 @@ initializeGraph flow = do
           mt <- annotationClassTermType anns $ elementData el
           return $ (\t -> (elementName el, t)) <$> mt
 
-instantiate :: Type a -> Flow (Graph a) (Type a)
+instantiate :: Type Kv -> Flow (Graph Kv) (Type Kv)
 instantiate typ = case typ of
   TypeAnnotated (Annotated typ1 ann) -> TypeAnnotated <$> (Annotated <$> instantiate typ1 <*> pure ann)
   TypeLambda (LambdaType var body) -> do
@@ -422,7 +422,7 @@ instantiate typ = case typ of
     return $ TypeLambda $ LambdaType var1 body1
   _ -> pure typ
 
-normalizeType :: Ord a => Type a -> Type a
+normalizeType :: Type Kv -> Type Kv
 normalizeType = rewriteType f id
   where
     f recurse typ = yank $ recurse typ
@@ -463,10 +463,10 @@ normalizeType = rewriteType f id
           TypeLambda (LambdaType var body) -> TypeLambda $ LambdaType var $ yank $ build body
           t -> build t
 
-reduceType :: (Ord a, Show a) => Type a -> Type a
+reduceType :: Type Kv -> Type Kv
 reduceType t = t -- betaReduceType cx t
 
-requireName :: Show a => Name -> Flow (Graph a) (Type a)
+requireName :: Name -> Flow (Graph Kv) (Type Kv)
 requireName v = do
   env <- graphTypes <$> getState
   case M.lookup v env of
@@ -474,7 +474,7 @@ requireName v = do
       ++ L.intercalate ", " (unName <$> M.keys env)
     Just s  -> instantiate s
 
-sortGraphElements :: (Ord a, Show a) => Graph a -> Flow (Graph a) [Element a]
+sortGraphElements :: Graph Kv -> Flow (Graph Kv) [Element Kv]
 sortGraphElements g = do
     annotated <- S.fromList . Y.catMaybes <$> (CM.mapM ifAnnotated $ M.elems els)
     adjList <- CM.mapM (toAdj annotated) $ M.elems els
@@ -498,7 +498,7 @@ sortGraphElements g = do
         -- No need for an inference dependency on an element which is already annotated with a type
         isNotAnnotated name = not $ S.member name annotated
 
-substituteAndNormalizeAnnotations :: Ord a => AnnotationClass a -> Subst a -> Term a -> Flow (Graph a) (Term a)
+substituteAndNormalizeAnnotations :: AnnotationClass Kv -> Subst Kv -> Term Kv -> Flow (Graph Kv) (Term Kv)
 substituteAndNormalizeAnnotations anns subst = rewriteTermMetaM rewrite
   where
     -- Note: normalizing each annotation separately results in different variable names for corresponding types
@@ -510,27 +510,27 @@ substituteAndNormalizeAnnotations anns subst = rewriteTermMetaM rewrite
 --    rewrite (x, typ, c) = (x, normalizeType $ substituteTypeVariables subst typ, c)
 --    rewrite (x, typ, c) = (x, normalizeType $ substituteTypeVariables subst typ, c)
 
-typeOfPrimitive :: Name -> Flow (Graph a) (Type a)
+typeOfPrimitive :: Name -> Flow (Graph Kv) (Type Kv)
 typeOfPrimitive name = primitiveType <$> requirePrimitive name
 
-withBinding :: Name -> Type a -> Flow (Graph a) x -> Flow (Graph a) x
+withBinding :: Name -> Type Kv -> Flow (Graph Kv) x -> Flow (Graph Kv) x
 withBinding n t = withEnvironment (M.insert n t)
 
-withBindings :: M.Map Name (Type a) -> Flow (Graph a) x -> Flow (Graph a) x
+withBindings :: M.Map Name (Type Kv) -> Flow (Graph Kv) x -> Flow (Graph Kv) x
 withBindings bindings = withEnvironment (\e -> M.union bindings e)
 
-withEnvironment :: (M.Map Name (Type a) -> M.Map Name (Type a)) -> Flow (Graph a) x -> Flow (Graph a) x
+withEnvironment :: (M.Map Name (Type Kv) -> M.Map Name (Type Kv)) -> Flow (Graph Kv) x -> Flow (Graph Kv) x
 withEnvironment m flow = do
   g <- getState
   withState (g {graphTypes = m $ graphTypes g}) flow
 
-yieldFunction :: (Eq a, Ord a, Show a) => Function a -> Type a -> [Constraint a] -> Flow (Graph a) (Inferred a)
+yieldFunction :: Function Kv -> Type Kv -> [Constraint Kv] -> Flow (Graph Kv) (Inferred Kv)
 yieldFunction fun = yieldTerm (TermFunction fun)
 
-yieldElimination :: (Eq a, Ord a, Show a) => Elimination a -> Type a -> [Constraint a] -> Flow (Graph a) (Inferred a)
+yieldElimination :: Elimination Kv -> Type Kv -> [Constraint Kv] -> Flow (Graph Kv) (Inferred Kv)
 yieldElimination e = yieldTerm (TermFunction $ FunctionElimination e)
 
-yieldTerm :: (Eq a, Ord a, Show a) => Term a -> Type a -> [Constraint a] -> Flow (Graph a) (Inferred a)
+yieldTerm :: Term Kv -> Type Kv -> [Constraint Kv] -> Flow (Graph Kv) (Inferred Kv)
 yieldTerm term typ constraints = do
   g <- getState
   -- For now, we simply annotate each and every subterm, except annotation terms.

@@ -48,7 +48,7 @@ hsPrimitiveReference name = H.NameNormal $ H.QualifiedName [prefix] $ H.NamePart
 hsvar :: String -> H.Expression
 hsvar s = H.ExpressionVariable $ rawName s
 
-namespacesForModule :: (Ord a, Show a) => Module a -> Flow (Graph a) Namespaces
+namespacesForModule :: Module Kv -> Flow (Graph Kv) Namespaces
 namespacesForModule mod = do
     nss <- moduleDependencyNamespaces True True True True mod
     return $ Namespaces focusPair $ fst $ L.foldl addPair (M.empty, S.empty) (toPair <$> S.toList nss)
@@ -101,7 +101,7 @@ unionFieldReference namespaces sname (FieldName fname) = elementReference namesp
     ns = qualifiedNameNamespace $ qualifyNameEager sname
     nm = capitalize (typeNameForRecord sname) ++ capitalize fname
 
-unpackLambdaType :: Graph a -> Type a -> ([Name], Type a)
+unpackLambdaType :: Graph Kv -> Type Kv -> ([Name], Type Kv)
 unpackLambdaType cx t = case stripType t of
   TypeLambda (LambdaType v tbody) -> (v:vars, t')
     where

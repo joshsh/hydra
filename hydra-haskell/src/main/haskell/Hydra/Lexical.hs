@@ -17,12 +17,12 @@ import qualified Data.Maybe as Y
 import Control.Monad
 
 
-dereferenceElement :: Name -> Flow (Graph a) (Maybe (Element a))
+dereferenceElement :: Name -> Flow (Graph Kv) (Maybe (Element Kv))
 dereferenceElement name = do
   g <- getState
   return $ M.lookup name (graphElements g)
 
-requireElement :: Name -> Flow (Graph a) (Element a)
+requireElement :: Name -> Flow (Graph Kv) (Element Kv)
 requireElement name = do
     mel <- dereferenceElement name
     case mel of
@@ -37,7 +37,7 @@ requireElement name = do
           then L.take 3 strings ++ ["..."]
           else strings
 
-requirePrimitive :: Name -> Flow (Graph a) (Primitive a)
+requirePrimitive :: Name -> Flow (Graph Kv) (Primitive Kv)
 requirePrimitive fn = do
     cx <- getState
     Y.maybe err pure $ lookupPrimitive cx fn
@@ -45,7 +45,7 @@ requirePrimitive fn = do
     err = fail $ "no such primitive function: " ++ unName fn
 
 -- TODO: distinguish between lambda-bound and let-bound variables
-resolveTerm :: Name -> Flow (Graph a) (Maybe (Term a))
+resolveTerm :: Name -> Flow (Graph Kv) (Maybe (Term Kv))
 resolveTerm name = do
     g <- getState
     Y.maybe (pure Nothing) recurse $ M.lookup name $ graphElements g
@@ -55,10 +55,10 @@ resolveTerm name = do
       _ -> pure $ Just $ elementData el
 
 -- Note: assuming for now that primitive functions are the same in the schema graph
-schemaContext :: Graph a -> Graph a
+schemaContext :: Graph Kv -> Graph Kv
 schemaContext g = Y.fromMaybe g (graphSchema g)
 
-withSchemaContext :: Flow (Graph a) x -> Flow (Graph a) x
+withSchemaContext :: Flow (Graph Kv) x -> Flow (Graph Kv) x
 withSchemaContext f = do
   cx <- getState
   withState (schemaContext cx) f

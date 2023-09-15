@@ -8,7 +8,7 @@ import Hydra.Mantle
 import qualified Data.Set as S
 
 
-jsonLanguage :: Language a
+jsonLanguage :: Language Kv
 jsonLanguage = Language (LanguageName "hydra/langs/json") $ LanguageConstraints {
   languageConstraintsEliminationVariants = S.empty,
   languageConstraintsLiteralVariants = S.fromList [

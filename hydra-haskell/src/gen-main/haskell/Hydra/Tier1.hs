@@ -43,7 +43,7 @@ integerValueToBigint x = case x of
   Core.IntegerValueUint64 v -> (Literals.uint64ToBigint v)
 
 -- | Check whether a term is a lambda, possibly nested within let and/or annotation terms
-isLambda :: (Core.Term a -> Bool)
+isLambda :: (Core.Term Core.Kv -> Bool)
 isLambda term = ((\x -> case x of
   Core.TermFunction v -> ((\x -> case x of
     Core.FunctionLambda _ -> True
@@ -64,19 +64,19 @@ unqualifyName qname =
     (Module.qualifiedNameLocal qname)]))
 
 -- | Fold over a term, traversing its subterms in the specified order
-foldOverTerm :: (Ord a) => (Coders.TraversalOrder -> (x -> Core.Term a -> x) -> x -> Core.Term a -> x)
+foldOverTerm :: (Coders.TraversalOrder -> (x -> Core.Term Core.Kv -> x) -> x -> Core.Term Core.Kv -> x)
 foldOverTerm order fld b0 term = ((\x -> case x of
   Coders.TraversalOrderPre -> (L.foldl (foldOverTerm order fld) (fld b0 term) (subterms term))
   Coders.TraversalOrderPost -> (fld (L.foldl (foldOverTerm order fld) b0 (subterms term)) term)) order)
 
 -- | Fold over a type, traversing its subtypes in the specified order
-foldOverType :: (Coders.TraversalOrder -> (x -> Core.Type a -> x) -> x -> Core.Type a -> x)
+foldOverType :: (Coders.TraversalOrder -> (x -> Core.Type Core.Kv -> x) -> x -> Core.Type Core.Kv -> x)
 foldOverType order fld b0 typ = ((\x -> case x of
   Coders.TraversalOrderPre -> (L.foldl (foldOverType order fld) (fld b0 typ) (subtypes typ))
   Coders.TraversalOrderPost -> (fld (L.foldl (foldOverType order fld) b0 (subtypes typ)) typ)) order)
 
 -- | Find the free variables (i.e. variables not bound by a lambda or let) in a term
-freeVariablesInTerm :: (Ord a) => (Core.Term a -> Set Core.Name)
+freeVariablesInTerm :: (Core.Term Core.Kv -> Set Core.Name)
 freeVariablesInTerm term =  
   let dfltVars = (L.foldl (\s -> \t -> Sets.union s (freeVariablesInTerm t)) Sets.empty (subterms term))
   in ((\x -> case x of
@@ -87,7 +87,7 @@ freeVariablesInTerm term =
     _ -> dfltVars) term)
 
 -- | Find the free variables (i.e. variables not bound by a lambda or let) in a type
-freeVariablesInType :: (Core.Type a -> Set Core.Name)
+freeVariablesInType :: (Core.Type Core.Kv -> Set Core.Name)
 freeVariablesInType typ =  
   let dfltVars = (L.foldl (\s -> \t -> Sets.union s (freeVariablesInType t)) Sets.empty (subtypes typ))
   in ((\x -> case x of
@@ -96,7 +96,7 @@ freeVariablesInType typ =
     _ -> dfltVars) typ)
 
 -- | Find the children of a given term
-subterms :: (Ord a) => (Core.Term a -> [Core.Term a])
+subterms :: (Core.Term Core.Kv -> [Core.Term Core.Kv])
 subterms x = case x of
   Core.TermAnnotated v -> [
     Core.annotatedSubject v]
@@ -141,7 +141,7 @@ subterms x = case x of
     Core.nominalObject v]
 
 -- | Find the children of a given type expression
-subtypes :: (Core.Type a -> [Core.Type a])
+subtypes :: (Core.Type Core.Kv -> [Core.Type Core.Kv])
 subtypes x = case x of
   Core.TypeAnnotated v -> [
     Core.annotatedSubject v]

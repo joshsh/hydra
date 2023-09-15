@@ -15,7 +15,7 @@ import qualified Data.Set as S
 import qualified Data.Maybe as Y
 
 
-shaclCoder :: (Eq a, Show a) => Module a -> Flow (Graph a) (Shacl.ShapesGraph, Graph a -> Flow (Graph a) Rdf.Graph)
+shaclCoder :: Module Kv -> Flow (Graph Kv) (Shacl.ShapesGraph, Graph Kv -> Flow (Graph Kv) Rdf.Graph)
 shaclCoder mod = do
     g <- getState
     -- Note: untested since deprecation of element schemas
@@ -49,17 +49,17 @@ defaultCommonProperties = Shacl.CommonProperties {
   Shacl.commonPropertiesTargetObjectsOf = S.empty,
   Shacl.commonPropertiesTargetSubjectsOf = S.empty}
 
-elementIri :: Element a -> Rdf.Iri
+elementIri :: Element Kv -> Rdf.Iri
 elementIri = nameToIri . elementName
 
-encodeField :: Show a => Name -> Rdf.Resource -> Field a -> Flow (Graph a) [Rdf.Triple]
+encodeField :: Name -> Rdf.Resource -> Field Kv -> Flow (Graph Kv) [Rdf.Triple]
 encodeField rname subject field = do
   node <- nextBlankNode
   descs <- encodeTerm node (fieldTerm field)
   return $ triplesOf descs ++
     forObjects subject (propertyIri rname $ fieldName field) (subjectsOf descs)
 
-encodeFieldType :: Show a => Name -> Maybe Integer -> FieldType a -> Flow (Graph a) (Shacl.Definition Shacl.PropertyShape)
+encodeFieldType :: Name -> Maybe Integer -> FieldType Kv -> Flow (Graph Kv) (Shacl.Definition Shacl.PropertyShape)
 encodeFieldType rname order (FieldType fname ft) = do
     shape <- forType (Just 1) (Just 1) ft
     return $ Shacl.Definition iri shape
@@ -100,7 +100,7 @@ encodeLiteralType lt = case lt of
   where
     xsd local = common [Shacl.CommonConstraintDatatype $ xmlSchemaDatatypeIri local]
 
-encodeTerm :: Show a => Rdf.Resource -> Term a -> Flow (Graph a) [Rdf.Description]
+encodeTerm :: Rdf.Resource -> Term Kv -> Flow (Graph Kv) [Rdf.Description]
 encodeTerm subject term = case term of
   TermAnnotated (Annotated inner ann) -> encodeTerm subject inner -- TODO: extract an rdfs:comment
   TermList terms -> encodeList subject terms
@@ -152,7 +152,7 @@ encodeTerm subject term = case term of
     return [withType rname $ Rdf.Description (resourceToNode subject) (Rdf.Graph $ S.fromList triples)]
   _ -> unexpected "RDF-compatible term" $ show term
 
-encodeType :: Show a => Type a -> Flow (Graph a) Shacl.CommonProperties
+encodeType :: Type Kv -> Flow (Graph Kv) Shacl.CommonProperties
 encodeType typ = case stripType typ of
     TypeList _ -> any
     TypeLiteral lt -> pure $ encodeLiteralType lt

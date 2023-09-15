@@ -34,7 +34,7 @@ noGraph = Graph {
   graphSchema = Nothing}
 
 
-showTerm :: Term a -> String
+showTerm :: Term Kv -> String
 showTerm term = fromFlow "fail" noGraph $ do
     coder <- termStringCoder
     coderEncode coder encoded
@@ -51,7 +51,7 @@ termStringCoder = do
       Left msg -> fail $ "failed to parse JSON value: " ++ msg
       Right v -> coderDecode termJsonCoder v
 
-showType :: Type a -> String
+showType :: Type Kv -> String
 showType typ = fromFlow "fail" noGraph $ do
     coder <- typeStringCoder
     coderEncode coder encoded

@@ -5,7 +5,7 @@ import Hydra.Kernel
 import qualified Data.Set as S
 
 
-haskellLanguage :: Language a
+haskellLanguage :: Language Kv
 haskellLanguage = Language (LanguageName "hydra/langs/haskell") $ LanguageConstraints {
   languageConstraintsEliminationVariants = S.fromList eliminationVariants,
   languageConstraintsLiteralVariants = S.fromList [

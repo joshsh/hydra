@@ -78,7 +78,7 @@ hydraBasicsModule = Module (Namespace "hydra/basics") elements [hydraTier1Module
      el qualifyNameLazyDef
      ]
 
-eliminationVariantDef :: Definition (Elimination a -> EliminationVariant)
+eliminationVariantDef :: Definition (Elimination Kv -> EliminationVariant)
 eliminationVariantDef = basicsDefinition "eliminationVariant" $
   doc "Find the elimination variant (constructor) for a given elimination term" $
   typed (functionT (Types.apply (TypeVariable _Elimination) (Types.var "a")) (TypeVariable _EliminationVariant)) $
@@ -125,7 +125,7 @@ floatValueTypeDef = basicsDefinition "floatValueType" $
     _FloatValue_float32  @-> _FloatType_float32,
     _FloatValue_float64  @-> _FloatType_float64]
 
-functionVariantDef :: Definition (Function a -> FunctionVariant)
+functionVariantDef :: Definition (Function Kv -> FunctionVariant)
 functionVariantDef = basicsDefinition "functionVariant" $
   doc "Find the function variant (constructor) for a given function" $
   typed (functionT (Types.apply (TypeVariable _Function) (Types.var "a")) (TypeVariable _FunctionVariant)) $
@@ -240,12 +240,12 @@ literalVariantsDef = basicsDefinition "literalVariants" $
     _LiteralVariant_integer,
     _LiteralVariant_string]
 
-termMetaDef :: Definition (Graph a -> Term a -> a)
+termMetaDef :: Definition (Graph Kv -> Term Kv -> a)
 termMetaDef = basicsDefinition "termMeta" $
   function graphA (functionT termA aT) $
   (project _AnnotationClass _AnnotationClass_termAnnotation) <.> Graph.graphAnnotations
 
-termVariantDef :: Definition (Term a -> TermVariant)
+termVariantDef :: Definition (Term Kv -> TermVariant)
 termVariantDef = basicsDefinition "termVariant" $
   doc "Find the term variant (constructor) for a given term" $
   function termA (TypeVariable _TermVariant) $
@@ -287,7 +287,7 @@ termVariantsDef = basicsDefinition "termVariants" $
     _TermVariant_variable,
     _TermVariant_wrap]
 
-typeVariantDef :: Definition (Type a -> TypeVariant)
+typeVariantDef :: Definition (Type Kv -> TypeVariant)
 typeVariantDef = basicsDefinition "typeVariant" $
   doc "Find the type variant (constructor) for a given type" $
   function typeA (TypeVariable _TypeVariant) $
@@ -358,21 +358,21 @@ mapFirstLetterDef = basicsDefinition "mapFirstLetter" $
 
 -- Common.hs
 
-fieldMapDef :: Definition ([Field a] -> M.Map FieldName (Term a))
+fieldMapDef :: Definition ([Field Kv] -> M.Map FieldName (Term Kv))
 fieldMapDef = basicsDefinition "fieldMap" $
   function (TypeList fieldA) (Types.map (TypeVariable _FieldName) termA) $
     (lambda "fields" $ Maps.fromList @@ (Lists.map @@ var "toPair" @@ var "fields"))
   `with` [
     "toPair">: lambda "f" $ pair (project _Field _Field_name @@ var "f") (project _Field _Field_term @@ var "f")]
 
-fieldTypeMapDef :: Definition ([FieldType a] -> M.Map FieldName (Type a))
+fieldTypeMapDef :: Definition ([FieldType Kv] -> M.Map FieldName (Type Kv))
 fieldTypeMapDef = basicsDefinition "fieldTypeMap" $
   function (TypeList fieldTypeA) (Types.map (TypeVariable _FieldName) typeA) $
     (lambda "fields" $ Maps.fromList @@ (Lists.map @@ var "toPair" @@ var "fields"))
   `with` [
     "toPair">: lambda "f" $ pair (project _FieldType _FieldType_name @@ var "f") (project _FieldType _FieldType_type @@ var "f")]
 
-isEncodedTypeDef :: Definition (Term a -> Bool)
+isEncodedTypeDef :: Definition (Term Kv -> Bool)
 isEncodedTypeDef = basicsDefinition "isEncodedType" $
   function termA booleanT $
   lambda "t" $ (match _Term (Just false) [
@@ -382,7 +382,7 @@ isEncodedTypeDef = basicsDefinition "isEncodedType" $
         Equality.equalString @@ (string $ unName _Type) @@ (unwrap _Name @@ (project _Injection _Injection_typeName @@ var "i"))
     ]) @@ (ref stripTermDef @@ var "t")
 
-isTypeDef :: Definition (Type a -> Bool)
+isTypeDef :: Definition (Type Kv -> Bool)
 isTypeDef = basicsDefinition "isType" $
   functionWithClasses typeA booleanT eqA $
   lambda "t" $ (match _Type (Just false) [
@@ -395,17 +395,17 @@ isTypeDef = basicsDefinition "isType" $
 --      Case _Type_variable --> constant true
     ]) @@ (ref stripTypeDef @@ var "t")
 
-isUnitTermDef :: Definition (Term a -> Bool)
+isUnitTermDef :: Definition (Term Kv -> Bool)
 isUnitTermDef = basicsDefinition "isUnitTerm" $
   functionWithClasses termA booleanT eqA $
   lambda "t" $ Equality.equalTerm @@ (ref stripTermDef @@ var "t") @@ Datum (coreEncodeTerm Terms.unit)
 
-isUnitTypeDef :: Definition (Term a -> Bool)
+isUnitTypeDef :: Definition (Term Kv -> Bool)
 isUnitTypeDef = basicsDefinition "isUnitType" $
   functionWithClasses typeA booleanT eqA $
   lambda "t" $ Equality.equalType @@ (ref stripTypeDef @@ var "t") @@ Datum (coreEncodeType Types.unit)
 
-elementsToGraphDef :: Definition (Graph a -> Maybe (Graph a) -> [Element a] -> Graph a)
+elementsToGraphDef :: Definition (Graph Kv -> Maybe (Graph Kv) -> [Element Kv] -> Graph Kv)
 elementsToGraphDef = basicsDefinition "elementsToGraph" $
   function graphA (functionT (Types.optional graphA) (functionT (TypeList elementA) graphA)) $
   lambda "parent" $ lambda "schema" $ lambda "elements" $
