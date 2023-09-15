@@ -120,11 +120,11 @@ _PropertySpec_value = (Core.FieldName "value")
 data Schema s t v =
   Schema {
     schemaVertexIdTypes :: (Compute.Coder s s (Core.Type Core.Kv) t),
-    schemaVertexIds :: (Compute.Coder s s (Core.Term Core.Kv) v),
+    schemaVertexIds :: (Compute.Coder s s (Core.Term) v),
     schemaEdgeIdTypes :: (Compute.Coder s s (Core.Type Core.Kv) t),
-    schemaEdgeIds :: (Compute.Coder s s (Core.Term Core.Kv) v),
+    schemaEdgeIds :: (Compute.Coder s s (Core.Term) v),
     schemaPropertyTypes :: (Compute.Coder s s (Core.Type Core.Kv) t),
-    schemaPropertyValues :: (Compute.Coder s s (Core.Term Core.Kv) v),
+    schemaPropertyValues :: (Compute.Coder s s (Core.Term) v),
     schemaAnnotations :: AnnotationSchema,
     schemaDefaultVertexId :: v,
     schemaDefaultEdgeId :: v}

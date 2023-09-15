@@ -36,8 +36,8 @@ checkIsStringType typ = case simplifyType typ of
 
 constructModule ::
   Module Kv
-  -> M.Map (Type Kv) (Coder (Graph Kv) (Graph Kv) (Term Kv) ())
-  -> [(Element Kv, TypedTerm Kv)]
+  -> M.Map (Type Kv) (Coder (Graph Kv) (Graph Kv) (Term) ())
+  -> [(Element Kv, TypedTerm)]
   -> Flow (Graph Kv) (M.Map FilePath P3.ProtoFile)
 constructModule mod@(Module ns els _ desc) _ pairs = do
     schemaImports <- (fmap namespaceToFileReference . S.toList) <$> moduleDependencyNamespaces True False False False mod

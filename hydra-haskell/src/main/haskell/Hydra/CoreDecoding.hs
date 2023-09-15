@@ -49,36 +49,36 @@ import qualified Data.Set as S
 import qualified Data.Maybe as Y
 
 
-coreDecodeApplicationType :: Term Kv -> Flow (Graph Kv) (ApplicationType Kv)
+coreDecodeApplicationType :: Term -> Flow (Graph Kv) (ApplicationType Kv)
 coreDecodeApplicationType = matchRecord $ \m -> ApplicationType
   <$> getField m _ApplicationType_function coreDecodeType
   <*> getField m _ApplicationType_argument coreDecodeType
 
-coreDecodeFieldName :: Term Kv -> Flow (Graph Kv) FieldName
+coreDecodeFieldName :: Term -> Flow (Graph Kv) FieldName
 coreDecodeFieldName term = FieldName <$> (Expect.wrap _FieldName term >>= Expect.string)
 
-coreDecodeFieldType :: Term Kv -> Flow (Graph Kv) (FieldType Kv)
+coreDecodeFieldType :: Term -> Flow (Graph Kv) (FieldType Kv)
 coreDecodeFieldType = matchRecord $ \m -> FieldType
   <$> getField m _FieldType_name coreDecodeFieldName
   <*> getField m _FieldType_type coreDecodeType
 
-coreDecodeFieldTypes :: Term Kv -> Flow (Graph Kv) [FieldType Kv]
+coreDecodeFieldTypes :: Term -> Flow (Graph Kv) [FieldType Kv]
 coreDecodeFieldTypes term = case stripTerm term of
   TermList els -> CM.mapM coreDecodeFieldType els
   _ -> unexpected "list" $ show term
 
-coreDecodeFloatType :: Term Kv -> Flow (Graph Kv) FloatType
+coreDecodeFloatType :: Term -> Flow (Graph Kv) FloatType
 coreDecodeFloatType = matchEnum _FloatType [
   (_FloatType_bigfloat, FloatTypeBigfloat),
   (_FloatType_float32, FloatTypeFloat32),
   (_FloatType_float64, FloatTypeFloat64)]
 
-coreDecodeFunctionType :: Term Kv -> Flow (Graph Kv) (FunctionType Kv)
+coreDecodeFunctionType :: Term -> Flow (Graph Kv) (FunctionType Kv)
 coreDecodeFunctionType = matchRecord $ \m -> FunctionType
   <$> getField m _FunctionType_domain coreDecodeType
   <*> getField m _FunctionType_codomain coreDecodeType
 
-coreDecodeIntegerType :: Term Kv -> Flow (Graph Kv) IntegerType
+coreDecodeIntegerType :: Term -> Flow (Graph Kv) IntegerType
 coreDecodeIntegerType = matchEnum _IntegerType [
   (_IntegerType_bigint, IntegerTypeBigint),
   (_IntegerType_int8, IntegerTypeInt8),
@@ -90,12 +90,12 @@ coreDecodeIntegerType = matchEnum _IntegerType [
   (_IntegerType_uint32, IntegerTypeUint32),
   (_IntegerType_uint64, IntegerTypeUint64)]
 
-coreDecodeLambdaType :: Term Kv -> Flow (Graph Kv) (LambdaType Kv)
+coreDecodeLambdaType :: Term -> Flow (Graph Kv) (LambdaType Kv)
 coreDecodeLambdaType = matchRecord $ \m -> LambdaType
   <$> (getField m _LambdaType_parameter coreDecodeName)
   <*> getField m _LambdaType_body coreDecodeType
 
-coreDecodeLiteralType :: Term Kv -> Flow (Graph Kv) LiteralType
+coreDecodeLiteralType :: Term -> Flow (Graph Kv) LiteralType
 coreDecodeLiteralType = matchUnion _LiteralType [
   matchUnitField _LiteralType_binary LiteralTypeBinary,
   matchUnitField _LiteralType_boolean LiteralTypeBoolean,
@@ -103,31 +103,31 @@ coreDecodeLiteralType = matchUnion _LiteralType [
   (_LiteralType_integer, fmap LiteralTypeInteger . coreDecodeIntegerType),
   matchUnitField _LiteralType_string LiteralTypeString]
 
-coreDecodeMapType :: Term Kv -> Flow (Graph Kv) (MapType Kv)
+coreDecodeMapType :: Term -> Flow (Graph Kv) (MapType Kv)
 coreDecodeMapType = matchRecord $ \m -> MapType
   <$> getField m _MapType_keys coreDecodeType
   <*> getField m _MapType_values coreDecodeType
 
-coreDecodeName :: Term Kv -> Flow (Graph Kv) Name
+coreDecodeName :: Term -> Flow (Graph Kv) Name
 coreDecodeName term = Name <$> (Expect.wrap _Name term >>= Expect.string)
 
-coreDecodeNominal :: (Term Kv -> Flow (Graph Kv) x) -> Term Kv -> Flow (Graph Kv) (Nominal x)
+coreDecodeNominal :: (Term -> Flow (Graph Kv) x) -> Term -> Flow (Graph Kv) (Nominal x)
 coreDecodeNominal mapping term = do
   fields <- Expect.recordWithName _Nominal term
   name <- Expect.field _Nominal_typeName coreDecodeName fields
   obj <- Expect.field _Nominal_object mapping fields
   pure $ Nominal name obj
 
-coreDecodeRowType :: Term Kv -> Flow (Graph Kv) (RowType Kv)
+coreDecodeRowType :: Term -> Flow (Graph Kv) (RowType Kv)
 coreDecodeRowType = matchRecord $ \m -> RowType
   <$> getField m _RowType_typeName coreDecodeName
   <*> getField m _RowType_extends (Expect.optional coreDecodeName)
   <*> getField m _RowType_fields coreDecodeFieldTypes
 
-coreDecodeString :: Term Kv -> Flow (Graph Kv) String
+coreDecodeString :: Term -> Flow (Graph Kv) String
 coreDecodeString = Expect.string . stripTerm
 
-coreDecodeType :: Term Kv -> Flow (Graph Kv) (Type Kv)
+coreDecodeType :: Term -> Flow (Graph Kv) (Type Kv)
 coreDecodeType dat = case dat of
   TermAnnotated (Annotated term ann) -> (\t -> TypeAnnotated $ Annotated t ann) <$> coreDecodeType term
   _ -> matchUnion _Type [
@@ -156,7 +156,7 @@ dereferenceType name = do
     Nothing -> return Nothing
     Just el -> Just <$> coreDecodeType (elementData el)
 
-elementAsTypedTerm :: Element Kv -> Flow (Graph Kv) (TypedTerm Kv)
+elementAsTypedTerm :: Element Kv -> Flow (Graph Kv) (TypedTerm)
 elementAsTypedTerm el = do
   typ <- requireTermType (elementData el)
   return $ TypedTerm typ (elementData el)
@@ -175,7 +175,7 @@ fieldTypes t = case stripType t of
     toMap fields = M.fromList (toPair <$> fields)
     toPair (FieldType fname ftype) = (fname, ftype)
 
-getField :: M.Map FieldName (Term Kv) -> FieldName -> (Term Kv -> Flow (Graph Kv) b) -> Flow (Graph Kv) b
+getField :: M.Map FieldName (Term) -> FieldName -> (Term -> Flow (Graph Kv) b) -> Flow (Graph Kv) b
 getField m fname decode = case M.lookup fname m of
   Nothing -> fail $ "expected field " ++ show fname ++ " not found"
   Just val -> decode val
@@ -188,15 +188,15 @@ isSerializable el = do
   where
     variants typ = typeVariant <$> foldOverType TraversalOrderPre (\m t -> t:m) [] typ
 
-matchEnum :: Name -> [(FieldName, b)] -> Term Kv -> Flow (Graph Kv) b
+matchEnum :: Name -> [(FieldName, b)] -> Term -> Flow (Graph Kv) b
 matchEnum tname = matchUnion tname . fmap (uncurry matchUnitField)
 
-matchRecord :: (M.Map FieldName (Term Kv) -> Flow (Graph Kv) b) -> Term Kv -> Flow (Graph Kv) b
+matchRecord :: (M.Map FieldName (Term) -> Flow (Graph Kv) b) -> Term -> Flow (Graph Kv) b
 matchRecord decode term = case stripTerm term of
   TermRecord (Record _ fields) -> decode $ M.fromList $ fmap (\(Field fname val) -> (fname, val)) fields
   _ -> unexpected "record" $ show term
 
-matchUnion :: Name -> [(FieldName, Term Kv -> Flow (Graph Kv) b)] -> Term Kv -> Flow (Graph Kv) b
+matchUnion :: Name -> [(FieldName, Term -> Flow (Graph Kv) b)] -> Term -> Flow (Graph Kv) b
 matchUnion tname pairs term = case stripTerm term of
     TermVariable name -> do
       el <- requireElement name

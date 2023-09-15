@@ -226,7 +226,7 @@ hydraLibFlowsPrimitives = [
     x = variable "x"
     y = variable "y"
 
-applyInterp :: Term Kv -> Term Kv -> Flow (Graph Kv) (Term Kv)
+applyInterp :: Term -> Term -> Flow (Graph Kv) (Term)
 applyInterp funs' args' = do
     funs <- Expect.list Prelude.pure funs'
     args <- Expect.list Prelude.pure args'
@@ -234,12 +234,12 @@ applyInterp funs' args' = do
   where
     helper args f = Terms.apply f <$> args
 
-bindInterp :: Term Kv -> Term Kv -> Flow (Graph Kv) (Term Kv)
+bindInterp :: Term -> Term -> Flow (Graph Kv) (Term)
 bindInterp args' fun = do
     args <- Expect.list Prelude.pure args'
     return $ Terms.apply (Terms.primitive $ Name "hydra/lib/lists.concat") (Terms.list $ Terms.apply fun <$> args)
 
-mapInterp :: Term Kv -> Term Kv -> Flow (Graph Kv) (Term Kv)
+mapInterp :: Term -> Term -> Flow (Graph Kv) (Term)
 mapInterp fun args' = do
     args <- Expect.list Prelude.pure args'
     return $ Terms.list (Terms.apply fun <$> args)

@@ -56,7 +56,7 @@ skipAnnotationsDef = stripDefinition "skipAnnotations" $
       (Types.var "x")
       (Types.optional $ Types.apply (Types.apply (TypeVariable _Annotated) (Types.var "x")) (Types.var "a")))
 
-stripTermDef :: Definition (Term Kv -> Term Kv)
+stripTermDef :: Definition (Term -> Term)
 stripTermDef = stripDefinition "stripTerm" $
     doc "Strip all annotations from a term" $
     function termA termA $

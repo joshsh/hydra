@@ -34,14 +34,14 @@ noGraph = Graph {
   graphSchema = Nothing}
 
 
-showTerm :: Term Kv -> String
+showTerm :: Term -> String
 showTerm term = fromFlow "fail" noGraph $ do
     coder <- termStringCoder
     coderEncode coder encoded
   where
     encoded = coreEncodeTerm $ rewriteTermMeta (const $ Kv M.empty) term
 
-termStringCoder :: Flow (Graph Kv) (Coder (Graph Kv) (Graph Kv) (Term Kv) String)
+termStringCoder :: Flow (Graph Kv) (Coder (Graph Kv) (Graph Kv) (Term) String)
 termStringCoder = do
     termJsonCoder <- jsonCoder $ TypeVariable _Term
     return $ Coder (mout termJsonCoder) (min termJsonCoder)
@@ -58,7 +58,7 @@ showType typ = fromFlow "fail" noGraph $ do
   where
     encoded = coreEncodeType $ rewriteTypeMeta (const $ Kv M.empty) typ
 
-typeStringCoder :: Flow (Graph Kv) (Coder (Graph Kv) (Graph Kv) (Term Kv) String)
+typeStringCoder :: Flow (Graph Kv) (Coder (Graph Kv) (Graph Kv) (Term) String)
 typeStringCoder = do
     typeJsonCoder <- jsonCoder $ TypeVariable _Type
     return $ Coder (mout typeJsonCoder) (min typeJsonCoder)

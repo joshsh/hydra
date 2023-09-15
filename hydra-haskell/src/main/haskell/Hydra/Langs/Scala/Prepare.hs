@@ -44,7 +44,7 @@ prepareIntegerType it = case it of
     $ \(IntegerValueUint64 v) -> IntegerValueInt64 $ fromIntegral v
   _ -> same it
 
-prepareType :: Graph Kv -> Type Kv -> (Type Kv, Term Kv -> Term Kv, S.Set String)
+prepareType :: Graph Kv -> Type Kv -> (Type Kv, Term -> Term, S.Set String)
 prepareType cx typ = case stripType typ of
   TypeLiteral at -> (Types.literal rtyp, \(TermLiteral av) -> TermLiteral $ rep av, msgs)
     where

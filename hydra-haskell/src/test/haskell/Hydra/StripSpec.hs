@@ -16,11 +16,11 @@ checkStripTerm :: H.SpecWith ()
 checkStripTerm = do
   H.describe "Tests for stripping annotations from terms" $ do
     H.it "Un-annotated terms are not affected" $
-      QC.property $ \term -> case (term :: Term Kv) of
+      QC.property $ \term -> case (term :: Term) of
         TermAnnotated _ -> True
         _ -> stripTerm term == term
     H.it "Terms are stripped recursively" $
-      QC.property $ \term -> case (term :: Term Kv) of
+      QC.property $ \term -> case (term :: Term) of
         TermAnnotated _ -> True
         _ -> stripTerm (Terms.annot emptyKv (Terms.annot emptyKv term)) == term
 

@@ -35,7 +35,7 @@ qname ns name = (Core.Name (Strings.cat [
   ".",
   name]))
 
-termArity :: (Core.Term Core.Kv -> Int)
+termArity :: (Core.Term -> Int)
 termArity x = case x of
   Core.TermApplication v -> ((\x -> Math.sub x 1) (termArity (Core.applicationFunction v)))
   Core.TermFunction v -> (functionArity v)
@@ -63,5 +63,5 @@ emptyKv :: (Core.Kv)
 emptyKv = Core.Kv {
   Core.kvAnnotations = Maps.empty}
 
-getAnnotation :: (String -> Core.Kv -> Maybe (Core.Term Core.Kv))
+getAnnotation :: (String -> Core.Kv -> Maybe (Core.Term))
 getAnnotation key ann = (Maps.lookup key (Core.kvAnnotations ann))

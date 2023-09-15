@@ -16,7 +16,7 @@ skipAnnotations getAnn t =
   in (skip t)
 
 -- | Strip all annotations from a term
-stripTerm :: (Core.Term Core.Kv -> Core.Term Core.Kv)
+stripTerm :: (Core.Term -> Core.Term)
 stripTerm x = (skipAnnotations (\x -> case x of
   Core.TermAnnotated v -> (Just v)
   _ -> Nothing) x)

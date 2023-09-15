@@ -25,8 +25,8 @@ data TestCase a =
   TestCase {
     testCaseDescription :: (Maybe String),
     testCaseEvaluationStyle :: EvaluationStyle,
-    testCaseInput :: (Core.Term Core.Kv),
-    testCaseOutput :: (Core.Term Core.Kv)}
+    testCaseInput :: (Core.Term),
+    testCaseOutput :: (Core.Term)}
   deriving (Eq, Ord, Read, Show)
 
 _TestCase = (Core.Name "hydra/testing.TestCase")

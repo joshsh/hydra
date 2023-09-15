@@ -20,7 +20,7 @@ import qualified Data.Maybe as Y
 import Hydra.Rewriting (removeTermAnnotations)
 import Data.String(IsString(..))
 
-instance IsString (TermCoder Kv (Term Kv)) where fromString = variable
+instance IsString (TermCoder Kv (Term)) where fromString = variable
 
 bigfloat :: TermCoder Kv Double
 bigfloat = TermCoder Types.bigfloat $ Coder encode decode
@@ -165,7 +165,7 @@ prim2Poly vars name input1 input2 output compute = Primitive name typ impl
       arg2 <- coderEncode (termCoderCoder input2) (args !! 1)
       coderDecode (termCoderCoder output) $ compute arg1 arg2
 
-prim2Interp :: [String] -> Name -> TermCoder Kv x -> TermCoder Kv y -> TermCoder Kv z -> (Term Kv -> Term Kv -> Flow (Graph Kv) (Term Kv)) -> Primitive Kv
+prim2Interp :: [String] -> Name -> TermCoder Kv x -> TermCoder Kv y -> TermCoder Kv z -> (Term -> Term -> Flow (Graph Kv) (Term)) -> Primitive Kv
 prim2Interp vars name input1 input2 output compute = Primitive name typ impl
   where
     typ = Types.lambdas vars $
@@ -204,7 +204,7 @@ string = TermCoder Types.string $ Coder encode decode
     encode = Expect.string
     decode = pure . Terms.string
 
-term :: TermCoder Kv (Term Kv)
+term :: TermCoder Kv (Term)
 term = TermCoder (Types.apply (TypeVariable _Term) (Types.var "a")) $ Coder encode decode
   where
     encode = pure
@@ -240,7 +240,7 @@ uint64 = TermCoder Types.uint64 $ Coder encode decode
     encode = Expect.uint64
     decode = pure . Terms.uint64
 
-variable :: String -> TermCoder Kv (Term Kv)
+variable :: String -> TermCoder Kv (Term)
 variable v = TermCoder (Types.var v) $ Coder encode decode
   where
     encode = pure

@@ -19,7 +19,7 @@ _Case = (Core.Name "hydra/phantoms.Case")
 -- | An association of a term with a phantom type
 newtype Datum a = 
   Datum {
-    unDatum :: (Core.Term Core.Kv)}
+    unDatum :: (Core.Term)}
   deriving (Eq, Ord, Read, Show)
 
 _Datum = (Core.Name "hydra/phantoms.Datum")

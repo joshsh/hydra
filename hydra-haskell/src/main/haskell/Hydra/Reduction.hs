@@ -24,7 +24,7 @@ import qualified Data.Set as S
 import qualified Data.Maybe as Y
 
 
-alphaConvertTerm :: Name -> Term Kv -> Term Kv -> Term Kv
+alphaConvertTerm :: Name -> Term -> Term -> Term
 alphaConvertTerm vold tnew = rewriteTerm rewrite id
   where
     rewrite recurse term = case term of
@@ -49,7 +49,7 @@ countPrimitiveInvocations :: Bool
 countPrimitiveInvocations = True
 
 -- A term evaluation function which is alternatively lazy or eager
-reduceTerm :: Bool -> M.Map Name (Term Kv) -> Term Kv -> Flow (Graph Kv) (Term Kv)
+reduceTerm :: Bool -> M.Map Name (Term) -> Term -> Flow (Graph Kv) (Term)
 reduceTerm eager env = rewriteTermM mapping pure
   where
     reduce eager = reduceTerm eager M.empty
@@ -154,7 +154,7 @@ betaReduceType typ = do
 --   and
 --     ((\x.e1) e2) = e1[x/e2]
 --  These are both limited forms of beta reduction which help to "clean up" a term without fully evaluating it.
-contractTerm :: Term Kv -> Term Kv
+contractTerm :: Term -> Term
 contractTerm = rewriteTerm rewrite id
   where
     rewrite recurse term = case rec of
@@ -168,7 +168,7 @@ contractTerm = rewriteTerm rewrite id
         rec = recurse term
 
 -- Note: unused / untested
-etaReduceTerm :: Term Kv -> Term Kv
+etaReduceTerm :: Term -> Term
 etaReduceTerm term = case term of
     TermAnnotated (Annotated term1 ann) -> TermAnnotated (Annotated (etaReduceTerm term1) ann)
     TermFunction (FunctionLambda l) -> reduceLambda l
@@ -188,11 +188,11 @@ etaReduceTerm term = case term of
     noChange = term
 
 -- | Whether a term is closed, i.e. represents a complete program
-termIsClosed :: Term Kv -> Bool
+termIsClosed :: Term -> Bool
 termIsClosed = S.null . freeVariablesInTerm
 
 -- | Whether a term has been fully reduced to a "value"
-termIsValue :: Graph Kv -> Term Kv -> Bool
+termIsValue :: Graph Kv -> Term -> Bool
 termIsValue g term = case stripTerm term of
     TermApplication _ -> False
     TermLiteral _ -> True

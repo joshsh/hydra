@@ -26,8 +26,8 @@ moduleToPdl mod = do
 constructModule ::
   M.Map Namespace String
   -> Module Kv
-  -> M.Map (Type Kv) (Coder (Graph Kv) (Graph Kv) (Term Kv) ())
-  -> [(Element Kv, TypedTerm Kv)]
+  -> M.Map (Type Kv) (Coder (Graph Kv) (Graph Kv) (Term) ())
+  -> [(Element Kv, TypedTerm)]
   -> Flow (Graph Kv) (M.Map FilePath PDL.SchemaFile)
 constructModule aliases mod coders pairs = do
     sortedPairs <- case (topologicalSortElements $ fst <$> pairs) of
@@ -82,7 +82,7 @@ encodeAdaptedType aliases typ = do
   ad <- withState cx $ termAdapter typ
   encodeType aliases $ adapterTarget ad
 
-encodeTerm :: M.Map Namespace String -> Term Kv -> Flow (Graph Kv) ()
+encodeTerm :: M.Map Namespace String -> Term -> Flow (Graph Kv) ()
 encodeTerm aliases term = fail "not yet implemented"
 
 encodeType :: M.Map Namespace String -> Type Kv -> Flow (Graph Kv) (Either PDL.Schema PDL.NamedSchema_Type)

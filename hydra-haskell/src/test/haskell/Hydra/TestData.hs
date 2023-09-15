@@ -40,7 +40,7 @@ listOfSetOfStringsType = Types.list $ Types.set Types.string
 listOfStringsType :: Type Kv
 listOfStringsType = Types.list Types.string
 
-makeMap :: [(String, Int)] -> Term Kv
+makeMap :: [(String, Int)] -> Term
 makeMap keyvals = Terms.map $ M.fromList $ ((\(k, v) -> (string k, int32 v)) <$> keyvals)
 
 mapOfStringsToIntsType :: Type Kv

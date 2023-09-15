@@ -46,8 +46,8 @@ constantDecls g namespaces name@(Name nm) typ = if useCoreImport
 
 constructModule :: Namespaces
   -> Module Kv
-  -> M.Map (Type Kv) (Coder (Graph Kv) (Graph Kv) (Term Kv) H.Expression)
-  -> [(Element Kv, TypedTerm Kv)] -> Flow (Graph Kv) H.Module
+  -> M.Map (Type Kv) (Coder (Graph Kv) (Graph Kv) (Term) H.Expression)
+  -> [(Element Kv, TypedTerm)] -> Flow (Graph Kv) H.Module
 constructModule namespaces mod coders pairs = do
     g <- getState
     decls <- L.concat <$> CM.mapM (createDeclarations g) pairs
@@ -145,7 +145,7 @@ encodeLiteral av = case av of
     LiteralString s -> pure $ hslit $ H.LiteralString s
     _ -> unexpected "literal value" $ show av
 
-encodeTerm :: Namespaces -> Term Kv -> Flow (Graph Kv) H.Expression
+encodeTerm :: Namespaces -> Term -> Flow (Graph Kv) H.Expression
 encodeTerm namespaces term = do
    case stripTerm term of
     TermApplication (Application fun arg) -> hsapp <$> encode fun <*> encode arg
@@ -266,8 +266,8 @@ moduleToHaskell mod = do
   let s = printExpr $ parenthesize $ toTree hsmod
   return $ M.fromList [(namespaceToFilePath True (FileExtension "hs") $ moduleNamespace mod, s)]
 
-toDataDeclaration :: M.Map (Type Kv) (Coder (Graph Kv) (Graph Kv) (Term Kv) H.Expression) -> Namespaces
-  -> (Element Kv, TypedTerm Kv) -> Flow (Graph Kv) H.DeclarationWithComments
+toDataDeclaration :: M.Map (Type Kv) (Coder (Graph Kv) (Graph Kv) (Term) H.Expression) -> Namespaces
+  -> (Element Kv, TypedTerm) -> Flow (Graph Kv) H.DeclarationWithComments
 toDataDeclaration coders namespaces (el, TypedTerm typ term) = toDecl hname term coder Nothing
   where
     coder = Y.fromJust $ M.lookup typ coders
@@ -304,7 +304,7 @@ toDataDeclaration coders namespaces (el, TypedTerm typ term) = toDecl hname term
         comments <- annotationClassTermDescription (graphAnnotations g) term
         return $ H.DeclarationWithComments decl comments
 
-toTypeDeclarations :: Namespaces -> Element Kv -> Term Kv -> Flow (Graph Kv) [H.DeclarationWithComments]
+toTypeDeclarations :: Namespaces -> Element Kv -> Term -> Flow (Graph Kv) [H.DeclarationWithComments]
 toTypeDeclarations namespaces el term = withTrace ("type element " ++ unName (elementName el)) $ do
     g <- getState
     let lname = localNameOfEager $ elementName el

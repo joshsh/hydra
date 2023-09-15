@@ -45,7 +45,7 @@ requirePrimitive fn = do
     err = fail $ "no such primitive function: " ++ unName fn
 
 -- TODO: distinguish between lambda-bound and let-bound variables
-resolveTerm :: Name -> Flow (Graph Kv) (Maybe (Term Kv))
+resolveTerm :: Name -> Flow (Graph Kv) (Maybe (Term))
 resolveTerm name = do
     g <- getState
     Y.maybe (pure Nothing) recurse $ M.lookup name $ graphElements g

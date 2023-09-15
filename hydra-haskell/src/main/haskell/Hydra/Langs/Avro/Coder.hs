@@ -27,8 +27,8 @@ data AvroEnvironment = AvroEnvironment {
   avroEnvironmentNamedAdapters :: M.Map AvroQualifiedName AvroHydraAdapter,
   avroEnvironmentNamespace :: Maybe String,
   avroEnvironmentElements :: M.Map Name (Element Kv), -- note: only used in the term coders
-  avroEnvironmentCreateAnnotation :: M.Map String (Term Kv) -> Kv}
-type AvroHydraAdapter = Adapter AvroEnvironment AvroEnvironment Avro.Schema (Type Kv) Json.Value (Term Kv)
+  avroEnvironmentCreateAnnotation :: M.Map String (Term) -> Kv}
+type AvroHydraAdapter = Adapter AvroEnvironment AvroEnvironment Avro.Schema (Type Kv) Json.Value (Term)
 
 data AvroQualifiedName = AvroQualifiedName (Maybe String) String deriving (Eq, Ord, Show)
 
@@ -264,7 +264,7 @@ avroNameToHydraName (AvroQualifiedName mns local) = unqualifyName $ QualifiedNam
 
 -- TODO: use me (for encoding annotations for which the type is not know) or lose me
 --       A more robust solution would use jsonCoder together with an expected type
-encodeAnnotationValue :: Json.Value -> Term Kv
+encodeAnnotationValue :: Json.Value -> Term
 encodeAnnotationValue v = case v of
   Json.ValueArray vals -> Terms.list (encodeAnnotationValue <$> vals)
   Json.ValueBoolean b -> Terms.boolean b
@@ -276,12 +276,12 @@ encodeAnnotationValue v = case v of
       toEntry (k, v) = (Terms.string k, encodeAnnotationValue v)
   Json.ValueString s -> Terms.string s
 
-fieldAnnotationsToCore :: Avro.Field -> M.Map String (Term Kv)
+fieldAnnotationsToCore :: Avro.Field -> M.Map String (Term)
 fieldAnnotationsToCore f = M.fromList (toCore <$> (M.toList $ Avro.fieldAnnotations f))
   where
     toCore (k, v) = (k, encodeAnnotationValue v)
 
-namedAnnotationsToCore :: Avro.Named -> M.Map String (Term Kv)
+namedAnnotationsToCore :: Avro.Named -> M.Map String (Term)
 namedAnnotationsToCore n = M.fromList (toCore <$> (M.toList $ Avro.namedAnnotations n))
   where
     toCore (k, v) = (k, encodeAnnotationValue v)
@@ -350,7 +350,7 @@ jsonToString v = case v of
 showQname :: AvroQualifiedName -> String
 showQname (AvroQualifiedName mns local) = (Y.maybe "" (\ns -> ns ++ ".") mns) ++ local
 
-stringToTerm :: Type Kv -> String -> Flow s (Term Kv)
+stringToTerm :: Type Kv -> String -> Flow s (Term)
 stringToTerm typ s = case stripType typ of
     TypeLiteral lt -> TermLiteral <$> case lt of
       LiteralTypeBoolean -> LiteralBoolean <$> doRead s
@@ -371,7 +371,7 @@ stringToTerm typ s = case stripType typ of
       Left msg -> fail $ "failed to read value: " ++ msg
       Right term -> pure term
 
-termToString :: Term Kv -> Flow s String
+termToString :: Term -> Flow s String
 termToString term = case stripTerm term of
   TermLiteral l -> case l of
     LiteralBoolean b -> pure $ show b

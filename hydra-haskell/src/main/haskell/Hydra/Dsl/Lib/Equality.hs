@@ -41,7 +41,7 @@ equalInt64 = Datum $ Terms.primitive _equality_equalInt64
 equalString :: Datum (String -> String -> Bool)
 equalString = Datum $ Terms.primitive _equality_equalString
 
-equalTerm :: Datum (Term Kv -> Term Kv -> Bool)
+equalTerm :: Datum (Term -> Term -> Bool)
 equalTerm = Datum $ Terms.primitive _equality_equalTerm
 
 equalType :: Datum (Type Kv -> Type Kv -> Bool)

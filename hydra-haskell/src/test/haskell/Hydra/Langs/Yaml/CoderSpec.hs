@@ -92,7 +92,7 @@ spec = do
   supportedTypesPassThrough
   unsupportedTypesAreTransformed
 
-checkYamlCoder :: Type Kv -> Term Kv -> YM.Node -> H.Expectation
+checkYamlCoder :: Type Kv -> Term -> YM.Node -> H.Expectation
 checkYamlCoder typ term node = case mstep of
     Nothing -> HL.assertFailure (traceSummary trace)
     Just step -> do

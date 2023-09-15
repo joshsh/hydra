@@ -39,7 +39,7 @@ import qualified Data.Maybe as Y
 
 data Inferred a = Inferred {
   -- The original term, possibly annotated with the inferred type
-  inferredTerm :: Term Kv,
+  inferredTerm :: Term,
   -- The inferred type
   inferredType :: Type Kv,
   -- Any constraints introduced by the inference process
@@ -67,11 +67,11 @@ annotateElements g sortedEls = initializeGraph $ do
         rel <- inferElementType el
         withBinding (fst rel) (inferredType $ snd rel) $ annotate rest (rel:annotated)
 
-annotateTermWithTypes :: Term Kv -> Flow (Graph Kv) (Term Kv)
+annotateTermWithTypes :: Term -> Flow (Graph Kv) (Term)
 annotateTermWithTypes = inferTypeAndConstraints
 
 -- Decode a type, eliminating nominal types for the sake of unification
-decodeStructuralType :: Term Kv -> Flow (Graph Kv) (Type Kv)
+decodeStructuralType :: Term -> Flow (Graph Kv) (Type Kv)
 decodeStructuralType term = do
   typ <- coreDecodeType term
   let typ' = stripType typ
@@ -92,7 +92,7 @@ freshName = normalVariable <$> nextCount "hyInf"
 freshTypeVariable :: Flow (Graph Kv) (Type Kv)
 freshTypeVariable = TypeVariable <$> freshName
 
-infer :: Term Kv -> Flow (Graph Kv) (Inferred Kv)
+infer :: Term -> Flow (Graph Kv) (Inferred Kv)
 infer term = case term of
     TermAnnotated (Annotated subj ann) -> do
       rsubj <- infer subj
@@ -382,7 +382,7 @@ inferLet (Let bindings env) = do
               annotationClassTypeOf anns $ annotationClassTermAnnotation anns term
 
 -- TODO: deprecated; inference is performed on graphs, not individual terms. Update the Haskell coder to use inferElementType
-inferType :: Term Kv -> Flow (Graph Kv) (Type Kv)
+inferType :: Term -> Flow (Graph Kv) (Type Kv)
 --inferType term = (simplifyUniversalTypes . termType) <$> inferTypeAndConstraints term
 inferType term = do
   term1 <- inferTypeAndConstraints term
@@ -392,7 +392,7 @@ inferType term = do
 
 -- TODO: deprecated; inference is performed on graphs, not individual terms. Update tests to use inferElementType
 -- | Solve for the top-level type of an expression in a given environment
-inferTypeAndConstraints :: Term Kv -> Flow (Graph Kv) (Term Kv)
+inferTypeAndConstraints :: Term -> Flow (Graph Kv) (Term)
 inferTypeAndConstraints term = withTrace ("infer type") $ initializeGraph $ do
     rterm <- infer term
     subst <- withSchemaContext $ solveConstraints (inferredConstraints rterm)
@@ -498,7 +498,7 @@ sortGraphElements g = do
         -- No need for an inference dependency on an element which is already annotated with a type
         isNotAnnotated name = not $ S.member name annotated
 
-substituteAndNormalizeAnnotations :: AnnotationClass Kv -> Subst Kv -> Term Kv -> Flow (Graph Kv) (Term Kv)
+substituteAndNormalizeAnnotations :: AnnotationClass Kv -> Subst Kv -> Term -> Flow (Graph Kv) (Term)
 substituteAndNormalizeAnnotations anns subst = rewriteTermMetaM rewrite
   where
     -- Note: normalizing each annotation separately results in different variable names for corresponding types
@@ -530,7 +530,7 @@ yieldFunction fun = yieldTerm (TermFunction fun)
 yieldElimination :: Elimination Kv -> Type Kv -> [Constraint Kv] -> Flow (Graph Kv) (Inferred Kv)
 yieldElimination e = yieldTerm (TermFunction $ FunctionElimination e)
 
-yieldTerm :: Term Kv -> Type Kv -> [Constraint Kv] -> Flow (Graph Kv) (Inferred Kv)
+yieldTerm :: Term -> Type Kv -> [Constraint Kv] -> Flow (Graph Kv) (Inferred Kv)
 yieldTerm term typ constraints = do
   g <- getState
   -- For now, we simply annotate each and every subterm, except annotation terms.

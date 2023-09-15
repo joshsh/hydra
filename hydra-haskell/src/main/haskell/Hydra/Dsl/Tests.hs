@@ -14,21 +14,21 @@ import qualified Data.List as L
 import qualified Data.Set as S
 
 
-intList :: [Int] -> Term Kv
+intList :: [Int] -> Term
 intList els = list (int32 <$> els)
 
-intListList :: [[Int]] -> Term Kv
+intListList :: [[Int]] -> Term
 intListList lists = list (intList <$> lists)
 
-primCase :: Name -> [Term Kv] -> Term Kv -> TestCase Kv
+primCase :: Name -> [Term] -> Term -> TestCase Kv
 primCase name args output = TestCase Nothing EvaluationStyleEager input output
   where
     input = L.foldl (\a arg -> a @@ arg) (primitive name) args
 
-stringList :: [String] -> Term Kv
+stringList :: [String] -> Term
 stringList els = list (string <$> els)
 
-stringSet :: S.Set String -> Term Kv
+stringSet :: S.Set String -> Term
 stringSet strings = set $ S.fromList $ string <$> S.toList strings
 
 testCase = TestCase Nothing

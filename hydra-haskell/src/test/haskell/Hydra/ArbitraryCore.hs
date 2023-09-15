@@ -1,5 +1,5 @@
 
-{-# LANGUAGE FlexibleInstances #-} -- TODO: temporary, for QC.Arbitrary (Term Kv) and QC.Arbitrary (Type Kv)
+{-# LANGUAGE FlexibleInstances #-} -- TODO: temporary, for QC.Arbitrary (Term) and QC.Arbitrary (Type Kv)
 module Hydra.ArbitraryCore where
 
 import Hydra.Kernel
@@ -77,7 +77,7 @@ instance QC.Arbitrary IntegerValue
       IntegerValueUint32 <$> QC.arbitrary,
       IntegerValueUint64 <$> QC.arbitrary]
 
-instance QC.Arbitrary (Term Kv) where
+instance QC.Arbitrary (Term) where
   arbitrary = (\(TypedTerm _ term) -> term) <$> QC.sized arbitraryTypedTerm
 
 instance QC.Arbitrary Name
@@ -94,7 +94,7 @@ instance QC.Arbitrary (Type Kv) where
       _ -> []
     _ -> [] -- TODO
 
-instance QC.Arbitrary (TypedTerm Kv) where
+instance QC.Arbitrary (TypedTerm) where
   arbitrary = QC.sized arbitraryTypedTerm
   shrink (TypedTerm typ term) = L.concat ((\(t, m) -> TypedTerm t <$> m term) <$> shrinkers typ)
 
@@ -177,7 +177,7 @@ arbitraryPair c g n = c <$> g n' <*> g n'
   where n' = div n 2
 
 -- Note: variables and function applications are not (currently) generated
-arbitraryTerm :: Type Kv -> Int -> QC.Gen (Term Kv)
+arbitraryTerm :: Type Kv -> Int -> QC.Gen (Term)
 arbitraryTerm typ n = case typ of
     TypeLiteral at -> literal <$> arbitraryLiteral at
     TypeFunction ft -> TermFunction <$> arbitraryFunction ft n'
@@ -219,7 +219,7 @@ arbitraryType n = if n == 0 then pure Types.unit else QC.oneof [
 --    TypeUnion <$> arbitraryList True arbitraryFieldType n'] -- TODO: avoid duplicate field names
   where n' = decr n
 
-arbitraryTypedTerm :: Int -> QC.Gen (TypedTerm Kv)
+arbitraryTypedTerm :: Int -> QC.Gen (TypedTerm)
 arbitraryTypedTerm n = do
     typ <- arbitraryType n'
     term <- arbitraryTerm typ n'
@@ -231,7 +231,7 @@ decr :: Int -> Int
 decr n = max 0 (n-1)
 
 -- Note: shrinking currently discards any metadata
-shrinkers :: Type Kv -> [(Type Kv, Term Kv -> [Term Kv])]
+shrinkers :: Type Kv -> [(Type Kv, Term -> [Term])]
 shrinkers typ = trivialShrinker ++ case typ of
     TypeLiteral at -> case at of
       LiteralTypeBinary -> [(Types.binary, \(TermLiteral (LiteralBinary s)) -> binary <$> QC.shrink s)]

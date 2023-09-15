@@ -45,7 +45,7 @@ flowStateTrace = project _FlowState _FlowState_trace
 flowStateValue :: Datum (FlowState s x -> Maybe x)
 flowStateValue = project _FlowState _FlowState_value
 
-trace :: Datum [String] -> Datum [String] -> Datum (M.Map String (Term Kv)) -> Datum Trace
+trace :: Datum [String] -> Datum [String] -> Datum (M.Map String (Term)) -> Datum Trace
 trace stack messages other = record _Trace [
     _Trace_stack>>: stack,
     _Trace_messages>>: messages,
@@ -57,7 +57,7 @@ traceStack = project _Trace _Trace_stack
 traceMessages :: Datum (Trace -> [String])
 traceMessages = project _Trace _Trace_messages
 
-traceOther :: Datum (Trace -> M.Map String (Term Kv))
+traceOther :: Datum (Trace -> M.Map String (Term))
 traceOther = project _Trace _Trace_other
 
 unFlow :: Datum (Flow s x -> s -> Trace -> FlowState s x)

@@ -79,7 +79,7 @@ data Trace =
     traceStack :: [String],
     traceMessages :: [String],
     -- | A map of string keys to arbitrary terms as values, for application-specific use
-    traceOther :: (Map String (Core.Term Core.Kv))}
+    traceOther :: (Map String (Core.Term))}
   deriving (Eq, Ord, Read, Show)
 
 _Trace = (Core.Name "hydra/compute.Trace")

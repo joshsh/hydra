@@ -240,12 +240,12 @@ literalVariantsDef = basicsDefinition "literalVariants" $
     _LiteralVariant_integer,
     _LiteralVariant_string]
 
-termMetaDef :: Definition (Graph Kv -> Term Kv -> a)
+termMetaDef :: Definition (Graph Kv -> Term -> a)
 termMetaDef = basicsDefinition "termMeta" $
   function graphA (functionT termA aT) $
   (project _AnnotationClass _AnnotationClass_termAnnotation) <.> Graph.graphAnnotations
 
-termVariantDef :: Definition (Term Kv -> TermVariant)
+termVariantDef :: Definition (Term -> TermVariant)
 termVariantDef = basicsDefinition "termVariant" $
   doc "Find the term variant (constructor) for a given term" $
   function termA (TypeVariable _TermVariant) $
@@ -358,7 +358,7 @@ mapFirstLetterDef = basicsDefinition "mapFirstLetter" $
 
 -- Common.hs
 
-fieldMapDef :: Definition ([Field Kv] -> M.Map FieldName (Term Kv))
+fieldMapDef :: Definition ([Field Kv] -> M.Map FieldName (Term))
 fieldMapDef = basicsDefinition "fieldMap" $
   function (TypeList fieldA) (Types.map (TypeVariable _FieldName) termA) $
     (lambda "fields" $ Maps.fromList @@ (Lists.map @@ var "toPair" @@ var "fields"))
@@ -372,7 +372,7 @@ fieldTypeMapDef = basicsDefinition "fieldTypeMap" $
   `with` [
     "toPair">: lambda "f" $ pair (project _FieldType _FieldType_name @@ var "f") (project _FieldType _FieldType_type @@ var "f")]
 
-isEncodedTypeDef :: Definition (Term Kv -> Bool)
+isEncodedTypeDef :: Definition (Term -> Bool)
 isEncodedTypeDef = basicsDefinition "isEncodedType" $
   function termA booleanT $
   lambda "t" $ (match _Term (Just false) [
@@ -395,12 +395,12 @@ isTypeDef = basicsDefinition "isType" $
 --      Case _Type_variable --> constant true
     ]) @@ (ref stripTypeDef @@ var "t")
 
-isUnitTermDef :: Definition (Term Kv -> Bool)
+isUnitTermDef :: Definition (Term -> Bool)
 isUnitTermDef = basicsDefinition "isUnitTerm" $
   functionWithClasses termA booleanT eqA $
   lambda "t" $ Equality.equalTerm @@ (ref stripTermDef @@ var "t") @@ Datum (coreEncodeTerm Terms.unit)
 
-isUnitTypeDef :: Definition (Term Kv -> Bool)
+isUnitTypeDef :: Definition (Term -> Bool)
 isUnitTypeDef = basicsDefinition "isUnitType" $
   functionWithClasses typeA booleanT eqA $
   lambda "t" $ Equality.equalType @@ (ref stripTypeDef @@ var "t") @@ Datum (coreEncodeType Types.unit)

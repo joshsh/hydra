@@ -214,10 +214,10 @@ _TypeVariant_variable = (Core.FieldName "variable")
 _TypeVariant_wrap = (Core.FieldName "wrap")
 
 -- | A type together with an instance of the type
-data TypedTerm a =
+data TypedTerm =
   TypedTerm {
     typedTermType :: (Core.Type Core.Kv),
-    typedTermTerm :: (Core.Term Core.Kv)}
+    typedTermTerm :: (Core.Term)}
   deriving (Eq, Ord, Read, Show)
 
 _TypedTerm = (Core.Name "hydra/mantle.TypedTerm")

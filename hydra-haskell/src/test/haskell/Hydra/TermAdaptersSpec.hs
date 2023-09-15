@@ -170,7 +170,7 @@ unsupportedConstructorsAreModified = H.describe "Verify that unsupported term co
       False
       (project testTypePersonName fname)
       (inject functionProxyName $ field "record" $ string $
-        show (project testTypePersonName fname :: Term Kv)) -- Note: the field name is not dereferenced
+        show (project testTypePersonName fname :: Term)) -- Note: the field name is not dereferenced
 
 --  H.it "Nominal types (when unsupported) are dereferenced" $
 --    QC.property $ \s -> checkDataAdapter
@@ -255,7 +255,7 @@ fieldAdaptersAreAsExpected = H.describe "Check that field adapters are as expect
       (field "second" $ int8 i)
       (field "second" $ int16 $ fromIntegral i)
 
-roundTripIsNoop :: Type Kv -> Term Kv -> H.Expectation
+roundTripIsNoop :: Type Kv -> Term -> H.Expectation
 roundTripIsNoop typ term = shouldSucceedWith
    (step coderEncode term >>= step coderDecode)
    term

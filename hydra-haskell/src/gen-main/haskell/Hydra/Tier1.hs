@@ -43,7 +43,7 @@ integerValueToBigint x = case x of
   Core.IntegerValueUint64 v -> (Literals.uint64ToBigint v)
 
 -- | Check whether a term is a lambda, possibly nested within let and/or annotation terms
-isLambda :: (Core.Term Core.Kv -> Bool)
+isLambda :: (Core.Term -> Bool)
 isLambda term = ((\x -> case x of
   Core.TermFunction v -> ((\x -> case x of
     Core.FunctionLambda _ -> True
@@ -64,7 +64,7 @@ unqualifyName qname =
     (Module.qualifiedNameLocal qname)]))
 
 -- | Fold over a term, traversing its subterms in the specified order
-foldOverTerm :: (Coders.TraversalOrder -> (x -> Core.Term Core.Kv -> x) -> x -> Core.Term Core.Kv -> x)
+foldOverTerm :: (Coders.TraversalOrder -> (x -> Core.Term -> x) -> x -> Core.Term -> x)
 foldOverTerm order fld b0 term = ((\x -> case x of
   Coders.TraversalOrderPre -> (L.foldl (foldOverTerm order fld) (fld b0 term) (subterms term))
   Coders.TraversalOrderPost -> (fld (L.foldl (foldOverTerm order fld) b0 (subterms term)) term)) order)
@@ -76,7 +76,7 @@ foldOverType order fld b0 typ = ((\x -> case x of
   Coders.TraversalOrderPost -> (fld (L.foldl (foldOverType order fld) b0 (subtypes typ)) typ)) order)
 
 -- | Find the free variables (i.e. variables not bound by a lambda or let) in a term
-freeVariablesInTerm :: (Core.Term Core.Kv -> Set Core.Name)
+freeVariablesInTerm :: (Core.Term -> Set Core.Name)
 freeVariablesInTerm term =  
   let dfltVars = (L.foldl (\s -> \t -> Sets.union s (freeVariablesInTerm t)) Sets.empty (subterms term))
   in ((\x -> case x of
@@ -96,7 +96,7 @@ freeVariablesInType typ =
     _ -> dfltVars) typ)
 
 -- | Find the children of a given term
-subterms :: (Core.Term Core.Kv -> [Core.Term Core.Kv])
+subterms :: (Core.Term -> [Core.Term])
 subterms x = case x of
   Core.TermAnnotated v -> [
     Core.annotatedSubject v]

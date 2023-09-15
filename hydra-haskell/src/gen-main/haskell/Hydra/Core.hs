@@ -24,9 +24,9 @@ _Annotated_annotation = (FieldName "annotation")
 data Application a = 
   Application {
     -- | The left-hand side of the application
-    applicationFunction :: (Term Kv),
+    applicationFunction :: (Term),
     -- | The right-hand side of the application
-    applicationArgument :: (Term Kv)}
+    applicationArgument :: (Term)}
   deriving (Eq, Ord, Read, Show)
 
 _Application = (Name "hydra/core.Application")
@@ -54,7 +54,7 @@ _ApplicationType_argument = (FieldName "argument")
 data CaseStatement a = 
   CaseStatement {
     caseStatementTypeName :: Name,
-    caseStatementDefault :: (Maybe (Term Kv)),
+    caseStatementDefault :: (Maybe (Term)),
     caseStatementCases :: [Field Kv]}
   deriving (Eq, Ord, Read, Show)
 
@@ -69,7 +69,7 @@ _CaseStatement_cases = (FieldName "cases")
 -- | A corresponding elimination for an introduction term
 data Elimination a = 
   -- | Eliminates a list using a fold function; this function has the signature b -> [a] -> b
-  EliminationList (Term Kv) |
+  EliminationList (Term) |
   -- | Eliminates an optional term by matching over the two possible cases
   EliminationOptional (OptionalCases Kv) |
   -- | Eliminates a tuple by projecting the component at a given 0-indexed offset
@@ -100,7 +100,7 @@ _Elimination_wrap = (FieldName "wrap")
 data Field a = 
   Field {
     fieldName :: FieldName,
-    fieldTerm :: (Term Kv)}
+    fieldTerm :: (Term)}
   deriving (Eq, Ord, Read, Show)
 
 _Field = (Name "hydra/core.Field")
@@ -286,7 +286,7 @@ _IntegerValue_uint64 = (FieldName "uint64")
 data Kv = 
   Kv {
     -- | A map of annotation names to annotation values
-    kvAnnotations :: (Map String (Term Kv))}
+    kvAnnotations :: (Map String (Term))}
   deriving (Eq, Ord, Read, Show)
 
 _Kv = (Name "hydra/core.Kv")
@@ -299,7 +299,7 @@ data Lambda a =
     -- | The parameter of the lambda
     lambdaParameter :: Name,
     -- | The body of the lambda
-    lambdaBody :: (Term Kv)}
+    lambdaBody :: (Term)}
   deriving (Eq, Ord, Read, Show)
 
 _Lambda = (Name "hydra/core.Lambda")
@@ -326,8 +326,8 @@ _LambdaType_body = (FieldName "body")
 -- | A set of (possibly recursive) 'let' bindings
 data Let a = 
   Let {
-    letBindings :: (Map Name (Term Kv)),
-    letEnvironment :: (Term Kv)}
+    letBindings :: (Map Name (Term)),
+    letEnvironment :: (Term)}
   deriving (Eq, Ord, Read, Show)
 
 _Let = (Name "hydra/core.Let")
@@ -421,9 +421,9 @@ _Nominal_object = (FieldName "object")
 data OptionalCases a = 
   OptionalCases {
     -- | A term provided if the optional value is nothing
-    optionalCasesNothing :: (Term Kv),
+    optionalCasesNothing :: (Term),
     -- | A function which is applied if the optional value is non-nothing
-    optionalCasesJust :: (Term Kv)}
+    optionalCasesJust :: (Term)}
   deriving (Eq, Ord, Read, Show)
 
 _OptionalCases = (Name "hydra/core.OptionalCases")
@@ -480,7 +480,7 @@ _RowType_fields = (FieldName "fields")
 -- | An infinite stream of terms
 data Stream a = 
   Stream {
-    streamFirst :: (Term Kv),
+    streamFirst :: (Term),
     streamRest :: (Stream a)}
   deriving (Eq, Ord, Read, Show)
 
@@ -495,7 +495,7 @@ data Sum a =
   Sum {
     sumIndex :: Int,
     sumSize :: Int,
-    sumTerm :: (Term Kv)}
+    sumTerm :: (Term)}
   deriving (Eq, Ord, Read, Show)
 
 _Sum = (Name "hydra/core.Sum")
@@ -507,37 +507,37 @@ _Sum_size = (FieldName "size")
 _Sum_term = (FieldName "term")
 
 -- | A data term
-data Term a = 
+data Term =
   -- | A term annotated with metadata
-  TermAnnotated (Annotated (Term Kv) a) |
+  TermAnnotated (Annotated (Term) Kv) |
   -- | A function application
   TermApplication (Application Kv) |
   -- | A function term
   TermFunction (Function Kv) |
   TermLet (Let Kv) |
   -- | A list
-  TermList [Term Kv] |
+  TermList [Term] |
   -- | A literal value
   TermLiteral Literal |
   -- | A map of keys to values
-  TermMap (Map (Term Kv) (Term Kv)) |
+  TermMap (Map (Term) (Term)) |
   -- | An optional value
-  TermOptional (Maybe (Term Kv)) |
+  TermOptional (Maybe (Term)) |
   -- | A tuple
-  TermProduct [Term Kv] |
+  TermProduct [Term] |
   -- | A record term
-  TermRecord (Record a) |
+  TermRecord (Record Kv) |
   -- | A set of values
-  TermSet (Set (Term Kv)) |
+  TermSet (Set (Term)) |
   -- | An infinite stream of terms
-  TermStream (Stream a) |
+  TermStream (Stream Kv) |
   -- | A variant tuple
-  TermSum (Sum a) |
+  TermSum (Sum Kv) |
   -- | An injection; an instance of a union type
-  TermUnion (Injection a) |
+  TermUnion (Injection Kv) |
   -- | A variable reference
   TermVariable Name |
-  TermWrap (Nominal (Term Kv))
+  TermWrap (Nominal (Term))
   deriving (Eq, Ord, Read, Show)
 
 _Term = (Name "hydra/core.Term")

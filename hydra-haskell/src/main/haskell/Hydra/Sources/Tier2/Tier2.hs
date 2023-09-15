@@ -60,7 +60,7 @@ getStateDef = tier2Definition "getState" $
       typed (Types.apply (Types.apply (TypeVariable _FlowState) sT) unitT) $
       Flows.unFlow @@ (Flows.pure @@ unit) @@ var "s0" @@ var "t0"])
 
-getTermTypeDef :: Definition (Term Kv -> Flow (Graph Kv) (Maybe (Type Kv)))
+getTermTypeDef :: Definition (Term -> Flow (Graph Kv) (Maybe (Type Kv)))
 getTermTypeDef = tier2Definition "getTermType" $
   function termA (flowT graphA (TypeOptional typeA)) $
   doc "Get the annotated type of a given term, if any" $
@@ -90,7 +90,7 @@ requireElementTypeDef = tier2Definition "requireElementType" $
        (Flows.fail @@ ("missing type annotation for element " ++ (unwrap _Name @@ (project _Element _Element_name @@ var "el"))))
        Flows.pure])
 
-requireTermTypeDef :: Definition (Term Kv -> Flow (Graph Kv) (Type Kv))
+requireTermTypeDef :: Definition (Term -> Flow (Graph Kv) (Type Kv))
 requireTermTypeDef = tier2Definition "requireTermType" $
   function termA (flowT graphA typeA) $
   doc "Get the annotated type of a given term, or fail if it is missing" $

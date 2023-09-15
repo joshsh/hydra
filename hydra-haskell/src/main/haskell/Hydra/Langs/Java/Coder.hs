@@ -71,7 +71,7 @@ classifyDataReference name = do
       typ <- requireElementType el
       return $ classifyDataTerm typ $ elementData el
 
-classifyDataTerm :: Type Kv -> Term Kv -> JavaSymbolClass
+classifyDataTerm :: Type Kv -> Term -> JavaSymbolClass
 classifyDataTerm typ term = if isLambda term
     then JavaSymbolClassUnaryFunction
     else if hasTypeParameters || isUnsupportedVariant
@@ -107,8 +107,8 @@ constructElementsInterface mod members = (elName, cu)
     decl = Java.TypeDeclarationWithComments itf $ moduleDescription mod
 
 constructModule :: Module Kv
-  -> M.Map (Type Kv) (Coder (Graph Kv) (Graph Kv) (Term Kv) Java.Expression)
-  -> [(Element Kv, TypedTerm Kv)]
+  -> M.Map (Type Kv) (Coder (Graph Kv) (Graph Kv) (Term) Java.Expression)
+  -> [(Element Kv, TypedTerm)]
   -> Flow (Graph Kv) (M.Map Name Java.CompilationUnit)
 constructModule mod coders pairs = do
     let isTypePair = isType . typedTermType . snd
@@ -301,7 +301,7 @@ declarationForRecordType isInner isSer aliases tparams elName fields = do
               where
                 first20Primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71]
 
-declarationForType :: Bool -> Aliases -> (Element Kv, TypedTerm Kv) -> Flow (Graph Kv) Java.TypeDeclarationWithComments
+declarationForType :: Bool -> Aliases -> (Element Kv, TypedTerm) -> Flow (Graph Kv) Java.TypeDeclarationWithComments
 declarationForType isSer aliases (el, TypedTerm _ term) = withTrace ("element " ++ unName (elementName el)) $ do
     t <- coreDecodeType term >>= adaptType javaLanguage
     cd <- toClassDecl False isSer aliases [] (elementName el) t
@@ -633,7 +633,7 @@ encodeNullaryConstant aliases typ fun = case fun of
   FunctionPrimitive name -> functionCall aliases True name []
   _ -> unexpected "nullary function" $ show fun
 
-encodeTerm :: Aliases -> Term Kv -> Flow (Graph Kv) Java.Expression
+encodeTerm :: Aliases -> Term -> Flow (Graph Kv) Java.Expression
 encodeTerm aliases term0 = encodeInternal [] term0
   where
     encode = encodeTerm aliases
@@ -776,7 +776,7 @@ fieldTypeToFormalParam aliases (FieldType fname ft) = do
   jt <- adaptTypeToJavaAndEncode aliases ft
   return $ javaTypeToJavaFormalParameter jt fname
 
-functionCall :: Aliases -> Bool -> Name -> [Term Kv] -> Flow (Graph Kv) Java.Expression
+functionCall :: Aliases -> Bool -> Name -> [Term] -> Flow (Graph Kv) Java.Expression
 functionCall aliases isPrim name args = do
     jargs <- CM.mapM (encodeTerm aliases) args
     if isLocalVariable name
@@ -841,7 +841,7 @@ javaTypeParametersForType typ = toParam <$> vars
       _ -> []
     freeVars = L.filter isLambdaBoundVariable $ S.toList $ freeVariablesInType typ
 
-maybeLet :: Aliases -> Term Kv -> (Aliases -> Term Kv -> [Java.BlockStatement] -> Flow (Graph Kv) x) -> Flow (Graph Kv) x
+maybeLet :: Aliases -> Term -> (Aliases -> Term -> [Java.BlockStatement] -> Flow (Graph Kv) x) -> Flow (Graph Kv) x
 maybeLet aliases term cons = helper [] term
   where
     helper anns term = case term of
@@ -917,7 +917,7 @@ reannotate anns term = case anns of
   [] -> term
   (h:r) -> reannotate r $ TermAnnotated (Annotated term h)
 
-requireAnnotatedType :: Term Kv -> Flow (Graph Kv) (Type Kv)
+requireAnnotatedType :: Term -> Flow (Graph Kv) (Type Kv)
 requireAnnotatedType term = case term of
   TermAnnotated (Annotated _ ann) -> do
     g <- getState
@@ -939,7 +939,7 @@ toClassDecl isInner isSer aliases tparams elName t = case stripType t of
   where
     wrap t' = declarationForRecordType isInner isSer aliases tparams elName [Types.field valueFieldName t']
 
-toDataDeclaration :: Aliases -> (a, TypedTerm Kv) -> Flow (Graph Kv) a
+toDataDeclaration :: Aliases -> (a, TypedTerm) -> Flow (Graph Kv) a
 toDataDeclaration aliases (el, TypedTerm typ term) = do
   fail "not implemented" -- TODO
 

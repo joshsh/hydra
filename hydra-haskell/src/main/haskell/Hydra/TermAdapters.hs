@@ -49,7 +49,7 @@ fieldAdapter ftyp = do
     $ bidirectional $ \dir (Field name term) -> Field name <$> encodeDecode dir (adapterCoder ad) term
 
 -- | This function accounts for recursive type definitions
-forTypeReference :: Name -> Flow (AdapterContext Kv) (SymmetricAdapter (AdapterContext Kv) (Type Kv) (Term Kv))
+forTypeReference :: Name -> Flow (AdapterContext Kv) (SymmetricAdapter (AdapterContext Kv) (Type Kv) (Term))
 forTypeReference name = withTrace ("adapt named type " ++ unName name) $ do
   let lossy = False -- Note: we cannot know in advance whether the adapter is lossy or not
   let placeholder = Adapter lossy (TypeVariable name) (TypeVariable name) $ bidirectional $

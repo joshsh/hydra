@@ -20,35 +20,35 @@ checkAlphaConversion = do
   H.describe "Tests for alpha conversion" $ do
     H.it "Variables are substituted at the top level" $
       QC.property $ \v ->
-        alphaConvertTerm (Name v) (var $ v ++ "'") (var v) == (var (v ++ "'") :: Term Kv)
+        alphaConvertTerm (Name v) (var $ v ++ "'") (var v) == (var (v ++ "'") :: Term)
     H.it "Variables are substituted within subexpressions" $
       QC.property $ \v ->
         alphaConvertTerm (Name v) (var $ v ++ "'") (list [int32 42, var v])
-          == (list [int32 42, var (v ++ "'")] :: Term Kv)
+          == (list [int32 42, var (v ++ "'")] :: Term)
     H.it "Lambdas with unrelated variables are transparent to alpha conversion" $
       QC.property $ \v ->
         alphaConvertTerm (Name v) (var $ v ++ "1") (lambda (v ++ "2") $ list [int32 42, var v, var (v ++ "2")])
-          == (lambda (v ++ "2") $ list [int32 42, var (v ++ "1"), var (v ++ "2")] :: Term Kv)
+          == (lambda (v ++ "2") $ list [int32 42, var (v ++ "1"), var (v ++ "2")] :: Term)
     H.it "Lambdas of the same variable are opaque to alpha conversion" $
       QC.property $ \v ->
         alphaConvertTerm (Name v) (var $ v ++ "1") (lambda v $ list [int32 42, var v, var (v ++ "2")])
-          == (lambda v $ list [int32 42, var v, var (v ++ "2")] :: Term Kv)
+          == (lambda v $ list [int32 42, var v, var (v ++ "2")] :: Term)
 
 checkLiterals :: H.SpecWith ()
 checkLiterals = do
   H.describe "Tests for literal values" $ do
 
     H.it "Literal terms have no free variables" $
-      QC.property $ \av -> termIsClosed (literal av :: Term Kv)
+      QC.property $ \av -> termIsClosed (literal av :: Term)
 
     H.it "Literal terms are fully reduced; check using a dedicated function" $
-      QC.property $ \av -> termIsValue testGraph (literal av :: Term Kv)
+      QC.property $ \av -> termIsValue testGraph (literal av :: Term)
 
     H.it "Literal terms are fully reduced; check by trying to reduce them" $
       QC.property $ \av ->
         shouldSucceedWith
           (eval (literal av))
-          (literal av :: Term Kv)
+          (literal av :: Term)
 
     H.it "Literal terms cannot be applied" $
       QC.property $ \lv -> shouldSucceedWith

@@ -27,8 +27,8 @@ moduleToGraphqlSchemas :: Module Kv -> Flow (Graph Kv) (M.Map FilePath G.Documen
 moduleToGraphqlSchemas mod = transformModule graphqlLanguage encodeTerm constructModule mod
 
 constructModule :: Module Kv
-  -> M.Map (Type Kv) (Coder (Graph Kv) (Graph Kv) (Term Kv) ())
-  -> [(Element Kv, TypedTerm Kv)]
+  -> M.Map (Type Kv) (Coder (Graph Kv) (Graph Kv) (Term) ())
+  -> [(Element Kv, TypedTerm)]
   -> Flow (Graph Kv) (M.Map FilePath G.Document)
 constructModule mod coders pairs = do
     -- Gather all dependencies because GraphQL does not support imports (in a standard way)
@@ -125,7 +125,7 @@ encodeNamedType prefixes el typ = do
     wrapAsRecord = encodeNamedType prefixes el $ TypeRecord $ RowType (elementName el) Nothing [
       FieldType (FieldName "value") typ]
 
-encodeTerm :: Term Kv -> Flow (Graph Kv) ()
+encodeTerm :: Term -> Flow (Graph Kv) ()
 encodeTerm term = fail "not yet implemented"
 
 encodeType :: Prefixes -> Type Kv -> Flow (Graph Kv) G.Type

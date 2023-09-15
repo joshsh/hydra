@@ -27,7 +27,7 @@ moduleToScala mod = do
 moduleToScalaPackage :: Module Kv -> Flow (Graph Kv) Scala.Pkg
 moduleToScalaPackage = transformModule scalaLanguage encodeUntypedTerm constructModule
 
-constructModule :: Module Kv -> M.Map (Type Kv) (Coder (Graph Kv) (Graph Kv) (Term Kv) Scala.Data) -> [(Element Kv, TypedTerm Kv)]
+constructModule :: Module Kv -> M.Map (Type Kv) (Coder (Graph Kv) (Graph Kv) (Term) Scala.Data) -> [(Element Kv, TypedTerm)]
   -> Flow (Graph Kv) Scala.Pkg
 constructModule mod coders pairs = do
     defs <- CM.mapM toDef pairs
@@ -73,7 +73,7 @@ constructModule mod coders pairs = do
           where
             namePat = Scala.PatVar $ Scala.Pat_Var $ Scala.Data_Name $ Scala.PredefString lname
 
-encodeFunction :: Kv -> Function Kv -> Y.Maybe (Term Kv) -> Flow (Graph Kv) Scala.Data
+encodeFunction :: Kv -> Function Kv -> Y.Maybe (Term) -> Flow (Graph Kv) Scala.Data
 encodeFunction meta fun arg = case fun of
     FunctionLambda (Lambda (Name v) body) -> slambda v <$> encodeTerm body <*> findSdom
     FunctionPrimitive name -> pure $ sprim name
@@ -139,7 +139,7 @@ encodeLiteral av = case av of
     LiteralString s -> pure $ Scala.LitString s
     _ -> unexpected "literal value" $ show av
 
-encodeTerm :: Term Kv -> Flow (Graph Kv) Scala.Data
+encodeTerm :: Term -> Flow (Graph Kv) Scala.Data
 encodeTerm term = case stripTerm term of
     TermApplication (Application fun arg) -> case stripTerm fun of
         TermFunction f -> case f of
@@ -223,5 +223,5 @@ encodeType t = case stripType t of
   TypeVariable (Name v) -> pure $ Scala.TypeVar $ Scala.Type_Var $ Scala.Type_Name v
   _ -> fail $ "can't encode unsupported type in Scala: " ++ show t
 
-encodeUntypedTerm :: Term Kv -> Flow (Graph Kv) Scala.Data
+encodeUntypedTerm :: Term -> Flow (Graph Kv) Scala.Data
 encodeUntypedTerm term = annotateTermWithTypes term >>= encodeTerm

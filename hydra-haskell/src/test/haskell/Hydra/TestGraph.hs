@@ -22,7 +22,7 @@ latLonName = Name "LatLon"
 latLonPolyName :: Name
 latLonPolyName = Name "LatLonPoly"
 
-latlonRecord :: Float -> Float -> Term Kv
+latlonRecord :: Float -> Float -> Term
 latlonRecord lat lon = record latLonName [Field (FieldName "lat") $ float32 lat, Field (FieldName "lon") $ float32 lon]
 
 latLonType :: Type Kv
@@ -71,7 +71,7 @@ testSchemaGraph = elementsToGraph hydraCore (Just hydraCore) [
 testSchemaNamespace :: Namespace
 testSchemaNamespace = Namespace "testSchemaGraph"
 
-testDataArthur :: Term Kv
+testDataArthur :: Term
 testDataArthur = record testTypePersonName [
   Field (FieldName "firstName") $ string "Arthur",
   Field (FieldName "lastName") $ string "Dent",

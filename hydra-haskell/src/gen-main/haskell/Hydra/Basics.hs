@@ -159,11 +159,11 @@ literalVariants = [
   Mantle.LiteralVariantInteger,
   Mantle.LiteralVariantString]
 
-termMeta :: (Graph.Graph Core.Kv -> Core.Term Core.Kv -> Core.Kv)
+termMeta :: (Graph.Graph Core.Kv -> Core.Term -> Core.Kv)
 termMeta x = (Graph.annotationClassTermAnnotation (Graph.graphAnnotations x))
 
 -- | Find the term variant (constructor) for a given term
-termVariant :: (Core.Term Core.Kv -> Mantle.TermVariant)
+termVariant :: (Core.Term -> Mantle.TermVariant)
 termVariant x = case x of
   Core.TermAnnotated _ -> Mantle.TermVariantAnnotated
   Core.TermApplication _ -> Mantle.TermVariantApplication
@@ -256,7 +256,7 @@ mapFirstLetter mapping s =
       list = (Strings.toList s)
   in (Logic.ifElse s (Strings.cat2 firstLetter (Strings.fromList (Lists.tail list))) (Strings.isEmpty s))
 
-fieldMap :: ([Core.Field Core.Kv] -> Map Core.FieldName (Core.Term Core.Kv))
+fieldMap :: ([Core.Field Core.Kv] -> Map Core.FieldName (Core.Term))
 fieldMap fields = (Maps.fromList (Lists.map toPair fields)) 
   where 
     toPair = (\f -> (Core.fieldName f, (Core.fieldTerm f)))
@@ -266,7 +266,7 @@ fieldTypeMap fields = (Maps.fromList (Lists.map toPair fields))
   where 
     toPair = (\f -> (Core.fieldTypeName f, (Core.fieldTypeType f)))
 
-isEncodedType :: (Core.Term Core.Kv -> Bool)
+isEncodedType :: (Core.Term -> Bool)
 isEncodedType t = ((\x -> case x of
   Core.TermApplication v -> (isEncodedType (Core.applicationFunction v))
   Core.TermUnion v -> (Equality.equalString "hydra/core.Type" (Core.unName (Core.injectionTypeName v)))
@@ -279,7 +279,7 @@ isType t = ((\x -> case x of
   Core.TypeUnion v -> (Equality.equalString "hydra/core.Type" (Core.unName (Core.rowTypeTypeName v)))
   _ -> False) (Strip.stripType t))
 
-isUnitTerm :: (Core.Term Core.Kv -> Bool)
+isUnitTerm :: (Core.Term -> Bool)
 isUnitTerm t = (Equality.equalTerm (Strip.stripTerm t) (Core.TermRecord (Core.Record {
   Core.recordTypeName = (Core.Name "hydra/core.UnitType"),
   Core.recordFields = []})))

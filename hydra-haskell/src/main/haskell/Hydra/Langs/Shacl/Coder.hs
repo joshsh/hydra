@@ -100,7 +100,7 @@ encodeLiteralType lt = case lt of
   where
     xsd local = common [Shacl.CommonConstraintDatatype $ xmlSchemaDatatypeIri local]
 
-encodeTerm :: Rdf.Resource -> Term Kv -> Flow (Graph Kv) [Rdf.Description]
+encodeTerm :: Rdf.Resource -> Term -> Flow (Graph Kv) [Rdf.Description]
 encodeTerm subject term = case term of
   TermAnnotated (Annotated inner ann) -> encodeTerm subject inner -- TODO: extract an rdfs:comment
   TermList terms -> encodeList subject terms

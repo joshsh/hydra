@@ -7,9 +7,9 @@ import qualified Data.Map as M
 
 
 graph :: Datum (M.Map Name (Element Kv))
-    -> Datum (M.Map Name (Maybe (Term Kv)))
+    -> Datum (M.Map Name (Maybe (Term)))
     -> Datum (M.Map Name (Type Kv))
-    -> Datum (Term Kv)
+    -> Datum (Term)
     -> Datum (M.Map Name (Primitive Kv))
     -> Datum (AnnotationClass Kv)
     -> Datum (Maybe (Graph Kv))
@@ -26,13 +26,13 @@ graph elements environment types body primitives annotations schema = record _Gr
 graphElements :: Datum (Graph Kv -> M.Map Name (Element Kv))
 graphElements = project _Graph _Graph_elements
 
-graphEnvironment :: Datum (Graph Kv -> M.Map Name (Maybe (Term Kv)))
+graphEnvironment :: Datum (Graph Kv -> M.Map Name (Maybe (Term)))
 graphEnvironment = project _Graph _Graph_environment
 
 graphTypes :: Datum (Graph Kv -> M.Map Name (Type Kv))
 graphTypes = project _Graph _Graph_types
 
-graphBody :: Datum (Graph Kv -> Term Kv)
+graphBody :: Datum (Graph Kv -> Term)
 graphBody = project _Graph _Graph_body
 
 graphPrimitives :: Datum (Graph Kv -> M.Map Name (Primitive Kv))

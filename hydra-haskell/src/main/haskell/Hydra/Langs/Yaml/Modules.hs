@@ -14,8 +14,8 @@ import qualified Data.Map as M
 
 constructModule ::
   Module Kv
-  -> M.Map (Type Kv) (Coder (Graph Kv) (Graph Kv) (Term Kv) YM.Node)
-  -> [(Element Kv, TypedTerm Kv)]
+  -> M.Map (Type Kv) (Coder (Graph Kv) (Graph Kv) (Term) YM.Node)
+  -> [(Element Kv, TypedTerm)]
   -> Flow (Graph Kv) YM.Node
 constructModule mod coders pairs = do
     keyvals <- withTrace "encoding terms" (CM.mapM toYaml pairs)

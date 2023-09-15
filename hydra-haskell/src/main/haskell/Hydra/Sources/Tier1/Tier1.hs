@@ -85,7 +85,7 @@ integerValueToBigintDef = tier1Definition "integerValueToBigint" $
     _IntegerValue_uint32>>: Literals.uint32ToBigint,
     _IntegerValue_uint64>>: Literals.uint64ToBigint]
 
-isLambdaDef :: Definition (Term Kv -> Bool)
+isLambdaDef :: Definition (Term -> Bool)
 isLambdaDef = tier1Definition "isLambda" $
   doc "Check whether a term is a lambda, possibly nested within let and/or annotation terms" $
   function termA Types.boolean $
@@ -97,7 +97,7 @@ isLambdaDef = tier1Definition "isLambda" $
 
 -- Rewriting.hs
 
-foldOverTermDef :: Definition (TraversalOrder -> (x -> Term Kv -> x) -> x -> Term Kv -> x)
+foldOverTermDef :: Definition (TraversalOrder -> (x -> Term -> x) -> x -> Term -> x)
 foldOverTermDef = tier1Definition "foldOverTerm" $
   doc "Fold over a term, traversing its subterms in the specified order" $
   functionNWithClasses [TypeVariable _TraversalOrder, functionT xT (functionT termA xT), xT, termA, xT] ordA $
@@ -125,7 +125,7 @@ foldOverTypeDef = tier1Definition "foldOverType" $
         @@ (ref subtypesDef @@ var "typ"))
       @@ var "typ")] @@ var "order")
 
-freeVariablesInTermDef :: Definition (Term Kv -> S.Set Name)
+freeVariablesInTermDef :: Definition (Term -> S.Set Name)
 freeVariablesInTermDef = tier1Definition "freeVariablesInTerm" $
   doc "Find the free variables (i.e. variables not bound by a lambda or let) in a term" $
   functionWithClasses termA (setT nameT) ordA $
@@ -161,7 +161,7 @@ freeVariablesInTypeDef = tier1Definition "freeVariablesInType" $
         @@ Sets.empty
         @@ (ref subtypesDef @@ var "typ")])
 
-subtermsDef :: Definition (Term Kv -> [Term Kv])
+subtermsDef :: Definition (Term -> [Term])
 subtermsDef = tier1Definition "subterms" $
   doc "Find the children of a given term" $
   functionWithClasses termA (listT termA) ordA $

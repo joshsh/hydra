@@ -86,11 +86,11 @@ checkIntegerAdapter = checkAdapter id integerAdapter context
     context variants = withConstraints $ (languageConstraints baseLanguage) {
       languageConstraintsIntegerTypes = S.fromList variants }
 
-checkDataAdapter :: [TypeVariant] -> Type Kv -> Type Kv -> Bool -> Term Kv -> Term Kv -> H.Expectation
+checkDataAdapter :: [TypeVariant] -> Type Kv -> Type Kv -> Bool -> Term -> Term -> H.Expectation
 checkDataAdapter = checkAdapter stripTerm termAdapter termTestContext
 
-checkSerdeRoundTrip :: (Type Kv -> Flow (Graph Kv) (Coder (Graph Kv) (Graph Kv) (Term Kv) BS.ByteString))
-  -> TypedTerm Kv -> H.Expectation
+checkSerdeRoundTrip :: (Type Kv -> Flow (Graph Kv) (Coder (Graph Kv) (Graph Kv) (Term) BS.ByteString))
+  -> TypedTerm -> H.Expectation
 checkSerdeRoundTrip mkSerde (TypedTerm typ term) = do
     case mserde of
       Nothing -> HL.assertFailure (traceSummary trace)
@@ -100,8 +100,8 @@ checkSerdeRoundTrip mkSerde (TypedTerm typ term) = do
   where
     FlowState mserde _ trace = unFlow (mkSerde typ) testGraph emptyTrace
 
-checkSerialization :: (Type Kv -> Flow (Graph Kv) (Coder (Graph Kv) (Graph Kv) (Term Kv) String))
-  -> TypedTerm Kv -> String -> H.Expectation
+checkSerialization :: (Type Kv -> Flow (Graph Kv) (Coder (Graph Kv) (Graph Kv) (Term) String))
+  -> TypedTerm -> String -> H.Expectation
 checkSerialization mkSerdeStr (TypedTerm typ term) expected = do
     case mserde of
       Nothing -> HL.assertFailure (traceSummary trace)
@@ -112,7 +112,7 @@ checkSerialization mkSerdeStr (TypedTerm typ term) expected = do
     normalize = unlines . L.filter (not . L.null) . lines
     FlowState mserde _ trace = unFlow (mkSerdeStr typ) testGraph emptyTrace
 
-eval :: Term Kv -> Flow (Graph Kv) (Term Kv)
+eval :: Term -> Flow (Graph Kv) (Term)
 eval = reduceTerm True M.empty
 
 shouldFail :: Flow (Graph Kv) a -> H.Expectation
@@ -132,7 +132,7 @@ shouldSucceedWith f x = case my of
   where
     FlowState my _ trace = unFlow f testGraph emptyTrace
 
-strip :: Term Kv -> Term Kv
+strip :: Term -> Term
 strip = stripTerm
 
 termTestContext :: [TypeVariant] -> AdapterContext Kv

@@ -30,7 +30,7 @@ _HydraSchemaSpec_typeName = (Core.FieldName "typeName")
 data LastMile s a = 
   LastMile {
     -- | An encoder for terms to a list of output objects
-    lastMileEncoder :: (Core.Type Core.Kv -> Compute.Flow s (Core.Term Core.Kv -> Graph.Graph Core.Kv -> Compute.Flow s [a])),
+    lastMileEncoder :: (Core.Type Core.Kv -> Compute.Flow s (Core.Term -> Graph.Graph Core.Kv -> Compute.Flow s [a])),
     -- | A function which serializes a list of output objects to a string representation
     lastMileSerializer :: ([a] -> Compute.Flow s String),
     -- | A file extension for the generated file(s)

@@ -41,7 +41,7 @@ elementsWithDependencies original = CM.mapM requireElement allDepNames
 -- | Turn arbitrary terms like 'add 42' into terms like '\x.add 42 x',
 --   whose arity (in the absence of application terms) is equal to the depth of nested lambdas.
 --   This function leaves application terms intact, simply rewriting their left and right subterms.
-expandLambdas :: Term Kv -> Flow (Graph Kv) (Term Kv)
+expandLambdas :: Term -> Flow (Graph Kv) (Term)
 expandLambdas term = do
     g <- getState
     rewriteTermM (expand g Nothing []) (pure . id) term
@@ -85,11 +85,11 @@ expandLambdas term = do
 freeVariablesInScheme :: TypeScheme Kv -> S.Set Name
 freeVariablesInScheme (TypeScheme vars t) = S.difference (freeVariablesInType t) (S.fromList vars)
 
-isFreeIn :: Name -> Term Kv -> Bool
+isFreeIn :: Name -> Term -> Bool
 isFreeIn v term = not $ S.member v $ freeVariablesInTerm term
 
 -- | Recursively remove term annotations, including within subterms
-removeTermAnnotations :: Term Kv -> Term Kv
+removeTermAnnotations :: Term -> Term
 removeTermAnnotations = rewriteTerm remove id
   where
     remove recurse term = case term of
@@ -119,7 +119,7 @@ rewrite fsub f = recurse
   where
     recurse = f (fsub recurse)
 
-rewriteTerm :: ((Term Kv -> Term Kv) -> Term Kv -> Term Kv) -> (Kv -> Kv) -> Term Kv -> Term Kv
+rewriteTerm :: ((Term -> Term) -> Term -> Term) -> (Kv -> Kv) -> Term -> Term
 rewriteTerm f mf = rewrite fsub f
   where
     fsub recurse term = case term of
@@ -154,10 +154,10 @@ rewriteTerm f mf = rewrite fsub f
         forField f = f {fieldTerm = recurse (fieldTerm f)}
 
 rewriteTermM ::
-  ((Term Kv -> Flow s (Term Kv)) -> Term Kv -> (Flow s (Term Kv))) ->
+  ((Term -> Flow s (Term)) -> Term -> (Flow s (Term))) ->
   (Kv -> Flow s Kv) ->
-  Term Kv ->
-  Flow s (Term Kv)
+  Term ->
+  Flow s (Term)
 rewriteTermM f mf = rewrite fsub f
   where
     fsub recurse term = case term of
@@ -204,12 +204,12 @@ rewriteTermM f mf = rewrite fsub f
           t <- recurse (fieldTerm f)
           return f {fieldTerm = t}
 
-rewriteTermMeta :: (Kv -> Kv) -> Term Kv -> Term Kv
+rewriteTermMeta :: (Kv -> Kv) -> Term -> Term
 rewriteTermMeta = rewriteTerm mapExpr
   where
     mapExpr recurse term = recurse term
 
-rewriteTermMetaM :: (Kv -> Flow s Kv) -> Term Kv -> Flow s (Term Kv)
+rewriteTermMetaM :: (Kv -> Flow s Kv) -> Term -> Flow s (Term)
 rewriteTermMetaM = rewriteTermM mapExpr
   where
     mapExpr recurse term = recurse term
@@ -271,7 +271,7 @@ rewriteTypeMeta = rewriteType mapExpr
   where
     mapExpr recurse term = recurse term
 
-simplifyTerm :: Term Kv -> Term Kv
+simplifyTerm :: Term -> Term
 simplifyTerm = rewriteTerm simplify id
   where
     simplify recurse term = recurse $ case stripTerm term of
@@ -295,7 +295,7 @@ simplifyUniversalTypes = rewriteType f id
         else body
       _ -> t
 
-substituteVariable :: Name -> Name -> Term Kv -> Term Kv
+substituteVariable :: Name -> Name -> Term -> Term
 substituteVariable from to = rewriteTerm replace id
   where
     replace recurse term = case term of
@@ -306,7 +306,7 @@ substituteVariable from to = rewriteTerm replace id
       _ -> recurse term
 
 -- Note: does not distinguish between bound and free variables; use freeVariablesInTerm for that
-termDependencyNames :: Bool -> Bool -> Bool -> Term Kv -> S.Set Name
+termDependencyNames :: Bool -> Bool -> Bool -> Term -> S.Set Name
 termDependencyNames withVars withPrims withNoms = foldOverTerm TraversalOrderPre addNames S.empty
   where
     addNames names term = case term of
@@ -338,7 +338,7 @@ typeDependencyNames = freeVariablesInType
 
 -- | Where non-lambda terms with nonzero arity occur at the top level, turn them into lambdas,
 --   also adding an appropriate type annotation to each new lambda.
-wrapLambdas :: Term Kv -> Flow (Graph Kv) (Term Kv)
+wrapLambdas :: Term -> Flow (Graph Kv) (Term)
 wrapLambdas term = do
     typ <- requireTermType term
     anns <- graphAnnotations <$> getState

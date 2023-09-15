@@ -77,7 +77,7 @@ qnameDef = hydraExtrasDefinition "qname" $
       apply Strings.cat $
         list [apply (unwrap _Namespace) (var "ns"), string ".", var "name"]
 
-termArityDef :: Definition (Term Kv -> Int)
+termArityDef :: Definition (Term -> Int)
 termArityDef = hydraExtrasDefinition "termArity" $
   function (Types.apply (TypeVariable _Term) (Types.var "a")) Types.int32 $
   match _Term (Just $ int32 0) [
@@ -114,13 +114,13 @@ emptyKvDef = hydraExtrasDefinition "emptyKv" $
   record _Kv [
     _Kv_annotations>>: Maps.empty]
 
-getAnnotationDef :: Definition (String -> Kv -> Maybe (Term Kv))
+getAnnotationDef :: Definition (String -> Kv -> Maybe (Term))
 getAnnotationDef = hydraExtrasDefinition "getAnnotation" $
   lambda "key" $ lambda "ann" $
     Maps.lookup @@ var "key" @@ (project _Kv _Kv_annotations @@ var "ann")
 
 
---getAttrDef :: Definition (String -> Flow s (Maybe (Term Kv)))
+--getAttrDef :: Definition (String -> Flow s (Maybe (Term)))
 --getAttrDef = hydraExtrasDefinition "getAttr" $
 --  lambda "key" $ wrap _Flow $
 --    function Types.string (Types.apply (Types.apply (TypeVariable _Flow) (Types.var "s")) (Types.optional $ Types.apply (TypeVariable _Term) (TypeVariable _Kv))) $

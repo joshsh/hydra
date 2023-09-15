@@ -6,7 +6,7 @@ import Hydra.Sources.Libraries
 import qualified Hydra.Dsl.Terms as Terms
 
 
-showTerm :: Datum (Term Kv -> String)
+showTerm :: Datum (Term -> String)
 showTerm = Datum $ Terms.primitive _io_showTerm
 
 showType :: Datum (Type Kv -> String)
