@@ -25,14 +25,14 @@ latLonPolyName = Name "LatLonPoly"
 latlonRecord :: Float -> Float -> Term
 latlonRecord lat lon = record latLonName [Field (FieldName "lat") $ float32 lat, Field (FieldName "lon") $ float32 lon]
 
-latLonType :: Type Kv
+latLonType :: Type
 latLonType = TypeRecord $ RowType latLonName Nothing [Types.field "lat" Types.float32, Types.field "lon" Types.float32]
 
-latLonPolyType :: Type Kv
+latLonPolyType :: Type
 latLonPolyType = TypeLambda $ LambdaType (Name "a") $
   TypeRecord $ RowType latLonPolyName Nothing [Types.field "lat" $ Types.var "a", Types.field "lon" $ Types.var "a"]
 
-stringAliasType :: Type Kv
+stringAliasType :: Type
 stringAliasType = TypeWrap $ Nominal stringAliasTypeName Types.string
 
 stringAliasTypeName :: Name
@@ -77,7 +77,7 @@ testDataArthur = record testTypePersonName [
   Field (FieldName "lastName") $ string "Dent",
   Field (FieldName "age") $ int32 42]
 
-testTypeComparison :: Type Kv
+testTypeComparison :: Type
 testTypeComparison = TypeUnion $ RowType testTypeComparisonName Nothing [
   Types.field "lessThan" Types.unit,
   Types.field "equalTo" Types.unit,
@@ -86,7 +86,7 @@ testTypeComparison = TypeUnion $ RowType testTypeComparisonName Nothing [
 testTypeComparisonName :: Name
 testTypeComparisonName = Name "Comparison"
 
-testTypeFoobarValue :: Type Kv
+testTypeFoobarValue :: Type
 testTypeFoobarValue = TypeUnion $ RowType testTypeFoobarValueName Nothing [
   Types.field "bool" Types.boolean,
   Types.field "string" Types.string,
@@ -95,7 +95,7 @@ testTypeFoobarValue = TypeUnion $ RowType testTypeFoobarValueName Nothing [
 testTypeFoobarValueName :: Name
 testTypeFoobarValueName = Name "FoobarValue"
 
-testTypeNumber :: Type Kv
+testTypeNumber :: Type
 testTypeNumber = TypeUnion $ RowType testTypeNumberName Nothing [
   Types.field "int" Types.int32,
   Types.field "float" Types.float32]
@@ -103,7 +103,7 @@ testTypeNumber = TypeUnion $ RowType testTypeNumberName Nothing [
 testTypeNumberName :: Name
 testTypeNumberName = Name "Number"
 
-testTypePerson :: Type Kv
+testTypePerson :: Type
 testTypePerson = TypeRecord $ RowType testTypePersonName Nothing [
   Types.field "firstName" Types.string,
   Types.field "lastName" Types.string,
@@ -112,7 +112,7 @@ testTypePerson = TypeRecord $ RowType testTypePersonName Nothing [
 testTypePersonName :: Name
 testTypePersonName = Name "Person"
 
-testTypePersonOrSomething :: Type Kv
+testTypePersonOrSomething :: Type
 testTypePersonOrSomething = Types.lambda "a" $ TypeUnion $ RowType testTypePersonOrSomethingName Nothing [
   Types.field "person" testTypePerson,
   Types.field "other" $ Types.var "a"]
@@ -120,7 +120,7 @@ testTypePersonOrSomething = Types.lambda "a" $ TypeUnion $ RowType testTypePerso
 testTypePersonOrSomethingName :: Name
 testTypePersonOrSomethingName = Name "PersonOrSomething"
 
-testTypeTimestamp :: Type Kv
+testTypeTimestamp :: Type
 testTypeTimestamp = TypeUnion $ RowType testTypeTimestampName Nothing [
   FieldType (FieldName "unixTimeMillis") Types.uint64,
   FieldType (FieldName "date") Types.string]

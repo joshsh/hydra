@@ -9,5 +9,5 @@ import qualified Hydra.Dsl.Terms as Terms
 showTerm :: Datum (Term -> String)
 showTerm = Datum $ Terms.primitive _io_showTerm
 
-showType :: Datum (Type Kv -> String)
+showType :: Datum (Type -> String)
 showType = Datum $ Terms.primitive _io_showType

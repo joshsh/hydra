@@ -12,13 +12,13 @@ import qualified Hydra.Dsl.Terms as Terms
 key_iri :: String
 key_iri = "iri"
 
-withIri :: String -> Type Kv -> Type Kv
+withIri :: String -> Type -> Type
 withIri iriStr = annotateType key_iri (Just $ Terms.string iriStr)
 
-nonNegativeInteger :: Type Kv
+nonNegativeInteger :: Type
 nonNegativeInteger = Types.bigint
 
-owlIri :: [Char] -> Type Kv -> Type Kv
+owlIri :: [Char] -> Type -> Type
 owlIri local = withIri $ "http://www.w3.org/2002/07/owl#" ++ local
 
 owlSyntaxModule :: Module Kv

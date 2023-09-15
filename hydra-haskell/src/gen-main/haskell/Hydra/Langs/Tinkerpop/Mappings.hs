@@ -119,11 +119,11 @@ _PropertySpec_value = (Core.FieldName "value")
 -- | A set of mappings which translates between Hydra terms and annotations, and application-specific property graph types
 data Schema s t v =
   Schema {
-    schemaVertexIdTypes :: (Compute.Coder s s (Core.Type Core.Kv) t),
+    schemaVertexIdTypes :: (Compute.Coder s s (Core.Type) t),
     schemaVertexIds :: (Compute.Coder s s (Core.Term) v),
-    schemaEdgeIdTypes :: (Compute.Coder s s (Core.Type Core.Kv) t),
+    schemaEdgeIdTypes :: (Compute.Coder s s (Core.Type) t),
     schemaEdgeIds :: (Compute.Coder s s (Core.Term) v),
-    schemaPropertyTypes :: (Compute.Coder s s (Core.Type Core.Kv) t),
+    schemaPropertyTypes :: (Compute.Coder s s (Core.Type) t),
     schemaPropertyValues :: (Compute.Coder s s (Core.Term) v),
     schemaAnnotations :: AnnotationSchema,
     schemaDefaultVertexId :: v,

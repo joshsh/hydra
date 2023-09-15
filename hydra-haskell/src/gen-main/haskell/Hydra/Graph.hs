@@ -18,16 +18,16 @@ data AnnotationClass a =
     annotationClassShow :: (a -> String),
     annotationClassRead :: (String -> Maybe a),
     annotationClassTermAnnotation :: (Core.Term -> a),
-    annotationClassTypeAnnotation :: (Core.Type Core.Kv -> a),
+    annotationClassTypeAnnotation :: (Core.Type -> a),
     annotationClassTermDescription :: (Core.Term -> Compute.Flow (Graph Core.Kv) (Maybe String)),
-    annotationClassTypeDescription :: (Core.Type Core.Kv -> Compute.Flow (Graph Core.Kv) (Maybe String)),
-    annotationClassTypeClasses :: (Core.Type Core.Kv -> Compute.Flow (Graph Core.Kv) (Map Core.Name (Set TypeClass))),
-    annotationClassTermType :: (Core.Term -> Compute.Flow (Graph Core.Kv) (Maybe (Core.Type Core.Kv))),
+    annotationClassTypeDescription :: (Core.Type -> Compute.Flow (Graph Core.Kv) (Maybe String)),
+    annotationClassTypeClasses :: (Core.Type -> Compute.Flow (Graph Core.Kv) (Map Core.Name (Set TypeClass))),
+    annotationClassTermType :: (Core.Term -> Compute.Flow (Graph Core.Kv) (Maybe (Core.Type))),
     annotationClassSetTermDescription :: (Maybe String -> Core.Term -> Core.Term),
-    annotationClassSetTermType :: (Maybe (Core.Type Core.Kv) -> Core.Term -> Core.Term),
-    annotationClassSetTypeClasses :: (Map Core.Name (Set TypeClass) -> Core.Type Core.Kv -> Core.Type Core.Kv),
-    annotationClassTypeOf :: (a -> Compute.Flow (Graph Core.Kv) (Maybe (Core.Type Core.Kv))),
-    annotationClassSetTypeOf :: (Maybe (Core.Type Core.Kv) -> a -> a)}
+    annotationClassSetTermType :: (Maybe (Core.Type) -> Core.Term -> Core.Term),
+    annotationClassSetTypeClasses :: (Map Core.Name (Set TypeClass) -> Core.Type -> Core.Type),
+    annotationClassTypeOf :: (a -> Compute.Flow (Graph Core.Kv) (Maybe (Core.Type))),
+    annotationClassSetTypeOf :: (Maybe (Core.Type) -> a -> a)}
 
 _AnnotationClass = (Core.Name "hydra/graph.AnnotationClass")
 
@@ -86,7 +86,7 @@ data Graph a =
     -- | The lambda environment of this graph context; it indicates whether a variable is bound by a lambda (Nothing) or a let (Just term)
     graphEnvironment :: (Map Core.Name (Maybe (Core.Term))),
     -- | The typing environment of the graph
-    graphTypes :: (Map Core.Name (Core.Type Core.Kv)),
+    graphTypes :: (Map Core.Name (Core.Type)),
     -- | The body of the term which generated this context
     graphBody :: (Core.Term),
     -- | All supported primitive constants and functions, by name
@@ -131,7 +131,7 @@ data Primitive a =
     -- | The unique name of the primitive function
     primitiveName :: Core.Name,
     -- | The type signature of the primitive function
-    primitiveType :: (Core.Type Core.Kv),
+    primitiveType :: (Core.Type),
     -- | A concrete implementation of the primitive function
     primitiveImplementation :: ([Core.Term] -> Compute.Flow (Graph Core.Kv) (Core.Term))}
 
@@ -146,7 +146,7 @@ _Primitive_implementation = (Core.FieldName "implementation")
 -- | A type together with a coder for mapping terms into arguments for primitive functions, and mapping computed results into terms
 data TermCoder a x = 
   TermCoder {
-    termCoderType :: (Core.Type Core.Kv),
+    termCoderType :: (Core.Type),
     termCoderCoder :: (Compute.Coder (Graph Core.Kv) (Graph Core.Kv) (Core.Term) x)}
 
 _TermCoder = (Core.Name "hydra/graph.TermCoder")

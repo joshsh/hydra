@@ -27,7 +27,7 @@ moduleToScala mod = do
 moduleToScalaPackage :: Module Kv -> Flow (Graph Kv) Scala.Pkg
 moduleToScalaPackage = transformModule scalaLanguage encodeUntypedTerm constructModule
 
-constructModule :: Module Kv -> M.Map (Type Kv) (Coder (Graph Kv) (Graph Kv) (Term) Scala.Data) -> [(Element Kv, TypedTerm)]
+constructModule :: Module Kv -> M.Map (Type) (Coder (Graph Kv) (Graph Kv) (Term) Scala.Data) -> [(Element Kv, TypedTerm)]
   -> Flow (Graph Kv) Scala.Pkg
 constructModule mod coders pairs = do
     defs <- CM.mapM toDef pairs
@@ -186,7 +186,7 @@ encodeTerm term = case stripTerm term of
     _ -> fail $ "unexpected term: " ++ show term
 
 
-encodeType :: Type Kv -> Flow (Graph Kv) Scala.Type
+encodeType :: Type -> Flow (Graph Kv) Scala.Type
 encodeType t = case stripType t of
   TypeFunction (FunctionType dom cod) -> do
     sdom <- encodeType dom

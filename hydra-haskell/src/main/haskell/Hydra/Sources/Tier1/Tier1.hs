@@ -111,7 +111,7 @@ foldOverTermDef = tier1Definition "foldOverTerm" $
         @@ (ref subtermsDef @@ var "term"))
       @@ var "term")] @@ var "order")
 
-foldOverTypeDef :: Definition (TraversalOrder -> (x -> Type Kv -> x) -> x -> Type Kv -> x)
+foldOverTypeDef :: Definition (TraversalOrder -> (x -> Type -> x) -> x -> Type -> x)
 foldOverTypeDef = tier1Definition "foldOverType" $
   doc "Fold over a type, traversing its subtypes in the specified order" $
   functionN [TypeVariable _TraversalOrder, functionT xT (functionT typeA xT), xT, typeA, xT] $
@@ -145,7 +145,7 @@ freeVariablesInTermDef = tier1Definition "freeVariablesInTerm" $
         @@ Sets.empty
         @@ (ref subtermsDef @@ var "term")])
 
-freeVariablesInTypeDef :: Definition (Type Kv -> S.Set Name)
+freeVariablesInTypeDef :: Definition (Type -> S.Set Name)
 freeVariablesInTypeDef = tier1Definition "freeVariablesInType" $
   doc "Find the free variables (i.e. variables not bound by a lambda or let) in a type" $
   function typeA (setT nameT) $
@@ -197,7 +197,7 @@ subtermsDef = tier1Definition "subterms" $
     _Term_variable>>: constant $ list [],
     _Term_wrap>>: lambda "n" $ list [Core.nominalObject @@ var "n"]]
 
-subtypesDef :: Definition (Type Kv -> [Type Kv])
+subtypesDef :: Definition (Type -> [Type])
 subtypesDef = tier1Definition "subtypes" $
   doc "Find the children of a given type expression" $
   function typeA (listT typeA) $

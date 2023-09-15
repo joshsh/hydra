@@ -21,7 +21,7 @@ import qualified Data.Map as M
 import qualified Data.Maybe as Y
 
 
-jsonCoder :: Type Kv -> Flow (Graph Kv) (Coder (Graph Kv) (Graph Kv) (Term) Json.Value)
+jsonCoder :: Type -> Flow (Graph Kv) (Coder (Graph Kv) (Graph Kv) (Term) Json.Value)
 jsonCoder typ = do
   adapter <- languageAdapter jsonLanguage typ
   coder <- termCoder $ adapterTarget adapter
@@ -50,7 +50,7 @@ literalJsonCoder at = pure $ case at of
       Json.ValueString s' -> pure $ LiteralString s'
       _ -> unexpected "string" $ show s}
 
-recordCoder :: RowType Kv -> Flow (Graph Kv) (Coder (Graph Kv) (Graph Kv) (Term) Json.Value)
+recordCoder :: RowType -> Flow (Graph Kv) (Coder (Graph Kv) (Graph Kv) (Term) Json.Value)
 recordCoder rt = do
     coders <- CM.mapM (\f -> (,) <$> pure f <*> termCoder (fieldTypeType f)) (rowTypeFields rt)
     return $ Coder (encode coders) (decode coders)
@@ -73,7 +73,7 @@ recordCoder rt = do
       where
         error = fail $ "no such field: " ++ fname
 
-termCoder :: Type Kv -> Flow (Graph Kv) (Coder (Graph Kv) (Graph Kv) (Term) Json.Value)
+termCoder :: Type -> Flow (Graph Kv) (Coder (Graph Kv) (Graph Kv) (Term) Json.Value)
 termCoder typ = case stripType typ of
   TypeLiteral at -> do
     ac <- literalJsonCoder at

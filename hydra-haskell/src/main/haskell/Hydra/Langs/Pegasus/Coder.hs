@@ -26,7 +26,7 @@ moduleToPdl mod = do
 constructModule ::
   M.Map Namespace String
   -> Module Kv
-  -> M.Map (Type Kv) (Coder (Graph Kv) (Graph Kv) (Term) ())
+  -> M.Map (Type) (Coder (Graph Kv) (Graph Kv) (Term) ())
   -> [(Element Kv, TypedTerm)]
   -> Flow (Graph Kv) (M.Map FilePath PDL.SchemaFile)
 constructModule aliases mod coders pairs = do
@@ -74,7 +74,7 @@ doc :: Y.Maybe String -> PDL.Annotations
 doc s = PDL.Annotations s False
 
 encodeAdaptedType ::
-  M.Map Namespace String -> Type Kv
+  M.Map Namespace String -> Type
   -> Flow (Graph Kv) (Either PDL.Schema PDL.NamedSchema_Type)
 encodeAdaptedType aliases typ = do
   g <- getState
@@ -85,7 +85,7 @@ encodeAdaptedType aliases typ = do
 encodeTerm :: M.Map Namespace String -> Term -> Flow (Graph Kv) ()
 encodeTerm aliases term = fail "not yet implemented"
 
-encodeType :: M.Map Namespace String -> Type Kv -> Flow (Graph Kv) (Either PDL.Schema PDL.NamedSchema_Type)
+encodeType :: M.Map Namespace String -> Type -> Flow (Graph Kv) (Either PDL.Schema PDL.NamedSchema_Type)
 encodeType aliases typ = case typ of
     TypeAnnotated (Annotated typ' _) -> encodeType aliases typ'
     TypeList lt -> Left . PDL.SchemaArray <$> encode lt

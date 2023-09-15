@@ -36,12 +36,12 @@ _Application_function = (FieldName "function")
 _Application_argument = (FieldName "argument")
 
 -- | The type-level analog of an application term
-data ApplicationType a = 
+data ApplicationType =
   ApplicationType {
     -- | The left-hand side of the application
-    applicationTypeFunction :: (Type Kv),
+    applicationTypeFunction :: (Type),
     -- | The right-hand side of the application
-    applicationTypeArgument :: (Type Kv)}
+    applicationTypeArgument :: (Type)}
   deriving (Eq, Ord, Read, Show)
 
 _ApplicationType = (Name "hydra/core.ApplicationType")
@@ -118,10 +118,10 @@ newtype FieldName =
 _FieldName = (Name "hydra/core.FieldName")
 
 -- | The name and type of a field
-data FieldType a = 
+data FieldType =
   FieldType {
     fieldTypeName :: FieldName,
-    fieldTypeType :: (Type Kv)}
+    fieldTypeType :: (Type)}
   deriving (Eq, Ord, Read, Show)
 
 _FieldType = (Name "hydra/core.FieldType")
@@ -182,10 +182,10 @@ _Function_lambda = (FieldName "lambda")
 _Function_primitive = (FieldName "primitive")
 
 -- | A function type, also known as an arrow type
-data FunctionType a = 
+data FunctionType =
   FunctionType {
-    functionTypeDomain :: (Type Kv),
-    functionTypeCodomain :: (Type Kv)}
+    functionTypeDomain :: (Type),
+    functionTypeCodomain :: (Type)}
   deriving (Eq, Ord, Read, Show)
 
 _FunctionType = (Name "hydra/core.FunctionType")
@@ -309,12 +309,12 @@ _Lambda_parameter = (FieldName "parameter")
 _Lambda_body = (FieldName "body")
 
 -- | A type abstraction; the type-level analog of a lambda term
-data LambdaType a = 
+data LambdaType =
   LambdaType {
     -- | The variable which is bound by the lambda
     lambdaTypeParameter :: Name,
     -- | The body of the lambda
-    lambdaTypeBody :: (Type Kv)}
+    lambdaTypeBody :: (Type)}
   deriving (Eq, Ord, Read, Show)
 
 _LambdaType = (Name "hydra/core.LambdaType")
@@ -384,10 +384,10 @@ _LiteralType_integer = (FieldName "integer")
 _LiteralType_string = (FieldName "string")
 
 -- | A map type
-data MapType a = 
+data MapType =
   MapType {
-    mapTypeKeys :: (Type Kv),
-    mapTypeValues :: (Type Kv)}
+    mapTypeKeys :: (Type),
+    mapTypeValues :: (Type)}
   deriving (Eq, Ord, Read, Show)
 
 _MapType = (Name "hydra/core.MapType")
@@ -459,14 +459,14 @@ _Record_typeName = (FieldName "typeName")
 _Record_fields = (FieldName "fields")
 
 -- | A labeled record or union type
-data RowType a = 
+data RowType =
   RowType {
     -- | The name of the row type, which must correspond to the name of a Type element
     rowTypeTypeName :: Name,
     -- | Optionally, the name of another row type which this one extends. If/when field order is preserved, the inherited fields of the extended type precede those of the extension.
     rowTypeExtends :: (Maybe Name),
     -- | The fields of this row type, excluding any inherited fields
-    rowTypeFields :: [FieldType Kv]}
+    rowTypeFields :: [FieldType]}
   deriving (Eq, Ord, Read, Show)
 
 _RowType = (Name "hydra/core.RowType")
@@ -590,24 +590,24 @@ _TupleProjection_arity = (FieldName "arity")
 _TupleProjection_index = (FieldName "index")
 
 -- | A data type
-data Type a = 
+data Type =
   -- | A type annotated with metadata
-  TypeAnnotated (Annotated (Type Kv) a) |
-  TypeApplication (ApplicationType Kv) |
-  TypeFunction (FunctionType Kv) |
-  TypeLambda (LambdaType Kv) |
-  TypeList (Type Kv) |
+  TypeAnnotated (Annotated (Type) Kv) |
+  TypeApplication (ApplicationType) |
+  TypeFunction (FunctionType) |
+  TypeLambda (LambdaType) |
+  TypeList (Type) |
   TypeLiteral LiteralType |
-  TypeMap (MapType Kv) |
-  TypeOptional (Type Kv) |
-  TypeProduct [Type Kv] |
-  TypeRecord (RowType Kv) |
-  TypeSet (Type Kv) |
-  TypeStream (Type Kv) |
-  TypeSum [Type Kv] |
-  TypeUnion (RowType Kv) |
+  TypeMap (MapType) |
+  TypeOptional (Type) |
+  TypeProduct [Type] |
+  TypeRecord (RowType) |
+  TypeSet (Type) |
+  TypeStream (Type) |
+  TypeSum [Type] |
+  TypeUnion (RowType) |
   TypeVariable Name |
-  TypeWrap (Nominal (Type Kv))
+  TypeWrap (Nominal (Type))
   deriving (Eq, Ord, Read, Show)
 
 _Type = (Name "hydra/core.Type")

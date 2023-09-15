@@ -210,7 +210,7 @@ term = TermCoder (Types.apply (TypeVariable _Term) (Types.var "a")) $ Coder enco
     encode = pure
     decode = pure
 
-type_ :: TermCoder Kv (Type Kv)
+type_ :: TermCoder Kv (Type)
 type_ = TermCoder (Types.apply (TypeVariable _Type) (Types.var "a")) $ Coder encode decode
   where
     encode = coreDecodeType

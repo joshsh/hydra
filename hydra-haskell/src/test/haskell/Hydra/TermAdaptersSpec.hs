@@ -255,7 +255,7 @@ fieldAdaptersAreAsExpected = H.describe "Check that field adapters are as expect
       (field "second" $ int8 i)
       (field "second" $ int16 $ fromIntegral i)
 
-roundTripIsNoop :: Type Kv -> Term -> H.Expectation
+roundTripIsNoop :: Type -> Term -> H.Expectation
 roundTripIsNoop typ term = shouldSucceedWith
    (step coderEncode term >>= step coderDecode)
    term

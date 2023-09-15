@@ -22,13 +22,13 @@ stripTerm x = (skipAnnotations (\x -> case x of
   _ -> Nothing) x)
 
 -- | Strip all annotations from a type
-stripType :: (Core.Type Core.Kv -> Core.Type Core.Kv)
+stripType :: (Core.Type -> Core.Type)
 stripType x = (skipAnnotations (\x -> case x of
   Core.TypeAnnotated v -> (Just v)
   _ -> Nothing) x)
 
 -- | Strip any top-level type lambdas from a type, extracting the (possibly nested) type body
-stripTypeParameters :: (Core.Type Core.Kv -> Core.Type Core.Kv)
+stripTypeParameters :: (Core.Type -> Core.Type)
 stripTypeParameters t = ((\x -> case x of
   Core.TypeLambda v -> (stripTypeParameters (Core.lambdaTypeBody v))
   _ -> t) (stripType t))

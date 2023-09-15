@@ -59,7 +59,7 @@ encodeField rname subject field = do
   return $ triplesOf descs ++
     forObjects subject (propertyIri rname $ fieldName field) (subjectsOf descs)
 
-encodeFieldType :: Name -> Maybe Integer -> FieldType Kv -> Flow (Graph Kv) (Shacl.Definition Shacl.PropertyShape)
+encodeFieldType :: Name -> Maybe Integer -> FieldType -> Flow (Graph Kv) (Shacl.Definition Shacl.PropertyShape)
 encodeFieldType rname order (FieldType fname ft) = do
     shape <- forType (Just 1) (Just 1) ft
     return $ Shacl.Definition iri shape
@@ -152,7 +152,7 @@ encodeTerm subject term = case term of
     return [withType rname $ Rdf.Description (resourceToNode subject) (Rdf.Graph $ S.fromList triples)]
   _ -> unexpected "RDF-compatible term" $ show term
 
-encodeType :: Type Kv -> Flow (Graph Kv) Shacl.CommonProperties
+encodeType :: Type -> Flow (Graph Kv) Shacl.CommonProperties
 encodeType typ = case stripType typ of
     TypeList _ -> any
     TypeLiteral lt -> pure $ encodeLiteralType lt

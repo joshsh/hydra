@@ -73,7 +73,7 @@ describePrecisionDef = printingDefinition "describePrecision" $
     Case _Precision_arbitrary --> constant $ string "arbitrary-precision",
     Case _Precision_bits      --> lambda "bits" $ Literals.showInt32 @@ var "bits" ++ string "-bit"]
 
-describeTypeDef :: Definition (Type Kv -> String)
+describeTypeDef :: Definition (Type -> String)
 describeTypeDef = printingDefinition "describeType" $
   doc "Display a type as a string" $
   function (Types.apply (TypeVariable _Type) (Types.var "a")) Types.string $

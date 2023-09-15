@@ -26,7 +26,7 @@ moduleToProtobuf mod = do
 
 --
 
-checkIsStringType :: Type Kv -> Flow (Graph Kv) ()
+checkIsStringType :: Type -> Flow (Graph Kv) ()
 checkIsStringType typ = case simplifyType typ of
   TypeLiteral lt -> case lt of
     LiteralTypeString -> pure ()
@@ -36,7 +36,7 @@ checkIsStringType typ = case simplifyType typ of
 
 constructModule ::
   Module Kv
-  -> M.Map (Type Kv) (Coder (Graph Kv) (Graph Kv) (Term) ())
+  -> M.Map (Type) (Coder (Graph Kv) (Graph Kv) (Term) ())
   -> [(Element Kv, TypedTerm)]
   -> Flow (Graph Kv) (M.Map FilePath P3.ProtoFile)
 constructModule mod@(Module ns els _ desc) _ pairs = do
@@ -89,7 +89,7 @@ constructModule mod@(Module ns els _ desc) _ pairs = do
           TypeRecord (RowType name _ _) -> name == _UnitType
           _ -> False
 
-encodeDefinition :: Namespace -> Name -> Type Kv -> Flow (Graph Kv) P3.Definition
+encodeDefinition :: Namespace -> Name -> Type -> Flow (Graph Kv) P3.Definition
 encodeDefinition localNs name typ = withTrace ("encoding " ++ unName name) $ do
     resetCount "proto_field_index"
     nextIndex
@@ -104,7 +104,7 @@ encodeDefinition localNs name typ = withTrace ("encoding " ++ unName name) $ do
         else encode options $ wrapAsRecordType $ TypeUnion rt
       t -> encode options $ wrapAsRecordType t
 
-encodeEnumDefinition :: [P3.Option] -> RowType Kv -> Flow (Graph Kv) P3.EnumDefinition
+encodeEnumDefinition :: [P3.Option] -> RowType -> Flow (Graph Kv) P3.EnumDefinition
 encodeEnumDefinition options (RowType tname _ fields) = do
     values <- CM.zipWithM encodeEnumField fields [1..]
     return $ P3.EnumDefinition {
@@ -132,7 +132,7 @@ encodeEnumValueName tname fname = P3.EnumValueName (prefix ++ "_" ++ suffix)
 encodeFieldName :: FieldName -> P3.FieldName
 encodeFieldName = P3.FieldName . convertCase CaseConventionCamel CaseConventionLowerSnake . unFieldName
 
-encodeFieldType :: Namespace -> FieldType Kv -> Flow (Graph Kv) P3.Field
+encodeFieldType :: Namespace -> FieldType -> Flow (Graph Kv) P3.Field
 encodeFieldType localNs (FieldType fname ftype) = withTrace ("encode field " ++ show (unFieldName fname)) $ do
     options <- findOptions ftype
     ft <- encodeType ftype
@@ -169,7 +169,7 @@ encodeFieldType localNs (FieldType fname ftype) = withTrace ("encode field " ++ 
       where
         forNominal name = pure $ P3.SimpleTypeReference $ encodeTypeReference localNs name
 
-encodeRecordType :: Namespace -> [P3.Option] -> RowType Kv -> Flow (Graph Kv) P3.MessageDefinition
+encodeRecordType :: Namespace -> [P3.Option] -> RowType -> Flow (Graph Kv) P3.MessageDefinition
 encodeRecordType localNs options (RowType tname _ fields) = do
     pfields <- CM.mapM (encodeFieldType localNs) fields
     return P3.MessageDefinition {
@@ -224,7 +224,7 @@ encodeTypeReference localNs name = P3.TypeName $ if ns == Just localNs
     QualifiedName ns local = qualifyNameEager name
 
 -- Eliminate type lambdas and type applications, simply replacing type variables with the string type
-flattenType :: Type Kv -> Type Kv
+flattenType :: Type -> Type
 flattenType = rewriteType f id
   where
    f recurse typ = case typ of
@@ -232,7 +232,7 @@ flattenType = rewriteType f id
      TypeApplication (ApplicationType lhs _) -> recurse lhs
      _ -> recurse typ
 
-findOptions :: Type Kv -> Flow (Graph Kv) [P3.Option]
+findOptions :: Type -> Flow (Graph Kv) [P3.Option]
 findOptions typ = do
   anns <- graphAnnotations <$> getState
   mdesc <- annotationClassTypeDescription anns typ
@@ -240,12 +240,12 @@ findOptions typ = do
     Nothing -> []
     Just desc -> [P3.Option descriptionOptionName desc]
 
-isEnumFields :: [FieldType Kv] -> Bool
+isEnumFields :: [FieldType] -> Bool
 isEnumFields fields = L.foldl (&&) True $ fmap isEnumField fields
   where
     isEnumField = isUnitType . simplifyType . fieldTypeType
 
-isEnumDefinition :: Type Kv -> Bool
+isEnumDefinition :: Type -> Bool
 isEnumDefinition typ = case simplifyType typ of
   TypeUnion (RowType _ _ fields) -> isEnumFields fields
   _ -> False
@@ -263,7 +263,7 @@ nextIndex :: Flow s Int
 nextIndex = nextCount "proto_field_index"
 
 -- Note: this should probably be done in the term adapters
-simplifyType :: Type Kv -> Type Kv
+simplifyType :: Type -> Type
 simplifyType typ = case stripType typ of
   TypeWrap (Nominal _ t) -> simplifyType t
   t -> t

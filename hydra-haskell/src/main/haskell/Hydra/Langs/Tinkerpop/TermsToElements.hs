@@ -17,9 +17,9 @@ import qualified Data.Map as M
 import qualified Data.Maybe as Y
 
 
-type PgAdapter s a v = Adapter s s (Type Kv) [PG.Label] (Term) [PG.Element v]
+type PgAdapter s a v = Adapter s s (Type) [PG.Label] (Term) [PG.Element v]
 
-termToElementsAdapter :: Schema s t v -> Type Kv -> Flow s (PgAdapter s Kv v)
+termToElementsAdapter :: Schema s t v -> Type -> Flow s (PgAdapter s Kv v)
 termToElementsAdapter schema typ = do
     case getTypeAnnotation "elements" typ of
       Nothing -> pure trivialAdapter

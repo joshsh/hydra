@@ -25,7 +25,7 @@ import qualified Data.Set as S
 import qualified Data.Maybe as Y
 
 
-boundVariablesInType :: Type Kv -> S.Set Name
+boundVariablesInType :: Type -> S.Set Name
 boundVariablesInType = foldOverType TraversalOrderPre fld S.empty
   where
     fld names typ = case typ of
@@ -97,14 +97,14 @@ removeTermAnnotations = rewriteTerm remove id
       _ -> recurse term
 
 -- | Recursively remove type annotations, including within subtypes
-removeTypeAnnotations :: Type Kv -> Type Kv
+removeTypeAnnotations :: Type -> Type
 removeTypeAnnotations = rewriteType remove id
   where
     remove recurse typ = case recurse typ of
       TypeAnnotated (Annotated typ' _) -> remove recurse typ'
       _ -> recurse typ
 
-replaceFreeName :: Name -> Type Kv -> Type Kv -> Type Kv
+replaceFreeName :: Name -> Type -> Type -> Type
 replaceFreeName v rep = rewriteType mapExpr id
   where
     mapExpr recurse t = case t of
@@ -214,7 +214,7 @@ rewriteTermMetaM = rewriteTermM mapExpr
   where
     mapExpr recurse term = recurse term
 
-rewriteType :: ((Type Kv -> Type Kv) -> Type Kv -> Type Kv) -> (Kv -> Kv) -> Type Kv -> Type Kv
+rewriteType :: ((Type -> Type) -> Type -> Type) -> (Kv -> Kv) -> Type -> Type
 rewriteType f mf = rewrite fsub f
   where
     fsub recurse typ = case typ of
@@ -237,10 +237,10 @@ rewriteType f mf = rewrite fsub f
         forField f = f {fieldTypeType = recurse (fieldTypeType f)}
 
 rewriteTypeM ::
-  ((Type Kv -> Flow s (Type Kv)) -> Type Kv -> (Flow s (Type Kv))) ->
+  ((Type -> Flow s (Type)) -> Type -> (Flow s (Type))) ->
   (Kv -> Flow s Kv) ->
-  Type Kv ->
-  Flow s (Type Kv)
+  Type ->
+  Flow s (Type)
 rewriteTypeM f mf = rewrite fsub f
   where
     fsub recurse typ = case typ of
@@ -266,7 +266,7 @@ rewriteTypeM f mf = rewrite fsub f
           t <- recurse $ fieldTypeType f
           return f {fieldTypeType = t}
 
-rewriteTypeMeta :: (Kv -> Kv) -> Type Kv -> Type Kv
+rewriteTypeMeta :: (Kv -> Kv) -> Type -> Type
 rewriteTypeMeta = rewriteType mapExpr
   where
     mapExpr recurse term = recurse term
@@ -285,7 +285,7 @@ simplifyTerm = rewriteTerm simplify id
         _ -> term
       _ -> term
 
-simplifyUniversalTypes :: Type Kv -> Type Kv
+simplifyUniversalTypes :: Type -> Type
 simplifyUniversalTypes = rewriteType f id
   where
     f recurse t = case recurse t of
@@ -333,7 +333,7 @@ topologicalSortElements els = topologicalSort $ adjlist <$> els
   where
     adjlist e = (elementName e, S.toList $ termDependencyNames False True True $ elementData e)
 
-typeDependencyNames :: Type Kv -> S.Set Name
+typeDependencyNames :: Type -> S.Set Name
 typeDependencyNames = freeVariablesInType
 
 -- | Where non-lambda terms with nonzero arity occur at the top level, turn them into lambdas,

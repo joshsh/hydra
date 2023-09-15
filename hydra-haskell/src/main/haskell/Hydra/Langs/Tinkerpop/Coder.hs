@@ -15,20 +15,20 @@ import qualified Data.Map as M
 import qualified Data.Maybe as Y
 
 
-type ElementAdapter s t v = Adapter s s (Type Kv) (PG.ElementTypeTree t) (Term) (PG.ElementTree v)
+type ElementAdapter s t v = Adapter s s (Type) (PG.ElementTypeTree t) (Term) (PG.ElementTree v)
 
-type PropertyAdapter s t v = Adapter s s (FieldType Kv) (PG.PropertyType t) (Field Kv) (PG.Property v)
+type PropertyAdapter s t v = Adapter s s (FieldType) (PG.PropertyType t) (Field Kv) (PG.Property v)
 
-type IdAdapter s t v = (FieldName, Adapter s s (Type Kv) t (Term) v)
+type IdAdapter s t v = (FieldName, Adapter s s (Type) t (Term) v)
 
 data AdjacentEdgeAdapter s a t v = AdjacentEdgeAdapter {
   adjacentEdgeAdapterDirection :: PG.Direction,
-  adjacentEdgeAdapterField :: FieldType Kv,
+  adjacentEdgeAdapterField :: FieldType,
   adjacentEdgeAdapterLabel :: PG.EdgeLabel,
   adjacentEdgeAdapterAdapter :: ElementAdapter s t v}
 
 data ProjectionSpec a = ProjectionSpec {
-  projectionSpecField :: FieldType Kv,
+  projectionSpecField :: FieldType,
   projectionSpecValues :: ValueSpec,
   projectionSpecAlias :: Maybe String}
 
@@ -39,7 +39,7 @@ checkRecordName expected actual = check (actual == expected) $
   unexpected ("record of type " ++ unName expected) ("record of type " ++ unName actual)
 
 edgeCoder :: PG.Direction -> Schema s t v
-  -> Type Kv
+  -> Type
   -> t
   -> Name
   -> PG.EdgeLabel -> PG.VertexLabel -> PG.VertexLabel
@@ -73,7 +73,7 @@ edgeCoder dir schema source eidType tname label outLabel inLabel mIdAdapter outA
 
 elementCoder :: (Show t, Show v) => Y.Maybe (PG.Direction, PG.VertexLabel)
   -> Schema s t v
-  -> Type Kv
+  -> Type
   -> t -> t
   -> Flow s (ElementAdapter s t v)
 elementCoder mparent schema source vidType eidType = case stripType source of
@@ -315,7 +315,7 @@ traverseToSingleTerm desc traversal term = do
 
 vertexCoder :: (Show t, Show v)
   => Schema s t v
-  -> Type Kv
+  -> Type
   -> t
    -> Name
   -> PG.VertexLabel -> IdAdapter s t v -> [PropertyAdapter s t v]

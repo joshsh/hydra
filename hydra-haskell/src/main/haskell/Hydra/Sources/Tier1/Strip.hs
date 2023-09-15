@@ -63,14 +63,14 @@ stripTermDef = stripDefinition "stripTerm" $
       lambda "x" (ref skipAnnotationsDef @@ (match _Term (Just nothing) [
         Case _Term_annotated --> lambda "ann" (just $ var "ann")]) @@ var "x")
 
-stripTypeDef :: Definition (Type Kv -> Type Kv)
+stripTypeDef :: Definition (Type -> Type)
 stripTypeDef = stripDefinition "stripType" $
     doc "Strip all annotations from a type" $
     function typeA typeA $
       lambda "x" (ref skipAnnotationsDef @@ (match _Type (Just nothing) [
         Case _Type_annotated --> lambda "ann" (just $ var "ann")]) @@ var "x")
         
-stripTypeParametersDef :: Definition (Type Kv -> Type Kv)
+stripTypeParametersDef :: Definition (Type -> Type)
 stripTypeParametersDef = stripDefinition "stripTypeParameters" $
     doc "Strip any top-level type lambdas from a type, extracting the (possibly nested) type body" $
     function typeA typeA $

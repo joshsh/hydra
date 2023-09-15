@@ -27,11 +27,11 @@ import qualified Data.Map as M
 import qualified Data.Set as S
 
 
-adaptAndEncodeType :: Language Kv -> (Type Kv -> Flow (Graph Kv) t) -> Type Kv -> Flow (Graph Kv) t
+adaptAndEncodeType :: Language Kv -> (Type -> Flow (Graph Kv) t) -> Type -> Flow (Graph Kv) t
 adaptAndEncodeType lang enc typ = adaptType lang typ >>= enc
 
 -- | Given a target language and a source type, find the target type to which the latter will be adapted.
-adaptType :: Language Kv -> Type Kv -> Flow (Graph Kv) (Type Kv)
+adaptType :: Language Kv -> Type -> Flow (Graph Kv) (Type)
 adaptType lang typ = adapterTarget <$> languageAdapter lang typ
 
 -- | Given a target language, a unidirectional last-mile encoding, and a source type,
@@ -39,7 +39,7 @@ adaptType lang typ = adapterTarget <$> languageAdapter lang typ
 --   according to the constraints of the target language, then carried by the last mile into the final representation
 constructCoder :: Language Kv
   -> (Term -> Flow (Graph Kv) c)
-  -> Type Kv
+  -> Type
   -> Flow (Graph Kv) (Coder (Graph Kv) (Graph Kv) (Term) c)
 constructCoder lang encodeTerm typ = withTrace ("coder for " ++ describeType typ) $ do
     adapter <- languageAdapter lang typ
@@ -47,7 +47,7 @@ constructCoder lang encodeTerm typ = withTrace ("coder for " ++ describeType typ
 
 -- | Given a target language and a source type, produce an adapter,
 --   which rewrites the type and its terms according to the language's constraints
-languageAdapter :: Language Kv -> Type Kv -> Flow (Graph Kv) (SymmetricAdapter (Graph Kv) (Type Kv) (Term))
+languageAdapter :: Language Kv -> Type -> Flow (Graph Kv) (SymmetricAdapter (Graph Kv) (Type) (Term))
 languageAdapter lang typ0 = do
   -- TODO: rather than beta-reducing types all at once, we should incrementally extend the environment when application types are adapted
   -- typ <- betaReduceType typ0
@@ -72,7 +72,7 @@ languageAdapter lang typ0 = do
 --   transform a given module into a target representation
 transformModule :: Language Kv
   -> (Term -> Flow (Graph Kv) e)
-  -> (Module Kv -> M.Map (Type Kv) (Coder (Graph Kv) (Graph Kv) (Term) e) -> [(Element Kv, TypedTerm)] -> Flow (Graph Kv) d)
+  -> (Module Kv -> M.Map (Type) (Coder (Graph Kv) (Graph Kv) (Term) e) -> [(Element Kv, TypedTerm)] -> Flow (Graph Kv) d)
   -> Module Kv -> Flow (Graph Kv) d
 transformModule lang encodeTerm createModule mod = withTrace ("transform module " ++ unNamespace (moduleNamespace mod)) $ do
     pairs <- withSchemaContext $ CM.mapM elementAsTypedTerm els

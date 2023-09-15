@@ -28,11 +28,11 @@ checkStripType :: H.SpecWith ()
 checkStripType = do
   H.describe "Tests for stripping annotations from types" $ do
     H.it "Un-annotated types are not affected" $
-      QC.property $ \typ -> case (typ :: Type Kv) of
+      QC.property $ \typ -> case (typ :: Type) of
         TypeAnnotated _ -> True
         _ -> stripType typ == typ
     H.it "Types are stripped recursively" $
-      QC.property $ \typ -> case (typ :: Type Kv) of
+      QC.property $ \typ -> case (typ :: Type) of
         TypeAnnotated _ -> True
         _ -> stripType (Types.annot emptyKv (Types.annot emptyKv typ)) == typ
 

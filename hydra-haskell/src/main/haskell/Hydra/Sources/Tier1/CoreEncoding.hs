@@ -51,7 +51,7 @@ coreEncodingModule = Module (Namespace "hydra/coreEncoding") elements [hydraCore
      Base.el coreEncodeTupleProjectionDef,
      Base.el coreEncodeTypeDef]
 
-coreEncodingDefinition :: String -> Type Kv -> Term -> Definition x
+coreEncodingDefinition :: String -> Type -> Term -> Definition x
 coreEncodingDefinition label dom term = Base.definitionInModule coreEncodingModule ("coreEncode" ++ label) $
   Base.function dom termA $ Datum term
 
@@ -140,7 +140,7 @@ coreEncodeAnnotatedTermDef = coreEncodingDefinition "AnnotatedTerm" annotatedTer
     Field _Annotated_subject $ ref coreEncodeTermDef @@ (project _Annotated _Annotated_subject @@ var "a"),
     Field _Annotated_annotation $ project _Annotated _Annotated_annotation @@ var "a"]
 
-coreEncodeAnnotatedTypeDef :: Definition (Annotated (Type Kv) a -> Term)
+coreEncodeAnnotatedTypeDef :: Definition (Annotated (Type) a -> Term)
 coreEncodeAnnotatedTypeDef = coreEncodingDefinition "AnnotatedType" annotatedTypeA $
   lambda "at" $ variant _Term _Term_annotated $ record _Annotated [
     Field _Annotated_subject $ ref coreEncodeTypeDef @@ (project _Annotated _Annotated_subject @@ var "at"),
@@ -152,7 +152,7 @@ coreEncodeApplicationDef = coreEncodingDefinition "Application" applicationA $
     (_Application_function, ref coreEncodeTermDef @@ (project _Application _Application_function @@ var "app")),
     (_Application_argument, ref coreEncodeTermDef @@ (project _Application _Application_argument @@ var "app"))]
 
-coreEncodeApplicationTypeDef :: Definition (ApplicationType Kv -> Term)
+coreEncodeApplicationTypeDef :: Definition (ApplicationType -> Term)
 coreEncodeApplicationTypeDef = coreEncodingDefinition "ApplicationType" applicationTypeA $
   lambda "at" $ encodedRecord _ApplicationType [
     (_ApplicationType_function, ref coreEncodeTypeDef @@ (project _ApplicationType _ApplicationType_function @@ var "at")),
@@ -189,7 +189,7 @@ coreEncodeFieldNameDef :: Definition (FieldName -> Term)
 coreEncodeFieldNameDef = coreEncodingDefinition "FieldName" (TypeVariable _FieldName) $
   lambda "fn" $ encodedNominal _FieldName $ encodedString (unwrap _FieldName @@ var "fn")
 
-coreEncodeFieldTypeDef :: Definition (FieldType Kv -> Term)
+coreEncodeFieldTypeDef :: Definition (FieldType -> Term)
 coreEncodeFieldTypeDef = coreEncodingDefinition "FieldType" fieldTypeA $
   lambda "ft" $ encodedRecord _FieldType [
     (_FieldType_name, ref coreEncodeFieldNameDef @@ (project _FieldType _FieldType_name @@ var "ft")),
@@ -223,7 +223,7 @@ coreEncodeFunctionDef = coreEncodingDefinition "Function" functionA $
   where
     ecase fname funname = encodedCase _Function fname (ref funname)
 
-coreEncodeFunctionTypeDef :: Definition (FunctionType Kv -> Term)
+coreEncodeFunctionTypeDef :: Definition (FunctionType -> Term)
 coreEncodeFunctionTypeDef = coreEncodingDefinition "FunctionType" functionTypeA $
   lambda "ft" $ encodedRecord _FunctionType [
     (_FunctionType_domain, ref coreEncodeTypeDef @@ (project _FunctionType _FunctionType_domain @@ var "ft")),
@@ -272,7 +272,7 @@ coreEncodeLambdaDef = coreEncodingDefinition "Lambda" lambdaA $
     (_Lambda_parameter, ref coreEncodeNameDef @@ (project _Lambda _Lambda_parameter @@ var "l")),
     (_Lambda_body, ref coreEncodeTermDef @@ (project _Lambda _Lambda_body @@ var "l"))]
 
-coreEncodeLambdaTypeDef :: Definition (LambdaType Kv -> Term)
+coreEncodeLambdaTypeDef :: Definition (LambdaType -> Term)
 coreEncodeLambdaTypeDef = coreEncodingDefinition "LambdaType" lambdaTypeA $
   lambda "lt" $ encodedRecord _LambdaType [
     (_LambdaType_parameter, ref coreEncodeNameDef @@ (project _LambdaType _LambdaType_parameter @@ var "lt")),
@@ -309,7 +309,7 @@ coreEncodeLiteralTypeDef = coreEncodingDefinition "LiteralType" (TypeVariable _L
     cs fname fun = Field fname $ lambda "v" $ encodedVariant _LiteralType fname (ref fun @@ var "v")
     csunit fname = Field fname $ constant $ coreEncodeTerm $ variant _LiteralType fname unit
 
-coreEncodeMapTypeDef :: Definition (MapType Kv -> Term)
+coreEncodeMapTypeDef :: Definition (MapType -> Term)
 coreEncodeMapTypeDef = coreEncodingDefinition "MapType" mapTypeA $
     lambda "mt" $ encodedRecord _MapType [
       (_MapType_keys, ref coreEncodeTypeDef @@ (project _MapType _MapType_keys @@ var "mt")),
@@ -325,7 +325,7 @@ coreEncodeNominalTermDef = coreEncodingDefinition "NominalTerm" nominalTermA $
     (_Nominal_typeName, ref coreEncodeNameDef @@ (project _Nominal _Nominal_typeName @@ var "n")),
     (_Nominal_object, ref coreEncodeTermDef @@ (project _Nominal _Nominal_object @@ var "n"))]
 
-coreEncodeNominalTypeDef :: Definition (Nominal (Type Kv) -> Term)
+coreEncodeNominalTypeDef :: Definition (Nominal (Type) -> Term)
 coreEncodeNominalTypeDef = coreEncodingDefinition "NominalType" nominalTypeA $
   lambda "nt" $ encodedRecord _Nominal [
     (_Nominal_typeName, ref coreEncodeNameDef @@ (project _Nominal _Nominal_typeName @@ var "nt")),
@@ -349,7 +349,7 @@ coreEncodeRecordDef = coreEncodingDefinition "Record" recordA $
     (_Record_typeName, ref coreEncodeNameDef @@ (project _Record _Record_typeName @@ var "r")),
     (_Record_fields, encodedList (primitive _lists_map @@ (ref coreEncodeFieldDef) @@ (project _Record _Record_fields @@ var "r")))]
 
-coreEncodeRowTypeDef :: Definition (RowType Kv -> Term)
+coreEncodeRowTypeDef :: Definition (RowType -> Term)
 coreEncodeRowTypeDef = coreEncodingDefinition "RowType" rowTypeA $
   lambda "rt" $ encodedRecord _RowType [
     (_RowType_typeName, ref coreEncodeNameDef @@ (project _RowType _RowType_typeName @@ var "rt")),
@@ -396,7 +396,7 @@ coreEncodeTupleProjectionDef = coreEncodingDefinition "TupleProjection" (TypeVar
     (_TupleProjection_arity, encodedInt32 $ project _TupleProjection _TupleProjection_arity @@ var "tp"),
     (_TupleProjection_index, encodedInt32 $ project _TupleProjection _TupleProjection_index @@ var "tp")]
 
-coreEncodeTypeDef :: Definition (Type Kv -> Term)
+coreEncodeTypeDef :: Definition (Type -> Term)
 coreEncodeTypeDef = coreEncodingDefinition "Type" typeA $
   match _Type Nothing [
     Field _Type_annotated $ lambda "v" $ variant _Term _Term_annotated $ record _Annotated [

@@ -1,6 +1,6 @@
 -- | A DSL for constructing Hydra types
 
-{-# LANGUAGE FlexibleInstances #-} -- TODO: temporary, for IsString (Type Kv)
+{-# LANGUAGE FlexibleInstances #-} -- TODO: temporary, for IsString (Type)
 module Hydra.Dsl.Types where
 
 import Hydra.Constants
@@ -11,140 +11,140 @@ import qualified Data.Map as M
 import Data.String(IsString(..))
 
 
-instance IsString (Type Kv) where fromString = var
+instance IsString (Type) where fromString = var
 
 infixr 0 >:
-(>:) :: String -> Type Kv -> FieldType Kv
+(>:) :: String -> Type -> FieldType
 n >: t = field n t
 
 infixr 0 -->
-(-->) :: Type Kv -> Type Kv -> Type Kv
+(-->) :: Type -> Type -> Type
 a --> b = function a b
 
-(@@) :: Type Kv -> Type Kv -> Type Kv
+(@@) :: Type -> Type -> Type
 f @@ x = apply f x
 
-annot :: Kv -> Type Kv -> Type Kv
+annot :: Kv -> Type -> Type
 annot ann t = TypeAnnotated $ Annotated t ann
 
-apply :: Type Kv -> Type Kv -> Type Kv
+apply :: Type -> Type -> Type
 apply lhs rhs = TypeApplication (ApplicationType lhs rhs)
 
-applyN :: [Type Kv] -> Type Kv
+applyN :: [Type] -> Type
 applyN ts = foldl apply (L.head ts) (L.tail ts)
 
-bigfloat :: Type Kv
+bigfloat :: Type
 bigfloat = float FloatTypeBigfloat
 
-bigint :: Type Kv
+bigint :: Type
 bigint = integer IntegerTypeBigint
 
-binary :: Type Kv
+binary :: Type
 binary = literal LiteralTypeBinary
 
-boolean :: Type Kv
+boolean :: Type
 boolean = literal LiteralTypeBoolean
 
-enum :: [String] -> Type Kv
+enum :: [String] -> Type
 enum names = union $ (`field` unit) <$> names
 
-field :: String -> Type Kv -> FieldType Kv
+field :: String -> Type -> FieldType
 field fn = FieldType (FieldName fn)
 
-fieldsToMap :: [FieldType Kv] -> M.Map FieldName (Type Kv)
+fieldsToMap :: [FieldType] -> M.Map FieldName (Type)
 fieldsToMap fields = M.fromList $ (\(FieldType name typ) -> (name, typ)) <$> fields
 
-float32 :: Type Kv
+float32 :: Type
 float32 = float FloatTypeFloat32
 
-float64 :: Type Kv
+float64 :: Type
 float64 = float FloatTypeFloat64
 
-float :: FloatType -> Type Kv
+float :: FloatType -> Type
 float = literal . LiteralTypeFloat
 
-function :: Type Kv -> Type Kv -> Type Kv
+function :: Type -> Type -> Type
 function dom cod = TypeFunction $ FunctionType dom cod
 
-functionN :: [Type Kv] -> Type Kv
+functionN :: [Type] -> Type
 functionN ts = L.foldl (\cod dom -> function dom cod) (L.head r) (L.tail r)
   where
     r = L.reverse ts
 
-int16 :: Type Kv
+int16 :: Type
 int16 = integer IntegerTypeInt16
 
-int32 :: Type Kv
+int32 :: Type
 int32 = integer IntegerTypeInt32
 
-int64 :: Type Kv
+int64 :: Type
 int64 = integer IntegerTypeInt64
 
-int8 :: Type Kv
+int8 :: Type
 int8 = integer IntegerTypeInt8
 
-integer :: IntegerType -> Type Kv
+integer :: IntegerType -> Type
 integer = literal . LiteralTypeInteger
 
-lambda :: String -> Type Kv -> Type Kv
+lambda :: String -> Type -> Type
 lambda v body = TypeLambda $ LambdaType (Name v) body
 
-lambdas :: [String] -> Type Kv -> Type Kv
+lambdas :: [String] -> Type -> Type
 lambdas vs body = L.foldr lambda body vs
 
-list :: Type Kv -> Type Kv
+list :: Type -> Type
 list = TypeList
 
-literal :: LiteralType -> Type Kv
+literal :: LiteralType -> Type
 literal = TypeLiteral
 
-map :: Type Kv -> Type Kv -> Type Kv
+map :: Type -> Type -> Type
 map kt vt = TypeMap $ MapType kt vt
 
-optional :: Type Kv -> Type Kv
+optional :: Type -> Type
 optional = TypeOptional
 
-pair :: Type Kv -> Type Kv -> Type Kv
+pair :: Type -> Type -> Type
 pair a b = TypeProduct [a, b]
 
-product :: [Type Kv] -> Type Kv
+product :: [Type] -> Type
 product = TypeProduct
 
-record :: [FieldType Kv] -> Type Kv
+record :: [FieldType] -> Type
 record fields = TypeRecord $ RowType placeholderName Nothing fields
 
-set :: Type Kv -> Type Kv
+set :: Type -> Type
 set = TypeSet
 
-string :: Type Kv
+string :: Type
 string = literal LiteralTypeString
 
-sum :: [Type Kv] -> Type Kv
+sum :: [Type] -> Type
 sum = TypeSum
 
-uint16 :: Type Kv
+uint16 :: Type
 uint16 = integer IntegerTypeUint16
 
-uint32 :: Type Kv
+uint32 :: Type
 uint32 = integer IntegerTypeUint32
 
-uint64 :: Type Kv
+uint64 :: Type
 uint64 = integer IntegerTypeUint64
 
-uint8 :: Type Kv
+uint8 :: Type
 uint8 = integer IntegerTypeUint8
 
-union :: [FieldType Kv] -> Type Kv
+union :: [FieldType] -> Type
 union fields = TypeUnion $ RowType placeholderName Nothing fields
 
-unit :: Type Kv
+unit :: Type
 unit = TypeRecord $ RowType (Name "hydra/core.UnitType") Nothing []
 
-var :: String -> Type Kv
+var :: String -> Type
 var = TypeVariable . Name
 
-wrap :: Type Kv -> Type Kv
+wrap :: Type -> Type
 wrap = wrapWithName placeholderName
 
-wrapWithName :: Name -> Type Kv -> Type Kv
+wrapWithName :: Name -> Type -> Type
 wrapWithName name t = TypeWrap $ Nominal name t

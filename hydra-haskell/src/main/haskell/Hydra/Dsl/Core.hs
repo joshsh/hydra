@@ -28,15 +28,15 @@ applicationFunction = project _Application _Application_function
 applicationArgument :: Datum (Application Kv -> Term)
 applicationArgument = project _Application _Application_argument
 
-applicationType :: Datum (Type Kv) -> Datum (Type Kv) -> Datum (ApplicationType Kv)
+applicationType :: Datum (Type) -> Datum (Type) -> Datum (ApplicationType)
 applicationType function argument = Base.record _ApplicationType [
     _ApplicationType_function>>: function,
     _ApplicationType_argument>>: argument]
 
-applicationTypeFunction :: Datum (ApplicationType Kv -> Type Kv)
+applicationTypeFunction :: Datum (ApplicationType -> Type)
 applicationTypeFunction = project _ApplicationType _ApplicationType_function
 
-applicationTypeArgument :: Datum (ApplicationType Kv -> Type Kv)
+applicationTypeArgument :: Datum (ApplicationType -> Type)
 applicationTypeArgument = project _ApplicationType _ApplicationType_argument
 
 caseStatement :: Datum Name -> Datum (Maybe (Term)) -> Datum [Field Kv] -> Datum (CaseStatement Kv)
@@ -65,26 +65,26 @@ fieldName = project _Field _Field_name
 fieldTerm :: Datum (Field Kv -> Term)
 fieldTerm = project _Field _Field_term
 
-fieldType :: Datum Name -> Datum (Type Kv) -> Datum (FieldType Kv)
+fieldType :: Datum Name -> Datum (Type) -> Datum (FieldType)
 fieldType name typ = Base.record _FieldType [
     _FieldType_name>>: name,
     _FieldType_type>>: typ]
 
-fieldTypeName :: Datum (FieldType Kv -> Name)
+fieldTypeName :: Datum (FieldType -> Name)
 fieldTypeName = project _FieldType _FieldType_name
 
-fieldTypeType :: Datum (FieldType Kv -> Type Kv)
+fieldTypeType :: Datum (FieldType -> Type)
 fieldTypeType = project _FieldType _FieldType_type
 
-functionType :: Datum (Type Kv) -> Datum (Type Kv) -> Datum (FunctionType Kv)
+functionType :: Datum (Type) -> Datum (Type) -> Datum (FunctionType)
 functionType domain codomain = Base.record _FunctionType [
     _FunctionType_domain>>: domain,
     _FunctionType_codomain>>: codomain]
 
-functionTypeDomain :: Datum (FunctionType Kv -> Type Kv)
+functionTypeDomain :: Datum (FunctionType -> Type)
 functionTypeDomain = project _FunctionType _FunctionType_domain
 
-functionTypeCodomain :: Datum (FunctionType Kv -> Type Kv)
+functionTypeCodomain :: Datum (FunctionType -> Type)
 functionTypeCodomain = project _FunctionType _FunctionType_codomain
 
 injection :: Datum Name -> Datum (Field Kv) -> Datum (Injection a)
@@ -109,15 +109,15 @@ lambdaParameter = project _Lambda _Lambda_parameter
 lambdaBody :: Datum (Lambda Kv -> Term)
 lambdaBody = project _Lambda _Lambda_body
 
-lambdaType :: Datum Name -> Datum (Type Kv) -> Datum (LambdaType Kv)
+lambdaType :: Datum Name -> Datum (Type) -> Datum (LambdaType)
 lambdaType parameter body = Base.record _LambdaType [
     _LambdaType_parameter>>: parameter,
     _LambdaType_body>>: body]
 
-lambdaTypeParameter :: Datum (LambdaType Kv -> Name)
+lambdaTypeParameter :: Datum (LambdaType -> Name)
 lambdaTypeParameter = project _LambdaType _LambdaType_parameter
 
-lambdaTypeBody :: Datum (LambdaType Kv -> Type Kv)
+lambdaTypeBody :: Datum (LambdaType -> Type)
 lambdaTypeBody = project _LambdaType _LambdaType_body
 
 letExpression :: Datum (M.Map Name (Term)) -> Datum (Term) -> Datum (Let Kv)
@@ -131,15 +131,15 @@ letBindings = project _Let _Let_bindings
 letEnvironment :: Datum (Let Kv -> Term)
 letEnvironment = project _Let _Let_environment
 
-mapType :: Datum (Type Kv) -> Datum (Type Kv) -> Datum (MapType Kv)
+mapType :: Datum (Type) -> Datum (Type) -> Datum (MapType)
 mapType keys values = Base.record _MapType [
     _MapType_keys>>: keys,
     _MapType_values>>: values]
 
-mapTypeKeys :: Datum (MapType Kv -> Type Kv)
+mapTypeKeys :: Datum (MapType -> Type)
 mapTypeKeys = project _MapType _MapType_keys
 
-mapTypeValues :: Datum (MapType Kv -> Type Kv)
+mapTypeValues :: Datum (MapType -> Type)
 mapTypeValues = project _MapType _MapType_values
 
 nominal :: Datum Name -> Datum x -> Datum (Nominal x)
@@ -175,19 +175,19 @@ recordTypeName = project _Record _Record_typeName
 recordFields :: Datum (Record a -> [Field Kv])
 recordFields = project _Record _Record_fields
 
-rowType :: Datum Name -> Datum (Maybe Name) -> Datum [FieldType Kv] -> Datum (RowType Kv)
+rowType :: Datum Name -> Datum (Maybe Name) -> Datum [FieldType] -> Datum (RowType)
 rowType typeName extends fields = Base.record _RowType [
     _RowType_typeName>>: typeName,
     _RowType_extends>>: extends,
     _RowType_fields>>: fields]
 
-rowTypeTypeName :: Datum (RowType Kv -> Name)
+rowTypeTypeName :: Datum (RowType -> Name)
 rowTypeTypeName = project _RowType _RowType_typeName
 
-rowTypeExtends :: Datum (RowType Kv -> Maybe Name)
+rowTypeExtends :: Datum (RowType -> Maybe Name)
 rowTypeExtends = project _RowType _RowType_extends
 
-rowTypeFields :: Datum (RowType Kv -> [FieldType Kv])
+rowTypeFields :: Datum (RowType -> [FieldType])
 rowTypeFields = project _RowType _RowType_fields
 
 sum :: Datum Int -> Datum Int -> Datum (Term) -> Datum (Sum a)

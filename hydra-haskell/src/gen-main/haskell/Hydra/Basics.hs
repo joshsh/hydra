@@ -202,7 +202,7 @@ termVariants = [
   Mantle.TermVariantWrap]
 
 -- | Find the type variant (constructor) for a given type
-typeVariant :: (Core.Type Core.Kv -> Mantle.TypeVariant)
+typeVariant :: (Core.Type -> Mantle.TypeVariant)
 typeVariant x = case x of
   Core.TypeAnnotated _ -> Mantle.TypeVariantAnnotated
   Core.TypeApplication _ -> Mantle.TypeVariantApplication
@@ -261,7 +261,7 @@ fieldMap fields = (Maps.fromList (Lists.map toPair fields))
   where 
     toPair = (\f -> (Core.fieldName f, (Core.fieldTerm f)))
 
-fieldTypeMap :: ([Core.FieldType Core.Kv] -> Map Core.FieldName (Core.Type Core.Kv))
+fieldTypeMap :: ([Core.FieldType] -> Map Core.FieldName (Core.Type))
 fieldTypeMap fields = (Maps.fromList (Lists.map toPair fields)) 
   where 
     toPair = (\f -> (Core.fieldTypeName f, (Core.fieldTypeType f)))
@@ -272,7 +272,7 @@ isEncodedType t = ((\x -> case x of
   Core.TermUnion v -> (Equality.equalString "hydra/core.Type" (Core.unName (Core.injectionTypeName v)))
   _ -> False) (Strip.stripTerm t))
 
-isType :: (Core.Type Core.Kv -> Bool)
+isType :: (Core.Type -> Bool)
 isType t = ((\x -> case x of
   Core.TypeApplication v -> (isType (Core.applicationTypeFunction v))
   Core.TypeLambda v -> (isType (Core.lambdaTypeBody v))
@@ -284,7 +284,7 @@ isUnitTerm t = (Equality.equalTerm (Strip.stripTerm t) (Core.TermRecord (Core.Re
   Core.recordTypeName = (Core.Name "hydra/core.UnitType"),
   Core.recordFields = []})))
 
-isUnitType :: (Core.Type Core.Kv -> Bool)
+isUnitType :: (Core.Type -> Bool)
 isUnitType t = (Equality.equalType (Strip.stripType t) (Core.TypeRecord (Core.RowType {
   Core.rowTypeTypeName = (Core.Name "hydra/core.UnitType"),
   Core.rowTypeExtends = Nothing,

@@ -51,7 +51,7 @@ termStringCoder = do
       Left msg -> fail $ "failed to parse JSON value: " ++ msg
       Right v -> coderDecode termJsonCoder v
 
-showType :: Type Kv -> String
+showType :: Type -> String
 showType typ = fromFlow "fail" noGraph $ do
     coder <- typeStringCoder
     coderEncode coder encoded

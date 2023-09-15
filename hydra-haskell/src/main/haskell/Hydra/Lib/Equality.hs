@@ -55,7 +55,7 @@ equalString = (==)
 equalTerm :: Term -> Term -> Bool
 equalTerm = (==)
 
-equalType :: Type Kv -> Type Kv -> Bool
+equalType :: Type -> Type -> Bool
 equalType = (==)
 
 gtInt32 :: Int -> Int -> Bool

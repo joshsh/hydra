@@ -60,15 +60,15 @@ getTermAnnotation key = getAnnotation key . termAnnotationInternal
 getTermDescription :: Term -> Flow (Graph Kv) (Y.Maybe String)
 getTermDescription = getDescription . termAnnotationInternal
 
-getType :: Kv -> Flow (Graph Kv) (Y.Maybe (Type Kv))
+getType :: Kv -> Flow (Graph Kv) (Y.Maybe (Type))
 getType kv = case getAnnotation kvType kv of
   Nothing -> pure Nothing
   Just dat -> Just <$> coreDecodeType dat
 
-getTypeAnnotation :: String -> Type Kv -> Y.Maybe (Term)
+getTypeAnnotation :: String -> Type -> Y.Maybe (Term)
 getTypeAnnotation key = getAnnotation key . typeAnnotationInternal
 
-getTypeClasses :: Type Kv -> Flow (Graph Kv) (M.Map Name (S.Set TypeClass))
+getTypeClasses :: Type -> Flow (Graph Kv) (M.Map Name (S.Set TypeClass))
 getTypeClasses typ = case getTypeAnnotation key_classes typ of
     Nothing -> pure M.empty
     Just term -> Expect.map coreDecodeName (Expect.set decodeClass) term
@@ -77,7 +77,7 @@ getTypeClasses typ = case getTypeAnnotation key_classes typ of
       (unexpected "type class" $ show term) pure $ M.lookup fn byName
     byName = M.fromList [(_TypeClass_equality, TypeClassEquality), (_TypeClass_ordering, TypeClassOrdering)]
 
-getTypeDescription :: Type Kv -> Flow (Graph Kv) (Y.Maybe String)
+getTypeDescription :: Type -> Flow (Graph Kv) (Y.Maybe String)
 getTypeDescription = getDescription . typeAnnotationInternal
 
 hasFlag :: String -> Flow s Bool
@@ -135,7 +135,7 @@ normalizeTermAnnotations term = if M.null (kvAnnotations kv)
     kv = termAnnotationInternal term
     stripped = stripTerm term
 
-normalizeTypeAnnotations :: Type Kv -> Type Kv
+normalizeTypeAnnotations :: Type -> Type
 normalizeTypeAnnotations typ = if M.null (kvAnnotations kv)
     then stripped
     else TypeAnnotated $ Annotated stripped kv
@@ -165,13 +165,13 @@ setTermAnnotation key val term = if kv == Kv M.empty
 setTermDescription :: Y.Maybe String -> Term -> Term
 setTermDescription d = setTermAnnotation kvDescription (Terms.string <$> d)
 
-setTermType :: Y.Maybe (Type Kv) -> Term -> Term
+setTermType :: Y.Maybe (Type) -> Term -> Term
 setTermType d = setTermAnnotation kvType (coreEncodeType <$> d)
 
-setType :: Y.Maybe (Type Kv) -> Kv -> Kv
+setType :: Y.Maybe (Type) -> Kv -> Kv
 setType mt = setAnnotation kvType (coreEncodeType <$> mt)
 
-setTypeAnnotation :: String -> Y.Maybe (Term) -> Type Kv -> Type Kv
+setTypeAnnotation :: String -> Y.Maybe (Term) -> Type -> Type
 setTypeAnnotation key val typ = if kv == Kv M.empty
     then typ'
     else TypeAnnotated $ Annotated typ' kv
@@ -179,7 +179,7 @@ setTypeAnnotation key val typ = if kv == Kv M.empty
     typ' = stripType typ
     kv = setAnnotation key val $ typeAnnotationInternal typ
 
-setTypeClasses :: M.Map Name (S.Set TypeClass) -> Type Kv -> Type Kv
+setTypeClasses :: M.Map Name (S.Set TypeClass) -> Type -> Type
 setTypeClasses m = setTypeAnnotation key_classes encoded
   where
     encoded = if M.null m
@@ -190,7 +190,7 @@ setTypeClasses m = setTypeAnnotation key_classes encoded
       TypeClassEquality -> _TypeClass_equality
       TypeClassOrdering -> _TypeClass_ordering
 
-setTypeDescription :: Y.Maybe String -> Type Kv -> Type Kv
+setTypeDescription :: Y.Maybe String -> Type -> Type
 setTypeDescription d = setTypeAnnotation kvDescription (Terms.string <$> d)
 
 termAnnotationInternal :: Term -> Kv
@@ -198,7 +198,7 @@ termAnnotationInternal = aggregateAnnotations $ \t -> case t of
   TermAnnotated a -> Just a
   _ -> Nothing
 
-typeAnnotationInternal :: Type Kv -> Kv
+typeAnnotationInternal :: Type -> Kv
 typeAnnotationInternal = aggregateAnnotations $ \t -> case t of
   TypeAnnotated a -> Just a
   _ -> Nothing

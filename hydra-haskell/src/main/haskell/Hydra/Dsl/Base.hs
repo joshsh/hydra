@@ -94,16 +94,16 @@ fold (Datum f) = Datum $ TermFunction $ FunctionElimination $ EliminationList f
 --foldl :: Datum ((b -> a -> b) -> b -> [a] -> b) -> Datum b -> Datum ([a] -> b)
 --foldl (Datum f) (Datum arg) = Datum (Terms.apply (TermFunction $ FunctionElimination $ EliminationList f) arg)
 
-function :: Type Kv -> Type Kv -> Datum a -> Datum a
+function :: Type -> Type -> Datum a -> Datum a
 function dom cod = typed (Types.function dom cod)
 
-functionN :: [Type Kv] -> Datum a -> Datum a
+functionN :: [Type] -> Datum a -> Datum a
 functionN ts = typed $ Types.functionN ts
 
-functionNWithClasses :: [Type Kv] -> M.Map Name (S.Set TypeClass) -> Datum a -> Datum a
+functionNWithClasses :: [Type] -> M.Map Name (S.Set TypeClass) -> Datum a -> Datum a
 functionNWithClasses ts classes = typed $ setTypeClasses classes (Types.functionN ts)
 
-functionWithClasses :: Type Kv -> Type Kv -> M.Map Name (S.Set TypeClass) -> Datum a -> Datum a
+functionWithClasses :: Type -> Type -> M.Map Name (S.Set TypeClass) -> Datum a -> Datum a
 functionWithClasses dom cod classes = typed $ setTypeClasses classes (Types.function dom cod)
 
 identity :: Datum (a -> a)
@@ -184,7 +184,7 @@ second = Datum $ Terms.untuple 2 1
 set :: S.Set (Datum a) -> Datum (S.Set a)
 set = Datum . Terms.set . S.fromList . fmap unDatum . S.toList
 
-typed :: Type Kv -> Datum a -> Datum a
+typed :: Type -> Datum a -> Datum a
 typed t (Datum term) = Datum $ setTermType (Just t) term
 
 unit :: Datum a

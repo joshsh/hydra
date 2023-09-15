@@ -287,7 +287,7 @@ termVariantsDef = basicsDefinition "termVariants" $
     _TermVariant_variable,
     _TermVariant_wrap]
 
-typeVariantDef :: Definition (Type Kv -> TypeVariant)
+typeVariantDef :: Definition (Type -> TypeVariant)
 typeVariantDef = basicsDefinition "typeVariant" $
   doc "Find the type variant (constructor) for a given type" $
   function typeA (TypeVariable _TypeVariant) $
@@ -365,7 +365,7 @@ fieldMapDef = basicsDefinition "fieldMap" $
   `with` [
     "toPair">: lambda "f" $ pair (project _Field _Field_name @@ var "f") (project _Field _Field_term @@ var "f")]
 
-fieldTypeMapDef :: Definition ([FieldType Kv] -> M.Map FieldName (Type Kv))
+fieldTypeMapDef :: Definition ([FieldType] -> M.Map FieldName (Type))
 fieldTypeMapDef = basicsDefinition "fieldTypeMap" $
   function (TypeList fieldTypeA) (Types.map (TypeVariable _FieldName) typeA) $
     (lambda "fields" $ Maps.fromList @@ (Lists.map @@ var "toPair" @@ var "fields"))
@@ -382,7 +382,7 @@ isEncodedTypeDef = basicsDefinition "isEncodedType" $
         Equality.equalString @@ (string $ unName _Type) @@ (unwrap _Name @@ (project _Injection _Injection_typeName @@ var "i"))
     ]) @@ (ref stripTermDef @@ var "t")
 
-isTypeDef :: Definition (Type Kv -> Bool)
+isTypeDef :: Definition (Type -> Bool)
 isTypeDef = basicsDefinition "isType" $
   functionWithClasses typeA booleanT eqA $
   lambda "t" $ (match _Type (Just false) [

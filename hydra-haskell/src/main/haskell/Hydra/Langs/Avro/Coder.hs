@@ -28,7 +28,7 @@ data AvroEnvironment = AvroEnvironment {
   avroEnvironmentNamespace :: Maybe String,
   avroEnvironmentElements :: M.Map Name (Element Kv), -- note: only used in the term coders
   avroEnvironmentCreateAnnotation :: M.Map String (Term) -> Kv}
-type AvroHydraAdapter = Adapter AvroEnvironment AvroEnvironment Avro.Schema (Type Kv) Json.Value (Term)
+type AvroHydraAdapter = Adapter AvroEnvironment AvroEnvironment Avro.Schema (Type) Json.Value (Term)
 
 data AvroQualifiedName = AvroQualifiedName (Maybe String) String deriving (Eq, Ord, Show)
 
@@ -350,7 +350,7 @@ jsonToString v = case v of
 showQname :: AvroQualifiedName -> String
 showQname (AvroQualifiedName mns local) = (Y.maybe "" (\ns -> ns ++ ".") mns) ++ local
 
-stringToTerm :: Type Kv -> String -> Flow s (Term)
+stringToTerm :: Type -> String -> Flow s (Term)
 stringToTerm typ s = case stripType typ of
     TypeLiteral lt -> TermLiteral <$> case lt of
       LiteralTypeBoolean -> LiteralBoolean <$> doRead s

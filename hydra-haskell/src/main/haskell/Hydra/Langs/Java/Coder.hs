@@ -47,13 +47,13 @@ moduleToJava mod = withTrace "encode module in Java" $ do
   where
     forPair (name, unit) = (elementNameToFilePath name, printExpr $ parenthesize $ writeCompilationUnit unit)
 
-adaptTypeToJavaAndEncode :: Aliases -> Type Kv -> Flow (Graph Kv) Java.Type
+adaptTypeToJavaAndEncode :: Aliases -> Type -> Flow (Graph Kv) Java.Type
 adaptTypeToJavaAndEncode aliases = adaptAndEncodeType javaLanguage (encodeType aliases)
 
-addComment :: Java.ClassBodyDeclaration -> FieldType Kv -> Flow (Graph Kv) Java.ClassBodyDeclarationWithComments
+addComment :: Java.ClassBodyDeclaration -> FieldType -> Flow (Graph Kv) Java.ClassBodyDeclarationWithComments
 addComment decl field = Java.ClassBodyDeclarationWithComments decl <$> commentsFromFieldType field
 
-boundTypeVariables :: Type Kv -> [Name]
+boundTypeVariables :: Type -> [Name]
 boundTypeVariables typ = case typ of
   TypeAnnotated (Annotated typ1 _) -> boundTypeVariables typ1
   TypeLambda (LambdaType v body) -> v:(boundTypeVariables body)
@@ -71,7 +71,7 @@ classifyDataReference name = do
       typ <- requireElementType el
       return $ classifyDataTerm typ $ elementData el
 
-classifyDataTerm :: Type Kv -> Term -> JavaSymbolClass
+classifyDataTerm :: Type -> Term -> JavaSymbolClass
 classifyDataTerm typ term = if isLambda term
     then JavaSymbolClassUnaryFunction
     else if hasTypeParameters || isUnsupportedVariant
@@ -88,7 +88,7 @@ commentsFromElement el = do
   g <- getState
   annotationClassTermDescription (graphAnnotations g) (elementData el)
 
-commentsFromFieldType :: FieldType Kv -> Flow (Graph Kv) (Maybe String)
+commentsFromFieldType :: FieldType -> Flow (Graph Kv) (Maybe String)
 commentsFromFieldType (FieldType _ t) = do
   g <- getState
   annotationClassTypeDescription (graphAnnotations g) t
@@ -107,7 +107,7 @@ constructElementsInterface mod members = (elName, cu)
     decl = Java.TypeDeclarationWithComments itf $ moduleDescription mod
 
 constructModule :: Module Kv
-  -> M.Map (Type Kv) (Coder (Graph Kv) (Graph Kv) (Term) Java.Expression)
+  -> M.Map (Type) (Coder (Graph Kv) (Graph Kv) (Term) Java.Expression)
   -> [(Element Kv, TypedTerm)]
   -> Flow (Graph Kv) (M.Map Name Java.CompilationUnit)
 constructModule mod coders pairs = do
@@ -181,14 +181,14 @@ constructModule mod coders pairs = do
           _ -> unexpected "function type" $ show typ
 
 declarationForLambdaType :: Bool -> Aliases
-  -> [Java.TypeParameter] -> Name -> LambdaType Kv -> Flow (Graph Kv) Java.ClassDeclaration
+  -> [Java.TypeParameter] -> Name -> LambdaType -> Flow (Graph Kv) Java.ClassDeclaration
 declarationForLambdaType isSer aliases tparams elName (LambdaType (Name v) body) =
     toClassDecl False isSer aliases (tparams ++ [param]) elName body
   where
     param = javaTypeParameter $ capitalize v
 
 declarationForRecordType :: Bool -> Bool -> Aliases -> [Java.TypeParameter] -> Name
-  -> [FieldType Kv] -> Flow (Graph Kv) Java.ClassDeclaration
+  -> [FieldType] -> Flow (Graph Kv) Java.ClassDeclaration
 declarationForRecordType isInner isSer aliases tparams elName fields = do
     memberVars <- CM.mapM toMemberVar fields
     memberVars' <- CM.zipWithM addComment memberVars fields
@@ -309,7 +309,7 @@ declarationForType isSer aliases (el, TypedTerm _ term) = withTrace ("element " 
     return $ Java.TypeDeclarationWithComments (Java.TypeDeclarationClass cd) comments
 
 declarationForUnionType :: Bool -> Aliases
-  -> [Java.TypeParameter] -> Name -> [FieldType Kv] -> Flow (Graph Kv) Java.ClassDeclaration
+  -> [Java.TypeParameter] -> Name -> [FieldType] -> Flow (Graph Kv) Java.ClassDeclaration
 declarationForUnionType isSer aliases tparams elName fields = do
     variantClasses <- CM.mapM (fmap augmentVariantClass . unionFieldClass) fields
     let variantDecls = Java.ClassBodyDeclarationClassMember . Java.ClassMemberDeclarationClass <$> variantClasses
@@ -450,7 +450,7 @@ encodeApplication aliases app@(Application lhs rhs) = case stripTerm fun of
     apply exp jarg = javaMethodInvocationToJavaExpression $
       methodInvocation (Just $ Right $ javaExpressionToJavaPrimary exp) (Java.Identifier applyMethodName) [jarg]
 
-encodeElimination :: Aliases -> Maybe Java.Expression -> Type Kv -> Type Kv -> Elimination Kv -> Flow (Graph Kv) Java.Expression
+encodeElimination :: Aliases -> Maybe Java.Expression -> Type -> Type -> Elimination Kv -> Flow (Graph Kv) Java.Expression
 encodeElimination aliases marg dom cod elm = case elm of
   EliminationOptional (OptionalCases nothing just) -> do
     jnothing <- encodeTerm aliases nothing
@@ -560,7 +560,7 @@ encodeElimination aliases marg dom cod elm = case elm of
   _ -> pure $ encodeLiteral $ LiteralString $
     "Unimplemented elimination variant: " ++ show (eliminationVariant elm) -- TODO: temporary
 
-encodeFunction :: Aliases -> Type Kv -> Type Kv -> Function Kv -> Flow (Graph Kv) Java.Expression
+encodeFunction :: Aliases -> Type -> Type -> Function Kv -> Flow (Graph Kv) Java.Expression
 encodeFunction aliases dom cod fun = case fun of
   FunctionElimination elm -> do
     encodeElimination aliases Nothing dom cod elm
@@ -628,7 +628,7 @@ encodeLiteralType lt = case lt of
   where
     simple n = pure $ javaRefType [] Nothing n
 
-encodeNullaryConstant :: Aliases -> Type Kv -> Function Kv -> Flow (Graph Kv) Java.Expression
+encodeNullaryConstant :: Aliases -> Type -> Function Kv -> Flow (Graph Kv) Java.Expression
 encodeNullaryConstant aliases typ fun = case fun of
   FunctionPrimitive name -> functionCall aliases True name []
   _ -> unexpected "nullary function" $ show fun
@@ -704,7 +704,7 @@ encodeTerm aliases term0 = encodeInternal [] term0
 
         _ -> failAsLiteral $ "Unimplemented term variant: " ++ show (termVariant term)
 
-encodeType :: Aliases -> Type Kv -> Flow (Graph Kv) Java.Type
+encodeType :: Aliases -> Type -> Flow (Graph Kv) Java.Type
 encodeType aliases t = case stripType t of
     TypeApplication (ApplicationType lhs rhs) -> do
       jlhs <- encode lhs
@@ -788,10 +788,10 @@ functionCall aliases isPrim name args = do
         let header = Java.MethodInvocation_HeaderSimple $ Java.MethodName $ elementJavaIdentifier isPrim False aliases name
         return $ javaMethodInvocationToJavaExpression $ Java.MethodInvocation header jargs
 
-getCodomain :: Kv -> Flow (Graph Kv) (Type Kv)
+getCodomain :: Kv -> Flow (Graph Kv) (Type)
 getCodomain ann = functionTypeCodomain <$> getFunctionType ann
 
-getFunctionType :: Kv -> Flow (Graph Kv) (FunctionType Kv)
+getFunctionType :: Kv -> Flow (Graph Kv) (FunctionType)
 getFunctionType ann = do
   g <- getState
   mt <- annotationClassTypeOf (graphAnnotations g) ann
@@ -826,12 +826,12 @@ javaTypeArgumentsForNamedType tname = do
     params <- javaTypeParametersForType <$> requireType tname
     return $ typeParameterToTypeArgument <$> params
 
-javaTypeArgumentsForType :: Type Kv -> [Java.TypeArgument]
+javaTypeArgumentsForType :: Type -> [Java.TypeArgument]
 javaTypeArgumentsForType typ = L.reverse (typeParameterToTypeArgument <$> javaTypeParametersForType typ)
 
 -- Note: this is somewhat of a hack; it compensates for the irregular way in which type parameters are currently used.
 --       When this irregularity is resolved, a better approach will be to simply pick up type parameters from type applications.
-javaTypeParametersForType :: Type Kv -> [Java.TypeParameter]
+javaTypeParametersForType :: Type -> [Java.TypeParameter]
 javaTypeParametersForType typ = toParam <$> vars
   where
     toParam (Name v) = Java.TypeParameter [] (javaTypeIdentifier $ capitalize v) Nothing
@@ -917,7 +917,7 @@ reannotate anns term = case anns of
   [] -> term
   (h:r) -> reannotate r $ TermAnnotated (Annotated term h)
 
-requireAnnotatedType :: Term -> Flow (Graph Kv) (Type Kv)
+requireAnnotatedType :: Term -> Flow (Graph Kv) (Type)
 requireAnnotatedType term = case term of
   TermAnnotated (Annotated _ ann) -> do
     g <- getState
@@ -927,7 +927,7 @@ requireAnnotatedType term = case term of
       Just t -> pure t
 
 toClassDecl :: Bool -> Bool -> Aliases -> [Java.TypeParameter]
-  -> Name -> Type Kv -> Flow (Graph Kv) Java.ClassDeclaration
+  -> Name -> Type -> Flow (Graph Kv) Java.ClassDeclaration
 toClassDecl isInner isSer aliases tparams elName t = case stripType t of
     TypeRecord rt -> declarationForRecordType isInner isSer aliases tparams elName $ rowTypeFields rt
     TypeUnion rt -> declarationForUnionType isSer aliases tparams elName $ rowTypeFields rt

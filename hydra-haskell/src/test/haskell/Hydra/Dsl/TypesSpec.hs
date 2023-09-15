@@ -8,7 +8,7 @@ import Hydra.Dsl.Types
 import qualified Test.Hspec as H
 
 
-check :: Type Kv -> Type Kv -> H.Expectation
+check :: Type -> Type -> H.Expectation
 check = H.shouldBe
 
 checkFunctionSyntax :: H.SpecWith ()

@@ -27,7 +27,7 @@ moduleToGraphqlSchemas :: Module Kv -> Flow (Graph Kv) (M.Map FilePath G.Documen
 moduleToGraphqlSchemas mod = transformModule graphqlLanguage encodeTerm constructModule mod
 
 constructModule :: Module Kv
-  -> M.Map (Type Kv) (Coder (Graph Kv) (Graph Kv) (Term) ())
+  -> M.Map (Type) (Coder (Graph Kv) (Graph Kv) (Term) ())
   -> [(Element Kv, TypedTerm)]
   -> Flow (Graph Kv) (M.Map FilePath G.Document)
 constructModule mod coders pairs = do
@@ -51,13 +51,13 @@ constructModule mod coders pairs = do
         then coreDecodeType (elementData el) >>= encodeNamedType prefixes el
         else fail $ "mapping of non-type elements to GraphQL is not yet supported: " ++ unName (elementName el)
 
-descriptionFromType :: Type Kv -> Flow (Graph Kv) (Maybe G.Description)
+descriptionFromType :: Type -> Flow (Graph Kv) (Maybe G.Description)
 descriptionFromType typ = do
   ac <- graphAnnotations <$> getState
   mval <- annotationClassTypeDescription ac typ
   return $ G.Description . G.StringValue <$> mval
 
-encodeEnumFieldType :: FieldType Kv -> Flow (Graph Kv) G.EnumValueDefinition
+encodeEnumFieldType :: FieldType -> Flow (Graph Kv) G.EnumValueDefinition
 encodeEnumFieldType ft = do
   desc <- descriptionFromType $ fieldTypeType ft
   return G.EnumValueDefinition {
@@ -71,7 +71,7 @@ encodeEnumFieldName = G.EnumValue . G.Name . sanitize . unFieldName
 encodeFieldName :: FieldName -> G.Name
 encodeFieldName = G.Name . sanitize . unFieldName
 
-encodeFieldType :: Prefixes -> FieldType Kv -> Flow (Graph Kv) G.FieldDefinition
+encodeFieldType :: Prefixes -> FieldType -> Flow (Graph Kv) G.FieldDefinition
 encodeFieldType prefixes ft = do
   gtype <- encodeType prefixes $ fieldTypeType ft
   desc <- descriptionFromType $ fieldTypeType ft
@@ -94,7 +94,7 @@ encodeLiteralType lt = G.NamedType . G.Name <$> case lt of
   LiteralTypeString -> pure "String"
   _ -> unexpected "GraphQL-compatible literal type" $ show lt
 
-encodeNamedType :: Prefixes -> Element Kv -> Type Kv -> Flow (Graph Kv) G.TypeDefinition
+encodeNamedType :: Prefixes -> Element Kv -> Type -> Flow (Graph Kv) G.TypeDefinition
 encodeNamedType prefixes el typ = do
     g <- getState
     let cx = AdapterContext g graphqlLanguage M.empty
@@ -128,7 +128,7 @@ encodeNamedType prefixes el typ = do
 encodeTerm :: Term -> Flow (Graph Kv) ()
 encodeTerm term = fail "not yet implemented"
 
-encodeType :: Prefixes -> Type Kv -> Flow (Graph Kv) G.Type
+encodeType :: Prefixes -> Type -> Flow (Graph Kv) G.Type
 encodeType prefixes typ = case stripType typ of
     TypeOptional et -> case stripType et of
         TypeList et -> G.TypeList . G.ListType <$> encodeType prefixes et

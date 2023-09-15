@@ -14,7 +14,7 @@ import qualified Data.Map as M
 
 constructModule ::
   Module Kv
-  -> M.Map (Type Kv) (Coder (Graph Kv) (Graph Kv) (Term) YM.Node)
+  -> M.Map (Type) (Coder (Graph Kv) (Graph Kv) (Term) YM.Node)
   -> [(Element Kv, TypedTerm)]
   -> Flow (Graph Kv) YM.Node
 constructModule mod coders pairs = do

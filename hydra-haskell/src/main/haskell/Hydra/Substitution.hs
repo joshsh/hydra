@@ -13,7 +13,7 @@ import qualified Data.Set as S
 import qualified Data.Maybe as Y
 
 
-type Subst a = M.Map Name (Type Kv)
+type Subst a = M.Map Name (Type)
 
 composeSubst :: Subst Kv -> Subst Kv -> Subst Kv
 composeSubst s1 s2 = M.union s1 $ M.map (substituteTypeVariables s1) s2
@@ -25,7 +25,7 @@ normalVariables = normalVariable <$> [0..]
 normalVariable :: Int -> Name
 normalVariable i = Name $ "t" ++ show i
 
-normalizeTypeVariables :: Type Kv -> Type Kv
+normalizeTypeVariables :: Type -> Type
 normalizeTypeVariables = rewriteType (findLambdas 0 M.empty) id
   where
     findLambdas idx subst recurse typ = case typ of
@@ -39,10 +39,10 @@ normalizeTypeVariables = rewriteType (findLambdas 0 M.empty) id
         Nothing -> v
       _ -> recurse typ
 
-substituteTypeVariable :: Name -> Type Kv -> Type Kv -> Type Kv
+substituteTypeVariable :: Name -> Type -> Type -> Type
 substituteTypeVariable v subst = substituteTypeVariables (M.singleton v subst)
 
-substituteTypeVariables :: M.Map Name (Type Kv) -> Type Kv -> Type Kv
+substituteTypeVariables :: M.Map Name (Type) -> Type -> Type
 substituteTypeVariables bindings = rewriteType f id
   where
     f recurse original = case original of

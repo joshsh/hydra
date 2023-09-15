@@ -85,7 +85,7 @@ termArityDef = hydraExtrasDefinition "termArity" $
     Case _Term_function --> ref functionArityDef]
     -- Note: ignoring variables which might resolve to functions
 
-typeArityDef :: Definition (Type Kv -> Int)
+typeArityDef :: Definition (Type -> Int)
 typeArityDef = hydraExtrasDefinition "typeArity" $
   function (Types.apply (TypeVariable _Type) (Types.var "a")) Types.int32 $
   match _Type (Just $ int32 0) [
@@ -95,7 +95,7 @@ typeArityDef = hydraExtrasDefinition "typeArity" $
     Case _Type_function --> lambda "f" $
       Math.add @@ (int32 1) @@ (ref typeArityDef @@ (apply (project _FunctionType _FunctionType_codomain) (var "f")))]
 
-uncurryTypeDef :: Definition (Type Kv -> [Type Kv])
+uncurryTypeDef :: Definition (Type -> [Type])
 uncurryTypeDef = hydraExtrasDefinition "uncurryType" $
   function typeA (listT typeA) $
   doc "Uncurry a type expression into a list of types, turning a function type a -> b into cons a (uncurryType b)" $

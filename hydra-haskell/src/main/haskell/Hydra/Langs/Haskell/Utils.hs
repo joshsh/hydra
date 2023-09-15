@@ -101,7 +101,7 @@ unionFieldReference namespaces sname (FieldName fname) = elementReference namesp
     ns = qualifiedNameNamespace $ qualifyNameEager sname
     nm = capitalize (typeNameForRecord sname) ++ capitalize fname
 
-unpackLambdaType :: Graph Kv -> Type Kv -> ([Name], Type Kv)
+unpackLambdaType :: Graph Kv -> Type -> ([Name], Type)
 unpackLambdaType cx t = case stripType t of
   TypeLambda (LambdaType v tbody) -> (v:vars, t')
     where

@@ -70,7 +70,7 @@ foldOverTerm order fld b0 term = ((\x -> case x of
   Coders.TraversalOrderPost -> (fld (L.foldl (foldOverTerm order fld) b0 (subterms term)) term)) order)
 
 -- | Fold over a type, traversing its subtypes in the specified order
-foldOverType :: (Coders.TraversalOrder -> (x -> Core.Type Core.Kv -> x) -> x -> Core.Type Core.Kv -> x)
+foldOverType :: (Coders.TraversalOrder -> (x -> Core.Type -> x) -> x -> Core.Type -> x)
 foldOverType order fld b0 typ = ((\x -> case x of
   Coders.TraversalOrderPre -> (L.foldl (foldOverType order fld) (fld b0 typ) (subtypes typ))
   Coders.TraversalOrderPost -> (fld (L.foldl (foldOverType order fld) b0 (subtypes typ)) typ)) order)
@@ -87,7 +87,7 @@ freeVariablesInTerm term =
     _ -> dfltVars) term)
 
 -- | Find the free variables (i.e. variables not bound by a lambda or let) in a type
-freeVariablesInType :: (Core.Type Core.Kv -> Set Core.Name)
+freeVariablesInType :: (Core.Type -> Set Core.Name)
 freeVariablesInType typ =  
   let dfltVars = (L.foldl (\s -> \t -> Sets.union s (freeVariablesInType t)) Sets.empty (subtypes typ))
   in ((\x -> case x of
@@ -141,7 +141,7 @@ subterms x = case x of
     Core.nominalObject v]
 
 -- | Find the children of a given type expression
-subtypes :: (Core.Type Core.Kv -> [Core.Type Core.Kv])
+subtypes :: (Core.Type -> [Core.Type])
 subtypes x = case x of
   Core.TypeAnnotated v -> [
     Core.annotatedSubject v]

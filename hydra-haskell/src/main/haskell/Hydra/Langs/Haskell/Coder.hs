@@ -20,10 +20,10 @@ import qualified Data.Maybe as Y
 import Hydra.Rewriting (removeTypeAnnotations, removeTermAnnotations)
 
 
-adaptTypeToHaskellAndEncode :: Namespaces -> Type Kv -> Flow (Graph Kv) H.Type
+adaptTypeToHaskellAndEncode :: Namespaces -> Type -> Flow (Graph Kv) H.Type
 adaptTypeToHaskellAndEncode namespaces = adaptAndEncodeType haskellLanguage (encodeType namespaces)
 
-constantDecls :: Graph Kv -> Namespaces -> Name -> Type Kv -> [H.DeclarationWithComments]
+constantDecls :: Graph Kv -> Namespaces -> Name -> Type -> [H.DeclarationWithComments]
 constantDecls g namespaces name@(Name nm) typ = if useCoreImport
     then toDecl (Name "hydra/core.Name") nameDecl:(toDecl (Name "hydra/core.FieldName") <$> fieldDecls)
     else []
@@ -46,7 +46,7 @@ constantDecls g namespaces name@(Name nm) typ = if useCoreImport
 
 constructModule :: Namespaces
   -> Module Kv
-  -> M.Map (Type Kv) (Coder (Graph Kv) (Graph Kv) (Term) H.Expression)
+  -> M.Map (Type) (Coder (Graph Kv) (Graph Kv) (Term) H.Expression)
   -> [(Element Kv, TypedTerm)] -> Flow (Graph Kv) H.Module
 constructModule namespaces mod coders pairs = do
     g <- getState
@@ -187,7 +187,7 @@ encodeTerm namespaces term = do
   where
     encode = encodeTerm namespaces
 
-encodeType :: Namespaces -> Type Kv -> Flow (Graph Kv) H.Type
+encodeType :: Namespaces -> Type -> Flow (Graph Kv) H.Type
 encodeType namespaces typ = withTrace "encode type" $ case stripType typ of
     TypeApplication (ApplicationType lhs rhs) -> toTypeApplication <$> CM.sequence [encode lhs, encode rhs]
     TypeFunction (FunctionType dom cod) -> H.TypeFunction <$> (H.Type_Function <$> encode dom <*> encode cod)
@@ -232,7 +232,7 @@ encodeType namespaces typ = withTrace "encode type" $ case stripType typ of
     encode = encodeType namespaces
     wrap name = pure $ H.TypeVariable $ elementReference namespaces name
 
-encodeTypeWithClassAssertions :: Namespaces -> M.Map Name (S.Set TypeClass) -> Type Kv -> Flow (Graph Kv) H.Type
+encodeTypeWithClassAssertions :: Namespaces -> M.Map Name (S.Set TypeClass) -> Type -> Flow (Graph Kv) H.Type
 encodeTypeWithClassAssertions namespaces classes typ = withTrace "encode with assertions" $ do
   htyp <- adaptTypeToHaskellAndEncode namespaces typ
   if L.null assertPairs
@@ -266,7 +266,7 @@ moduleToHaskell mod = do
   let s = printExpr $ parenthesize $ toTree hsmod
   return $ M.fromList [(namespaceToFilePath True (FileExtension "hs") $ moduleNamespace mod, s)]
 
-toDataDeclaration :: M.Map (Type Kv) (Coder (Graph Kv) (Graph Kv) (Term) H.Expression) -> Namespaces
+toDataDeclaration :: M.Map (Type) (Coder (Graph Kv) (Graph Kv) (Term) H.Expression) -> Namespaces
   -> (Element Kv, TypedTerm) -> Flow (Graph Kv) H.DeclarationWithComments
 toDataDeclaration coders namespaces (el, TypedTerm typ term) = toDecl hname term coder Nothing
   where

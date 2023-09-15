@@ -71,7 +71,7 @@ checkLiteralAdapter = checkAdapter id literalAdapter context
         floatVars = S.fromList [FloatTypeFloat32]
         integerVars = S.fromList [IntegerTypeInt16, IntegerTypeInt32]
 
-checkFieldAdapter :: [TypeVariant] -> FieldType Kv -> FieldType Kv -> Bool -> Field Kv -> Field Kv -> H.Expectation
+checkFieldAdapter :: [TypeVariant] -> FieldType -> FieldType -> Bool -> Field Kv -> Field Kv -> H.Expectation
 checkFieldAdapter = checkAdapter id fieldAdapter termTestContext
 
 checkFloatAdapter :: [FloatType] -> FloatType -> FloatType -> Bool -> FloatValue -> FloatValue -> H.Expectation
@@ -86,10 +86,10 @@ checkIntegerAdapter = checkAdapter id integerAdapter context
     context variants = withConstraints $ (languageConstraints baseLanguage) {
       languageConstraintsIntegerTypes = S.fromList variants }
 
-checkDataAdapter :: [TypeVariant] -> Type Kv -> Type Kv -> Bool -> Term -> Term -> H.Expectation
+checkDataAdapter :: [TypeVariant] -> Type -> Type -> Bool -> Term -> Term -> H.Expectation
 checkDataAdapter = checkAdapter stripTerm termAdapter termTestContext
 
-checkSerdeRoundTrip :: (Type Kv -> Flow (Graph Kv) (Coder (Graph Kv) (Graph Kv) (Term) BS.ByteString))
+checkSerdeRoundTrip :: (Type -> Flow (Graph Kv) (Coder (Graph Kv) (Graph Kv) (Term) BS.ByteString))
   -> TypedTerm -> H.Expectation
 checkSerdeRoundTrip mkSerde (TypedTerm typ term) = do
     case mserde of
@@ -100,7 +100,7 @@ checkSerdeRoundTrip mkSerde (TypedTerm typ term) = do
   where
     FlowState mserde _ trace = unFlow (mkSerde typ) testGraph emptyTrace
 
-checkSerialization :: (Type Kv -> Flow (Graph Kv) (Coder (Graph Kv) (Graph Kv) (Term) String))
+checkSerialization :: (Type -> Flow (Graph Kv) (Coder (Graph Kv) (Graph Kv) (Term) String))
   -> TypedTerm -> String -> H.Expectation
 checkSerialization mkSerdeStr (TypedTerm typ term) expected = do
     case mserde of

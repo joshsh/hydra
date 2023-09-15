@@ -106,7 +106,7 @@ metadataIsPreserved = do
         (coreDecodeType $ coreEncodeType annotatedStringType)
         annotatedStringType
   where
-    annotatedStringType :: Type Kv
+    annotatedStringType :: Type
     annotatedStringType = TypeAnnotated $ Annotated Types.string $ Kv $ M.fromList [
       (kvDescription, Terms.string "The string literal type"),
       (kvType, coreEncodeType $ TypeVariable _Type)]
