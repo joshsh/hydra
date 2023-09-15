@@ -282,6 +282,17 @@ _IntegerValue_uint32 = (FieldName "uint32")
 
 _IntegerValue_uint64 = (FieldName "uint64")
 
+-- | A key/value map which serves as a built-in metadata container for terms
+data Kv = 
+  Kv {
+    -- | A map of annotation names to annotation values
+    kvAnnotations :: (Map String (Term Kv))}
+  deriving (Eq, Ord, Read, Show)
+
+_Kv = (Name "hydra/core.Kv")
+
+_Kv_annotations = (FieldName "annotations")
+
 -- | A function abstraction (lambda)
 data Lambda a = 
   Lambda {

@@ -173,6 +173,13 @@ hydraCoreModule = Module ns elements [] $
           "uint64">:
             doc "A 64-bit unsigned integer value (unsigned long)" uint64],
 
+      def "Kv" $
+        doc "A key/value map which serves as a built-in metadata container for terms" $
+        record [
+          "annotations">:
+            doc "A map of annotation names to annotation values" $
+            Types.map string (core "Term" @@ core "Kv")],
+
       def "Lambda" $
         doc "A function abstraction (lambda)" $
         lambda "a" $ record [

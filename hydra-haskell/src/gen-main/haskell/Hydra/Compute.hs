@@ -73,24 +73,13 @@ _FlowState_state = (Core.FieldName "state")
 
 _FlowState_trace = (Core.FieldName "trace")
 
--- | A key/value map which serves as a built-in metadata container for terms
-data Kv = 
-  Kv {
-    -- | A map of annotation names to annotation values
-    kvAnnotations :: (Map String (Core.Term Kv))}
-  deriving (Eq, Ord, Read, Show)
-
-_Kv = (Core.Name "hydra/compute.Kv")
-
-_Kv_annotations = (Core.FieldName "annotations")
-
 -- | A container for logging and error information
 data Trace = 
   Trace {
     traceStack :: [String],
     traceMessages :: [String],
     -- | A map of string keys to arbitrary terms as values, for application-specific use
-    traceOther :: (Map String (Core.Term Kv))}
+    traceOther :: (Map String (Core.Term Core.Kv))}
   deriving (Eq, Ord, Read, Show)
 
 _Trace = (Core.Name "hydra/compute.Trace")

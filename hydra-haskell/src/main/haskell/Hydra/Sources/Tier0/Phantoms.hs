@@ -22,7 +22,6 @@ hydraPhantomsModule = Module ns elements [hydraComputeModule] $
   where
     ns = Namespace "hydra/phantoms"
     core = typeref $ moduleNamespace hydraCoreModule
-    evaluation = typeref $ moduleNamespace hydraComputeModule
     phantoms = typeref ns
     def = datatype ns
 
@@ -33,7 +32,7 @@ hydraPhantomsModule = Module ns elements [hydraComputeModule] $
 
       def "Datum" $
         doc "An association of a term with a phantom type" $
-        lambda "a" $ (core "Term") @@ (evaluation "Kv"),
+        lambda "a" $ (core "Term") @@ (core "Kv"),
 
       def "Definition" $
         doc "An association with a named term with a phantom type" $
@@ -43,7 +42,7 @@ hydraPhantomsModule = Module ns elements [hydraComputeModule] $
 
       def "Fld" $
         doc "An association with a term-level field with a phantom type" $
-        lambda "a" $ (core "Field") @@ (evaluation "Kv"),
+        lambda "a" $ (core "Field") @@ (core "Kv"),
 
       def "Reference" $
         doc "A pure association with a phantom type" $

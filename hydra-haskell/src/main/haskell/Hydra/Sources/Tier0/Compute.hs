@@ -58,13 +58,6 @@ hydraComputeModule = Module ns elements [hydraCoreModule] $
           "state">: "s",
           "trace">: compute "Trace"],
 
-      def "Kv" $
-        doc "A key/value map which serves as a built-in metadata container for terms" $
-        record [
-          "annotations">:
-            doc "A map of annotation names to annotation values" $
-            Types.map string (core "Term" @@ compute "Kv")],
-
       def "Trace" $
         doc "A container for logging and error information" $
         record [
@@ -72,4 +65,4 @@ hydraComputeModule = Module ns elements [hydraCoreModule] $
           "messages">: list string,
           "other">:
             doc "A map of string keys to arbitrary terms as values, for application-specific use" $
-            Types.map string (core "Term" @@ compute "Kv")]]
+            Types.map string (core "Term" @@ core "Kv")]]

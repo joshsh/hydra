@@ -2,7 +2,6 @@
 
 module Hydra.Phantoms where
 
-import qualified Hydra.Compute as Compute
 import qualified Hydra.Core as Core
 import Data.Int
 import Data.List as L
@@ -20,7 +19,7 @@ _Case = (Core.Name "hydra/phantoms.Case")
 -- | An association of a term with a phantom type
 newtype Datum a = 
   Datum {
-    unDatum :: (Core.Term Compute.Kv)}
+    unDatum :: (Core.Term Core.Kv)}
   deriving (Eq, Ord, Read, Show)
 
 _Datum = (Core.Name "hydra/phantoms.Datum")
@@ -41,7 +40,7 @@ _Definition_datum = (Core.FieldName "datum")
 -- | An association with a term-level field with a phantom type
 newtype Fld a = 
   Fld {
-    unFld :: (Core.Field Compute.Kv)}
+    unFld :: (Core.Field Core.Kv)}
   deriving (Eq, Ord, Read, Show)
 
 _Fld = (Core.Name "hydra/phantoms.Fld")
