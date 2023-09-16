@@ -11,10 +11,10 @@ import Hydra.Dsl.Bootstrap
 import Hydra.Dsl.Types as Types
 
 
-hydraCore :: Graph Kv
+hydraCore :: Graph
 hydraCore = elementsToGraph bootstrapGraph Nothing (moduleElements hydraCoreModule)
 
-hydraCoreModule :: Module Kv
+hydraCoreModule :: Module
 hydraCoreModule = Module ns elements [] $
     Just "Hydra's core data model, defining types, terms, and their dependencies"
   where

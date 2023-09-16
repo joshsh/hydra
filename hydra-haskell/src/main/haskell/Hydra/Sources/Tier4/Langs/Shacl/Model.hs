@@ -9,7 +9,7 @@ import Hydra.Sources.Tier4.Langs.Rdf.Syntax
 import Hydra.Dsl.Types as Types
 
 
-shaclModelModule :: Module Kv
+shaclModelModule :: Module
 shaclModelModule = Module ns elements [rdfSyntaxModule] $
     Just "A SHACL syntax model. See https://www.w3.org/TR/shacl"
   where

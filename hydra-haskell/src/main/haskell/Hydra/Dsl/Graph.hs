@@ -6,14 +6,14 @@ import Hydra.Dsl.Base as Base
 import qualified Data.Map as M
 
 
-graph :: Datum (M.Map Name (Element Kv))
-    -> Datum (M.Map Name (Maybe (Term)))
-    -> Datum (M.Map Name (Type))
-    -> Datum (Term)
-    -> Datum (M.Map Name (Primitive Kv))
-    -> Datum (AnnotationClass Kv)
-    -> Datum (Maybe (Graph Kv))
-    -> Datum (Graph Kv)
+graph :: Datum (M.Map Name (Element))
+    -> Datum (M.Map Name (Maybe Term))
+    -> Datum (M.Map Name Type)
+    -> Datum Term
+    -> Datum (M.Map Name (Primitive))
+    -> Datum (AnnotationClass)
+    -> Datum (Maybe (Graph))
+    -> Datum (Graph)
 graph elements environment types body primitives annotations schema = record _Graph [
     _Graph_elements>>: elements,
     _Graph_environment>>: environment,
@@ -23,23 +23,23 @@ graph elements environment types body primitives annotations schema = record _Gr
     _Graph_annotations>>: annotations,
     _Graph_schema>>: schema]
 
-graphElements :: Datum (Graph Kv -> M.Map Name (Element Kv))
+graphElements :: Datum (Graph -> M.Map Name (Element))
 graphElements = project _Graph _Graph_elements
 
-graphEnvironment :: Datum (Graph Kv -> M.Map Name (Maybe (Term)))
+graphEnvironment :: Datum (Graph -> M.Map Name (Maybe Term))
 graphEnvironment = project _Graph _Graph_environment
 
-graphTypes :: Datum (Graph Kv -> M.Map Name (Type))
+graphTypes :: Datum (Graph -> M.Map Name Type)
 graphTypes = project _Graph _Graph_types
 
-graphBody :: Datum (Graph Kv -> Term)
+graphBody :: Datum (Graph -> Term)
 graphBody = project _Graph _Graph_body
 
-graphPrimitives :: Datum (Graph Kv -> M.Map Name (Primitive Kv))
+graphPrimitives :: Datum (Graph -> M.Map Name (Primitive))
 graphPrimitives = project _Graph _Graph_primitives
 
-graphAnnotations :: Datum (Graph Kv -> AnnotationClass Kv)
+graphAnnotations :: Datum (Graph -> AnnotationClass)
 graphAnnotations = project _Graph _Graph_annotations
 
-graphSchema :: Datum (Graph Kv -> Maybe (Graph Kv))
+graphSchema :: Datum (Graph -> Maybe (Graph))
 graphSchema = project _Graph _Graph_schema

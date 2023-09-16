@@ -1,6 +1,6 @@
 -- | A DSL for constructing Hydra terms
 
-{-# LANGUAGE FlexibleInstances #-} -- TODO: temporary, for IsString (Term)
+{-# LANGUAGE FlexibleInstances #-} -- TODO: temporary, for IsString Term
 module Hydra.Dsl.Terms where
 
 import Hydra.Compute
@@ -19,7 +19,7 @@ import Data.Int
 import Data.String(IsString(..))
 
 
-instance IsString (Term) where fromString = string
+instance IsString Term where fromString = string
 
 (@@) :: Term -> Term -> Term
 f @@ x = apply f x
@@ -28,7 +28,7 @@ f @@ x = apply f x
 f <.> g = compose f g
 
 infixr 0 >:
-(>:) :: String -> Term -> Field Kv
+(>:) :: String -> Term -> Field
 n >: t = field n t
 
 annot :: Kv -> Term -> Term
@@ -55,16 +55,16 @@ compose f g = lambda "x" $ apply f (apply g $ var "x")
 constant :: Term -> Term
 constant = lambda ignoredVariable
 
-elimination :: Elimination Kv -> Term
+elimination :: Elimination -> Term
 elimination = TermFunction . FunctionElimination
 
 false :: Term
 false = boolean False
 
-field :: String -> Term -> Field Kv
+field :: String -> Term -> Field
 field n = Field (FieldName n)
 
-fieldsToMap :: [Field Kv] -> M.Map FieldName (Term)
+fieldsToMap :: [Field] -> M.Map FieldName Term
 fieldsToMap fields = M.fromList $ (\(Field name term) -> (name, term)) <$> fields
 
 float32 :: Float -> Term
@@ -82,7 +82,7 @@ fold = TermFunction . FunctionElimination . EliminationList
 identity :: Term
 identity = lambda "x" $ var "x"
 
-inject :: Name -> Field Kv -> Term
+inject :: Name -> Field -> Term
 inject tname = TermUnion . Injection tname
 
 int16 :: Int16 -> Term
@@ -116,19 +116,19 @@ list = TermList
 literal :: Literal -> Term
 literal = TermLiteral
 
-map :: M.Map (Term) (Term) -> Term
+map :: M.Map Term Term -> Term
 map = TermMap
 
-mapTerm :: M.Map (Term) (Term) -> Term
+mapTerm :: M.Map Term Term -> Term
 mapTerm = TermMap
 
-match :: Name -> Maybe (Term) -> [Field Kv] -> Term
+match :: Name -> Maybe Term -> [Field] -> Term
 match tname def fields = TermFunction $ FunctionElimination $ EliminationUnion $ CaseStatement tname def fields
 
 matchOpt :: Term -> Term -> Term
 matchOpt n j = TermFunction $ FunctionElimination $ EliminationOptional $ OptionalCases n j
 
-matchWithVariants :: Name -> Maybe (Term) -> [(FieldName, FieldName)] -> Term
+matchWithVariants :: Name -> Maybe Term -> [(FieldName, FieldName)] -> Term
 matchWithVariants tname def pairs = match tname def (toField <$> pairs)
   where
     toField (from, to) = Field from $ constant $ unitVariant tname to
@@ -136,7 +136,7 @@ matchWithVariants tname def pairs = match tname def (toField <$> pairs)
 nothing :: Term
 nothing = optional Nothing
 
-optional :: Y.Maybe (Term) -> Term
+optional :: Y.Maybe Term -> Term
 optional = TermOptional
 
 pair :: Term -> Term -> Term
@@ -151,10 +151,10 @@ product = TermProduct
 project :: Name -> FieldName -> Term
 project tname fname = TermFunction $ FunctionElimination $ EliminationRecord $ Projection tname fname
 
-record :: Name -> [Field Kv] -> Term
+record :: Name -> [Field] -> Term
 record tname fields = TermRecord $ Record tname fields
 
-set :: S.Set (Term) -> Term
+set :: S.Set Term -> Term
 set = TermSet
 
 string :: String -> Term
@@ -196,7 +196,7 @@ var = TermVariable . Name
 variant :: Name -> FieldName -> Term -> Term
 variant tname fname term = TermUnion $ Injection tname $ Field fname term
 
-with :: Term -> [Field Kv] -> Term
+with :: Term -> [Field] -> Term
 env `with` bindings = TermLet $ Let (M.fromList $ toPair <$> bindings) env
   where
      toPair (Field name value) = (Name $ unFieldName name, value)

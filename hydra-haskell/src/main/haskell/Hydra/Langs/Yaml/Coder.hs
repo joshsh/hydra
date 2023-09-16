@@ -12,7 +12,7 @@ import qualified Data.Map as M
 import qualified Data.Maybe as Y
 
 
-literalCoder :: LiteralType -> Flow (Graph Kv) (Coder (Graph Kv) (Graph Kv) Literal YM.Scalar)
+literalCoder :: LiteralType -> Flow (Graph) (Coder (Graph) (Graph) Literal YM.Scalar)
 literalCoder at = pure $ case at of
   LiteralTypeBoolean -> Coder {
     coderEncode = \(LiteralBoolean b) -> pure $ YM.ScalarBool b,
@@ -35,7 +35,7 @@ literalCoder at = pure $ case at of
       YM.ScalarStr s' -> pure $ LiteralString s'
       _ -> unexpected "string" $ show s}
 
-recordCoder :: RowType -> Flow (Graph Kv) (Coder (Graph Kv) (Graph Kv) (Term) YM.Node)
+recordCoder :: RowType -> Flow (Graph) (Coder (Graph) (Graph) Term YM.Node)
 recordCoder rt = do
     coders <- CM.mapM (\f -> (,) <$> pure f <*> termCoder (fieldTypeType f)) (rowTypeFields rt)
     return $ Coder (encode coders) (decode coders)
@@ -59,7 +59,7 @@ recordCoder rt = do
       where
         error = fail $ "no such field: " ++ fname
 
-termCoder :: Type -> Flow (Graph Kv) (Coder (Graph Kv) (Graph Kv) (Term) YM.Node)
+termCoder :: Type -> Flow (Graph) (Coder (Graph) (Graph) Term YM.Node)
 termCoder typ = case stripType typ of
   TypeLiteral at -> do
     ac <- literalCoder at
@@ -102,7 +102,7 @@ termCoder typ = case stripType typ of
         _ -> unexpected "mapping" $ show n}
   TypeRecord rt -> recordCoder rt
 
-yamlCoder :: Type -> Flow (Graph Kv) (Coder (Graph Kv) (Graph Kv) (Term) YM.Node)
+yamlCoder :: Type -> Flow (Graph) (Coder (Graph) (Graph) Term YM.Node)
 yamlCoder typ = do
   adapter <- languageAdapter yamlLanguage typ
   coder <- termCoder $ adapterTarget adapter

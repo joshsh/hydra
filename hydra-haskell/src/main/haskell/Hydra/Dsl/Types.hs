@@ -1,6 +1,6 @@
 -- | A DSL for constructing Hydra types
 
-{-# LANGUAGE FlexibleInstances #-} -- TODO: temporary, for IsString (Type)
+{-# LANGUAGE FlexibleInstances #-} -- TODO: temporary, for IsString Type
 module Hydra.Dsl.Types where
 
 import Hydra.Constants
@@ -11,7 +11,7 @@ import qualified Data.Map as M
 import Data.String(IsString(..))
 
 
-instance IsString (Type) where fromString = var
+instance IsString Type where fromString = var
 
 infixr 0 >:
 (>:) :: String -> Type -> FieldType
@@ -51,7 +51,7 @@ enum names = union $ (`field` unit) <$> names
 field :: String -> Type -> FieldType
 field fn = FieldType (FieldName fn)
 
-fieldsToMap :: [FieldType] -> M.Map FieldName (Type)
+fieldsToMap :: [FieldType] -> M.Map FieldName Type
 fieldsToMap fields = M.fromList $ (\(FieldType name typ) -> (name, typ)) <$> fields
 
 float32 :: Type

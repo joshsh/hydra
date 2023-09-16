@@ -11,14 +11,14 @@ import Hydra.Sources.Tier4.Test.Lib.Strings
 
 testSuiteNs = Namespace "hydra/test/testSuite"
 
-testSuiteModule :: Module Kv
+testSuiteModule :: Module
 testSuiteModule = Module testSuiteNs elements [hydraCoreModule, hydraTestingModule] $
     Just "Test cases for primitive functions"
   where
     elements = [
       groupElement "allTests" allTests]
 
-groupElement :: String -> TestGroup Kv -> Element Kv
+groupElement :: String -> TestGroup Kv -> Element
 groupElement lname group = Element name $ setTermType (Just typ) $ encodeGroup group
   where
     encodeGroup (TestGroup name desc groups cases) = Terms.record _TestGroup [

@@ -9,7 +9,7 @@ import Hydra.Dsl.Types as Types
 
 
 -- Note: deprecated and trivial/empty type definitions are excluded from this model
-parquetFormatModule :: Module Kv
+parquetFormatModule :: Module
 parquetFormatModule = Module ns elements [] $
     Just ("A model for the Parquet format. Based on the Thrift-based specification at:\n" ++
       "  https://github.com/apache/parquet-format/blob/master/src/main/thrift/parquet.thrift")

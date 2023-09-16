@@ -242,7 +242,7 @@ testSimplifyTerm = do
 
 typeOf term = annotationClassTermType (graphAnnotations testGraph) term
 
-withType :: Graph Kv -> Type -> Term -> Term
+withType :: Graph -> Type -> Term -> Term
 withType g typ = annotationClassSetTermType (graphAnnotations g) (Just typ)
 
 spec :: H.Spec

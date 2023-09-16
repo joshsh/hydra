@@ -26,9 +26,9 @@ import qualified Data.Maybe as Y
 data AvroEnvironment = AvroEnvironment {
   avroEnvironmentNamedAdapters :: M.Map AvroQualifiedName AvroHydraAdapter,
   avroEnvironmentNamespace :: Maybe String,
-  avroEnvironmentElements :: M.Map Name (Element Kv), -- note: only used in the term coders
-  avroEnvironmentCreateAnnotation :: M.Map String (Term) -> Kv}
-type AvroHydraAdapter = Adapter AvroEnvironment AvroEnvironment Avro.Schema (Type) Json.Value (Term)
+  avroEnvironmentElements :: M.Map Name (Element), -- note: only used in the term coders
+  avroEnvironmentCreateAnnotation :: M.Map String Term -> Kv}
+type AvroHydraAdapter = Adapter AvroEnvironment AvroEnvironment Avro.Schema Type Json.Value Term
 
 data AvroQualifiedName = AvroQualifiedName (Maybe String) String deriving (Eq, Ord, Show)
 
@@ -276,12 +276,12 @@ encodeAnnotationValue v = case v of
       toEntry (k, v) = (Terms.string k, encodeAnnotationValue v)
   Json.ValueString s -> Terms.string s
 
-fieldAnnotationsToCore :: Avro.Field -> M.Map String (Term)
+fieldAnnotationsToCore :: Avro.Field -> M.Map String Term
 fieldAnnotationsToCore f = M.fromList (toCore <$> (M.toList $ Avro.fieldAnnotations f))
   where
     toCore (k, v) = (k, encodeAnnotationValue v)
 
-namedAnnotationsToCore :: Avro.Named -> M.Map String (Term)
+namedAnnotationsToCore :: Avro.Named -> M.Map String Term
 namedAnnotationsToCore n = M.fromList (toCore <$> (M.toList $ Avro.namedAnnotations n))
   where
     toCore (k, v) = (k, encodeAnnotationValue v)
@@ -350,7 +350,7 @@ jsonToString v = case v of
 showQname :: AvroQualifiedName -> String
 showQname (AvroQualifiedName mns local) = (Y.maybe "" (\ns -> ns ++ ".") mns) ++ local
 
-stringToTerm :: Type -> String -> Flow s (Term)
+stringToTerm :: Type -> String -> Flow s Term
 stringToTerm typ s = case stripType typ of
     TypeLiteral lt -> TermLiteral <$> case lt of
       LiteralTypeBoolean -> LiteralBoolean <$> doRead s

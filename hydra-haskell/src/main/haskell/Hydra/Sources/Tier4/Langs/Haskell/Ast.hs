@@ -6,7 +6,7 @@ import Hydra.Dsl.Bootstrap
 import Hydra.Dsl.Types as Types
 
 
-haskellAstModule :: Module Kv
+haskellAstModule :: Module
 haskellAstModule = Module ns elements [hydraCoreModule] $
     Just "A Haskell syntax model, loosely based on Language.Haskell.Tools.AST"
   where

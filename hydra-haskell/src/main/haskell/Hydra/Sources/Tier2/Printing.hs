@@ -30,7 +30,7 @@ import           Hydra.Sources.Tier1.All
 import Hydra.Sources.Tier2.Basics
 
 
-hydraPrintingModule :: Module Kv
+hydraPrintingModule :: Module
 hydraPrintingModule = Module (Namespace "hydra/printing") elements [hydraBasicsModule] $
     Just "Utilities for use in transformations"
   where

@@ -40,7 +40,7 @@ _Definition_datum = (Core.FieldName "datum")
 -- | An association with a term-level field with a phantom type
 newtype Fld a = 
   Fld {
-    unFld :: (Core.Field Core.Kv)}
+    unFld :: (Core.Field)}
   deriving (Eq, Ord, Read, Show)
 
 _Fld = (Core.Name "hydra/phantoms.Fld")

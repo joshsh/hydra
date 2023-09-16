@@ -23,10 +23,10 @@ _PathEquation_left = (Core.FieldName "left")
 _PathEquation_right = (Core.FieldName "right")
 
 -- | A pattern which, if it matches in a given graph, implies that another pattern must also match. Query variables are shared between the two patterns.
-data PatternImplication a = 
+data PatternImplication =
   PatternImplication {
-    patternImplicationAntecedent :: (Query.Pattern a),
-    patternImplicationConsequent :: (Query.Pattern a)}
+    patternImplicationAntecedent :: (Query.Pattern),
+    patternImplicationConsequent :: (Query.Pattern)}
   deriving (Eq, Ord, Read, Show)
 
 _PatternImplication = (Core.Name "hydra/constraints.PatternImplication")

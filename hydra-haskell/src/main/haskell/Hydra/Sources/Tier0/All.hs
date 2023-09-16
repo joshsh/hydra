@@ -32,7 +32,7 @@ import Hydra.Sources.Tier0.Query
 import Hydra.Sources.Tier0.Testing
 import Hydra.Sources.Tier0.Workflow
 
-tier0Modules :: [Module Kv]
+tier0Modules :: [Module]
 tier0Modules = [
   hydraAstModule,
   hydraCodersModule,

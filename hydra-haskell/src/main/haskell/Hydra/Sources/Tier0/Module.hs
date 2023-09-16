@@ -16,7 +16,7 @@ import           Hydra.Sources.Core
 import Hydra.Sources.Tier0.Graph
 
 
-hydraModuleModule :: Module Kv
+hydraModuleModule :: Module
 hydraModuleModule = Module ns elements [hydraGraphModule] $
     Just "A model for Hydra namespaces and modules (collections of elements in the same namespace)"
   where

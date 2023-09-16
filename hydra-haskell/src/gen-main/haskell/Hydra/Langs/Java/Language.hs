@@ -17,7 +17,7 @@ javaMaxTupleLength :: Int
 javaMaxTupleLength = 9
 
 -- | Language constraints for Java
-javaLanguage :: (Coders.Language Core.Kv)
+javaLanguage :: (Coders.Language)
 javaLanguage = Coders.Language {
   Coders.languageName = (Coders.LanguageName "hydra/langs/java"),
   Coders.languageConstraints = Coders.LanguageConstraints {

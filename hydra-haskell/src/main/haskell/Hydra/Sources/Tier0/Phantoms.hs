@@ -16,7 +16,7 @@ import           Hydra.Sources.Core
 import Hydra.Sources.Tier0.Compute
 
 
-hydraPhantomsModule :: Module Kv
+hydraPhantomsModule :: Module
 hydraPhantomsModule = Module ns elements [hydraComputeModule] $
     Just "Phantom types for use in model definitions"
   where

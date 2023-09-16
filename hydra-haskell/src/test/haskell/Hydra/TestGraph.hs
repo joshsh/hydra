@@ -38,23 +38,23 @@ stringAliasType = TypeWrap $ Nominal stringAliasTypeName Types.string
 stringAliasTypeName :: Name
 stringAliasTypeName = Name "StringTypeAlias"
 
-testElementArthur :: Element Kv
+testElementArthur :: Element
 testElementArthur = Element {
   elementName = Name "ArthurDent",
   elementData = testDataArthur}
 
-testElementFirstName :: Element Kv
+testElementFirstName :: Element
 testElementFirstName = Element {
   elementName = Name "firstName",
   elementData = project testTypePersonName $ FieldName "firstName"}
 
-testGraph :: Graph Kv
+testGraph :: Graph
 testGraph = elementsToGraph hydraCore (Just testSchemaGraph) [testElementArthur, testElementFirstName]
 
 testNamespace :: Namespace
 testNamespace = Namespace "testGraph"
 
-testSchemaGraph :: Graph Kv
+testSchemaGraph :: Graph
 testSchemaGraph = elementsToGraph hydraCore (Just hydraCore) [
     def stringAliasTypeName $ Ann.doc "An alias for the string type" stringAliasType,
     def testTypeFoobarValueName testTypeFoobarValue,

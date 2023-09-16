@@ -31,7 +31,7 @@ import           Hydra.Sources.Tier3.All
 protobufLanguageDefinition :: String -> Datum a -> Definition a
 protobufLanguageDefinition = definitionInModule protobufLanguageModule
 
-protobufLanguageModule :: Module Kv
+protobufLanguageModule :: Module
 protobufLanguageModule = Module ns elements [hydraCodersModule, hydraBasicsModule, hydraStripModule] Nothing
   where
     ns = Namespace "hydra/langs/protobuf/language"
@@ -39,7 +39,7 @@ protobufLanguageModule = Module ns elements [hydraCodersModule, hydraBasicsModul
       el protobufLanguageDef,
       el protobufReservedWordsDef]
 
-protobufLanguageDef :: Definition (Language Kv)
+protobufLanguageDef :: Definition (Language)
 protobufLanguageDef = protobufLanguageDefinition "protobufLanguage" $
   doc "Language constraints for Protocol Buffers v3" $
   typed (Types.apply (TypeVariable _Language) (Types.var "a")) $

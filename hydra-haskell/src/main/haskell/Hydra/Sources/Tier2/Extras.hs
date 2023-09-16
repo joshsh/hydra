@@ -29,7 +29,7 @@ import           Hydra.Sources.Tier1.All
 hydraExtrasDefinition :: String -> Datum a -> Definition a
 hydraExtrasDefinition = definitionInModule hydraExtrasModule
 
-hydraExtrasModule :: Module Kv
+hydraExtrasModule :: Module
 hydraExtrasModule = Module (Namespace "hydra/extras") elements [hydraGraphModule, hydraMantleModule, hydraComputeModule] $
     Just "Basic functions which depend on primitive functions"
   where
@@ -46,7 +46,7 @@ hydraExtrasModule = Module (Namespace "hydra/extras") elements [hydraGraphModule
 --      el getAttrDef
       ]
 
-functionArityDef :: Definition (Function Kv -> Int)
+functionArityDef :: Definition (Function -> Int)
 functionArityDef = hydraExtrasDefinition "functionArity" $
   function (Types.apply (TypeVariable _Function) (Types.var "a")) Types.int32 $
   match _Function Nothing [
@@ -55,7 +55,7 @@ functionArityDef = hydraExtrasDefinition "functionArity" $
     Case _Function_primitive --> constant $
       doc "TODO: This function needs to be monadic, so we can look up the primitive" (int32 42)]
 
-lookupPrimitiveDef :: Definition (Graph Kv -> Name -> Maybe (Primitive Kv))
+lookupPrimitiveDef :: Definition (Graph -> Name -> Maybe (Primitive))
 lookupPrimitiveDef = hydraExtrasDefinition "lookupPrimitive" $
   function
     (Types.apply (TypeVariable _Graph) (Types.var "a"))
@@ -63,7 +63,7 @@ lookupPrimitiveDef = hydraExtrasDefinition "lookupPrimitive" $
   lambda "g" $ lambda "name" $
     apply (Maps.lookup @@ var "name") (project _Graph _Graph_primitives @@ var "g")
 
-primitiveArityDef :: Definition (Primitive Kv -> Int)
+primitiveArityDef :: Definition (Primitive -> Int)
 primitiveArityDef = hydraExtrasDefinition "primitiveArity" $
   doc "Find the arity (expected number of arguments) of a primitive constant or function" $
   function (Types.apply (TypeVariable _Primitive) (Types.var "a")) Types.int32 $
@@ -114,13 +114,13 @@ emptyKvDef = hydraExtrasDefinition "emptyKv" $
   record _Kv [
     _Kv_annotations>>: Maps.empty]
 
-getAnnotationDef :: Definition (String -> Kv -> Maybe (Term))
+getAnnotationDef :: Definition (String -> Kv -> Maybe Term)
 getAnnotationDef = hydraExtrasDefinition "getAnnotation" $
   lambda "key" $ lambda "ann" $
     Maps.lookup @@ var "key" @@ (project _Kv _Kv_annotations @@ var "ann")
 
 
---getAttrDef :: Definition (String -> Flow s (Maybe (Term)))
+--getAttrDef :: Definition (String -> Flow s (Maybe Term))
 --getAttrDef = hydraExtrasDefinition "getAttr" $
 --  lambda "key" $ wrap _Flow $
 --    function Types.string (Types.apply (Types.apply (TypeVariable _Flow) (Types.var "s")) (Types.optional $ Types.apply (TypeVariable _Term) (TypeVariable _Kv))) $

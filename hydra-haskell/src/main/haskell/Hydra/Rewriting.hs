@@ -32,7 +32,7 @@ boundVariablesInType = foldOverType TraversalOrderPre fld S.empty
       TypeLambda (LambdaType v _) -> S.insert v names
       _ -> names
 
-elementsWithDependencies :: [Element Kv] -> Flow (Graph Kv) [Element Kv]
+elementsWithDependencies :: [Element] -> Flow (Graph) [Element]
 elementsWithDependencies original = CM.mapM requireElement allDepNames
   where
     depNames = S.toList . termDependencyNames True False False . elementData
@@ -41,7 +41,7 @@ elementsWithDependencies original = CM.mapM requireElement allDepNames
 -- | Turn arbitrary terms like 'add 42' into terms like '\x.add 42 x',
 --   whose arity (in the absence of application terms) is equal to the depth of nested lambdas.
 --   This function leaves application terms intact, simply rewriting their left and right subterms.
-expandLambdas :: Term -> Flow (Graph Kv) (Term)
+expandLambdas :: Term -> Flow (Graph) Term
 expandLambdas term = do
     g <- getState
     rewriteTermM (expand g Nothing []) (pure . id) term
@@ -154,10 +154,10 @@ rewriteTerm f mf = rewrite fsub f
         forField f = f {fieldTerm = recurse (fieldTerm f)}
 
 rewriteTermM ::
-  ((Term -> Flow s (Term)) -> Term -> (Flow s (Term))) ->
+  ((Term -> Flow s Term) -> Term -> (Flow s Term)) ->
   (Kv -> Flow s Kv) ->
   Term ->
-  Flow s (Term)
+  Flow s Term
 rewriteTermM f mf = rewrite fsub f
   where
     fsub recurse term = case term of
@@ -209,7 +209,7 @@ rewriteTermMeta = rewriteTerm mapExpr
   where
     mapExpr recurse term = recurse term
 
-rewriteTermMetaM :: (Kv -> Flow s Kv) -> Term -> Flow s (Term)
+rewriteTermMetaM :: (Kv -> Flow s Kv) -> Term -> Flow s Term
 rewriteTermMetaM = rewriteTermM mapExpr
   where
     mapExpr recurse term = recurse term
@@ -237,10 +237,10 @@ rewriteType f mf = rewrite fsub f
         forField f = f {fieldTypeType = recurse (fieldTypeType f)}
 
 rewriteTypeM ::
-  ((Type -> Flow s (Type)) -> Type -> (Flow s (Type))) ->
+  ((Type -> Flow s Type) -> Type -> (Flow s Type)) ->
   (Kv -> Flow s Kv) ->
   Type ->
-  Flow s (Type)
+  Flow s Type
 rewriteTypeM f mf = rewrite fsub f
   where
     fsub recurse typ = case typ of
@@ -328,7 +328,7 @@ termDependencyNames withVars withPrims withNoms = foldOverTerm TraversalOrderPre
         prim name = if withPrims then S.insert name names else names
         var name = if withVars then S.insert name names else names
 
-topologicalSortElements :: [Element Kv] -> Either [[Name]] [Name]
+topologicalSortElements :: [Element] -> Either [[Name]] [Name]
 topologicalSortElements els = topologicalSort $ adjlist <$> els
   where
     adjlist e = (elementName e, S.toList $ termDependencyNames False True True $ elementData e)
@@ -338,7 +338,7 @@ typeDependencyNames = freeVariablesInType
 
 -- | Where non-lambda terms with nonzero arity occur at the top level, turn them into lambdas,
 --   also adding an appropriate type annotation to each new lambda.
-wrapLambdas :: Term -> Flow (Graph Kv) (Term)
+wrapLambdas :: Term -> Flow (Graph) Term
 wrapLambdas term = do
     typ <- requireTermType term
     anns <- graphAnnotations <$> getState

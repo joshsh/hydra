@@ -21,7 +21,7 @@ nonNegativeInteger = Types.bigint
 owlIri :: [Char] -> Type -> Type
 owlIri local = withIri $ "http://www.w3.org/2002/07/owl#" ++ local
 
-owlSyntaxModule :: Module Kv
+owlSyntaxModule :: Module
 owlSyntaxModule = Module ns elements [rdfSyntaxModule, xmlSchemaModule] $
     Just "An OWL 2 syntax model. See https://www.w3.org/TR/owl2-syntax"
   where

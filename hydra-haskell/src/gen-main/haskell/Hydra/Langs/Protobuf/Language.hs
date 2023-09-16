@@ -12,7 +12,7 @@ import Data.Map as M
 import Data.Set as S
 
 -- | Language constraints for Protocol Buffers v3
-protobufLanguage :: (Coders.Language Core.Kv)
+protobufLanguage :: (Coders.Language)
 protobufLanguage = Coders.Language {
   Coders.languageName = (Coders.LanguageName "hydra/langs/protobuf"),
   Coders.languageConstraints = Coders.LanguageConstraints {

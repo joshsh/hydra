@@ -18,7 +18,7 @@ import Data.Map as M
 import Data.Set as S
 
 -- | Find the elimination variant (constructor) for a given elimination term
-eliminationVariant :: (Core.Elimination Core.Kv -> Mantle.EliminationVariant)
+eliminationVariant :: (Core.Elimination -> Mantle.EliminationVariant)
 eliminationVariant x = case x of
   Core.EliminationList _ -> Mantle.EliminationVariantList
   Core.EliminationOptional _ -> Mantle.EliminationVariantOptional
@@ -59,7 +59,7 @@ floatValueType x = case x of
   Core.FloatValueFloat64 _ -> Core.FloatTypeFloat64
 
 -- | Find the function variant (constructor) for a given function
-functionVariant :: (Core.Function Core.Kv -> Mantle.FunctionVariant)
+functionVariant :: (Core.Function -> Mantle.FunctionVariant)
 functionVariant x = case x of
   Core.FunctionElimination _ -> Mantle.FunctionVariantElimination
   Core.FunctionLambda _ -> Mantle.FunctionVariantLambda
@@ -159,7 +159,7 @@ literalVariants = [
   Mantle.LiteralVariantInteger,
   Mantle.LiteralVariantString]
 
-termMeta :: (Graph.Graph Core.Kv -> Core.Term -> Core.Kv)
+termMeta :: (Graph.Graph -> Core.Term -> Core.Kv)
 termMeta x = (Graph.annotationClassTermAnnotation (Graph.graphAnnotations x))
 
 -- | Find the term variant (constructor) for a given term
@@ -256,7 +256,7 @@ mapFirstLetter mapping s =
       list = (Strings.toList s)
   in (Logic.ifElse s (Strings.cat2 firstLetter (Strings.fromList (Lists.tail list))) (Strings.isEmpty s))
 
-fieldMap :: ([Core.Field Core.Kv] -> Map Core.FieldName (Core.Term))
+fieldMap :: ([Core.Field] -> Map Core.FieldName (Core.Term))
 fieldMap fields = (Maps.fromList (Lists.map toPair fields)) 
   where 
     toPair = (\f -> (Core.fieldName f, (Core.fieldTerm f)))
@@ -290,7 +290,7 @@ isUnitType t = (Equality.equalType (Strip.stripType t) (Core.TypeRecord (Core.Ro
   Core.rowTypeExtends = Nothing,
   Core.rowTypeFields = []})))
 
-elementsToGraph :: (Graph.Graph Core.Kv -> Maybe (Graph.Graph Core.Kv) -> [Graph.Element Core.Kv] -> Graph.Graph Core.Kv)
+elementsToGraph :: (Graph.Graph -> Maybe (Graph.Graph) -> [Graph.Element] -> Graph.Graph)
 elementsToGraph parent schema elements =  
   let toPair = (\el -> (Graph.elementName el, el))
   in Graph.Graph {

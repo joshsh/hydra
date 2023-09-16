@@ -8,7 +8,7 @@ import Data.List as L
 import Data.Map as M
 import Data.Set as S
 
-skipAnnotations :: ((x -> Maybe (Core.Annotated x a)) -> x -> x)
+skipAnnotations :: ((x -> Maybe (Core.Annotated x)) -> x -> x)
 skipAnnotations getAnn t =  
   let skip = (\t1 -> (\x -> case x of
           Nothing -> t1

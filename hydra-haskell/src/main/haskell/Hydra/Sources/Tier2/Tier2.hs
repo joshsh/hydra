@@ -31,7 +31,7 @@ import           Hydra.Sources.Tier1.All
 tier2Definition :: String -> Datum a -> Definition a
 tier2Definition = definitionInModule hydraTier2Module
 
-hydraTier2Module :: Module Kv
+hydraTier2Module :: Module
 hydraTier2Module = Module (Namespace "hydra/tier2") elements [hydraGraphModule, hydraMantleModule, hydraComputeModule, hydraStripModule] $
     Just ("A module for miscellaneous tier-2 functions and constants.")
   where
@@ -60,7 +60,7 @@ getStateDef = tier2Definition "getState" $
       typed (Types.apply (Types.apply (TypeVariable _FlowState) sT) unitT) $
       Flows.unFlow @@ (Flows.pure @@ unit) @@ var "s0" @@ var "t0"])
 
-getTermTypeDef :: Definition (Term -> Flow (Graph Kv) (Maybe (Type)))
+getTermTypeDef :: Definition (Term -> Flow (Graph) (Maybe Type))
 getTermTypeDef = tier2Definition "getTermType" $
   function termA (flowT graphA (TypeOptional typeA)) $
   doc "Get the annotated type of a given term, if any" $
@@ -80,7 +80,7 @@ putStateDef = tier2Definition "putState" $
     `with` [
       "f1">: Flows.unFlow @@ (Flows.pure @@ unit) @@ var "s0" @@ var "t0"])
 
-requireElementTypeDef :: Definition (Element Kv -> Flow (Graph Kv) (Type))
+requireElementTypeDef :: Definition (Element -> Flow (Graph) Type)
 requireElementTypeDef = tier2Definition "requireElementType" $
   function elementA (flowT graphA typeA) $
   doc "Get the annotated type of a given element, or fail if it is missing" $
@@ -90,7 +90,7 @@ requireElementTypeDef = tier2Definition "requireElementType" $
        (Flows.fail @@ ("missing type annotation for element " ++ (unwrap _Name @@ (project _Element _Element_name @@ var "el"))))
        Flows.pure])
 
-requireTermTypeDef :: Definition (Term -> Flow (Graph Kv) (Type))
+requireTermTypeDef :: Definition (Term -> Flow (Graph) Type)
 requireTermTypeDef = tier2Definition "requireTermType" $
   function termA (flowT graphA typeA) $
   doc "Get the annotated type of a given term, or fail if it is missing" $

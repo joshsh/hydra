@@ -6,7 +6,7 @@ import Hydra.Dsl.Bootstrap
 import Hydra.Dsl.Types as Types
 
 
-pegasusPdlModule :: Module Kv
+pegasusPdlModule :: Module
 pegasusPdlModule = Module ns elements [jsonModelModule] $
     Just ("A model for PDL (Pegasus Data Language) schemas. Based on the specification at:\n" ++
       "  https://linkedin.github.io/rest.li/pdl_schema")

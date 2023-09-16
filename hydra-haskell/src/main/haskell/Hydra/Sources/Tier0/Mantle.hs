@@ -14,7 +14,7 @@ import           Hydra.Dsl.Types       as Types
 import           Hydra.Sources.Core
 
 
-hydraMantleModule :: Module Kv
+hydraMantleModule :: Module
 hydraMantleModule = Module ns elements [hydraCoreModule] $
     Just "A set of types which supplement hydra/core with type variants, graphs, and elements"
   where

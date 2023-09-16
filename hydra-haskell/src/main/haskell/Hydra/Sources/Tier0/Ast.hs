@@ -12,7 +12,7 @@ import           Hydra.Dsl.Types       as Types
 import           Hydra.Sources.Core
 
 
-hydraAstModule :: Module Kv
+hydraAstModule :: Module
 hydraAstModule = Module ns elements [] $
     Just "A model which provides a common syntax tree for Hydra serializers"
   where

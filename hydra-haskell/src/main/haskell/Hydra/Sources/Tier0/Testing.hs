@@ -14,7 +14,7 @@ import           Hydra.Dsl.Types       as Types
 import           Hydra.Sources.Core
 
 
-hydraTestingModule :: Module Kv
+hydraTestingModule :: Module
 hydraTestingModule = Module ns elements [hydraCoreModule] $
     Just "A model for unit testing"
   where

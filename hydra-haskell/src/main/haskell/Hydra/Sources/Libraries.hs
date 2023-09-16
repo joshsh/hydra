@@ -187,7 +187,7 @@ _strings_toList = qname _hydra_lib_strings "toList" :: Name
 _strings_toLower = qname _hydra_lib_strings "toLower" :: Name
 _strings_toUpper = qname _hydra_lib_strings "toUpper" :: Name
 
-hydraLibEqualityPrimitives :: [Primitive Kv]
+hydraLibEqualityPrimitives :: [Primitive]
 hydraLibEqualityPrimitives = [
     prim2           _equality_equalBinary   binary binary boolean Equality.equalBinary,
     prim2           _equality_equalBoolean  boolean boolean boolean Equality.equalBoolean,
@@ -214,7 +214,7 @@ hydraLibEqualityPrimitives = [
   where
     x = variable "x"
 
-hydraLibFlowsPrimitives :: [Primitive Kv]
+hydraLibFlowsPrimitives :: [Primitive]
 hydraLibFlowsPrimitives = [
     prim2Poly ["s", "x", "y"] _flows_apply (flow s (function x y)) (flow s x) (flow s y) Flows.apply,
     prim2Poly ["s", "x", "y"] _flows_bind  (flow s x) (function x (flow s y)) (flow s y) Flows.bind,
@@ -226,7 +226,7 @@ hydraLibFlowsPrimitives = [
     x = variable "x"
     y = variable "y"
 
-applyInterp :: Term -> Term -> Flow (Graph Kv) (Term)
+applyInterp :: Term -> Term -> Flow (Graph) Term
 applyInterp funs' args' = do
     funs <- Expect.list Prelude.pure funs'
     args <- Expect.list Prelude.pure args'
@@ -234,22 +234,22 @@ applyInterp funs' args' = do
   where
     helper args f = Terms.apply f <$> args
 
-bindInterp :: Term -> Term -> Flow (Graph Kv) (Term)
+bindInterp :: Term -> Term -> Flow (Graph) Term
 bindInterp args' fun = do
     args <- Expect.list Prelude.pure args'
     return $ Terms.apply (Terms.primitive $ Name "hydra/lib/lists.concat") (Terms.list $ Terms.apply fun <$> args)
 
-mapInterp :: Term -> Term -> Flow (Graph Kv) (Term)
+mapInterp :: Term -> Term -> Flow (Graph) Term
 mapInterp fun args' = do
     args <- Expect.list Prelude.pure args'
     return $ Terms.list (Terms.apply fun <$> args)
 
-hydraLibIoPrimitives :: [Primitive Kv]
+hydraLibIoPrimitives :: [Primitive]
 hydraLibIoPrimitives = [
     prim1Poly ["a"] _io_showTerm term string Io.showTerm,
     prim1Poly ["a"] _io_showType type_ string Io.showType]
 
-hydraLibListsPrimitives :: [Primitive Kv]
+hydraLibListsPrimitives :: [Primitive]
 hydraLibListsPrimitives = [
     prim2Interp ["x", "y"] _lists_apply       (list $ function x y) (list x) (list y) applyInterp,
     prim2Interp ["x", "y"] _lists_bind        (list x) (function x (list y)) (list y) bindInterp,
@@ -270,7 +270,7 @@ hydraLibListsPrimitives = [
     x = variable "x"
     y = variable "y"
 
-hydraLibLiteralsPrimitives :: [Primitive Kv]
+hydraLibLiteralsPrimitives :: [Primitive]
 hydraLibLiteralsPrimitives = [
   prim1 _literals_bigfloatToBigint  bigfloat bigint Literals.bigfloatToBigint,
   prim1 _literals_bigfloatToFloat32 bigfloat float32 Literals.bigfloatToFloat32,
@@ -297,7 +297,7 @@ hydraLibLiteralsPrimitives = [
   prim1 _literals_uint32ToBigint    uint32 bigint Literals.uint32ToBigint,
   prim1 _literals_uint64ToBigint    uint64 bigint Literals.uint64ToBigint]
 
-hydraLibLogicPrimitives :: [Primitive Kv]
+hydraLibLogicPrimitives :: [Primitive]
 hydraLibLogicPrimitives = [
     prim2           _logic_and    boolean boolean boolean Logic.and,
     prim3Poly ["x"] _logic_ifElse x x boolean x Logic.ifElse,
@@ -306,7 +306,7 @@ hydraLibLogicPrimitives = [
   where
     x = variable "x"
 
-hydraLibMapsPrimitives :: [Primitive Kv]
+hydraLibMapsPrimitives :: [Primitive]
 hydraLibMapsPrimitives = [
     prim0Poly ["k", "v"]        _maps_empty     mapKv Maps.empty,
     prim1Poly ["k", "v"]        _maps_fromList  (list $ pair k v) mapKv Maps.fromList,
@@ -329,7 +329,7 @@ hydraLibMapsPrimitives = [
     v2 = variable "v2"
     mapKv = Prims.map k v
 
-hydraLibMathInt32Primitives :: [Primitive Kv]
+hydraLibMathInt32Primitives :: [Primitive]
 hydraLibMathInt32Primitives = [
   prim2 _math_add int32 int32 int32 Math.add,
   prim2 _math_div int32 int32 int32 Math.div,
@@ -339,7 +339,7 @@ hydraLibMathInt32Primitives = [
   prim2 _math_rem int32 int32 int32 Math.rem,
   prim2 _math_sub int32 int32 int32 Math.sub]
 
-hydraLibOptionalsPrimitives :: [Primitive Kv]
+hydraLibOptionalsPrimitives :: [Primitive]
 hydraLibOptionalsPrimitives = [
     prim2Poly ["x", "y"] _optionals_apply     (optional $ function x y) (optional x) (optional y) Optionals.apply,
     prim2Poly ["x", "y"] _optionals_bind      (optional x) (function x (optional y)) (optional y) Optionals.bind,
@@ -351,7 +351,7 @@ hydraLibOptionalsPrimitives = [
     x = variable "x"
     y = variable "y"
 
-hydraLibSetsPrimitives :: [Primitive Kv]
+hydraLibSetsPrimitives :: [Primitive]
 hydraLibSetsPrimitives = [
     prim2Poly ["x"]      _sets_contains     x (set x) boolean Sets.contains,
     prim2Poly ["x"]      _sets_difference   (set x) (set x) (set x) Sets.difference,
@@ -370,7 +370,7 @@ hydraLibSetsPrimitives = [
     x = variable "x"
     y = variable "y"
 
-hydraLibStringsPrimitives :: [Primitive Kv]
+hydraLibStringsPrimitives :: [Primitive]
 hydraLibStringsPrimitives = [
   prim1 _strings_cat         (list string) string Strings.cat,
   prim2 _strings_cat2        string string string Strings.cat2,
@@ -383,7 +383,7 @@ hydraLibStringsPrimitives = [
   prim1 _strings_toLower     string string Strings.toLower,
   prim1 _strings_toUpper     string string Strings.toUpper]
 
-standardPrimitives :: [Primitive Kv]
+standardPrimitives :: [Primitive]
 standardPrimitives =
      hydraLibEqualityPrimitives
   ++ hydraLibFlowsPrimitives

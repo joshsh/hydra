@@ -31,7 +31,7 @@ import           Hydra.Sources.Tier1.All
 basicsDefinition :: String -> Datum a -> Definition a
 basicsDefinition = definitionInModule hydraBasicsModule
 
-hydraBasicsModule :: Module Kv
+hydraBasicsModule :: Module
 hydraBasicsModule = Module (Namespace "hydra/basics") elements [hydraTier1Module] $
     Just "A tier-2 module of basic functions for working with types and terms."
   where
@@ -78,7 +78,7 @@ hydraBasicsModule = Module (Namespace "hydra/basics") elements [hydraTier1Module
      el qualifyNameLazyDef
      ]
 
-eliminationVariantDef :: Definition (Elimination Kv -> EliminationVariant)
+eliminationVariantDef :: Definition (Elimination -> EliminationVariant)
 eliminationVariantDef = basicsDefinition "eliminationVariant" $
   doc "Find the elimination variant (constructor) for a given elimination term" $
   typed (functionT (Types.apply (TypeVariable _Elimination) (Types.var "a")) (TypeVariable _EliminationVariant)) $
@@ -125,7 +125,7 @@ floatValueTypeDef = basicsDefinition "floatValueType" $
     _FloatValue_float32  @-> _FloatType_float32,
     _FloatValue_float64  @-> _FloatType_float64]
 
-functionVariantDef :: Definition (Function Kv -> FunctionVariant)
+functionVariantDef :: Definition (Function -> FunctionVariant)
 functionVariantDef = basicsDefinition "functionVariant" $
   doc "Find the function variant (constructor) for a given function" $
   typed (functionT (Types.apply (TypeVariable _Function) (Types.var "a")) (TypeVariable _FunctionVariant)) $
@@ -240,7 +240,7 @@ literalVariantsDef = basicsDefinition "literalVariants" $
     _LiteralVariant_integer,
     _LiteralVariant_string]
 
-termMetaDef :: Definition (Graph Kv -> Term -> a)
+termMetaDef :: Definition (Graph -> Term -> a)
 termMetaDef = basicsDefinition "termMeta" $
   function graphA (functionT termA aT) $
   (project _AnnotationClass _AnnotationClass_termAnnotation) <.> Graph.graphAnnotations
@@ -358,14 +358,14 @@ mapFirstLetterDef = basicsDefinition "mapFirstLetter" $
 
 -- Common.hs
 
-fieldMapDef :: Definition ([Field Kv] -> M.Map FieldName (Term))
+fieldMapDef :: Definition ([Field] -> M.Map FieldName Term)
 fieldMapDef = basicsDefinition "fieldMap" $
   function (TypeList fieldA) (Types.map (TypeVariable _FieldName) termA) $
     (lambda "fields" $ Maps.fromList @@ (Lists.map @@ var "toPair" @@ var "fields"))
   `with` [
     "toPair">: lambda "f" $ pair (project _Field _Field_name @@ var "f") (project _Field _Field_term @@ var "f")]
 
-fieldTypeMapDef :: Definition ([FieldType] -> M.Map FieldName (Type))
+fieldTypeMapDef :: Definition ([FieldType] -> M.Map FieldName Type)
 fieldTypeMapDef = basicsDefinition "fieldTypeMap" $
   function (TypeList fieldTypeA) (Types.map (TypeVariable _FieldName) typeA) $
     (lambda "fields" $ Maps.fromList @@ (Lists.map @@ var "toPair" @@ var "fields"))
@@ -405,7 +405,7 @@ isUnitTypeDef = basicsDefinition "isUnitType" $
   functionWithClasses typeA booleanT eqA $
   lambda "t" $ Equality.equalType @@ (ref stripTypeDef @@ var "t") @@ Datum (coreEncodeType Types.unit)
 
-elementsToGraphDef :: Definition (Graph Kv -> Maybe (Graph Kv) -> [Element Kv] -> Graph Kv)
+elementsToGraphDef :: Definition (Graph -> Maybe (Graph) -> [Element] -> Graph)
 elementsToGraphDef = basicsDefinition "elementsToGraph" $
   function graphA (functionT (Types.optional graphA) (functionT (TypeList elementA) graphA)) $
   lambda "parent" $ lambda "schema" $ lambda "elements" $

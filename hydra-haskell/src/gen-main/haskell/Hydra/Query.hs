@@ -52,12 +52,12 @@ _Edge_out = (Core.FieldName "out")
 _Edge_in = (Core.FieldName "in")
 
 -- | A query pattern which matches within a designated component subgraph
-data GraphPattern a = 
+data GraphPattern =
   GraphPattern {
     -- | The name of the component graph
     graphPatternGraph :: Core.Name,
     -- | The patterns to match within the subgraph
-    graphPatternPatterns :: [Pattern a]}
+    graphPatternPatterns :: [Pattern]}
   deriving (Eq, Ord, Read, Show)
 
 _GraphPattern = (Core.Name "hydra/query.GraphPattern")
@@ -67,7 +67,7 @@ _GraphPattern_graph = (Core.FieldName "graph")
 _GraphPattern_patterns = (Core.FieldName "patterns")
 
 -- | A node in a query expression; it may be a term, a variable, or a wildcard
-data Node a = 
+data Node =
   -- | A graph term; an expression which is valid in the graph being matched
   NodeTerm (Core.Term) |
   -- | A query variable, not to be confused with a variable term
@@ -103,17 +103,17 @@ _Path_regex = (Core.FieldName "regex")
 _Path_inverse = (Core.FieldName "inverse")
 
 -- | A query pattern
-data Pattern a = 
+data Pattern =
   -- | A subject/predicate/object pattern
-  PatternTriple (TriplePattern a) |
+  PatternTriple (TriplePattern) |
   -- | The negation of another pattern
-  PatternNegation (Pattern a) |
+  PatternNegation (Pattern) |
   -- | The conjunction ('and') of several other patterns
-  PatternConjunction [Pattern a] |
+  PatternConjunction [Pattern] |
   -- | The disjunction (inclusive 'or') of several other patterns
-  PatternDisjunction [Pattern a] |
+  PatternDisjunction [Pattern] |
   -- | A pattern which matches within a named subgraph
-  PatternGraph (GraphPattern a)
+  PatternGraph (GraphPattern)
   deriving (Eq, Ord, Read, Show)
 
 _Pattern = (Core.Name "hydra/query.Pattern")
@@ -129,12 +129,12 @@ _Pattern_disjunction = (Core.FieldName "disjunction")
 _Pattern_graph = (Core.FieldName "graph")
 
 -- | A SELECT-style graph pattern matching query
-data Query a = 
+data Query =
   Query {
     -- | The variables selected by the query
     queryVariables :: [Variable],
     -- | The patterns to be matched
-    queryPatterns :: [Pattern a]}
+    queryPatterns :: [Pattern]}
   deriving (Eq, Ord, Read, Show)
 
 _Query = (Core.Name "hydra/query.Query")
@@ -222,11 +222,11 @@ _Step_project = (Core.FieldName "project")
 _Step_compare = (Core.FieldName "compare")
 
 -- | A subject/predicate/object pattern
-data TriplePattern a = 
+data TriplePattern =
   TriplePattern {
-    triplePatternSubject :: (Node a),
+    triplePatternSubject :: (Node),
     triplePatternPredicate :: Path,
-    triplePatternObject :: (Node a)}
+    triplePatternObject :: (Node)}
   deriving (Eq, Ord, Read, Show)
 
 _TriplePattern = (Core.Name "hydra/query.TriplePattern")

@@ -10,7 +10,7 @@ import Data.Map as M
 import Data.Set as S
 
 -- | Language constraints for Java
-hydraCoreLanguage :: (Coders.Language Core.Kv)
+hydraCoreLanguage :: (Coders.Language)
 hydraCoreLanguage = Coders.Language {
   Coders.languageName = (Coders.LanguageName "hydra/core"),
   Coders.languageConstraints = Coders.LanguageConstraints {

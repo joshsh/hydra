@@ -29,7 +29,7 @@ import           Hydra.Sources.Tier0.All
 constantsDefinition :: String -> Datum a -> Definition a
 constantsDefinition = definitionInModule hydraConstantsModule
 
-hydraConstantsModule :: Module Kv
+hydraConstantsModule :: Module
 hydraConstantsModule = Module (Namespace "hydra/constants") elements [hydraCoreModule] $
     Just ("A module for tier-0 constants.")
   where

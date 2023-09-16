@@ -14,7 +14,7 @@ import           Hydra.Dsl.Types       as Types
 import           Hydra.Sources.Core
 
 
-hydraGrammarModule :: Module Kv
+hydraGrammarModule :: Module
 hydraGrammarModule = Module ns elements [hydraCoreModule] $
     Just "A common API for BNF-based grammars, specifying context-free languages"
   where

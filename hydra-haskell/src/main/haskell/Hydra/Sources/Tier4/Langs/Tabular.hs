@@ -8,7 +8,7 @@ import Hydra.Dsl.Bootstrap
 import Hydra.Dsl.Types as Types
 
 
-tabularModule :: Module Kv
+tabularModule :: Module
 tabularModule = Module ns elements [hydraCoreModule] $
     Just ("A simple, untyped tabular data model, suitable for CSVs and TSVs")
   where

@@ -16,7 +16,7 @@ import           Hydra.Sources.Core
 import Hydra.Sources.Tier0.Query
 
 
-hydraConstraintsModule :: Module Kv
+hydraConstraintsModule :: Module
 hydraConstraintsModule = Module ns elements [hydraCoreModule, hydraQueryModule] $
     Just "A model for path- and pattern-based graph constraints, which may be considered as part of the schema of a graph"
   where

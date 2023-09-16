@@ -10,17 +10,17 @@ import Data.List as L
 import Data.Map as M
 import Data.Set as S
 
-coreEncodeAnnotatedTerm :: (Core.Annotated (Core.Term) Core.Kv -> Core.Term)
+coreEncodeAnnotatedTerm :: (Core.Annotated Core.Term -> Core.Term)
 coreEncodeAnnotatedTerm a = (Core.TermAnnotated (Core.Annotated {
   Core.annotatedSubject = (coreEncodeTerm (Core.annotatedSubject a)),
   Core.annotatedAnnotation = (Core.annotatedAnnotation a)}))
 
-coreEncodeAnnotatedType :: (Core.Annotated (Core.Type) Core.Kv -> Core.Term)
+coreEncodeAnnotatedType :: (Core.Annotated Core.Type -> Core.Term)
 coreEncodeAnnotatedType at = (Core.TermAnnotated (Core.Annotated {
   Core.annotatedSubject = (coreEncodeType (Core.annotatedSubject at)),
   Core.annotatedAnnotation = (Core.annotatedAnnotation at)}))
 
-coreEncodeApplication :: (Core.Application Core.Kv -> Core.Term)
+coreEncodeApplication :: (Core.Application -> Core.Term)
 coreEncodeApplication app = (Core.TermRecord (Core.Record {
   Core.recordTypeName = (Core.Name "hydra/core.Application"),
   Core.recordFields = [
@@ -42,7 +42,7 @@ coreEncodeApplicationType at = (Core.TermRecord (Core.Record {
       Core.fieldName = (Core.FieldName "argument"),
       Core.fieldTerm = (coreEncodeType (Core.applicationTypeArgument at))}]}))
 
-coreEncodeCaseStatement :: (Core.CaseStatement Core.Kv -> Core.Term)
+coreEncodeCaseStatement :: (Core.CaseStatement -> Core.Term)
 coreEncodeCaseStatement cs = (Core.TermRecord (Core.Record {
   Core.recordTypeName = (Core.Name "hydra/core.CaseStatement"),
   Core.recordFields = [
@@ -56,7 +56,7 @@ coreEncodeCaseStatement cs = (Core.TermRecord (Core.Record {
       Core.fieldName = (Core.FieldName "cases"),
       Core.fieldTerm = (Core.TermList (Lists.map coreEncodeField (Core.caseStatementCases cs)))}]}))
 
-coreEncodeElimination :: (Core.Elimination Core.Kv -> Core.Term)
+coreEncodeElimination :: (Core.Elimination -> Core.Term)
 coreEncodeElimination x = case x of
   Core.EliminationList v -> (Core.TermUnion (Core.Injection {
     Core.injectionTypeName = (Core.Name "hydra/core.Elimination"),
@@ -89,7 +89,7 @@ coreEncodeElimination x = case x of
       Core.fieldName = (Core.FieldName "wrap"),
       Core.fieldTerm = (coreEncodeName v)}}))
 
-coreEncodeField :: (Core.Field Core.Kv -> Core.Term)
+coreEncodeField :: (Core.Field -> Core.Term)
 coreEncodeField f = (Core.TermRecord (Core.Record {
   Core.recordTypeName = (Core.Name "hydra/core.Field"),
   Core.recordFields = [
@@ -160,7 +160,7 @@ coreEncodeFloatValue x = case x of
       Core.fieldName = (Core.FieldName "float64"),
       Core.fieldTerm = (Core.TermLiteral (Core.LiteralFloat (Core.FloatValueFloat64 v)))}}))
 
-coreEncodeFunction :: (Core.Function Core.Kv -> Core.Term)
+coreEncodeFunction :: (Core.Function -> Core.Term)
 coreEncodeFunction x = case x of
   Core.FunctionElimination v -> (Core.TermUnion (Core.Injection {
     Core.injectionTypeName = (Core.Name "hydra/core.Function"),
@@ -189,7 +189,7 @@ coreEncodeFunctionType ft = (Core.TermRecord (Core.Record {
       Core.fieldName = (Core.FieldName "codomain"),
       Core.fieldTerm = (coreEncodeType (Core.functionTypeCodomain ft))}]}))
 
-coreEncodeInjection :: (Core.Injection a -> Core.Term)
+coreEncodeInjection :: (Core.Injection -> Core.Term)
 coreEncodeInjection i = (Core.TermRecord (Core.Record {
   Core.recordTypeName = (Core.Name "hydra/core.Injection"),
   Core.recordFields = [
@@ -314,7 +314,7 @@ coreEncodeIntegerValue x = case x of
       Core.fieldName = (Core.FieldName "uint64"),
       Core.fieldTerm = (Core.TermLiteral (Core.LiteralInteger (Core.IntegerValueUint64 v)))}}))
 
-coreEncodeLambda :: (Core.Lambda Core.Kv -> Core.Term)
+coreEncodeLambda :: (Core.Lambda -> Core.Term)
 coreEncodeLambda l = (Core.TermRecord (Core.Record {
   Core.recordTypeName = (Core.Name "hydra/core.Lambda"),
   Core.recordFields = [
@@ -436,7 +436,7 @@ coreEncodeNominalType nt = (Core.TermRecord (Core.Record {
       Core.fieldName = (Core.FieldName "object"),
       Core.fieldTerm = (coreEncodeType (Core.nominalObject nt))}]}))
 
-coreEncodeOptionalCases :: (Core.OptionalCases Core.Kv -> Core.Term)
+coreEncodeOptionalCases :: (Core.OptionalCases -> Core.Term)
 coreEncodeOptionalCases oc = (Core.TermRecord (Core.Record {
   Core.recordTypeName = (Core.Name "hydra/core.OptionalCases"),
   Core.recordFields = [
@@ -458,7 +458,7 @@ coreEncodeProjection p = (Core.TermRecord (Core.Record {
       Core.fieldName = (Core.FieldName "field"),
       Core.fieldTerm = (coreEncodeFieldName (Core.projectionField p))}]}))
 
-coreEncodeRecord :: (Core.Record a -> Core.Term)
+coreEncodeRecord :: (Core.Record -> Core.Term)
 coreEncodeRecord r = (Core.TermRecord (Core.Record {
   Core.recordTypeName = (Core.Name "hydra/core.Record"),
   Core.recordFields = [
@@ -483,7 +483,7 @@ coreEncodeRowType rt = (Core.TermRecord (Core.Record {
       Core.fieldName = (Core.FieldName "fields"),
       Core.fieldTerm = (Core.TermList (Lists.map coreEncodeFieldType (Core.rowTypeFields rt)))}]}))
 
-coreEncodeSum :: (Core.Sum a -> Core.Term)
+coreEncodeSum :: (Core.Sum -> Core.Term)
 coreEncodeSum s = (Core.TermRecord (Core.Record {
   Core.recordTypeName = (Core.Name "hydra/core.Sum"),
   Core.recordFields = [

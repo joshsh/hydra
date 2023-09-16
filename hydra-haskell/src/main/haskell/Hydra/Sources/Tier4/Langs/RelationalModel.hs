@@ -8,7 +8,7 @@ import Hydra.Dsl.Bootstrap
 import Hydra.Dsl.Types as Types
 
 
-relationalModelModule :: Module Kv
+relationalModelModule :: Module
 relationalModelModule = Module ns elements [] $
     Just ("An interpretation of Codd's Relational Model, " ++
       "as described in 'A Relational Model of Data for Large Shared Data Banks' (1970). " ++

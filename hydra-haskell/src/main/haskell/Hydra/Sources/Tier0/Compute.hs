@@ -14,7 +14,7 @@ import           Hydra.Dsl.Types       as Types
 import           Hydra.Sources.Core
 
 
-hydraComputeModule :: Module Kv
+hydraComputeModule :: Module
 hydraComputeModule = Module ns elements [hydraCoreModule] $
     Just "Abstractions for single- and bidirectional transformations"
   where

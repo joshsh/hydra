@@ -20,7 +20,7 @@ import qualified Data.Set as S
 javaLanguageDefinition :: String -> Datum a -> Definition a
 javaLanguageDefinition = definitionInModule javaLanguageModule
 
-javaLanguageModule :: Module Kv
+javaLanguageModule :: Module
 javaLanguageModule = Module ns elements [hydraCodersModule, hydraBasicsModule] Nothing
   where
     ns = Namespace "hydra/langs/java/language"
@@ -36,7 +36,7 @@ javaMaxTupleLengthDef = javaLanguageDefinition "javaMaxTupleLength" $
     <> "Note: if this constant is changed, also change Tuples.java correspondingly") $
   int32 9
 
-javaLanguageDef :: Definition (Language Kv)
+javaLanguageDef :: Definition (Language)
 javaLanguageDef = javaLanguageDefinition "javaLanguage" $
   doc "Language constraints for Java" $
   typed (Types.apply (TypeVariable _Language) (Types.var "a")) $

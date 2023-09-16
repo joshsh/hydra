@@ -11,7 +11,7 @@ import Hydra.Dsl.Types as Types
 pbAnyNs = Namespace "hydra/langs/protobuf/any"
 pbAny = typeref pbAnyNs
 
-protobufAnyModule :: Module Kv
+protobufAnyModule :: Module
 protobufAnyModule = Module pbAnyNs elements [] $
     Just "Based on https://github.com/protocolbuffers/protobuf/blob/main/src/google/protobuf/any.proto"
   where

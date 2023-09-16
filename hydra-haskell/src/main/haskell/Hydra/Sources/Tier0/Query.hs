@@ -14,7 +14,7 @@ import           Hydra.Dsl.Types       as Types
 import           Hydra.Sources.Core
 
 
-hydraQueryModule :: Module Kv
+hydraQueryModule :: Module
 hydraQueryModule = Module ns elements [hydraCoreModule] $
     Just "A model for language-agnostic graph pattern queries"
   where

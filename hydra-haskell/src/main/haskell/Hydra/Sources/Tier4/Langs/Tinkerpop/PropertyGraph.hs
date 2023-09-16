@@ -10,7 +10,7 @@ import Hydra.Dsl.Types as Types
 import Hydra.Sources.Core
 
 
-tinkerpopPropertyGraphModule :: Module Kv
+tinkerpopPropertyGraphModule :: Module
 tinkerpopPropertyGraphModule = Module ns elements [hydraCoreModule] $
     Just ("A typed property graph data model. " ++
       "Property graphs are parameterized a type for property and id values, " ++

@@ -17,14 +17,14 @@ newtype FileExtension =
 _FileExtension = (Core.Name "hydra/module.FileExtension")
 
 -- | A logical collection of elements in the same namespace, having dependencies on zero or more other modules
-data Module a = 
+data Module =
   Module {
     -- | A common prefix for all element names in the module
     moduleNamespace :: Namespace,
     -- | The elements defined in this module
-    moduleElements :: [Graph.Element Core.Kv],
+    moduleElements :: [Graph.Element],
     -- | Any additional modules this one has a direct dependency upon
-    moduleDependencies :: [Module Core.Kv],
+    moduleDependencies :: [Module],
     -- | An optional human-readable description of the module
     moduleDescription :: (Maybe String)}
   deriving (Eq, Ord, Read, Show)

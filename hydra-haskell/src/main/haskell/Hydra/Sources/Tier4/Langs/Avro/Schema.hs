@@ -8,7 +8,7 @@ import Hydra.Dsl.Bootstrap
 import Hydra.Dsl.Types as Types
 
 
-avroSchemaModule :: Module Kv
+avroSchemaModule :: Module
 avroSchemaModule = Module ns elements [jsonModelModule] $
     Just ("A model for Avro schemas. Based on the Avro 1.11.1 specification:\n" ++
       "  https://avro.apache.org/docs/1.11.1/specification")

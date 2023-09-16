@@ -31,19 +31,19 @@ import qualified Data.Maybe as Y
 import qualified Data.ByteString.Lazy as BS
 
 
-baseLanguage :: Language Kv
+baseLanguage :: Language
 baseLanguage = hydraCoreLanguage
 
-baseContext :: AdapterContext Kv
+baseContext :: AdapterContext
 baseContext = AdapterContext testGraph baseLanguage M.empty
 
 checkAdapter :: (Eq t, Eq v, Show t, Show v)
   => (v -> v)
-  -> (t -> Flow (AdapterContext Kv) (SymmetricAdapter (AdapterContext Kv) t v))
-  -> ([r] -> AdapterContext Kv)
+  -> (t -> Flow (AdapterContext) (SymmetricAdapter (AdapterContext) t v))
+  -> ([r] -> AdapterContext)
   -> [r] -> t -> t -> Bool -> v -> v -> H.Expectation
 checkAdapter normalize mkAdapter mkContext variants source target lossy vs vt = do
-    let cx0 = mkContext variants :: AdapterContext Kv
+    let cx0 = mkContext variants :: AdapterContext
     let g = adapterContextGraph cx0
     let FlowState adapter' cx trace = unFlow (mkAdapter source) cx0 emptyTrace
     if Y.isNothing adapter' then HL.assertFailure (traceSummary trace) else pure ()
@@ -71,7 +71,7 @@ checkLiteralAdapter = checkAdapter id literalAdapter context
         floatVars = S.fromList [FloatTypeFloat32]
         integerVars = S.fromList [IntegerTypeInt16, IntegerTypeInt32]
 
-checkFieldAdapter :: [TypeVariant] -> FieldType -> FieldType -> Bool -> Field Kv -> Field Kv -> H.Expectation
+checkFieldAdapter :: [TypeVariant] -> FieldType -> FieldType -> Bool -> Field -> Field -> H.Expectation
 checkFieldAdapter = checkAdapter id fieldAdapter termTestContext
 
 checkFloatAdapter :: [FloatType] -> FloatType -> FloatType -> Bool -> FloatValue -> FloatValue -> H.Expectation
@@ -89,7 +89,7 @@ checkIntegerAdapter = checkAdapter id integerAdapter context
 checkDataAdapter :: [TypeVariant] -> Type -> Type -> Bool -> Term -> Term -> H.Expectation
 checkDataAdapter = checkAdapter stripTerm termAdapter termTestContext
 
-checkSerdeRoundTrip :: (Type -> Flow (Graph Kv) (Coder (Graph Kv) (Graph Kv) (Term) BS.ByteString))
+checkSerdeRoundTrip :: (Type -> Flow (Graph) (Coder (Graph) (Graph) Term BS.ByteString))
   -> TypedTerm -> H.Expectation
 checkSerdeRoundTrip mkSerde (TypedTerm typ term) = do
     case mserde of
@@ -100,7 +100,7 @@ checkSerdeRoundTrip mkSerde (TypedTerm typ term) = do
   where
     FlowState mserde _ trace = unFlow (mkSerde typ) testGraph emptyTrace
 
-checkSerialization :: (Type -> Flow (Graph Kv) (Coder (Graph Kv) (Graph Kv) (Term) String))
+checkSerialization :: (Type -> Flow (Graph) (Coder (Graph) (Graph) Term String))
   -> TypedTerm -> String -> H.Expectation
 checkSerialization mkSerdeStr (TypedTerm typ term) expected = do
     case mserde of
@@ -112,20 +112,20 @@ checkSerialization mkSerdeStr (TypedTerm typ term) expected = do
     normalize = unlines . L.filter (not . L.null) . lines
     FlowState mserde _ trace = unFlow (mkSerdeStr typ) testGraph emptyTrace
 
-eval :: Term -> Flow (Graph Kv) (Term)
+eval :: Term -> Flow (Graph) Term
 eval = reduceTerm True M.empty
 
-shouldFail :: Flow (Graph Kv) a -> H.Expectation
+shouldFail :: Flow (Graph) a -> H.Expectation
 shouldFail f = H.shouldBe True (Y.isNothing $ flowStateValue $ unFlow f testGraph emptyTrace)
 
-shouldSucceed :: Flow (Graph Kv) a -> H.Expectation
+shouldSucceed :: Flow (Graph) a -> H.Expectation
 shouldSucceed f = case my of
     Nothing -> HL.assertFailure (traceSummary trace)
     Just y -> True `H.shouldBe` True
   where
     FlowState my _ trace = unFlow f testGraph emptyTrace
 
-shouldSucceedWith :: (Eq a, Show a) => Flow (Graph Kv) a -> a -> H.Expectation
+shouldSucceedWith :: (Eq a, Show a) => Flow (Graph) a -> a -> H.Expectation
 shouldSucceedWith f x = case my of
     Nothing -> HL.assertFailure (traceSummary trace)
     Just y -> y `H.shouldBe` x
@@ -135,7 +135,7 @@ shouldSucceedWith f x = case my of
 strip :: Term -> Term
 strip = stripTerm
 
-termTestContext :: [TypeVariant] -> AdapterContext Kv
+termTestContext :: [TypeVariant] -> AdapterContext
 termTestContext variants = withConstraints $ (languageConstraints baseLanguage) {
     languageConstraintsTypeVariants = S.fromList variants,
     languageConstraintsLiteralVariants = literalVars,
@@ -146,5 +146,5 @@ termTestContext variants = withConstraints $ (languageConstraints baseLanguage) 
     floatVars = S.fromList [FloatTypeFloat32]
     integerVars = S.fromList [IntegerTypeInt16, IntegerTypeInt32]
 
-withConstraints :: LanguageConstraints Kv -> AdapterContext Kv
+withConstraints :: LanguageConstraints -> AdapterContext
 withConstraints c = baseContext { adapterContextLanguage = baseLanguage { languageConstraints = c }}

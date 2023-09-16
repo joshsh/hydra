@@ -15,17 +15,17 @@ import Data.List as L
 import Data.Map as M
 import Data.Set as S
 
-functionArity :: (Core.Function Core.Kv -> Int)
+functionArity :: (Core.Function -> Int)
 functionArity x = case x of
   Core.FunctionElimination _ -> 1
   Core.FunctionLambda v -> (Math.add 1 (termArity (Core.lambdaBody v)))
   Core.FunctionPrimitive _ -> 42
 
-lookupPrimitive :: (Graph.Graph Core.Kv -> Core.Name -> Maybe (Graph.Primitive Core.Kv))
+lookupPrimitive :: (Graph.Graph -> Core.Name -> Maybe (Graph.Primitive))
 lookupPrimitive g name = (Maps.lookup name (Graph.graphPrimitives g))
 
 -- | Find the arity (expected number of arguments) of a primitive constant or function
-primitiveArity :: (Graph.Primitive Core.Kv -> Int)
+primitiveArity :: (Graph.Primitive -> Int)
 primitiveArity x = (typeArity (Graph.primitiveType x))
 
 -- | Construct a qualified (dot-separated) name

@@ -15,7 +15,7 @@ import Data.Set as S
 data HydraSchemaSpec = 
   HydraSchemaSpec {
     -- | The modules to include in the schema graph
-    hydraSchemaSpecModules :: [Module.Module Core.Kv],
+    hydraSchemaSpecModules :: [Module.Module],
     -- | The name of the top-level type; all data which passes through the workflow will be instances of this type
     hydraSchemaSpecTypeName :: Core.Name}
   deriving (Eq, Ord, Read, Show)
@@ -30,7 +30,7 @@ _HydraSchemaSpec_typeName = (Core.FieldName "typeName")
 data LastMile s a = 
   LastMile {
     -- | An encoder for terms to a list of output objects
-    lastMileEncoder :: (Core.Type -> Compute.Flow s (Core.Term -> Graph.Graph Core.Kv -> Compute.Flow s [a])),
+    lastMileEncoder :: (Core.Type -> Compute.Flow s (Core.Term -> Graph.Graph -> Compute.Flow s [a])),
     -- | A function which serializes a list of output objects to a string representation
     lastMileSerializer :: ([a] -> Compute.Flow s String),
     -- | A file extension for the generated file(s)

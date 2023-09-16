@@ -15,11 +15,11 @@ import qualified Data.Map as M
 import qualified Data.Maybe as Y
 
 
-type ElementAdapter s t v = Adapter s s (Type) (PG.ElementTypeTree t) (Term) (PG.ElementTree v)
+type ElementAdapter s t v = Adapter s s Type (PG.ElementTypeTree t) Term (PG.ElementTree v)
 
-type PropertyAdapter s t v = Adapter s s (FieldType) (PG.PropertyType t) (Field Kv) (PG.Property v)
+type PropertyAdapter s t v = Adapter s s (FieldType) (PG.PropertyType t) (Field) (PG.Property v)
 
-type IdAdapter s t v = (FieldName, Adapter s s (Type) t (Term) v)
+type IdAdapter s t v = (FieldName, Adapter s s Type t Term v)
 
 data AdjacentEdgeAdapter s a t v = AdjacentEdgeAdapter {
   adjacentEdgeAdapterDirection :: PG.Direction,
@@ -231,12 +231,12 @@ elementTypeTreeEdge etype = PG.ElementTypeTree (PG.ElementTypeEdge etype)
 elementTypeTreeVertex :: PG.VertexType t -> [PG.ElementTypeTree t] -> PG.ElementTypeTree t
 elementTypeTreeVertex vtype = PG.ElementTypeTree (PG.ElementTypeVertex vtype)
 
-encodeProperties :: M.Map FieldName (Term) -> [PropertyAdapter s t v] -> Flow s (M.Map PG.PropertyKey v)
+encodeProperties :: M.Map FieldName Term -> [PropertyAdapter s t v] -> Flow s (M.Map PG.PropertyKey v)
 encodeProperties fields adapters = do
   props <- Y.catMaybes <$> CM.mapM (encodeProperty fields) adapters
   return $ M.fromList $ fmap (\(PG.Property key val) -> (key, val)) props
 
-encodeProperty :: M.Map FieldName (Term) -> PropertyAdapter s t v -> Flow s (Maybe (PG.Property v))
+encodeProperty :: M.Map FieldName Term -> PropertyAdapter s t v -> Flow s (Maybe (PG.Property v))
 encodeProperty fields adapter = do
   case M.lookup fname fields of
     Nothing -> case ftyp of
@@ -261,7 +261,7 @@ noDecoding :: String -> Flow s x
 noDecoding cat = fail $ cat ++ " decoding is not yet supported"
 
 projectionAdapter :: t
-  -> Coder s s (Term) v
+  -> Coder s s Term v
   -> ProjectionSpec a
   -> String
   -> Flow s (IdAdapter s t v)
@@ -300,12 +300,12 @@ selectEdgeId fields (fname, ad) = case M.lookup fname fields of
   Nothing -> fail $ "no " ++ unFieldName fname ++ " in record"
   Just t -> coderEncode (adapterCoder ad) t
 
-selectVertexId :: M.Map FieldName (Term) -> IdAdapter s t v -> Flow s v
+selectVertexId :: M.Map FieldName Term -> IdAdapter s t v -> Flow s v
 selectVertexId  fields (fname, ad) = case M.lookup fname fields of
   Nothing -> fail $ "no " ++ unFieldName fname ++ " in record"
   Just t -> coderEncode (adapterCoder ad) t
 
-traverseToSingleTerm :: String -> (Term -> Flow s [Term]) -> Term -> Flow s (Term)
+traverseToSingleTerm :: String -> (Term -> Flow s [Term]) -> Term -> Flow s Term
 traverseToSingleTerm desc traversal term = do
   terms <- traversal term
   case terms of

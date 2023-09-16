@@ -15,10 +15,10 @@ import qualified Data.Maybe as Y
 key_maxSize = "maxLength"
 key_minSize = "minLength"
 
-annotateTerm :: String -> Y.Maybe (Term) -> Term -> Term
+annotateTerm :: String -> Y.Maybe Term -> Term -> Term
 annotateTerm = setTermAnnotation
 
-annotateType :: String -> Y.Maybe (Term) -> Type -> Type
+annotateType :: String -> Y.Maybe Term -> Type -> Type
 annotateType = setTypeAnnotation
 
 bounded :: Maybe Int -> Maybe Int -> Type -> Type

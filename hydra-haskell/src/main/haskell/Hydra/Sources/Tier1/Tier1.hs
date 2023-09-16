@@ -34,7 +34,7 @@ import Hydra.Sources.Tier1.Strip
 tier1Definition :: String -> Datum a -> Definition a
 tier1Definition = definitionInModule hydraTier1Module
 
-hydraTier1Module :: Module Kv
+hydraTier1Module :: Module
 hydraTier1Module = Module (Namespace "hydra/tier1") elements
     [hydraGraphModule, hydraMantleModule, hydraComputeModule, hydraStripModule, hydraConstantsModule, hydraStripModule] $
     Just ("A module for miscellaneous tier-1 functions and constants.")

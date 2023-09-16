@@ -18,7 +18,7 @@ import Hydra.Sources.Tier0.Graph
 import Hydra.Sources.Tier0.Module
 
 
-hydraWorkflowModule :: Module Kv
+hydraWorkflowModule :: Module
 hydraWorkflowModule = Module ns elements [hydraModuleModule, hydraComputeModule, hydraGraphModule] $
     Just "A model for Hydra transformation workflows"
   where

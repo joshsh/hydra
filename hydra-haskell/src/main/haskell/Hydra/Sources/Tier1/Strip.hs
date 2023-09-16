@@ -29,7 +29,7 @@ import           Hydra.Sources.Tier0.All
 stripDefinition :: String -> Datum a -> Definition a
 stripDefinition = definitionInModule hydraStripModule
 
-hydraStripModule :: Module Kv
+hydraStripModule :: Module
 hydraStripModule = Module (Namespace "hydra/strip") elements [hydraCoreModule] $
     Just "Several functions for stripping annotations from types and terms."
   where
@@ -39,7 +39,7 @@ hydraStripModule = Module (Namespace "hydra/strip") elements [hydraCoreModule] $
      el stripTypeDef,
      el stripTypeParametersDef]
 
-skipAnnotationsDef :: Definition ((a -> Maybe (Annotated a m)) -> a -> a)
+skipAnnotationsDef :: Definition ((a -> Maybe (Annotated a)) -> a -> a)
 skipAnnotationsDef = stripDefinition "skipAnnotations" $
   function getAnnType (Types.function (Types.var "x") (Types.var "x")) $
   lambda "getAnn" $ lambda "t" $

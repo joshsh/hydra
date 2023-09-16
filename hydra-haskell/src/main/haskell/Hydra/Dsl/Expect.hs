@@ -51,14 +51,14 @@ booleanLiteral v = case v of
   LiteralBoolean b -> pure b
   _ -> unexpected "boolean" $ show v
 
-cases :: Name -> Term -> Flow s (CaseStatement Kv)
+cases :: Name -> Term -> Flow s (CaseStatement)
 cases name term = case stripTerm term of
   TermFunction (FunctionElimination (EliminationUnion cs)) -> if caseStatementTypeName cs == name
     then pure cs
     else unexpected ("case statement for type " ++ unName name) $ show term
   _ -> unexpected "case statement" $ show term
 
-casesCase :: Name -> String -> Term -> Flow s (Field Kv)
+casesCase :: Name -> String -> Term -> Flow s (Field)
 casesCase name n term = do
   cs <- cases name term
   let matching = L.filter (\f -> fieldName f == FieldName n) $ caseStatementCases cs
@@ -66,7 +66,7 @@ casesCase name n term = do
     then fail $ "not enough cases"
     else pure $ L.head matching
 
-field :: FieldName -> (Term -> Flow s x) -> [Field Kv] -> Flow s x
+field :: FieldName -> (Term -> Flow s x) -> [Field] -> Flow s x
 field fname mapping fields = case L.filter (\f -> fieldName f == fname) fields of
   [] -> fail $ "field " ++ unFieldName fname ++ " not found"
   [f] -> mapping $ fieldTerm f
@@ -93,19 +93,19 @@ floatLiteral lit = case lit of
   LiteralFloat v -> pure v
   _ -> unexpected "floating-point value" $ show lit
 
-inject :: Name -> Term -> Flow s (Field Kv)
+inject :: Name -> Term -> Flow s (Field)
 inject name term = case stripTerm term of
   TermUnion (Injection name' field) -> if name' == name
     then pure field
     else unexpected ("injection of type " ++ unName name) (unName name')
   _ -> unexpected "injection" $ show term
 
-injection :: Term -> Flow s (Field Kv)
+injection :: Term -> Flow s (Field)
 injection term = case stripTerm term of
   TermUnion (Injection _ field) -> pure field
   _ -> unexpected "injection" $ show term
 
-injectionWithName :: Name -> Term -> Flow s (Field Kv)
+injectionWithName :: Name -> Term -> Flow s (Field)
 injectionWithName expected term = case stripTerm term of
   TermUnion (Injection actual field) -> if actual == expected
     then pure field
@@ -149,22 +149,22 @@ integerLiteral lit = case lit of
   LiteralInteger v -> pure v
   _ -> unexpected "integer value" $ show lit
 
-lambda :: Term -> Flow s (Lambda Kv)
+lambda :: Term -> Flow s (Lambda)
 lambda term = case stripTerm term of
   TermFunction (FunctionLambda l) -> pure l
   _ -> unexpected "lambda" $ show term
 
-letBinding :: String -> Term -> Flow s (Term)
+letBinding :: String -> Term -> Flow s Term
 letBinding n term = do
   bindings <- letBindings <$> letTerm term
   case M.lookup (Name n) bindings of
     Nothing -> fail $ "no such binding: " ++ show n
     Just term' -> pure term'
 
-lambdaBody :: Term -> Flow s (Term)
+lambdaBody :: Term -> Flow s Term
 lambdaBody term = Hydra.Core.lambdaBody <$> lambda term
 
-letTerm :: Term -> Flow s (Let Kv)
+letTerm :: Term -> Flow s (Let)
 letTerm term = case stripTerm term of
   TermLet lt -> pure lt
   _ -> unexpected "let term" $ show term
@@ -174,7 +174,7 @@ list f term = case stripTerm term of
   TermList l -> CM.mapM f l
   _ -> unexpected "list" $ show term
 
-listHead :: Term -> Flow s (Term)
+listHead :: Term -> Flow s Term
 listHead term = do
   l <- list pure term
   if L.null l
@@ -201,15 +201,15 @@ nArgs n args = if L.length args /= n
   then unexpected (show n ++ " arguments") $ show (L.length args)
   else pure ()
 
-optCases :: Term -> Flow s (OptionalCases Kv)
+optCases :: Term -> Flow s (OptionalCases)
 optCases term = case stripTerm term of
   TermFunction (FunctionElimination (EliminationOptional cs)) -> pure cs
   _ -> unexpected "optional cases" $ show term
 
-optCasesJust :: Term -> Flow s (Term)
+optCasesJust :: Term -> Flow s Term
 optCasesJust term = optionalCasesJust <$> optCases term
 
-optCasesNothing :: Term -> Flow s (Term)
+optCasesNothing :: Term -> Flow s Term
 optCasesNothing term = optionalCasesNothing <$> optCases term
 
 optional :: (Term -> Flow s x) -> Term -> Flow s (Y.Maybe x)
@@ -229,12 +229,12 @@ pair kf vf term = case stripTerm term of
     _ -> unexpected "pair" $ show term
   _ -> unexpected "product" $ show term
 
-record :: Term -> Flow s [Field Kv]
+record :: Term -> Flow s [Field]
 record term = case stripTerm term of
   TermRecord (Record _ fields) -> pure fields
   _ -> unexpected "record" $ show term
 
-recordWithName :: Name -> Term -> Flow s [Field Kv]
+recordWithName :: Name -> Term -> Flow s [Field]
 recordWithName expected term = case stripTerm term of
   TermRecord (Record actual fields) -> if actual == expected
     then pure fields
@@ -304,10 +304,10 @@ variable term = case stripTerm term of
   TermVariable name -> pure name
   _ -> unexpected "variable" $ show term
 
-variant :: Name -> Term -> Flow s (Field Kv)
+variant :: Name -> Term -> Flow s (Field)
 variant = injectionWithName
 
-wrap :: Name -> Term -> Flow s (Term)
+wrap :: Name -> Term -> Flow s Term
 wrap expected term = case stripTerm term of
   TermWrap (Nominal actual term) -> if actual == expected
     then pure term

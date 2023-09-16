@@ -16,7 +16,7 @@ import           Hydra.Sources.Core
 import Hydra.Sources.Tier0.Compute
 
 
-hydraGraphModule :: Module Kv
+hydraGraphModule :: Module
 hydraGraphModule = Module ns elements [hydraComputeModule] $
     Just "The extension to graphs of Hydra's core type system (hydra/core)"
   where

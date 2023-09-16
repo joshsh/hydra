@@ -32,7 +32,7 @@ expectPolytype term vars typ = do
       (inferType term)
       (Types.lambdas vars typ)
 
-expectTypeAnnotation :: (Term -> Flow (Graph Kv) (Term)) -> Term -> Type -> H.Expectation
+expectTypeAnnotation :: (Term -> Flow (Graph) Term) -> Term -> Type -> H.Expectation
 expectTypeAnnotation path term etyp = shouldSucceedWith atyp etyp
   where
    atyp = do

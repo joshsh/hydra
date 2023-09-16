@@ -42,14 +42,14 @@ _context = FieldName "context"
 _record :: FieldName
 _record = FieldName "record"
 
-fieldAdapter :: FieldType -> Flow (AdapterContext Kv) (SymmetricAdapter (AdapterContext Kv) (FieldType) (Field Kv))
+fieldAdapter :: FieldType -> Flow (AdapterContext) (SymmetricAdapter (AdapterContext) (FieldType) (Field))
 fieldAdapter ftyp = do
   ad <- termAdapter $ fieldTypeType ftyp
   return $ Adapter (adapterIsLossy ad) ftyp (ftyp { fieldTypeType = adapterTarget ad })
     $ bidirectional $ \dir (Field name term) -> Field name <$> encodeDecode dir (adapterCoder ad) term
 
 -- | This function accounts for recursive type definitions
-forTypeReference :: Name -> Flow (AdapterContext Kv) (SymmetricAdapter (AdapterContext Kv) (Type) (Term))
+forTypeReference :: Name -> Flow (AdapterContext) (SymmetricAdapter (AdapterContext) Type Term)
 forTypeReference name = withTrace ("adapt named type " ++ unName name) $ do
   let lossy = False -- Note: we cannot know in advance whether the adapter is lossy or not
   let placeholder = Adapter lossy (TypeVariable name) (TypeVariable name) $ bidirectional $
@@ -399,7 +399,7 @@ wrapToUnwrapped t@(TypeWrap (Nominal tname typ)) = do
       decoded <- coderDecode (adapterCoder ad) term
       return $ TermWrap $ Nominal tname decoded
 
-withGraphContext :: Flow (Graph Kv) x -> Flow (AdapterContext Kv) x
+withGraphContext :: Flow (Graph) x -> Flow (AdapterContext) x
 withGraphContext f = do
   cx <- getState
   withState (adapterContextGraph cx) f

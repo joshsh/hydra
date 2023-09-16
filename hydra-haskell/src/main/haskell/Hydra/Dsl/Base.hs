@@ -30,15 +30,15 @@ import qualified Data.Set as S
 
 instance IsString (Datum a) where fromString = Datum . Terms.string
 
-el :: Definition a -> Element Kv
+el :: Definition a -> Element
 el (Definition name (Datum term)) = Element name term
 
 infixr 0 >:
-(>:) :: String -> Datum a -> Field Kv
+(>:) :: String -> Datum a -> Field
 n >: d = Field (FieldName n) (unDatum d)
 
 infixr 0 >>:
-(>>:) :: FieldName -> Datum a -> Field Kv
+(>>:) :: FieldName -> Datum a -> Field
 fname >>: d = Field fname (unDatum d)
 
 (<.>) :: Datum (b -> c) -> Datum (a -> b) -> Datum (a -> c)
@@ -55,7 +55,7 @@ infixr 0 @->
 x @-> y = (x, y)
 
 infixr 0 -->
-(-->) :: Case a -> Datum (a -> b) -> Field Kv
+(-->) :: Case a -> Datum (a -> b) -> Field
 c --> t = caseField c t
 
 apply :: Datum (a -> b) -> Datum a -> Datum b
@@ -64,7 +64,7 @@ apply (Datum lhs) (Datum rhs) = Datum $ Terms.apply lhs rhs
 apply2 :: Datum (a -> b -> c) -> Datum a -> Datum b -> Datum c
 apply2 (Datum f) (Datum a1) (Datum a2) = Datum $ Terms.apply (Terms.apply f a1) a2
 
-caseField :: Case a -> Datum (a -> b) -> Field Kv
+caseField :: Case a -> Datum (a -> b) -> Field
 caseField (Case fname) (Datum f) = Field fname f
 
 compose :: Datum (b -> c) -> Datum (a -> b) -> Datum (a -> c)
@@ -73,13 +73,13 @@ compose (Datum f) (Datum g) = Datum $ Terms.compose f g
 constant :: Datum a -> Datum (b -> a)
 constant (Datum term) = Datum $ Terms.constant term
 
-definitionInModule :: Module Kv -> String -> Datum a -> Definition a
+definitionInModule :: Module -> String -> Datum a -> Definition a
 definitionInModule mod lname = Definition $ Tier1.unqualifyName $ QualifiedName (Just $ moduleNamespace mod) lname
 
 doc :: String -> Datum a -> Datum a
 doc s (Datum term) = Datum $ setTermDescription (Just s) term
 
-field :: FieldName -> Datum a -> Field Kv
+field :: FieldName -> Datum a -> Field
 field fname (Datum val) = Field fname val
 
 first :: Datum ((a, b) -> a)
@@ -132,7 +132,7 @@ map = Datum . Terms.map . M.fromList . fmap fromDatum . M.toList
   where
     fromDatum (Datum k, Datum v) = (k, v)
 
-match :: Name -> Maybe (Datum b) -> [Field Kv] -> Datum (u -> b)
+match :: Name -> Maybe (Datum b) -> [Field] -> Datum (u -> b)
 match name dflt fields = Datum $ Terms.match name (unDatum <$> dflt) fields
 
 matchData :: Name -> Maybe (Datum b) -> [(FieldName, Datum (x -> b))] -> Datum (a -> b)
@@ -148,7 +148,7 @@ matchToEnum domName codName dflt pairs = matchData domName dflt (toCase <$> pair
   where
     toCase (fromName, toName) = (fromName, constant $ unitVariant codName toName)
 
-matchToUnion :: Name -> Name -> Maybe (Datum b) -> [(FieldName, Field Kv)] -> Datum (a -> b)
+matchToUnion :: Name -> Name -> Maybe (Datum b) -> [(FieldName, Field)] -> Datum (a -> b)
 matchToUnion domName codName dflt pairs = matchData domName dflt (toCase <$> pairs)
   where
     toCase (fromName, fld) = (fromName, constant $ Datum $ Terms.inject codName fld)
@@ -172,7 +172,7 @@ primitive = Datum . Terms.primitive
 project :: Name -> FieldName -> Datum (a -> b)
 project name fname = Datum $ Terms.project name fname
 
-record :: Name -> [Field Kv] -> Datum a
+record :: Name -> [Field] -> Datum a
 record name fields = Datum $ Terms.record name fields
 
 ref :: Definition a -> Datum a
@@ -202,7 +202,7 @@ var v = Datum $ Terms.var v
 variant :: Name -> FieldName -> Datum a -> Datum b
 variant name fname (Datum term) = Datum $ Terms.inject name $ Field fname term
 
-with :: Datum a -> [Field Kv] -> Datum a
+with :: Datum a -> [Field] -> Datum a
 (Datum env) `with` bindings = Datum $ TermLet $ Let (M.fromList $ toPair <$> bindings) env
   where
      toPair (Field name value) = (Name $ unFieldName name, value)

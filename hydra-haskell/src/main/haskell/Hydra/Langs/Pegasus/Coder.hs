@@ -16,7 +16,7 @@ import qualified Data.Set as S
 import qualified Data.Maybe as Y
 
 
-moduleToPdl :: Module Kv -> Flow (Graph Kv) (M.Map FilePath String)
+moduleToPdl :: Module -> Flow (Graph) (M.Map FilePath String)
 moduleToPdl mod = do
     files <- moduleToPegasusSchemas mod
     return $ M.fromList (mapPair <$> M.toList files)
@@ -25,10 +25,10 @@ moduleToPdl mod = do
 
 constructModule ::
   M.Map Namespace String
-  -> Module Kv
-  -> M.Map (Type) (Coder (Graph Kv) (Graph Kv) (Term) ())
-  -> [(Element Kv, TypedTerm)]
-  -> Flow (Graph Kv) (M.Map FilePath PDL.SchemaFile)
+  -> Module
+  -> M.Map Type (Coder (Graph) (Graph) Term ())
+  -> [(Element, TypedTerm)]
+  -> Flow (Graph) (M.Map FilePath PDL.SchemaFile)
 constructModule aliases mod coders pairs = do
     sortedPairs <- case (topologicalSortElements $ fst <$> pairs) of
       Left comps -> fail $ "types form a cycle (unsupported in PDL): " ++ show (L.head comps)
@@ -65,7 +65,7 @@ constructModule aliases mod coders pairs = do
 --            deps = S.toList $ termDependencyNames False False False $ elementData el
 --            isExternal qn = PDL.qualifiedNameNamespace qn /= PDL.qualifiedNameNamespace qname
 
-moduleToPegasusSchemas :: Module Kv -> Flow (Graph Kv) (M.Map FilePath PDL.SchemaFile)
+moduleToPegasusSchemas :: Module -> Flow (Graph) (M.Map FilePath PDL.SchemaFile)
 moduleToPegasusSchemas mod = do
   aliases <- importAliasesForModule mod
   transformModule pdlLanguage (encodeTerm aliases) (constructModule aliases) mod
@@ -75,17 +75,17 @@ doc s = PDL.Annotations s False
 
 encodeAdaptedType ::
   M.Map Namespace String -> Type
-  -> Flow (Graph Kv) (Either PDL.Schema PDL.NamedSchema_Type)
+  -> Flow (Graph) (Either PDL.Schema PDL.NamedSchema_Type)
 encodeAdaptedType aliases typ = do
   g <- getState
   let cx = AdapterContext g pdlLanguage M.empty
   ad <- withState cx $ termAdapter typ
   encodeType aliases $ adapterTarget ad
 
-encodeTerm :: M.Map Namespace String -> Term -> Flow (Graph Kv) ()
+encodeTerm :: M.Map Namespace String -> Term -> Flow (Graph) ()
 encodeTerm aliases term = fail "not yet implemented"
 
-encodeType :: M.Map Namespace String -> Type -> Flow (Graph Kv) (Either PDL.Schema PDL.NamedSchema_Type)
+encodeType :: M.Map Namespace String -> Type -> Flow (Graph) (Either PDL.Schema PDL.NamedSchema_Type)
 encodeType aliases typ = case typ of
     TypeAnnotated (Annotated typ' _) -> encodeType aliases typ'
     TypeList lt -> Left . PDL.SchemaArray <$> encode lt
@@ -178,7 +178,7 @@ pdlNameForElement aliases withNs name = PDL.QualifiedName (PDL.Name local)
     QualifiedName (Just ns) local = qualifyNameEager name
     alias = M.lookup ns aliases
 
-pdlNameForModule :: Module Kv -> PDL.Namespace
+pdlNameForModule :: Module -> PDL.Namespace
 pdlNameForModule = PDL.Namespace . slashesToDots . h . moduleNamespace
   where
     h (Namespace n) = n
