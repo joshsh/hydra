@@ -15,7 +15,7 @@ import qualified Data.Set as S
 import qualified Data.Maybe as Y
 
 
-shaclCoder :: Module -> Flow (Graph) (Shacl.ShapesGraph, Graph -> Flow (Graph) Rdf.Graph)
+shaclCoder :: Module -> Flow Graph (Shacl.ShapesGraph, Graph -> Flow Graph Rdf.Graph)
 shaclCoder mod = do
     g <- getState
     -- Note: untested since deprecation of element schemas
@@ -52,14 +52,14 @@ defaultCommonProperties = Shacl.CommonProperties {
 elementIri :: Element -> Rdf.Iri
 elementIri = nameToIri . elementName
 
-encodeField :: Name -> Rdf.Resource -> Field -> Flow (Graph) [Rdf.Triple]
+encodeField :: Name -> Rdf.Resource -> Field -> Flow Graph [Rdf.Triple]
 encodeField rname subject field = do
   node <- nextBlankNode
   descs <- encodeTerm node (fieldTerm field)
   return $ triplesOf descs ++
     forObjects subject (propertyIri rname $ fieldName field) (subjectsOf descs)
 
-encodeFieldType :: Name -> Maybe Integer -> FieldType -> Flow (Graph) (Shacl.Definition Shacl.PropertyShape)
+encodeFieldType :: Name -> Maybe Integer -> FieldType -> Flow Graph (Shacl.Definition Shacl.PropertyShape)
 encodeFieldType rname order (FieldType fname ft) = do
     shape <- forType (Just 1) (Just 1) ft
     return $ Shacl.Definition iri shape
@@ -100,7 +100,7 @@ encodeLiteralType lt = case lt of
   where
     xsd local = common [Shacl.CommonConstraintDatatype $ xmlSchemaDatatypeIri local]
 
-encodeTerm :: Rdf.Resource -> Term -> Flow (Graph) [Rdf.Description]
+encodeTerm :: Rdf.Resource -> Term -> Flow Graph [Rdf.Description]
 encodeTerm subject term = case term of
   TermAnnotated (Annotated inner ann) -> encodeTerm subject inner -- TODO: extract an rdfs:comment
   TermList terms -> encodeList subject terms
@@ -152,7 +152,7 @@ encodeTerm subject term = case term of
     return [withType rname $ Rdf.Description (resourceToNode subject) (Rdf.Graph $ S.fromList triples)]
   _ -> unexpected "RDF-compatible term" $ show term
 
-encodeType :: Type -> Flow (Graph) Shacl.CommonProperties
+encodeType :: Type -> Flow Graph Shacl.CommonProperties
 encodeType typ = case stripType typ of
     TypeList _ -> any
     TypeLiteral lt -> pure $ encodeLiteralType lt

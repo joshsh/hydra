@@ -13,9 +13,9 @@ import qualified Data.Set as S
 import qualified Data.Maybe as Y
 
 
-type Subst a = M.Map Name Type
+type Subst = M.Map Name Type
 
-composeSubst :: Subst Kv -> Subst Kv -> Subst Kv
+composeSubst :: Subst -> Subst -> Subst
 composeSubst s1 s2 = M.union s1 $ M.map (substituteTypeVariables s1) s2
 
 normalVariables :: [Name]

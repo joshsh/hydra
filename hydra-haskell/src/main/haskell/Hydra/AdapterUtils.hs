@@ -25,9 +25,9 @@ import Control.Monad
 
 type SymmetricAdapter s t v = Adapter s s t t v v
 
-type TypeAdapter a = Type -> Flow (AdapterContext) (SymmetricAdapter (AdapterContext) Type Term)
+type TypeAdapter = Type -> Flow AdapterContext (SymmetricAdapter AdapterContext Type Term)
 
-bidirectional :: (CoderDirection -> b -> Flow s b) -> Coder s s b b
+bidirectional :: (CoderDirection -> a -> Flow s a) -> Coder s s a a
 bidirectional f = Coder (f CoderDirectionEncode) (f CoderDirectionDecode)
 
 chooseAdapter :: (Eq t, Ord t, Show t) =>

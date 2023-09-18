@@ -54,7 +54,7 @@ caseStatementDefault = project _CaseStatement _CaseStatement_default
 caseStatementCases :: Datum (CaseStatement -> [Field])
 caseStatementCases = project _CaseStatement _CaseStatement_cases
 
-field :: Datum Name -> Datum Term -> Datum (Field)
+field :: Datum Name -> Datum Term -> Datum Field
 field name term = Base.record _Field [
     _Field_name>>: name,
     _Field_term>>: term]
@@ -65,7 +65,7 @@ fieldName = project _Field _Field_name
 fieldTerm :: Datum (Field -> Term)
 fieldTerm = project _Field _Field_term
 
-fieldType :: Datum Name -> Datum Type -> Datum (FieldType)
+fieldType :: Datum Name -> Datum Type -> Datum FieldType
 fieldType name typ = Base.record _FieldType [
     _FieldType_name>>: name,
     _FieldType_type>>: typ]
@@ -87,7 +87,7 @@ functionTypeDomain = project _FunctionType _FunctionType_domain
 functionTypeCodomain :: Datum (FunctionType -> Type)
 functionTypeCodomain = project _FunctionType _FunctionType_codomain
 
-injection :: Datum Name -> Datum (Field) -> Datum (Injection)
+injection :: Datum Name -> Datum Field -> Datum Injection
 injection typeName field = Base.record _Injection [
     _Injection_typeName>>: typeName,
     _Injection_field>>: field]

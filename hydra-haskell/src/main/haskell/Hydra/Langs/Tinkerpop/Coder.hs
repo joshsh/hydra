@@ -17,7 +17,7 @@ import qualified Data.Maybe as Y
 
 type ElementAdapter s t v = Adapter s s Type (PG.ElementTypeTree t) Term (PG.ElementTree v)
 
-type PropertyAdapter s t v = Adapter s s (FieldType) (PG.PropertyType t) (Field) (PG.Property v)
+type PropertyAdapter s t v = Adapter s s FieldType (PG.PropertyType t) Field (PG.Property v)
 
 type IdAdapter s t v = (FieldName, Adapter s s Type t Term v)
 

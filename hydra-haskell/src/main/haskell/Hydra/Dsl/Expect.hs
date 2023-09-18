@@ -58,7 +58,7 @@ cases name term = case stripTerm term of
     else unexpected ("case statement for type " ++ unName name) $ show term
   _ -> unexpected "case statement" $ show term
 
-casesCase :: Name -> String -> Term -> Flow s (Field)
+casesCase :: Name -> String -> Term -> Flow s Field
 casesCase name n term = do
   cs <- cases name term
   let matching = L.filter (\f -> fieldName f == FieldName n) $ caseStatementCases cs
@@ -93,19 +93,19 @@ floatLiteral lit = case lit of
   LiteralFloat v -> pure v
   _ -> unexpected "floating-point value" $ show lit
 
-inject :: Name -> Term -> Flow s (Field)
+inject :: Name -> Term -> Flow s Field
 inject name term = case stripTerm term of
   TermUnion (Injection name' field) -> if name' == name
     then pure field
     else unexpected ("injection of type " ++ unName name) (unName name')
   _ -> unexpected "injection" $ show term
 
-injection :: Term -> Flow s (Field)
+injection :: Term -> Flow s Field
 injection term = case stripTerm term of
   TermUnion (Injection _ field) -> pure field
   _ -> unexpected "injection" $ show term
 
-injectionWithName :: Name -> Term -> Flow s (Field)
+injectionWithName :: Name -> Term -> Flow s Field
 injectionWithName expected term = case stripTerm term of
   TermUnion (Injection actual field) -> if actual == expected
     then pure field
@@ -304,7 +304,7 @@ variable term = case stripTerm term of
   TermVariable name -> pure name
   _ -> unexpected "variable" $ show term
 
-variant :: Name -> Term -> Flow s (Field)
+variant :: Name -> Term -> Flow s Field
 variant = injectionWithName
 
 wrap :: Name -> Term -> Flow s Term

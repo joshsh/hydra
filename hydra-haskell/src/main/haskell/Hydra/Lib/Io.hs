@@ -41,7 +41,7 @@ showTerm term = fromFlow "fail" noGraph $ do
   where
     encoded = coreEncodeTerm $ rewriteTermMeta (const $ Kv M.empty) term
 
-termStringCoder :: Flow (Graph) (Coder (Graph) (Graph) Term String)
+termStringCoder :: Flow Graph (Coder Graph Graph Term String)
 termStringCoder = do
     termJsonCoder <- jsonCoder $ TypeVariable _Term
     return $ Coder (mout termJsonCoder) (min termJsonCoder)
@@ -58,7 +58,7 @@ showType typ = fromFlow "fail" noGraph $ do
   where
     encoded = coreEncodeType $ rewriteTypeMeta (const $ Kv M.empty) typ
 
-typeStringCoder :: Flow (Graph) (Coder (Graph) (Graph) Term String)
+typeStringCoder :: Flow Graph (Coder Graph Graph Term String)
 typeStringCoder = do
     typeJsonCoder <- jsonCoder $ TypeVariable _Type
     return $ Coder (mout typeJsonCoder) (min typeJsonCoder)

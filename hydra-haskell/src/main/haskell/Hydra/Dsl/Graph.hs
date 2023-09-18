@@ -12,8 +12,8 @@ graph :: Datum (M.Map Name (Element))
     -> Datum Term
     -> Datum (M.Map Name (Primitive))
     -> Datum (AnnotationClass)
-    -> Datum (Maybe (Graph))
-    -> Datum (Graph)
+    -> Datum (Maybe Graph)
+    -> Datum Graph
 graph elements environment types body primitives annotations schema = record _Graph [
     _Graph_elements>>: elements,
     _Graph_environment>>: environment,
@@ -41,5 +41,5 @@ graphPrimitives = project _Graph _Graph_primitives
 graphAnnotations :: Datum (Graph -> AnnotationClass)
 graphAnnotations = project _Graph _Graph_annotations
 
-graphSchema :: Datum (Graph -> Maybe (Graph))
+graphSchema :: Datum (Graph -> Maybe Graph)
 graphSchema = project _Graph _Graph_schema

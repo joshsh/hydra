@@ -165,7 +165,7 @@ prim2Poly vars name input1 input2 output compute = Primitive name typ impl
       arg2 <- coderEncode (termCoderCoder input2) (args !! 1)
       coderDecode (termCoderCoder output) $ compute arg1 arg2
 
-prim2Interp :: [String] -> Name -> TermCoder x -> TermCoder y -> TermCoder z -> (Term -> Term -> Flow (Graph) Term) -> Primitive
+prim2Interp :: [String] -> Name -> TermCoder x -> TermCoder y -> TermCoder z -> (Term -> Term -> Flow Graph Term) -> Primitive
 prim2Interp vars name input1 input2 output compute = Primitive name typ impl
   where
     typ = Types.lambdas vars $

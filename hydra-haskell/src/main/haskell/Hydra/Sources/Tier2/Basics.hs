@@ -405,7 +405,7 @@ isUnitTypeDef = basicsDefinition "isUnitType" $
   functionWithClasses typeA booleanT eqA $
   lambda "t" $ Equality.equalType @@ (ref stripTypeDef @@ var "t") @@ Datum (coreEncodeType Types.unit)
 
-elementsToGraphDef :: Definition (Graph -> Maybe (Graph) -> [Element] -> Graph)
+elementsToGraphDef :: Definition (Graph -> Maybe Graph -> [Element] -> Graph)
 elementsToGraphDef = basicsDefinition "elementsToGraph" $
   function graphA (functionT (Types.optional graphA) (functionT (TypeList elementA) graphA)) $
   lambda "parent" $ lambda "schema" $ lambda "elements" $

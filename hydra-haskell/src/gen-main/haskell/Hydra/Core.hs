@@ -198,7 +198,7 @@ _FunctionType_codomain = (FieldName "codomain")
 data Injection =
   Injection {
     injectionTypeName :: Name,
-    injectionField :: (Field)}
+    injectionField :: Field}
   deriving (Eq, Ord, Read, Show)
 
 _Injection = (Name "hydra/core.Injection")
@@ -534,7 +534,7 @@ data Term =
   -- | A variant tuple
   TermSum (Sum) |
   -- | An injection; an instance of a union type
-  TermUnion (Injection) |
+  TermUnion Injection |
   -- | A variable reference
   TermVariable Name |
   TermWrap (Nominal Term)

@@ -21,13 +21,13 @@ import qualified Data.Map as M
 import qualified Data.Set as S
 
 
-type Constraint a = (Type, Type)
+type Constraint = (Type, Type)
 
-type Unifier a = (Subst Kv, [Constraint Kv])
+type Unifier = (Subst, [Constraint])
 
 -- Note: type variables in Hydra are allowed to bind to type expressions which contain the variable;
 --       i.e. type recursion by name is allowed.
-bind :: Name -> Type -> Flow s (Subst Kv)
+bind :: Name -> Type -> Flow s (Subst)
 bind name typ = do
   if typ == TypeVariable name
   then return M.empty
@@ -36,22 +36,23 @@ bind name typ = do
     then return M.empty
     else return $ M.singleton name typ
 
-solveConstraints :: [Constraint Kv] -> Flow s (Subst Kv)
-solveConstraints cs = unificationSolver (M.empty, cs)
+solveConstraints :: [Constraint] -> Flow s (Subst)
+solveConstraints constraints = solveConstraintsInternal (M.empty, constraints)
 
-unificationSolver :: Unifier Kv -> Flow s (Subst Kv)
-unificationSolver (su, cs) = case cs of
+solveConstraintsInternal :: Unifier -> Flow s (Subst)
+solveConstraintsInternal (su, cs) = case cs of
   [] -> return su
   ((t1, t2):rest) -> do
     su1  <- unify t1 t2
-    unificationSolver (
+    solveConstraintsInternal (
       composeSubst su1 su,
       (\(t1, t2) -> (substituteTypeVariables su1 t1, substituteTypeVariables su1 t2)) <$> rest)
 
-unify :: Type -> Type -> Flow s (Subst Kv)
+unify :: Type -> Type -> Flow s (Subst)
 unify ltyp rtyp = do
 --     withTrace ("unify " ++ show ltyp ++ " with " ++ show rtyp) $
      case (stripType ltyp, stripType rtyp) of
+
        -- Symmetric patterns
       (TypeApplication (ApplicationType lhs1 rhs1), TypeApplication (ApplicationType lhs2 rhs2)) ->
         unifyMany [lhs1, rhs1] [lhs2, rhs2]
@@ -77,14 +78,8 @@ unify ltyp rtyp = do
       (t1, TypeVariable v) -> bind v t1
       (TypeLambda lt, t2) -> unifyLambda lt t2
       (t1, TypeLambda lt) -> unifyLambda lt t1
---      -- E.g. (record "RowType" ...) is allowed to unify with (wrap "RowType" @ "a")
       (TypeApplication (ApplicationType lhs rhs), t2) -> unify lhs t2
       (t1, TypeApplication (ApplicationType lhs rhs)) -> unify t1 lhs
-
---      -- TODO; temporary "slop", e.g. (record "RowType" ...) is allowed to unify with (wrap "RowType")
---      (TypeWrap _, _) -> return M.empty -- TODO
---      (_, TypeWrap name) -> return M.empty -- TODO
-
 
       (l, r) -> fail $ "unification of " ++ show (typeVariant l) ++ " with " ++ show (typeVariant r) ++
         ":\n  " ++ show l ++
@@ -103,7 +98,7 @@ unify ltyp rtyp = do
       _ -> unify body other
 --      _ -> fail $ "could not unify with lambda type: " ++ show (stripType ltyp)
 
-unifyMany :: [Type] -> [Type] -> Flow s (Subst Kv)
+unifyMany :: [Type] -> [Type] -> Flow s (Subst)
 unifyMany [] [] = return M.empty
 unifyMany (t1 : ts1) (t2 : ts2) =
   do su1 <- unify t1 t2

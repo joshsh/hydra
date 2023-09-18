@@ -27,27 +27,27 @@ import qualified Data.Map as M
 import qualified Data.Set as S
 
 
-adaptAndEncodeType :: Language -> (Type -> Flow (Graph) t) -> Type -> Flow (Graph) t
+adaptAndEncodeType :: Language -> (Type -> Flow Graph t) -> Type -> Flow Graph t
 adaptAndEncodeType lang enc typ = adaptType lang typ >>= enc
 
 -- | Given a target language and a source type, find the target type to which the latter will be adapted.
-adaptType :: Language -> Type -> Flow (Graph) Type
+adaptType :: Language -> Type -> Flow Graph Type
 adaptType lang typ = adapterTarget <$> languageAdapter lang typ
 
 -- | Given a target language, a unidirectional last-mile encoding, and a source type,
 --   construct a unidirectional adapting coder for terms of that type. Terms will be rewritten according to the type and
 --   according to the constraints of the target language, then carried by the last mile into the final representation
 constructCoder :: Language
-  -> (Term -> Flow (Graph) c)
+  -> (Term -> Flow Graph c)
   -> Type
-  -> Flow (Graph) (Coder (Graph) (Graph) Term c)
+  -> Flow Graph (Coder Graph Graph Term c)
 constructCoder lang encodeTerm typ = withTrace ("coder for " ++ describeType typ) $ do
     adapter <- languageAdapter lang typ
     return $ composeCoders (adapterCoder adapter) (unidirectionalCoder encodeTerm)
 
 -- | Given a target language and a source type, produce an adapter,
 --   which rewrites the type and its terms according to the language's constraints
-languageAdapter :: Language -> Type -> Flow (Graph) (SymmetricAdapter (Graph) Type Term)
+languageAdapter :: Language -> Type -> Flow Graph (SymmetricAdapter Graph Type Term)
 languageAdapter lang typ0 = do
   -- TODO: rather than beta-reducing types all at once, we should incrementally extend the environment when application types are adapted
   -- typ <- betaReduceType typ0
@@ -71,9 +71,9 @@ languageAdapter lang typ0 = do
 -- | Given a target language, a unidirectional last mile encoding, and an intermediate helper function,
 --   transform a given module into a target representation
 transformModule :: Language
-  -> (Term -> Flow (Graph) e)
-  -> (Module -> M.Map Type (Coder (Graph) (Graph) Term e) -> [(Element, TypedTerm)] -> Flow (Graph) d)
-  -> Module -> Flow (Graph) d
+  -> (Term -> Flow Graph e)
+  -> (Module -> M.Map Type (Coder Graph Graph Term e) -> [(Element, TypedTerm)] -> Flow Graph d)
+  -> Module -> Flow Graph d
 transformModule lang encodeTerm createModule mod = withTrace ("transform module " ++ unNamespace (moduleNamespace mod)) $ do
     pairs <- withSchemaContext $ CM.mapM elementAsTypedTerm els
     let types = L.nub (typedTermType <$> pairs)

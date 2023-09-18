@@ -16,7 +16,7 @@ data AdapterContext =
   AdapterContext {
     adapterContextGraph :: (Graph.Graph),
     adapterContextLanguage :: (Language),
-    adapterContextAdapters :: (Map Core.Name (Compute.Adapter (AdapterContext) (AdapterContext) (Core.Type) (Core.Type) (Core.Term) (Core.Term)))}
+    adapterContextAdapters :: (Map Core.Name (Compute.Adapter AdapterContext AdapterContext (Core.Type) (Core.Type) (Core.Term) (Core.Term)))}
 
 _AdapterContext = (Core.Name "hydra/coders.AdapterContext")
 

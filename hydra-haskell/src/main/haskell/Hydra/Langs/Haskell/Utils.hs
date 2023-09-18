@@ -48,7 +48,7 @@ hsPrimitiveReference name = H.NameNormal $ H.QualifiedName [prefix] $ H.NamePart
 hsvar :: String -> H.Expression
 hsvar s = H.ExpressionVariable $ rawName s
 
-namespacesForModule :: Module -> Flow (Graph) Namespaces
+namespacesForModule :: Module -> Flow Graph Namespaces
 namespacesForModule mod = do
     nss <- moduleDependencyNamespaces True True True True mod
     return $ Namespaces focusPair $ fst $ L.foldl addPair (M.empty, S.empty) (toPair <$> S.toList nss)

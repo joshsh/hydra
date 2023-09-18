@@ -106,10 +106,10 @@ arbitraryLiteral at = case at of
   LiteralTypeInteger it -> LiteralInteger <$> arbitraryIntegerValue it
   LiteralTypeString -> LiteralString <$> QC.arbitrary
 
-arbitraryField :: FieldType -> Int -> QC.Gen (Field)
+arbitraryField :: FieldType -> Int -> QC.Gen Field
 arbitraryField (FieldType fn ft) n = Field fn <$> arbitraryTerm ft n
 
-arbitraryFieldType :: Int -> QC.Gen (FieldType)
+arbitraryFieldType :: Int -> QC.Gen FieldType
 arbitraryFieldType n = FieldType <$> QC.arbitrary <*> arbitraryType n
 
 arbitraryFloatValue :: FloatType -> QC.Gen FloatValue

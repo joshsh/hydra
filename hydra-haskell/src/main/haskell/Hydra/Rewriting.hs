@@ -32,7 +32,7 @@ boundVariablesInType = foldOverType TraversalOrderPre fld S.empty
       TypeLambda (LambdaType v _) -> S.insert v names
       _ -> names
 
-elementsWithDependencies :: [Element] -> Flow (Graph) [Element]
+elementsWithDependencies :: [Element] -> Flow Graph [Element]
 elementsWithDependencies original = CM.mapM requireElement allDepNames
   where
     depNames = S.toList . termDependencyNames True False False . elementData
@@ -41,7 +41,7 @@ elementsWithDependencies original = CM.mapM requireElement allDepNames
 -- | Turn arbitrary terms like 'add 42' into terms like '\x.add 42 x',
 --   whose arity (in the absence of application terms) is equal to the depth of nested lambdas.
 --   This function leaves application terms intact, simply rewriting their left and right subterms.
-expandLambdas :: Term -> Flow (Graph) Term
+expandLambdas :: Term -> Flow Graph Term
 expandLambdas term = do
     g <- getState
     rewriteTermM (expand g Nothing []) (pure . id) term
@@ -338,7 +338,7 @@ typeDependencyNames = freeVariablesInType
 
 -- | Where non-lambda terms with nonzero arity occur at the top level, turn them into lambdas,
 --   also adding an appropriate type annotation to each new lambda.
-wrapLambdas :: Term -> Flow (Graph) Term
+wrapLambdas :: Term -> Flow Graph Term
 wrapLambdas term = do
     typ <- requireTermType term
     anns <- graphAnnotations <$> getState

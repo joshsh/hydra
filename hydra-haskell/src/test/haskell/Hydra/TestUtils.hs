@@ -39,7 +39,7 @@ baseContext = AdapterContext testGraph baseLanguage M.empty
 
 checkAdapter :: (Eq t, Eq v, Show t, Show v)
   => (v -> v)
-  -> (t -> Flow (AdapterContext) (SymmetricAdapter (AdapterContext) t v))
+  -> (t -> Flow AdapterContext (SymmetricAdapter AdapterContext t v))
   -> ([r] -> AdapterContext)
   -> [r] -> t -> t -> Bool -> v -> v -> H.Expectation
 checkAdapter normalize mkAdapter mkContext variants source target lossy vs vt = do
@@ -89,7 +89,7 @@ checkIntegerAdapter = checkAdapter id integerAdapter context
 checkDataAdapter :: [TypeVariant] -> Type -> Type -> Bool -> Term -> Term -> H.Expectation
 checkDataAdapter = checkAdapter stripTerm termAdapter termTestContext
 
-checkSerdeRoundTrip :: (Type -> Flow (Graph) (Coder (Graph) (Graph) Term BS.ByteString))
+checkSerdeRoundTrip :: (Type -> Flow Graph (Coder Graph Graph Term BS.ByteString))
   -> TypedTerm -> H.Expectation
 checkSerdeRoundTrip mkSerde (TypedTerm typ term) = do
     case mserde of
@@ -100,7 +100,7 @@ checkSerdeRoundTrip mkSerde (TypedTerm typ term) = do
   where
     FlowState mserde _ trace = unFlow (mkSerde typ) testGraph emptyTrace
 
-checkSerialization :: (Type -> Flow (Graph) (Coder (Graph) (Graph) Term String))
+checkSerialization :: (Type -> Flow Graph (Coder Graph Graph Term String))
   -> TypedTerm -> String -> H.Expectation
 checkSerialization mkSerdeStr (TypedTerm typ term) expected = do
     case mserde of
@@ -112,20 +112,20 @@ checkSerialization mkSerdeStr (TypedTerm typ term) expected = do
     normalize = unlines . L.filter (not . L.null) . lines
     FlowState mserde _ trace = unFlow (mkSerdeStr typ) testGraph emptyTrace
 
-eval :: Term -> Flow (Graph) Term
+eval :: Term -> Flow Graph Term
 eval = reduceTerm True M.empty
 
-shouldFail :: Flow (Graph) a -> H.Expectation
+shouldFail :: Flow Graph a -> H.Expectation
 shouldFail f = H.shouldBe True (Y.isNothing $ flowStateValue $ unFlow f testGraph emptyTrace)
 
-shouldSucceed :: Flow (Graph) a -> H.Expectation
+shouldSucceed :: Flow Graph a -> H.Expectation
 shouldSucceed f = case my of
     Nothing -> HL.assertFailure (traceSummary trace)
     Just y -> True `H.shouldBe` True
   where
     FlowState my _ trace = unFlow f testGraph emptyTrace
 
-shouldSucceedWith :: (Eq a, Show a) => Flow (Graph) a -> a -> H.Expectation
+shouldSucceedWith :: (Eq a, Show a) => Flow Graph a -> a -> H.Expectation
 shouldSucceedWith f x = case my of
     Nothing -> HL.assertFailure (traceSummary trace)
     Just y -> y `H.shouldBe` x

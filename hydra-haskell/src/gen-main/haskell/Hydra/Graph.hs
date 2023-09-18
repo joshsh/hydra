@@ -19,14 +19,14 @@ data AnnotationClass =
     annotationClassRead :: (String -> Maybe Core.Kv),
     annotationClassTermAnnotation :: (Core.Term -> Core.Kv),
     annotationClassTypeAnnotation :: (Core.Type -> Core.Kv),
-    annotationClassTermDescription :: (Core.Term -> Compute.Flow (Graph) (Maybe String)),
-    annotationClassTypeDescription :: (Core.Type -> Compute.Flow (Graph) (Maybe String)),
-    annotationClassTypeClasses :: (Core.Type -> Compute.Flow (Graph) (Map Core.Name (Set TypeClass))),
-    annotationClassTermType :: (Core.Term -> Compute.Flow (Graph) (Maybe (Core.Type))),
+    annotationClassTermDescription :: (Core.Term -> Compute.Flow Graph (Maybe String)),
+    annotationClassTypeDescription :: (Core.Type -> Compute.Flow Graph (Maybe String)),
+    annotationClassTypeClasses :: (Core.Type -> Compute.Flow Graph (Map Core.Name (Set TypeClass))),
+    annotationClassTermType :: (Core.Term -> Compute.Flow Graph (Maybe (Core.Type))),
     annotationClassSetTermDescription :: (Maybe String -> Core.Term -> Core.Term),
     annotationClassSetTermType :: (Maybe (Core.Type) -> Core.Term -> Core.Term),
     annotationClassSetTypeClasses :: (Map Core.Name (Set TypeClass) -> Core.Type -> Core.Type),
-    annotationClassTypeOf :: (Core.Kv -> Compute.Flow (Graph) (Maybe (Core.Type))),
+    annotationClassTypeOf :: (Core.Kv -> Compute.Flow Graph (Maybe (Core.Type))),
     annotationClassSetTypeOf :: (Maybe (Core.Type) -> Core.Kv -> Core.Kv)}
 
 _AnnotationClass = (Core.Name "hydra/graph.AnnotationClass")
@@ -94,7 +94,7 @@ data Graph =
     -- | The annotation class which is supported in this context
     graphAnnotations :: (AnnotationClass),
     -- | The schema of this graph. If this parameter is omitted (nothing), the graph is its own schema graph.
-    graphSchema :: (Maybe (Graph))}
+    graphSchema :: (Maybe Graph)}
 
 _Graph = (Core.Name "hydra/graph.Graph")
 
@@ -133,7 +133,7 @@ data Primitive =
     -- | The type signature of the primitive function
     primitiveType :: (Core.Type),
     -- | A concrete implementation of the primitive function
-    primitiveImplementation :: ([Core.Term] -> Compute.Flow (Graph) (Core.Term))}
+    primitiveImplementation :: ([Core.Term] -> Compute.Flow Graph (Core.Term))}
 
 _Primitive = (Core.Name "hydra/graph.Primitive")
 
@@ -147,7 +147,7 @@ _Primitive_implementation = (Core.FieldName "implementation")
 data TermCoder x =
   TermCoder {
     termCoderType :: (Core.Type),
-    termCoderCoder :: (Compute.Coder (Graph) (Graph) (Core.Term) x)}
+    termCoderCoder :: (Compute.Coder Graph Graph (Core.Term) x)}
 
 _TermCoder = (Core.Name "hydra/graph.TermCoder")
 

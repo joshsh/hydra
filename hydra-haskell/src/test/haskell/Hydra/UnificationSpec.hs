@@ -9,7 +9,7 @@ import qualified Test.Hspec as H
 import qualified Data.Map as M
 
 
-expectUnified :: [Constraint Kv] -> [(Name, Type)] -> H.Expectation
+expectUnified :: [Constraint] -> [(Name, Type)] -> H.Expectation
 expectUnified constraints subst = shouldSucceedWith
   (solveConstraints constraints)
   (M.fromList subst)

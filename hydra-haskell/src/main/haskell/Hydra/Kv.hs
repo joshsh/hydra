@@ -47,7 +47,7 @@ getAttr key = Flow q
 getAttrWithDefault :: String -> Term -> Flow s Term
 getAttrWithDefault key def = Y.fromMaybe def <$> getAttr key
 
-getDescription :: Kv -> Flow (Graph) (Y.Maybe String)
+getDescription :: Kv -> Flow Graph (Y.Maybe String)
 getDescription kv = case getAnnotation kvDescription kv of
   Nothing -> pure Nothing
   Just term -> case term of
@@ -57,10 +57,10 @@ getDescription kv = case getAnnotation kvDescription kv of
 getTermAnnotation :: String -> Term -> Y.Maybe Term
 getTermAnnotation key = getAnnotation key . termAnnotationInternal
 
-getTermDescription :: Term -> Flow (Graph) (Y.Maybe String)
+getTermDescription :: Term -> Flow Graph (Y.Maybe String)
 getTermDescription = getDescription . termAnnotationInternal
 
-getType :: Kv -> Flow (Graph) (Y.Maybe Type)
+getType :: Kv -> Flow Graph (Y.Maybe Type)
 getType kv = case getAnnotation kvType kv of
   Nothing -> pure Nothing
   Just dat -> Just <$> coreDecodeType dat
@@ -68,7 +68,7 @@ getType kv = case getAnnotation kvType kv of
 getTypeAnnotation :: String -> Type -> Y.Maybe Term
 getTypeAnnotation key = getAnnotation key . typeAnnotationInternal
 
-getTypeClasses :: Type -> Flow (Graph) (M.Map Name (S.Set TypeClass))
+getTypeClasses :: Type -> Flow Graph (M.Map Name (S.Set TypeClass))
 getTypeClasses typ = case getTypeAnnotation key_classes typ of
     Nothing -> pure M.empty
     Just term -> Expect.map coreDecodeName (Expect.set decodeClass) term
@@ -77,7 +77,7 @@ getTypeClasses typ = case getTypeAnnotation key_classes typ of
       (unexpected "type class" $ show term) pure $ M.lookup fn byName
     byName = M.fromList [(_TypeClass_equality, TypeClassEquality), (_TypeClass_ordering, TypeClassOrdering)]
 
-getTypeDescription :: Type -> Flow (Graph) (Y.Maybe String)
+getTypeDescription :: Type -> Flow Graph (Y.Maybe String)
 getTypeDescription = getDescription . typeAnnotationInternal
 
 hasFlag :: String -> Flow s Bool
