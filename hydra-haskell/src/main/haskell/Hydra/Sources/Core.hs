@@ -3,7 +3,6 @@
 module Hydra.Sources.Core(
   hydraCore,
   hydraCoreModule,
-  module Hydra.Kernel,
 ) where
 
 import Hydra.Kernel

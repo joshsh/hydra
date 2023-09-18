@@ -11,6 +11,7 @@ import           Hydra.Dsl.Annotations
 import           Hydra.Dsl.Bootstrap
 import qualified Hydra.Dsl.Terms       as Terms
 import           Hydra.Dsl.Types       as Types
+import           Hydra.Kernel
 import           Hydra.Sources.Core
 
 

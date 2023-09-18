@@ -1,4 +1,5 @@
 module Hydra.Sources.Tier0.All(
+  module Hydra.Kernel,
   module Hydra.Sources.Tier0.All,
   module Hydra.Sources.Core,
   module Hydra.Sources.Tier0.Ast,
@@ -16,6 +17,7 @@ module Hydra.Sources.Tier0.All(
   module Hydra.Sources.Tier0.Workflow,
 ) where
 
+import Hydra.Kernel
 import Hydra.Sources.Core
 import Hydra.Sources.Tier0.Ast
 import Hydra.Sources.Tier0.Coders
