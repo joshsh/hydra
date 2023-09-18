@@ -88,7 +88,7 @@ integerValueToBigintDef = tier1Definition "integerValueToBigint" $
 isLambdaDef :: Definition (Term -> Bool)
 isLambdaDef = tier1Definition "isLambda" $
   doc "Check whether a term is a lambda, possibly nested within let and/or annotation terms" $
-  function termA Types.boolean $
+  function termT Types.boolean $
   lambda "term" $ (match _Term (Just false) [
       _Term_function>>: match _Function (Just false) [
         _Function_lambda>>: constant true],
@@ -100,7 +100,7 @@ isLambdaDef = tier1Definition "isLambda" $
 foldOverTermDef :: Definition (TraversalOrder -> (x -> Term -> x) -> x -> Term -> x)
 foldOverTermDef = tier1Definition "foldOverTerm" $
   doc "Fold over a term, traversing its subterms in the specified order" $
-  functionNWithClasses [TypeVariable _TraversalOrder, functionT xT (functionT termA xT), xT, termA, xT] ordA $
+  functionNWithClasses [TypeVariable _TraversalOrder, funT xT (funT termT xT), xT, termT, xT] ordA $
   lambda "order" $ lambda "fld" $ lambda "b0" $ lambda "term" $ (match _TraversalOrder Nothing [
     _TraversalOrder_pre>>: constant (Base.fold (ref foldOverTermDef @@ var "order" @@ var "fld")
       @@ (var "fld" @@ var "b0" @@ var "term")
@@ -114,7 +114,7 @@ foldOverTermDef = tier1Definition "foldOverTerm" $
 foldOverTypeDef :: Definition (TraversalOrder -> (x -> Type -> x) -> x -> Type -> x)
 foldOverTypeDef = tier1Definition "foldOverType" $
   doc "Fold over a type, traversing its subtypes in the specified order" $
-  functionN [TypeVariable _TraversalOrder, functionT xT (functionT typeA xT), xT, typeA, xT] $
+  functionN [TypeVariable _TraversalOrder, funT xT (funT typeT xT), xT, typeT, xT] $
   lambda "order" $ lambda "fld" $ lambda "b0" $ lambda "typ" $ (match _TraversalOrder Nothing [
     _TraversalOrder_pre>>: constant (Base.fold (ref foldOverTypeDef @@ var "order" @@ var "fld")
       @@ (var "fld" @@ var "b0" @@ var "typ")
@@ -128,7 +128,7 @@ foldOverTypeDef = tier1Definition "foldOverType" $
 freeVariablesInTermDef :: Definition (Term -> S.Set Name)
 freeVariablesInTermDef = tier1Definition "freeVariablesInTerm" $
   doc "Find the free variables (i.e. variables not bound by a lambda or let) in a term" $
-  functionWithClasses termA (setT nameT) ordA $
+  functionWithClasses termT (setT nameT) ordA $
   lambda "term" (
     (match _Term (Just $ var "dfltVars") [
       _Term_function>>: match _Function (Just $ var "dfltVars") [
@@ -148,7 +148,7 @@ freeVariablesInTermDef = tier1Definition "freeVariablesInTerm" $
 freeVariablesInTypeDef :: Definition (Type -> S.Set Name)
 freeVariablesInTypeDef = tier1Definition "freeVariablesInType" $
   doc "Find the free variables (i.e. variables not bound by a lambda or let) in a type" $
-  function typeA (setT nameT) $
+  function typeT (setT nameT) $
   lambda "typ" (
     (match _Type (Just $ var "dfltVars") [
       _Type_lambda>>: lambda "lt" (Sets.remove
@@ -164,7 +164,7 @@ freeVariablesInTypeDef = tier1Definition "freeVariablesInType" $
 subtermsDef :: Definition (Term -> [Term])
 subtermsDef = tier1Definition "subterms" $
   doc "Find the children of a given term" $
-  functionWithClasses termA (listT termA) ordA $
+  functionWithClasses termT (listT termT) ordA $
   match _Term Nothing [
     _Term_annotated>>: lambda "at" $ list [Core.annotatedSubject @@ var "at"],
     _Term_application>>: lambda "p" $ list [
@@ -200,7 +200,7 @@ subtermsDef = tier1Definition "subterms" $
 subtypesDef :: Definition (Type -> [Type])
 subtypesDef = tier1Definition "subtypes" $
   doc "Find the children of a given type expression" $
-  function typeA (listT typeA) $
+  function typeT (listT typeT) $
   match _Type Nothing [
     _Type_annotated>>: lambda "at" $ list [Core.annotatedSubject @@ var "at"],
     _Type_application>>: lambda "at" $ list [

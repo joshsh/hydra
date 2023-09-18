@@ -81,7 +81,7 @@ hydraBasicsModule = Module (Namespace "hydra/basics") elements [hydraTier1Module
 eliminationVariantDef :: Definition (Elimination -> EliminationVariant)
 eliminationVariantDef = basicsDefinition "eliminationVariant" $
   doc "Find the elimination variant (constructor) for a given elimination term" $
-  typed (functionT (Types.apply (TypeVariable _Elimination) (Types.var "a")) (TypeVariable _EliminationVariant)) $
+  typed (funT (Types.apply (TypeVariable _Elimination) (Types.var "a")) (TypeVariable _EliminationVariant)) $
   matchToEnum _Elimination _EliminationVariant Nothing [
     _Elimination_list     @-> _EliminationVariant_list,
     _Elimination_optional @-> _EliminationVariant_optional,
@@ -128,7 +128,7 @@ floatValueTypeDef = basicsDefinition "floatValueType" $
 functionVariantDef :: Definition (Function -> FunctionVariant)
 functionVariantDef = basicsDefinition "functionVariant" $
   doc "Find the function variant (constructor) for a given function" $
-  typed (functionT (Types.apply (TypeVariable _Function) (Types.var "a")) (TypeVariable _FunctionVariant)) $
+  typed (funT (Types.apply (TypeVariable _Function) (Types.var "a")) (TypeVariable _FunctionVariant)) $
   matchToEnum _Function _FunctionVariant Nothing [
     _Function_elimination @-> _FunctionVariant_elimination,
     _Function_lambda      @-> _FunctionVariant_lambda,
@@ -145,7 +145,7 @@ functionVariantsDef = basicsDefinition "functionVariants" $
 idDef :: Definition (a -> a)
 idDef = basicsDefinition "id" $
   doc "The identity function" $
-  typed (functionT (Types.var "a") (Types.var "a")) $
+  typed (funT (Types.var "a") (Types.var "a")) $
   lambda "x" $ var "x"
 
 integerTypeIsSignedDef :: Definition (IntegerType -> Bool)
@@ -242,13 +242,13 @@ literalVariantsDef = basicsDefinition "literalVariants" $
 
 termMetaDef :: Definition (Graph -> Term -> a)
 termMetaDef = basicsDefinition "termMeta" $
-  function graphA (functionT termA aT) $
+  function graphT (funT termT aT) $
   (project _AnnotationClass _AnnotationClass_termAnnotation) <.> Graph.graphAnnotations
 
 termVariantDef :: Definition (Term -> TermVariant)
 termVariantDef = basicsDefinition "termVariant" $
   doc "Find the term variant (constructor) for a given term" $
-  function termA (TypeVariable _TermVariant) $
+  function termT (TypeVariable _TermVariant) $
     matchToEnum _Term _TermVariant Nothing [
       _Term_annotated   @-> _TermVariant_annotated,
       _Term_application @-> _TermVariant_application,
@@ -290,7 +290,7 @@ termVariantsDef = basicsDefinition "termVariants" $
 typeVariantDef :: Definition (Type -> TypeVariant)
 typeVariantDef = basicsDefinition "typeVariant" $
   doc "Find the type variant (constructor) for a given type" $
-  function typeA (TypeVariable _TypeVariant) $
+  function typeT (TypeVariable _TypeVariant) $
     matchToEnum _Type _TypeVariant Nothing [
       _Type_annotated   @-> _TypeVariant_annotated,
       _Type_application @-> _TypeVariant_application,
@@ -360,21 +360,21 @@ mapFirstLetterDef = basicsDefinition "mapFirstLetter" $
 
 fieldMapDef :: Definition ([Field] -> M.Map FieldName Term)
 fieldMapDef = basicsDefinition "fieldMap" $
-  function (TypeList fieldA) (Types.map (TypeVariable _FieldName) termA) $
+  function (TypeList fieldT) (Types.map (TypeVariable _FieldName) termT) $
     (lambda "fields" $ Maps.fromList @@ (Lists.map @@ var "toPair" @@ var "fields"))
   `with` [
     "toPair">: lambda "f" $ pair (project _Field _Field_name @@ var "f") (project _Field _Field_term @@ var "f")]
 
 fieldTypeMapDef :: Definition ([FieldType] -> M.Map FieldName Type)
 fieldTypeMapDef = basicsDefinition "fieldTypeMap" $
-  function (TypeList fieldTypeA) (Types.map (TypeVariable _FieldName) typeA) $
+  function (TypeList fieldTypeT) (Types.map (TypeVariable _FieldName) typeT) $
     (lambda "fields" $ Maps.fromList @@ (Lists.map @@ var "toPair" @@ var "fields"))
   `with` [
     "toPair">: lambda "f" $ pair (project _FieldType _FieldType_name @@ var "f") (project _FieldType _FieldType_type @@ var "f")]
 
 isEncodedTypeDef :: Definition (Term -> Bool)
 isEncodedTypeDef = basicsDefinition "isEncodedType" $
-  function termA booleanT $
+  function termT booleanT $
   lambda "t" $ (match _Term (Just false) [
       Case _Term_application --> lambda "a" $
         ref isEncodedTypeDef @@ (project _Application _Application_function @@ var "a"),
@@ -384,7 +384,7 @@ isEncodedTypeDef = basicsDefinition "isEncodedType" $
 
 isTypeDef :: Definition (Type -> Bool)
 isTypeDef = basicsDefinition "isType" $
-  functionWithClasses typeA booleanT eqA $
+  functionWithClasses typeT booleanT eqA $
   lambda "t" $ (match _Type (Just false) [
       Case _Type_application --> lambda "a" $
         ref isTypeDef @@ (project _ApplicationType _ApplicationType_function @@ var "a"),
@@ -397,17 +397,17 @@ isTypeDef = basicsDefinition "isType" $
 
 isUnitTermDef :: Definition (Term -> Bool)
 isUnitTermDef = basicsDefinition "isUnitTerm" $
-  functionWithClasses termA booleanT eqA $
+  functionWithClasses termT booleanT eqA $
   lambda "t" $ Equality.equalTerm @@ (ref stripTermDef @@ var "t") @@ Datum (coreEncodeTerm Terms.unit)
 
 isUnitTypeDef :: Definition (Term -> Bool)
 isUnitTypeDef = basicsDefinition "isUnitType" $
-  functionWithClasses typeA booleanT eqA $
+  functionWithClasses typeT booleanT eqA $
   lambda "t" $ Equality.equalType @@ (ref stripTypeDef @@ var "t") @@ Datum (coreEncodeType Types.unit)
 
 elementsToGraphDef :: Definition (Graph -> Maybe Graph -> [Element] -> Graph)
 elementsToGraphDef = basicsDefinition "elementsToGraph" $
-  function graphA (functionT (Types.optional graphA) (functionT (TypeList elementA) graphA)) $
+  function graphT (funT (Types.optional graphT) (funT (TypeList elementT) graphT)) $
   lambda "parent" $ lambda "schema" $ lambda "elements" $
     Graph.graph
       (Maps.fromList @@ (Lists.map @@ var "toPair" @@ var "elements"))
@@ -442,7 +442,7 @@ namespaceOfLazyDef = basicsDefinition "namespaceOfLazy" $
 
 namespaceToFilePathDef :: Definition (Bool -> FileExtension -> Namespace -> String)
 namespaceToFilePathDef = basicsDefinition "namespaceToFilePath" $
-  function booleanT (functionT (TypeVariable _FileExtension) (functionT (TypeVariable _Namespace) Types.string)) $
+  function booleanT (funT (TypeVariable _FileExtension) (funT (TypeVariable _Namespace) Types.string)) $
   lambda "caps" $ lambda "ext" $ lambda "ns" $
     (((Strings.intercalate @@ "/" @@ var "parts") ++ "." ++ (unwrap _FileExtension @@ var "ext"))
     `with` [

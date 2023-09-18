@@ -53,5 +53,5 @@ traceSummaryDef = tier3Definition "traceSummary" $
             @@ (Lists.map @@ (var "toLine") @@ (Maps.toList @@ (Flows.traceOther @@ var "t"))))
           @@ (Maps.isEmpty @@ (Flows.traceOther @@ var "t")),
         "toLine">:
-          function (pairT stringT termKV) stringT $
+          function (pairT stringT termT) stringT $
           lambda "pair" $ "\t" ++ (first @@ var "pair") ++ ": " ++ (Io.showTerm @@ (second @@ var "pair"))])

@@ -97,7 +97,7 @@ typeArityDef = hydraExtrasDefinition "typeArity" $
 
 uncurryTypeDef :: Definition (Type -> [Type])
 uncurryTypeDef = hydraExtrasDefinition "uncurryType" $
-  function typeA (listT typeA) $
+  function typeT (listT typeT) $
   doc "Uncurry a type expression into a list of types, turning a function type a -> b into cons a (uncurryType b)" $
   lambda "t" ((match _Type (Just $ list [var "t"]) [
     _Type_annotated>>: ref uncurryTypeDef <.> Core.annotatedSubject,
