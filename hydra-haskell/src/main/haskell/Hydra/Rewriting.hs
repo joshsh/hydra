@@ -82,7 +82,7 @@ expandLambdas term = do
                   _ -> throwDebugException $ "expandLambdas: expected function type, got " ++ show t
                 Nothing -> Nothing
 
-freeVariablesInScheme :: TypeScheme Kv -> S.Set Name
+freeVariablesInScheme :: TypeScheme -> S.Set Name
 freeVariablesInScheme (TypeScheme vars t) = S.difference (freeVariablesInType t) (S.fromList vars)
 
 isFreeIn :: Name -> Term -> Bool

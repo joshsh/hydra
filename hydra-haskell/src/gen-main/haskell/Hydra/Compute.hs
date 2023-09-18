@@ -51,16 +51,16 @@ _Coder_encode = (Core.FieldName "encode")
 _Coder_decode = (Core.FieldName "decode")
 
 -- | A variant of the State monad with built-in logging and error handling
-newtype Flow s x = 
+newtype Flow s a = 
   Flow {
-    unFlow :: (s -> Trace -> FlowState s x)}
+    unFlow :: (s -> Trace -> FlowState s a)}
 
 _Flow = (Core.Name "hydra/compute.Flow")
 
 -- | The result of evaluating a Flow
-data FlowState s x = 
+data FlowState s a = 
   FlowState {
-    flowStateValue :: (Maybe x),
+    flowStateValue :: (Maybe a),
     flowStateState :: s,
     flowStateTrace :: Trace}
   deriving (Eq, Ord, Read, Show)
@@ -79,7 +79,7 @@ data Trace =
     traceStack :: [String],
     traceMessages :: [String],
     -- | A map of string keys to arbitrary terms as values, for application-specific use
-    traceOther :: (Map String (Core.Term))}
+    traceOther :: (Map String Core.Term)}
   deriving (Eq, Ord, Read, Show)
 
 _Trace = (Core.Name "hydra/compute.Trace")

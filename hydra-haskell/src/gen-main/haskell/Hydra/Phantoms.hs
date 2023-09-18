@@ -19,7 +19,7 @@ _Case = (Core.Name "hydra/phantoms.Case")
 -- | An association of a term with a phantom type
 newtype Datum a = 
   Datum {
-    unDatum :: (Core.Term)}
+    unDatum :: Core.Term}
   deriving (Eq, Ord, Read, Show)
 
 _Datum = (Core.Name "hydra/phantoms.Datum")
@@ -40,7 +40,7 @@ _Definition_datum = (Core.FieldName "datum")
 -- | An association with a term-level field with a phantom type
 newtype Fld a = 
   Fld {
-    unFld :: (Core.Field)}
+    unFld :: Core.Field}
   deriving (Eq, Ord, Read, Show)
 
 _Fld = (Core.Name "hydra/phantoms.Fld")

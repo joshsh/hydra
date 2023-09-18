@@ -36,13 +36,13 @@ hydraCodersModule = Module ns elements [hydraCoreModule, hydraMantleModule, hydr
 
       def "AdapterContext" $
         doc "An evaluation context together with a source language and a target language" $
-        lambda "a" $ record [
-          "graph">: apply (graph "Graph") (var "a"),
-          "language">: apply (coders "Language") (var "a"),
+        record [
+          "graph">: graph "Graph",
+          "language">: coders "Language",
           "adapters">: Types.map (core "Name") (compute "Adapter"
-            @@ (coders "AdapterContext" @@ "a") @@ (coders "AdapterContext" @@ "a")
-            @@ (core "Type" @@ "a") @@ (core "Type" @@ "a")
-            @@ (core "Term" @@ "a") @@ (core "Term" @@ "a"))],
+            @@ (coders "AdapterContext") @@ (coders "AdapterContext")
+            @@ (core "Type") @@ (core "Type")
+            @@ (core "Term") @@ (core "Term"))],
 
       def "CoderDirection" $
         doc "Indicates either the 'out' or the 'in' direction of a coder" $
@@ -52,13 +52,13 @@ hydraCodersModule = Module ns elements [hydraCoreModule, hydraMantleModule, hydr
 
       def "Language" $
         doc "A named language together with language-specific constraints" $
-        lambda "a" $ record [
+        record [
           "name">: coders "LanguageName",
-          "constraints">: apply (coders "LanguageConstraints") (var "a")],
+          "constraints">: coders "LanguageConstraints"],
 
       def "LanguageConstraints" $
         doc "A set of constraints on valid type and term expressions, characterizing a language" $
-        lambda "a" $ record [
+        record [
           "eliminationVariants">:
             doc "All supported elimination variants" $
             Types.set $ mantle "EliminationVariant",
@@ -82,7 +82,7 @@ hydraCodersModule = Module ns elements [hydraCoreModule, hydraMantleModule, hydr
             Types.set $ mantle "TypeVariant",
           "types">:
             doc "A logical set of types, as a predicate which tests a type for inclusion" $
-            core "Type" @@ "a" --> boolean],
+            core "Type" --> boolean],
 
       def "LanguageName" $
         doc "The unique name of a language" string,

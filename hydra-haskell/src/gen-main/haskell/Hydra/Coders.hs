@@ -12,11 +12,11 @@ import Data.Map as M
 import Data.Set as S
 
 -- | An evaluation context together with a source language and a target language
-data AdapterContext =
+data AdapterContext = 
   AdapterContext {
-    adapterContextGraph :: (Graph.Graph),
-    adapterContextLanguage :: (Language),
-    adapterContextAdapters :: (Map Core.Name (Compute.Adapter AdapterContext AdapterContext (Core.Type) (Core.Type) (Core.Term) (Core.Term)))}
+    adapterContextGraph :: Graph.Graph,
+    adapterContextLanguage :: Language,
+    adapterContextAdapters :: (Map Core.Name (Compute.Adapter AdapterContext AdapterContext Core.Type Core.Type Core.Term Core.Term))}
 
 _AdapterContext = (Core.Name "hydra/coders.AdapterContext")
 
@@ -39,10 +39,10 @@ _CoderDirection_encode = (Core.FieldName "encode")
 _CoderDirection_decode = (Core.FieldName "decode")
 
 -- | A named language together with language-specific constraints
-data Language =
+data Language = 
   Language {
     languageName :: LanguageName,
-    languageConstraints :: (LanguageConstraints)}
+    languageConstraints :: LanguageConstraints}
 
 _Language = (Core.Name "hydra/coders.Language")
 
@@ -51,7 +51,7 @@ _Language_name = (Core.FieldName "name")
 _Language_constraints = (Core.FieldName "constraints")
 
 -- | A set of constraints on valid type and term expressions, characterizing a language
-data LanguageConstraints =
+data LanguageConstraints = 
   LanguageConstraints {
     -- | All supported elimination variants
     languageConstraintsEliminationVariants :: (Set Mantle.EliminationVariant),

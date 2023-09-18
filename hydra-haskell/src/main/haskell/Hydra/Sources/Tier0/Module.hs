@@ -32,16 +32,16 @@ hydraModuleModule = Module ns elements [hydraGraphModule] $
 
       def "Module" $
         doc "A logical collection of elements in the same namespace, having dependencies on zero or more other modules" $
-        lambda "a" $ record [
+        record [
           "namespace">:
             doc "A common prefix for all element names in the module" $
             mod "Namespace",
           "elements">:
             doc "The elements defined in this module" $
-            list $ graph "Element" @@ "a",
+            list $ graph "Element",
           "dependencies">:
             doc "Any additional modules this one has a direct dependency upon" $
-            list $ mod "Module" @@ "a",
+            list $ mod "Module",
           "description">:
             doc "An optional human-readable description of the module" $
             optional string],

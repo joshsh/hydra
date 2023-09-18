@@ -32,16 +32,16 @@ hydraTestingModule = Module ns elements [hydraCoreModule] $
 
       def "TestCase" $
         doc "A simple test case with an input and an expected output" $
-        lambda "a" $ record [
+        record [
           "description">: optional string,
           "evaluationStyle">: testing "EvaluationStyle",
-          "input">: core "Term" @@ "a",
-          "output">: core "Term" @@ "a"],
+          "input">: core "Term",
+          "output">: core "Term"],
 
       def "TestGroup" $
         doc "A collection of test cases with a name and optional description" $
-        lambda "a" $ record [
+        record [
           "name">: string,
           "description">: optional string,
-          "subgroups">: list (testing "TestGroup" @@ "a"),
-          "cases">: list (testing "TestCase" @@ "a")]]
+          "subgroups">: list (testing "TestGroup"),
+          "cases">: list (testing "TestCase")]]

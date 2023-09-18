@@ -8,9 +8,9 @@ import Data.Map as M
 import Data.Set as S
 
 -- | An object, such as a type or term, together with an annotation
-data Annotated x =
+data Annotated a = 
   Annotated {
-    annotatedSubject :: x,
+    annotatedSubject :: a,
     annotatedAnnotation :: Kv}
   deriving (Eq, Ord, Read, Show)
 
@@ -21,7 +21,7 @@ _Annotated_subject = (FieldName "subject")
 _Annotated_annotation = (FieldName "annotation")
 
 -- | A term which applies a function to an argument
-data Application =
+data Application = 
   Application {
     -- | The left-hand side of the application
     applicationFunction :: Term,
@@ -36,7 +36,7 @@ _Application_function = (FieldName "function")
 _Application_argument = (FieldName "argument")
 
 -- | The type-level analog of an application term
-data ApplicationType =
+data ApplicationType = 
   ApplicationType {
     -- | The left-hand side of the application
     applicationTypeFunction :: Type,
@@ -71,13 +71,13 @@ data Elimination =
   -- | Eliminates a list using a fold function; this function has the signature b -> [a] -> b
   EliminationList Term |
   -- | Eliminates an optional term by matching over the two possible cases
-  EliminationOptional (OptionalCases) |
+  EliminationOptional OptionalCases |
   -- | Eliminates a tuple by projecting the component at a given 0-indexed offset
   EliminationProduct TupleProjection |
   -- | Eliminates a record by projecting a given field
   EliminationRecord Projection |
   -- | Eliminates a union term by matching over the fields of the union. This is a case statement.
-  EliminationUnion (CaseStatement) |
+  EliminationUnion CaseStatement |
   -- | Unwrap a wrapped term
   EliminationWrap Name
   deriving (Eq, Ord, Read, Show)
@@ -97,7 +97,7 @@ _Elimination_union = (FieldName "union")
 _Elimination_wrap = (FieldName "wrap")
 
 -- | A labeled term
-data Field =
+data Field = 
   Field {
     fieldName :: FieldName,
     fieldTerm :: Term}
@@ -118,7 +118,7 @@ newtype FieldName =
 _FieldName = (Name "hydra/core.FieldName")
 
 -- | The name and type of a field
-data FieldType =
+data FieldType = 
   FieldType {
     fieldTypeName :: FieldName,
     fieldTypeType :: Type}
@@ -164,11 +164,11 @@ _FloatValue_float32 = (FieldName "float32")
 _FloatValue_float64 = (FieldName "float64")
 
 -- | A function
-data Function =
+data Function = 
   -- | An elimination for any of a few term variants
-  FunctionElimination (Elimination) |
+  FunctionElimination Elimination |
   -- | A function abstraction (lambda)
-  FunctionLambda (Lambda) |
+  FunctionLambda Lambda |
   -- | A reference to a built-in (primitive) function
   FunctionPrimitive Name
   deriving (Eq, Ord, Read, Show)
@@ -182,7 +182,7 @@ _Function_lambda = (FieldName "lambda")
 _Function_primitive = (FieldName "primitive")
 
 -- | A function type, also known as an arrow type
-data FunctionType =
+data FunctionType = 
   FunctionType {
     functionTypeDomain :: Type,
     functionTypeCodomain :: Type}
@@ -195,7 +195,7 @@ _FunctionType_domain = (FieldName "domain")
 _FunctionType_codomain = (FieldName "codomain")
 
 -- | An instance of a union type; i.e. a string-indexed generalization of inl() or inr()
-data Injection =
+data Injection = 
   Injection {
     injectionTypeName :: Name,
     injectionField :: Field}
@@ -294,7 +294,7 @@ _Kv = (Name "hydra/core.Kv")
 _Kv_annotations = (FieldName "annotations")
 
 -- | A function abstraction (lambda)
-data Lambda =
+data Lambda = 
   Lambda {
     -- | The parameter of the lambda
     lambdaParameter :: Name,
@@ -309,7 +309,7 @@ _Lambda_parameter = (FieldName "parameter")
 _Lambda_body = (FieldName "body")
 
 -- | A type abstraction; the type-level analog of a lambda term
-data LambdaType =
+data LambdaType = 
   LambdaType {
     -- | The variable which is bound by the lambda
     lambdaTypeParameter :: Name,
@@ -324,7 +324,7 @@ _LambdaType_parameter = (FieldName "parameter")
 _LambdaType_body = (FieldName "body")
 
 -- | A set of (possibly recursive) 'let' bindings
-data Let =
+data Let = 
   Let {
     letBindings :: (Map Name Term),
     letEnvironment :: Term}
@@ -384,7 +384,7 @@ _LiteralType_integer = (FieldName "integer")
 _LiteralType_string = (FieldName "string")
 
 -- | A map type
-data MapType =
+data MapType = 
   MapType {
     mapTypeKeys :: Type,
     mapTypeValues :: Type}
@@ -405,10 +405,10 @@ newtype Name =
 _Name = (Name "hydra/core.Name")
 
 -- | An object wrapped in a type name
-data Nominal x = 
+data Nominal a = 
   Nominal {
     nominalTypeName :: Name,
-    nominalObject :: x}
+    nominalObject :: a}
   deriving (Eq, Ord, Read, Show)
 
 _Nominal = (Name "hydra/core.Nominal")
@@ -418,7 +418,7 @@ _Nominal_typeName = (FieldName "typeName")
 _Nominal_object = (FieldName "object")
 
 -- | A case statement for matching optional terms
-data OptionalCases =
+data OptionalCases = 
   OptionalCases {
     -- | A term provided if the optional value is nothing
     optionalCasesNothing :: Term,
@@ -446,7 +446,7 @@ _Projection_typeName = (FieldName "typeName")
 _Projection_field = (FieldName "field")
 
 -- | A record, or labeled tuple; a map of field names to terms
-data Record =
+data Record = 
   Record {
     recordTypeName :: Name,
     recordFields :: [Field]}
@@ -459,7 +459,7 @@ _Record_typeName = (FieldName "typeName")
 _Record_fields = (FieldName "fields")
 
 -- | A labeled record or union type
-data RowType =
+data RowType = 
   RowType {
     -- | The name of the row type, which must correspond to the name of a Type element
     rowTypeTypeName :: Name,
@@ -481,7 +481,7 @@ _RowType_fields = (FieldName "fields")
 data Stream = 
   Stream {
     streamFirst :: Term,
-    streamRest :: (Stream)}
+    streamRest :: Stream}
   deriving (Eq, Ord, Read, Show)
 
 _Stream = (Name "hydra/core.Stream")
@@ -507,14 +507,14 @@ _Sum_size = (FieldName "size")
 _Sum_term = (FieldName "term")
 
 -- | A data term
-data Term =
+data Term = 
   -- | A term annotated with metadata
   TermAnnotated (Annotated Term) |
   -- | A function application
-  TermApplication (Application) |
+  TermApplication Application |
   -- | A function term
-  TermFunction (Function) |
-  TermLet (Let) |
+  TermFunction Function |
+  TermLet Let |
   -- | A list
   TermList [Term] |
   -- | A literal value
@@ -526,13 +526,13 @@ data Term =
   -- | A tuple
   TermProduct [Term] |
   -- | A record term
-  TermRecord (Record) |
+  TermRecord Record |
   -- | A set of values
   TermSet (Set Term) |
   -- | An infinite stream of terms
-  TermStream (Stream) |
+  TermStream Stream |
   -- | A variant tuple
-  TermSum (Sum) |
+  TermSum Sum |
   -- | An injection; an instance of a union type
   TermUnion Injection |
   -- | A variable reference
@@ -590,22 +590,22 @@ _TupleProjection_arity = (FieldName "arity")
 _TupleProjection_index = (FieldName "index")
 
 -- | A data type
-data Type =
+data Type = 
   -- | A type annotated with metadata
   TypeAnnotated (Annotated Type) |
-  TypeApplication (ApplicationType) |
-  TypeFunction (FunctionType) |
-  TypeLambda (LambdaType) |
+  TypeApplication ApplicationType |
+  TypeFunction FunctionType |
+  TypeLambda LambdaType |
   TypeList Type |
   TypeLiteral LiteralType |
-  TypeMap (MapType) |
+  TypeMap MapType |
   TypeOptional Type |
   TypeProduct [Type] |
-  TypeRecord (RowType) |
+  TypeRecord RowType |
   TypeSet Type |
   TypeStream Type |
   TypeSum [Type] |
-  TypeUnion (RowType) |
+  TypeUnion RowType |
   TypeVariable Name |
   TypeWrap (Nominal Type)
   deriving (Eq, Ord, Read, Show)

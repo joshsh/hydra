@@ -49,7 +49,7 @@ substituteTypeVariables bindings = rewriteType f id
       TypeLambda (LambdaType v body) -> case M.lookup v bindings of
         Nothing -> recurse original
         Just subst -> case subst of
-          TypeVariable v2 -> TypeLambda (LambdaType v2 (recurse body))
+--          TypeVariable v2 -> TypeLambda (LambdaType v2 (recurse body)) -- not acceptable as such, because this applies both to bound and free type variables
           _ -> recurse body
       TypeVariable v -> M.findWithDefault original v bindings
       _ -> recurse original

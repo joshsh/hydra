@@ -19,7 +19,7 @@ runTestSuite :: H.SpecWith ()
 runTestSuite = do
     runTestGroup allTests
 
-runTestCase :: Int -> TestCase Kv -> H.SpecWith ()
+runTestCase :: Int -> TestCase -> H.SpecWith ()
 runTestCase idx tc = H.it desc $
   shouldSucceedWith
     (eval $ testCaseInput tc)
@@ -27,7 +27,7 @@ runTestCase idx tc = H.it desc $
   where
     desc = Y.fromMaybe ("test #" ++ show idx) $ testCaseDescription tc
 
-runTestGroup :: TestGroup Kv -> H.SpecWith ()
+runTestGroup :: TestGroup -> H.SpecWith ()
 runTestGroup tg = do
     H.describe desc $ do
       CM.sequence (L.zipWith runTestCase [1..] (testGroupCases tg))

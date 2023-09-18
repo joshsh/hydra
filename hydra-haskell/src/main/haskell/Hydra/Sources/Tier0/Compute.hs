@@ -49,13 +49,13 @@ hydraComputeModule = Module ns elements [hydraCoreModule] $
 
       def "Flow" $
         doc "A variant of the State monad with built-in logging and error handling" $
-        lambda "s" $ lambda "x" $
-        function "s" (compute "Trace" --> compute "FlowState" @@ "s" @@ "x"),
+        lambda "s" $ lambda "a" $
+        function "s" (compute "Trace" --> compute "FlowState" @@ "s" @@ "a"),
 
       def "FlowState" $
         doc "The result of evaluating a Flow" $
-        lambda "s" $ lambda "x" $ record [
-          "value">: optional "x",
+        lambda "s" $ lambda "a" $ record [
+          "value">: optional "a",
           "state">: "s",
           "trace">: compute "Trace"],
 
@@ -66,4 +66,4 @@ hydraComputeModule = Module ns elements [hydraCoreModule] $
           "messages">: list string,
           "other">:
             doc "A map of string keys to arbitrary terms as values, for application-specific use" $
-            Types.map string (core "Term" @@ core "Kv")]]
+            Types.map string (core "Term")]]

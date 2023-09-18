@@ -70,10 +70,10 @@ unify ltyp rtyp = do
       (TypeSet st1, TypeSet st2) -> unify st1 st2
       (TypeUnion rt1, TypeUnion rt2) -> verify (rowTypeTypeName rt1 == rowTypeTypeName rt2)
       (TypeSum types1, TypeSum types2) -> unifyMany types1 types2
+      (TypeVariable v1, TypeVariable v2) -> bindWeakest v1 v2
       (TypeWrap n1, TypeWrap n2) -> verify $ n1 == n2
 
       -- Asymmetric patterns
-      (TypeVariable v1, TypeVariable v2) -> bindWeakest v1 v2
       (TypeVariable v, t2) -> bind v t2
       (t1, TypeVariable v) -> bind v t1
       (TypeLambda lt, t2) -> unifyLambda lt t2

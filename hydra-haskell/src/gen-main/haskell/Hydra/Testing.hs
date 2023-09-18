@@ -21,12 +21,12 @@ _EvaluationStyle_eager = (Core.FieldName "eager")
 _EvaluationStyle_lazy = (Core.FieldName "lazy")
 
 -- | A simple test case with an input and an expected output
-data TestCase a = 
+data TestCase = 
   TestCase {
     testCaseDescription :: (Maybe String),
     testCaseEvaluationStyle :: EvaluationStyle,
-    testCaseInput :: (Core.Term),
-    testCaseOutput :: (Core.Term)}
+    testCaseInput :: Core.Term,
+    testCaseOutput :: Core.Term}
   deriving (Eq, Ord, Read, Show)
 
 _TestCase = (Core.Name "hydra/testing.TestCase")
@@ -40,12 +40,12 @@ _TestCase_input = (Core.FieldName "input")
 _TestCase_output = (Core.FieldName "output")
 
 -- | A collection of test cases with a name and optional description
-data TestGroup a = 
+data TestGroup = 
   TestGroup {
     testGroupName :: String,
     testGroupDescription :: (Maybe String),
-    testGroupSubgroups :: [TestGroup Core.Kv],
-    testGroupCases :: [TestCase Core.Kv]}
+    testGroupSubgroups :: [TestGroup],
+    testGroupCases :: [TestCase]}
   deriving (Eq, Ord, Read, Show)
 
 _TestGroup = (Core.Name "hydra/testing.TestGroup")

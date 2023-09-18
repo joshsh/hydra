@@ -20,7 +20,7 @@ intList els = list (int32 <$> els)
 intListList :: [[Int]] -> Term
 intListList lists = list (intList <$> lists)
 
-primCase :: Name -> [Term] -> Term -> TestCase Kv
+primCase :: Name -> [Term] -> Term -> TestCase
 primCase name args output = TestCase Nothing EvaluationStyleEager input output
   where
     input = L.foldl (\a arg -> a @@ arg) (primitive name) args

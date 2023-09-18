@@ -17,7 +17,7 @@ newtype FileExtension =
 _FileExtension = (Core.Name "hydra/module.FileExtension")
 
 -- | A logical collection of elements in the same namespace, having dependencies on zero or more other modules
-data Module =
+data Module = 
   Module {
     -- | A common prefix for all element names in the module
     moduleNamespace :: Namespace,

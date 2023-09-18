@@ -86,9 +86,9 @@ hydraMantleModule = Module ns elements [hydraCoreModule] $
 
       def "TypeScheme" $
         doc "A type expression together with free type variables occurring in the expression" $
-        lambda "a" $ record [
+        record [
           "variables">: list $ core "Name",
-          "type">: core "Type" @@ "a"],
+          "type">: core "Type"],
 
       def "TypeVariant" $
         doc "The identifier of a type constructor" $
@@ -112,6 +112,6 @@ hydraMantleModule = Module ns elements [hydraCoreModule] $
 
       def "TypedTerm" $
         doc "A type together with an instance of the type" $
-        lambda "a" $ record [
-          "type">: core "Type" @@ "a",
-          "term">: core "Term" @@ "a"]]
+        record [
+          "type">: core "Type",
+          "term">: core "Term"]]

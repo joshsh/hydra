@@ -37,6 +37,6 @@ hydraConstraintsModule = Module ns elements [hydraCoreModule, hydraQueryModule] 
 
       def "PatternImplication" $
         doc "A pattern which, if it matches in a given graph, implies that another pattern must also match. Query variables are shared between the two patterns." $
-        lambda "a" $ record [
-          "antecedent">: query "Pattern" @@ "a",
-          "consequent">: query "Pattern" @@ "a"]]
+        record [
+          "antecedent">: query "Pattern",
+          "consequent">: query "Pattern"]]
