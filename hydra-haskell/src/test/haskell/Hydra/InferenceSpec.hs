@@ -38,7 +38,7 @@ expectTypeAnnotation path term etyp = shouldSucceedWith atyp etyp
    atyp = do
      iterm <- annotateTermWithTypes term
      selected <- path iterm
-     mtyp <- getType (termAnnotationInternal selected)
+     mtyp <- getType (termAnnotation selected)
      case mtyp of
        Nothing -> fail $ "no type annotation"
        Just t -> pure t

@@ -50,8 +50,7 @@ solveConstraintsInternal (su, cs) = case cs of
 
 unify :: Type -> Type -> Flow s Subst
 unify ltyp rtyp = do
---     withTrace ("unify " ++ show ltyp ++ " with " ++ show rtyp) $
-     case (stripType ltyp, stripType rtyp) of
+    case (stripType ltyp, stripType rtyp) of
 
        -- Symmetric patterns
       (TypeApplication (ApplicationType lhs1 rhs1), TypeApplication (ApplicationType lhs2 rhs2)) ->
@@ -63,15 +62,12 @@ unify ltyp rtyp = do
       (TypeMap (MapType k1 v1), TypeMap (MapType k2 v2)) -> unifyMany [k1, v1] [k2, v2]
       (TypeOptional ot1, TypeOptional ot2) -> unify ot1 ot2
       (TypeProduct types1, TypeProduct types2) -> unifyMany types1 types2
-      (TypeRecord rt1, TypeRecord rt2) -> do
-        verify (rowTypeTypeName rt1 == rowTypeTypeName rt2)
-        verify (L.length (rowTypeFields rt1) == L.length (rowTypeFields rt2))
-        unifyMany (fieldTypeType <$> rowTypeFields rt1) (fieldTypeType <$> rowTypeFields rt2)
+      (TypeRecord rt1, TypeRecord rt2) -> unifyRowType rt1 rt2
       (TypeSet st1, TypeSet st2) -> unify st1 st2
-      (TypeUnion rt1, TypeUnion rt2) -> verify (rowTypeTypeName rt1 == rowTypeTypeName rt2)
+      (TypeUnion rt1, TypeUnion rt2) -> unifyRowType rt1 rt2
       (TypeSum types1, TypeSum types2) -> unifyMany types1 types2
       (TypeVariable v1, TypeVariable v2) -> bindWeakest v1 v2
-      (TypeWrap n1, TypeWrap n2) -> verify $ n1 == n2
+      (TypeWrap nt1, TypeWrap nt2) -> unifyNominalType nt1 nt2
 
       -- Asymmetric patterns
       (TypeVariable v, t2) -> bind v t2
@@ -97,6 +93,13 @@ unify ltyp rtyp = do
       TypeLambda (LambdaType v2 body2) -> unifyMany [TypeVariable v, body] [TypeVariable v2, body2]
       _ -> unify body other
 --      _ -> fail $ "could not unify with lambda type: " ++ show (stripType ltyp)
+    unifyRowType rt1 rt2 = do
+      verify (rowTypeTypeName rt1 == rowTypeTypeName rt2)
+      verify (L.length (rowTypeFields rt1) == L.length (rowTypeFields rt2))
+      unifyMany (fieldTypeType <$> rowTypeFields rt1) (fieldTypeType <$> rowTypeFields rt2)
+    unifyNominalType nt1 nt2 = do
+      verify $ nominalTypeName nt1 == nominalTypeName nt2
+      unify (nominalObject nt1) (nominalObject nt2)
 
 unifyMany :: [Type] -> [Type] -> Flow s Subst
 unifyMany [] [] = return M.empty
