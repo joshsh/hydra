@@ -39,10 +39,9 @@ protobufLanguageModule = Module ns elements [hydraCodersModule, hydraBasicsModul
       el protobufLanguageDef,
       el protobufReservedWordsDef]
 
-protobufLanguageDef :: Definition (Language)
+protobufLanguageDef :: Definition Language
 protobufLanguageDef = protobufLanguageDefinition "protobufLanguage" $
   doc "Language constraints for Protocol Buffers v3" $
-  typed (Types.apply (TypeVariable _Language) (Types.var "a")) $
   record _Language [
     _Language_name>>: wrap _LanguageName "hydra/langs/protobuf",
     _Language_constraints>>: record _LanguageConstraints [

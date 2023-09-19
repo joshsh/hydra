@@ -36,10 +36,9 @@ javaMaxTupleLengthDef = javaLanguageDefinition "javaMaxTupleLength" $
     <> "Note: if this constant is changed, also change Tuples.java correspondingly") $
   int32 9
 
-javaLanguageDef :: Definition (Language)
+javaLanguageDef :: Definition Language
 javaLanguageDef = javaLanguageDefinition "javaLanguage" $
   doc "Language constraints for Java" $
-  typed (Types.apply (TypeVariable _Language) (Types.var "a")) $
   record _Language [
     _Language_name>>: wrap _LanguageName "hydra/langs/java",
     _Language_constraints>>: record _LanguageConstraints [
