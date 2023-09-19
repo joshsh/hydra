@@ -76,29 +76,28 @@ describePrecisionDef = printingDefinition "describePrecision" $
 describeTypeDef :: Definition (Type -> String)
 describeTypeDef = printingDefinition "describeType" $
   doc "Display a type as a string" $
-  function (Types.apply (TypeVariable _Type) (Types.var "a")) Types.string $
-    match _Type Nothing [
-      Case _Type_annotated   --> lambda "a" $ string "annotated " ++ (ref describeTypeDef @@
-        (project _Annotated _Annotated_subject @@ var "a")),
-      Case _Type_application --> constant $ string "instances of an application type",
-      Case _Type_literal     --> ref describeLiteralTypeDef,
-      Case _Type_function    --> lambda "ft" $ string "functions from "
-        ++ (ref describeTypeDef @@ (project _FunctionType _FunctionType_domain @@ var "ft"))
-        ++ string " to "
-        ++ (ref describeTypeDef @@ (project _FunctionType _FunctionType_codomain @@ var "ft")),
-      Case _Type_lambda      --> constant $ string "polymorphic terms",
-      Case _Type_list        --> lambda "t" $ string "lists of " ++ (ref describeTypeDef @@ var "t"),
-      Case _Type_map         --> lambda "mt" $ string "maps from "
-        ++ (ref describeTypeDef @@ (project _MapType _MapType_keys @@ var "mt"))
-        ++ string " to "
-        ++ (ref describeTypeDef @@ (project _MapType _MapType_values  @@ var "mt")),
-      Case _Type_optional    --> lambda "ot" $ string "optional " ++ (ref describeTypeDef @@ var "ot"),
-      Case _Type_product     --> constant $ string "tuples",
-      Case _Type_record      --> constant $ string "records",
-      Case _Type_set         --> lambda "st" $ string "sets of " ++ (ref describeTypeDef @@ var "st"),
-      Case _Type_stream      --> lambda "t" $ string "streams of " ++ (ref describeTypeDef @@ var "t"),
-      Case _Type_sum         --> constant $ string "variant tuples",
-      Case _Type_union       --> constant $ string "unions",
-      Case _Type_variable    --> constant $ string "instances of a named type",
-      Case _Type_wrap        --> lambda "n" $ string "wrapper for "
-        ++ (ref describeTypeDef @@ (project _Nominal _Nominal_object @@ var "n"))]
+  match _Type Nothing [
+    Case _Type_annotated   --> lambda "a" $ string "annotated " ++ (ref describeTypeDef @@
+      (project _Annotated _Annotated_subject @@ var "a")),
+    Case _Type_application --> constant $ string "instances of an application type",
+    Case _Type_literal     --> ref describeLiteralTypeDef,
+    Case _Type_function    --> lambda "ft" $ string "functions from "
+      ++ (ref describeTypeDef @@ (project _FunctionType _FunctionType_domain @@ var "ft"))
+      ++ string " to "
+      ++ (ref describeTypeDef @@ (project _FunctionType _FunctionType_codomain @@ var "ft")),
+    Case _Type_lambda      --> constant $ string "polymorphic terms",
+    Case _Type_list        --> lambda "t" $ string "lists of " ++ (ref describeTypeDef @@ var "t"),
+    Case _Type_map         --> lambda "mt" $ string "maps from "
+      ++ (ref describeTypeDef @@ (project _MapType _MapType_keys @@ var "mt"))
+      ++ string " to "
+      ++ (ref describeTypeDef @@ (project _MapType _MapType_values  @@ var "mt")),
+    Case _Type_optional    --> lambda "ot" $ string "optional " ++ (ref describeTypeDef @@ var "ot"),
+    Case _Type_product     --> constant $ string "tuples",
+    Case _Type_record      --> constant $ string "records",
+    Case _Type_set         --> lambda "st" $ string "sets of " ++ (ref describeTypeDef @@ var "st"),
+    Case _Type_stream      --> lambda "t" $ string "streams of " ++ (ref describeTypeDef @@ var "t"),
+    Case _Type_sum         --> constant $ string "variant tuples",
+    Case _Type_union       --> constant $ string "unions",
+    Case _Type_variable    --> constant $ string "instances of a named type",
+    Case _Type_wrap        --> lambda "n" $ string "wrapper for "
+      ++ (ref describeTypeDef @@ (project _Nominal _Nominal_object @@ var "n"))]

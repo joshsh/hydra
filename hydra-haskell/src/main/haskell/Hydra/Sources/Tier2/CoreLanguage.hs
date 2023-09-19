@@ -39,7 +39,6 @@ hydraCoreLanguageModule = Module ns elements [hydraBasicsModule] Nothing
 hydraCoreLanguageDef :: Definition (Language)
 hydraCoreLanguageDef = definitionInModule hydraCoreLanguageModule "hydraCoreLanguage" $
   doc "Language constraints for Java" $
-  typed languageT $
   record _Language [
     _Language_name>>: wrap _LanguageName "hydra/core",
     _Language_constraints>>: record _LanguageConstraints [

@@ -41,8 +41,7 @@ hydraTier2Module = Module (Namespace "hydra/tier2") elements [hydraGraphModule, 
      el putStateDef,
      el requireElementTypeDef,
      el requireTermTypeDef,
-     el unexpectedDef
-     ]
+     el unexpectedDef]
 
 getStateDef :: Definition (Flow s s)
 getStateDef = tier2Definition "getState" $
@@ -62,7 +61,7 @@ getStateDef = tier2Definition "getState" $
 
 getTermTypeDef :: Definition (Term -> Flow Graph (Maybe Type))
 getTermTypeDef = tier2Definition "getTermType" $
-  function termT (flowT graphT (TypeOptional typeT)) $
+  function termT (flowT graphT (optionalT typeT)) $
   doc "Get the annotated type of a given term, if any" $
   lambda "term" ((Flows.bind @@ (Flows.map @@ (project _Graph _Graph_annotations) @@ ref getStateDef) @@ var "annsToType")
   `with` [
@@ -100,8 +99,8 @@ requireTermTypeDef = tier2Definition "requireTermType" $
        (Flows.fail @@ "missing type annotation")
        Flows.pure])
 
-unexpectedDef :: Definition (String -> String -> Flow s x)
+unexpectedDef :: Definition (String -> String -> Flow s a)
 unexpectedDef = tier2Definition "unexpected" $
-  function stringT (funT stringT (flowT sT xT)) $
+  functionN [stringT, stringT, flowT sT aT] $
   doc "Fail if an actual value does not match an expected value" $
   lambda "expected" $ lambda "actual" $ Flows.fail @@ ("expected " ++ var "expected" ++ " but found: " ++ var "actual")
