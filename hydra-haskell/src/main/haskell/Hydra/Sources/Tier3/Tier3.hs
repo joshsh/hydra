@@ -42,7 +42,6 @@ hydraTier3Module = Module (Namespace "hydra/tier3") elements [hydraCoreModule] $
 traceSummaryDef :: Definition (Trace -> String)
 traceSummaryDef = tier3Definition "traceSummary" $
   doc "Summarize a trace as a string" $
---  function traceT stringT $
   lambda "t" $ (
     (Strings.intercalate @@ "\n" @@ (Lists.concat2 @@ var "messageLines" @@ var "keyvalLines"))
       `with` [
