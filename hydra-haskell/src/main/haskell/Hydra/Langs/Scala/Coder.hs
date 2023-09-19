@@ -113,8 +113,7 @@ encodeFunction meta fun arg = case fun of
   where
     findSdom = Just <$> (findDomain >>= encodeType)
     findDomain = do
-        cx <- getState
-        r <- annotationClassTypeOf (graphAnnotations cx) meta
+        r <- annotationClassTypeOf kvAnnotationClass meta
         case r of
           Nothing -> fail "expected a typed term"
           Just t -> domainOf t

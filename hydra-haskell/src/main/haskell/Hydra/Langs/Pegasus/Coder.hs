@@ -53,8 +53,7 @@ constructModule aliases mod coders pairs = do
         let ptype = case res of
               Left schema -> PDL.NamedSchema_TypeTyperef schema
               Right t -> t
-        cx <- getState
-        r <- annotationClassTermDescription (graphAnnotations cx) $ elementData el
+        r <- annotationClassTermDescription kvAnnotationClass $ elementData el
         let anns = doc r
         return (PDL.NamedSchema qname ptype anns, imports)
       where
@@ -156,8 +155,7 @@ encodeType aliases typ = case typ of
         t <- encode typ
         return (t, False)
     getAnns typ = do
-      cx <- getState
-      r <- annotationClassTypeDescription (graphAnnotations cx) typ
+      r <- annotationClassTypeDescription kvAnnotationClass typ
       return $ doc r
 
 importAliasesForModule mod = do

@@ -35,9 +35,6 @@ import qualified System.Directory as SD
 import qualified Data.Maybe as Y
 
 
-findType :: Graph -> Term -> Flow Graph (Maybe Type)
-findType cx term = annotationClassTermType (graphAnnotations cx) term
-
 generateSources :: (Module -> Flow Graph (M.Map FilePath String)) -> FilePath -> [Module] -> IO ()
 generateSources printModule basePath mods = do
     mfiles <- runFlow kernelSchema generateFiles

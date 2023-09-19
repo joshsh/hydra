@@ -295,18 +295,16 @@ toDataDeclaration coders namespaces (el, TypedTerm typ term) = toDecl hname term
         where
           toBinding hname' hterm' = H.LocalBindingValue $ simpleValueBinding hname' hterm' Nothing
       _ -> do
-        g <- getState
         hterm <- coderEncode coder term
         let vb = simpleValueBinding hname hterm bindings
-        classes <- annotationClassTypeClasses (graphAnnotations g) typ
+        classes <- annotationClassTypeClasses kvAnnotationClass typ
         htype <- encodeTypeWithClassAssertions namespaces classes typ
         let decl = H.DeclarationTypedBinding $ H.TypedBinding (H.TypeSignature hname htype) (rewriteValueBinding vb)
-        comments <- annotationClassTermDescription (graphAnnotations g) term
+        comments <- annotationClassTermDescription kvAnnotationClass term
         return $ H.DeclarationWithComments decl comments
 
 toTypeDeclarations :: Namespaces -> Element -> Term -> Flow Graph [H.DeclarationWithComments]
 toTypeDeclarations namespaces el term = withTrace ("type element " ++ unName (elementName el)) $ do
-    g <- getState
     let lname = localNameOfEager $ elementName el
     let hname = simpleName lname
     t <- coreDecodeType term
@@ -314,6 +312,7 @@ toTypeDeclarations namespaces el term = withTrace ("type element " ++ unName (el
     let deriv = H.Deriving $ if isSer
                   then rawName <$> ["Eq", "Ord", "Read", "Show"]
                   else []
+    g <- getState
     let (vars, t') = unpackLambdaType g t
     let hd = declHead hname $ L.reverse vars
     decl <- case stripType t' of
@@ -333,7 +332,7 @@ toTypeDeclarations namespaces el term = withTrace ("type element " ++ unName (el
         else do
           htype <- adaptTypeToHaskellAndEncode namespaces t
           return $ H.DeclarationType (H.TypeDeclaration hd htype)
-    comments <- annotationClassTermDescription (graphAnnotations g) term
+    comments <- annotationClassTermDescription kvAnnotationClass term
     return $ [H.DeclarationWithComments decl comments] ++ constantDecls g namespaces (elementName el) t
   where
     declHead name vars = case vars of
@@ -342,10 +341,9 @@ toTypeDeclarations namespaces el term = withTrace ("type element " ++ unName (el
         H.DeclarationHead_Application (declHead name rest) (H.Variable $ simpleName h)
 
     newtypeCons el typ = do
-        g <- getState
         let hname = simpleName $ newtypeAccessorName $ elementName el
         htype <- adaptTypeToHaskellAndEncode namespaces typ
-        comments <- annotationClassTypeDescription (graphAnnotations g) typ
+        comments <- annotationClassTypeDescription kvAnnotationClass typ
         let hfield = H.FieldWithComments (H.Field hname htype) comments
         return $ H.ConstructorWithComments
           (H.ConstructorRecord $ H.Constructor_Record (simpleName $ localNameOfEager $ elementName el) [hfield]) Nothing
@@ -357,13 +355,11 @@ toTypeDeclarations namespaces el term = withTrace ("type element " ++ unName (el
         toField (FieldType (FieldName fname) ftype) = do
           let hname = simpleName $ decapitalize lname ++ capitalize fname
           htype <- adaptTypeToHaskellAndEncode namespaces ftype
-          g <- getState
-          comments <- annotationClassTypeDescription (graphAnnotations g) ftype
+          comments <- annotationClassTypeDescription kvAnnotationClass ftype
           return $ H.FieldWithComments (H.Field hname htype) comments
 
     unionCons lname (FieldType (FieldName fname) ftype) = do
-      g <- getState
-      comments <- annotationClassTypeDescription (graphAnnotations g) ftype
+      comments <- annotationClassTypeDescription kvAnnotationClass ftype
       let nm = capitalize lname ++ capitalize fname
       typeList <- if stripType ftype == Types.unit
         then pure []

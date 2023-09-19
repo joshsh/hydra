@@ -10,12 +10,14 @@ import Hydra.Extras
 import Hydra.Graph
 import Hydra.CoreDecoding
 import Hydra.CoreEncoding
+import Hydra.Lexical
 import Hydra.Mantle
 import Hydra.Rewriting
 import Hydra.Tier1
 import Hydra.Tier2
 import qualified Hydra.Dsl.Expect as Expect
 import qualified Hydra.Dsl.Terms as Terms
+import Hydra.Tools.Debug
 
 import qualified Data.List as L
 import qualified Data.Map as M
@@ -31,6 +33,50 @@ aggregateAnnotations getAnn t = Kv $ M.fromList $ L.concat $ toPairs [] t
     toPairs rest t = case getAnn t of
       Nothing -> rest
       Just (Annotated t' (Kv other)) -> toPairs ((M.toList other):rest) t'
+
+-- | Turn arbitrary terms like 'add 42' into terms like '\x.add 42 x',
+--   whose arity (in the absence of application terms) is equal to the depth of nested lambdas.
+--   This function leaves application terms intact, simply rewriting their left and right subterms.
+expandLambdas :: Term -> Flow Graph Term
+expandLambdas term = do
+    g <- getState
+    rewriteTermM (expand g Nothing []) (pure . id) term
+  where
+    expand g mtyp args recurse term = case term of
+        TermAnnotated (Annotated term' ann) -> do
+          mt <- annotationClassTermType kvAnnotationClass term
+          expanded <- expand g (Y.maybe mtyp Just mt) args recurse term'
+          return $ TermAnnotated $ Annotated expanded ann
+        TermApplication (Application lhs rhs) -> do
+          rhs' <- expandLambdas rhs
+          expand g Nothing (rhs':args) recurse lhs
+        TermFunction f -> case f of
+          FunctionElimination _ -> pad g mtyp args 1 <$> recurse term
+          FunctionPrimitive name -> do
+            prim <- requirePrimitive name
+            return $ pad g mtyp args (primitiveArity prim) term
+          _ -> passThrough
+        _ -> passThrough
+      where
+        passThrough = pad g mtyp args 0 <$> recurse term
+
+    pad g mtyp args arity term = L.foldl lam (app mtyp term args') $ L.reverse variables
+      where
+        variables = L.take (max 0 (arity - L.length args)) ((\i -> Name $ "v" ++ show i) <$> [1..])
+        args' = args ++ (TermVariable <$> variables)
+
+        lam body v = TermFunction $ FunctionLambda $ Lambda v body
+
+        app mtyp lhs args = case args of
+          [] -> lhs
+          (a:rest) -> app mtyp' (TermApplication $ Application lhs' a) rest
+            where
+              lhs' = annotationClassSetTermType kvAnnotationClass mtyp lhs
+              mtyp' = case mtyp of
+                Just t -> case stripTypeParameters $ stripType t of
+                  TypeFunction (FunctionType _ cod) -> Just cod
+                  _ -> throwDebugException $ "expandLambdas: expected function type, got " ++ show t
+                Nothing -> Nothing
 
 failOnFlag :: String -> String -> Flow s ()
 failOnFlag flag msg = do
@@ -231,3 +277,31 @@ unshadowVariables term = Y.fromJust $ flowStateValue $ unFlow (rewriteTermM rewr
             return $ TermFunction $ FunctionLambda $ Lambda v body'
         _ -> recurse term
     freshName = (\n -> Name $ "s" ++ show n) <$> nextCount "unshadow"
+
+-- | Where non-lambda terms with nonzero arity occur at the top level, turn them into lambdas,
+--   also adding an appropriate type annotation to each new lambda.
+wrapLambdas :: Term -> Flow Graph Term
+wrapLambdas term = do
+    typ <- requireTermType term
+    let types = uncurryType typ
+    let argTypes = L.init types
+    let missing = missingArity (L.length argTypes) term
+    return $ pad kvAnnotationClass term (L.take missing argTypes) (toFunType $ L.drop missing types)
+  where
+    toFunType types = case types of
+      [t] -> t
+      (dom:rest) -> TypeFunction $ FunctionType dom $ toFunType rest
+    missingArity arity term = if arity == 0
+      then 0
+      else case term of
+        TermAnnotated (Annotated term2 _) -> missingArity arity term2
+        TermLet (Let _ env) -> missingArity arity env
+        TermFunction (FunctionLambda (Lambda _ body)) -> missingArity (arity - 1) body
+        _ -> arity
+    pad anns term doms cod = fst $ L.foldl newLambda (apps, cod) $ L.reverse variables
+      where
+        newLambda (body, cod) (v, dom) = (annotationClassSetTermType anns (Just ft) $ TermFunction $ FunctionLambda $ Lambda v body, ft)
+          where
+            ft = TypeFunction $ FunctionType dom cod
+        apps = L.foldl (\lhs (v, _) -> TermApplication (Application lhs $ TermVariable v)) term variables
+        variables = L.zip ((\i -> Name $ "a" ++ show i) <$> [1..]) doms

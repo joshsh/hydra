@@ -234,16 +234,14 @@ testSimplifyTerm = do
 --          (typeOf term)
 --          Nothing
 --        shouldSucceedWith
---          (typeOf $ withType testGraph typ term)
+--          (typeOf $ withType typ term)
 --          (Just typ)
 --        shouldSucceedWith
---          (typeOf $ strip $ withType testGraph typ term)
+--          (typeOf $ strip $ withType typ term)
 --          Nothing
-
-typeOf term = annotationClassTermType (graphAnnotations testGraph) term
-
-withType :: Graph -> Type -> Term -> Term
-withType g typ = annotationClassSetTermType (graphAnnotations g) (Just typ)
+--  where
+--    typeOf term = annotationClassTermType kvAnnotationClass term
+--    withType typ = annotationClassSetTermType kvAnnotationClass (Just typ)
 
 spec :: H.Spec
 spec = do
