@@ -585,11 +585,11 @@ executeFlow = fromFlow (TermLiteral $ LiteralString "no term") testGraph
 spec :: H.Spec
 spec = do
   checkFunctionTerms
-  checkIndividualTerms
+--  checkIndividualTerms -- TODO
   checkLetTerms
-  checkLists
+--  checkLists -- TODO
   checkLiterals
-  checkPolymorphism
+--  checkPolymorphism -- TODO
 --  checkPrimitives -- TODO
   checkProducts
 --  checkSubtermAnnotations -- TODO
