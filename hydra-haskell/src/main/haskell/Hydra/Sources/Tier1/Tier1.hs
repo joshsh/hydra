@@ -242,17 +242,17 @@ emptyTraceDef = tier1Definition "emptyTrace" $
     _Trace_messages>>: list [],
     _Trace_other>>: Maps.empty]
 
-flowSucceedsDef :: Definition (Flow s a -> Bool)
+flowSucceedsDef :: Definition (s -> Flow s a -> Bool)
 flowSucceedsDef = tier1Definition "flowSucceeds" $
   doc "Check whether a flow succeeds" $
-  function (Types.var "s") (Types.function flowSA Types.boolean) $
-  lambda "cx" $ lambda "f" $
-    Optionals.isJust @@ (Flows.flowStateValue @@ (Flows.unFlow @@ var "f" @@ var "cx" @@ ref emptyTraceDef))
+  functionN [sT, flowSA, booleanT] $
+  lambda "state" $ lambda "f" $
+    Optionals.isJust @@ (Flows.flowStateValue @@ (Flows.unFlow @@ var "f" @@ var "state" @@ ref emptyTraceDef))
 
 fromFlowDef :: Definition (a -> s -> Flow s a -> a)
 fromFlowDef = tier1Definition "fromFlow" $
   doc "Get the value of a flow, or a default value if the flow fails" $
-  function (Types.var "a") (Types.function (Types.var "s") (Types.function flowSA (Types.var "a"))) $
+  functionN [aT, sT, flowSA, aT] $
   lambda "def" $ lambda "cx" $ lambda "f" $
       matchOpt (var "def") (lambda "x" $ var "x")
         @@ (Flows.flowStateValue @@ (Flows.unFlow @@ var "f" @@ var "cx" @@ ref emptyTraceDef))
@@ -260,7 +260,7 @@ fromFlowDef = tier1Definition "fromFlow" $
 mutateTraceDef :: Definition ((Trace -> Either_ String Trace) -> (Trace -> Trace -> Trace) -> Flow s a -> Flow s a)
 mutateTraceDef = tier1Definition "mutateTrace" $
     functionN [
-      Types.function traceT (eitherT Types.string traceT),
+      Types.function traceT (eitherT stringT traceT),
       Types.functionN [traceT, traceT, traceT],
       flowSA,
       flowSA] $

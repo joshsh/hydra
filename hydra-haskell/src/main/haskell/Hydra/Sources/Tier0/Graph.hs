@@ -32,13 +32,7 @@ hydraGraphModule = Module ns elements [hydraComputeModule] $
       def "AnnotationClass" $
         doc "A typeclass-like construct providing common functions for working with annotations" $
         record [
-          "default">: core "Kv",
-          "equal">: core "Kv" --> core "Kv" --> boolean,
-          "compare">: core "Kv" --> core "Kv" --> graph "Comparison",
-          "show">: core "Kv" --> string,
-          "read">: string --> optional $ core "Kv",
 
-          -- TODO: simplify
           "termAnnotation">:
             core "Term" --> core "Kv",
           "typeAnnotation">:

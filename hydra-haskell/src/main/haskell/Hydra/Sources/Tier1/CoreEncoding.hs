@@ -53,7 +53,8 @@ coreEncodingModule = Module (Namespace "hydra/coreEncoding") elements [hydraCore
 
 coreEncodingDefinition :: String -> Type -> Term -> Definition x
 coreEncodingDefinition label dom term = Base.definitionInModule coreEncodingModule ("coreEncode" ++ label) $
-  Base.function dom termT $ Datum term
+  Base.function dom termT $ -- Currently needed for resolving cyclical dependencies
+  Datum term
 
 ref :: Definition a -> Term
 ref (Definition name _) = TermVariable name

@@ -414,7 +414,7 @@ coreEncodeName fn = (Core.TermWrap (Core.Nominal {
   Core.nominalTypeName = (Core.Name "hydra/core.Name"),
   Core.nominalObject = (Core.TermLiteral (Core.LiteralString (Core.unName fn)))}))
 
-coreEncodeNominalTerm :: (Core.Nominal (Core.Term) -> Core.Term)
+coreEncodeNominalTerm :: (Core.Nominal Core.Term -> Core.Term)
 coreEncodeNominalTerm n = (Core.TermRecord (Core.Record {
   Core.recordTypeName = (Core.Name "hydra/core.Nominal"),
   Core.recordFields = [
@@ -425,7 +425,7 @@ coreEncodeNominalTerm n = (Core.TermRecord (Core.Record {
       Core.fieldName = (Core.FieldName "object"),
       Core.fieldTerm = (coreEncodeTerm (Core.nominalObject n))}]}))
 
-coreEncodeNominalType :: (Core.Nominal (Core.Type) -> Core.Term)
+coreEncodeNominalType :: (Core.Nominal Core.Type -> Core.Term)
 coreEncodeNominalType nt = (Core.TermRecord (Core.Record {
   Core.recordTypeName = (Core.Name "hydra/core.Nominal"),
   Core.recordFields = [

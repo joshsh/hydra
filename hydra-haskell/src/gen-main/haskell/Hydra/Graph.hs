@@ -12,11 +12,6 @@ import Data.Set as S
 -- | A typeclass-like construct providing common functions for working with annotations
 data AnnotationClass = 
   AnnotationClass {
-    annotationClassDefault :: Core.Kv,
-    annotationClassEqual :: (Core.Kv -> Core.Kv -> Bool),
-    annotationClassCompare :: (Core.Kv -> Core.Kv -> Comparison),
-    annotationClassShow :: (Core.Kv -> String),
-    annotationClassRead :: (String -> Maybe Core.Kv),
     annotationClassTermAnnotation :: (Core.Term -> Core.Kv),
     annotationClassTypeAnnotation :: (Core.Type -> Core.Kv),
     annotationClassTermDescription :: (Core.Term -> Compute.Flow Graph (Maybe String)),
@@ -30,16 +25,6 @@ data AnnotationClass =
     annotationClassSetTypeOf :: (Maybe Core.Type -> Core.Kv -> Core.Kv)}
 
 _AnnotationClass = (Core.Name "hydra/graph.AnnotationClass")
-
-_AnnotationClass_default = (Core.FieldName "default")
-
-_AnnotationClass_equal = (Core.FieldName "equal")
-
-_AnnotationClass_compare = (Core.FieldName "compare")
-
-_AnnotationClass_show = (Core.FieldName "show")
-
-_AnnotationClass_read = (Core.FieldName "read")
 
 _AnnotationClass_termAnnotation = (Core.FieldName "termAnnotation")
 

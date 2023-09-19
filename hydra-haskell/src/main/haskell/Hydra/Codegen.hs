@@ -1,4 +1,4 @@
--- | Entry point for Hydra code generation utilities
+-- | Entry point for Hydra code generation utilities in Haskell
 
 module Hydra.Codegen (
   modulesToGraph,
@@ -23,7 +23,6 @@ import Hydra.Langs.Pegasus.Coder
 import Hydra.Langs.Protobuf.Coder
 import Hydra.Langs.Scala.Coder
 import Hydra.Langs.Yaml.Modules
-
 import Hydra.Sources.Libraries
 import Hydra.Sources.Tier4.All
 

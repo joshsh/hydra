@@ -27,7 +27,7 @@ type Unifier = (Subst, [Constraint])
 
 -- Note: type variables in Hydra are allowed to bind to type expressions which contain the variable;
 --       i.e. type recursion by name is allowed.
-bind :: Name -> Type -> Flow s (Subst)
+bind :: Name -> Type -> Flow s Subst
 bind name typ = do
   if typ == TypeVariable name
   then return M.empty
@@ -36,10 +36,10 @@ bind name typ = do
     then return M.empty
     else return $ M.singleton name typ
 
-solveConstraints :: [Constraint] -> Flow s (Subst)
+solveConstraints :: [Constraint] -> Flow s Subst
 solveConstraints constraints = solveConstraintsInternal (M.empty, constraints)
 
-solveConstraintsInternal :: Unifier -> Flow s (Subst)
+solveConstraintsInternal :: Unifier -> Flow s Subst
 solveConstraintsInternal (su, cs) = case cs of
   [] -> return su
   ((t1, t2):rest) -> do
@@ -48,7 +48,7 @@ solveConstraintsInternal (su, cs) = case cs of
       composeSubst su1 su,
       (\(t1, t2) -> (substituteTypeVariables su1 t1, substituteTypeVariables su1 t2)) <$> rest)
 
-unify :: Type -> Type -> Flow s (Subst)
+unify :: Type -> Type -> Flow s Subst
 unify ltyp rtyp = do
 --     withTrace ("unify " ++ show ltyp ++ " with " ++ show rtyp) $
      case (stripType ltyp, stripType rtyp) of
@@ -98,7 +98,7 @@ unify ltyp rtyp = do
       _ -> unify body other
 --      _ -> fail $ "could not unify with lambda type: " ++ show (stripType ltyp)
 
-unifyMany :: [Type] -> [Type] -> Flow s (Subst)
+unifyMany :: [Type] -> [Type] -> Flow s Subst
 unifyMany [] [] = return M.empty
 unifyMany (t1 : ts1) (t2 : ts2) =
   do su1 <- unify t1 t2

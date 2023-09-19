@@ -44,7 +44,7 @@ data Inferred = Inferred {
   inferredType :: Type,
   -- Any constraints introduced by the inference process
   inferredConstraints :: [Constraint]
-}
+} deriving Show
 
 annotateElements :: Graph -> [Element] -> Flow Graph [Element]
 annotateElements g sortedEls = initializeGraph $ do
