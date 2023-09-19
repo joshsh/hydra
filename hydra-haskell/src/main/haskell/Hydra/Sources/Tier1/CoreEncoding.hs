@@ -310,7 +310,7 @@ coreEncodeLiteralTypeDef = coreEncodingDefinition "LiteralType" (TypeVariable _L
     csunit fname = Field fname $ constant $ coreEncodeTerm $ variant _LiteralType fname unit
 
 coreEncodeMapTypeDef :: Definition (MapType -> Term)
-coreEncodeMapTypeDef = coreEncodingDefinition "MapType" mapTypeA $
+coreEncodeMapTypeDef = coreEncodingDefinition "MapType" mapTypeT $
     lambda "mt" $ encodedRecord _MapType [
       (_MapType_keys, ref coreEncodeTypeDef @@ (project _MapType _MapType_keys @@ var "mt")),
       (_MapType_values, ref coreEncodeTypeDef @@ (project _MapType _MapType_values @@ var "mt"))]

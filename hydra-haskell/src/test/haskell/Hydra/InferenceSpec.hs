@@ -595,5 +595,5 @@ spec = do
 --  checkSubtermAnnotations -- TODO
   checkSums
   checkTypeAnnotations
---  checkTypedTerms
+--  checkTypedTerms -- (excluded for now)
   checkWrappedTerms

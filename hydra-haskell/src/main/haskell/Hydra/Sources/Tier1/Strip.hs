@@ -41,7 +41,7 @@ hydraStripModule = Module (Namespace "hydra/strip") elements [hydraCoreModule] $
 
 skipAnnotationsDef :: Definition ((a -> Maybe (Annotated a)) -> a -> a)
 skipAnnotationsDef = stripDefinition "skipAnnotations" $
-  function getAnnType (Types.function (Types.var "x") (Types.var "x")) $
+  function getAnnType (funT aT aT) $
   lambda "getAnn" $ lambda "t" $
     (var "skip" @@ var "t") `with` [
       "skip">:
@@ -52,9 +52,7 @@ skipAnnotationsDef = stripDefinition "skipAnnotations" $
             (lambda "ann" $ var "skip" @@ (project _Annotated _Annotated_subject @@ var "ann")))
           @@ (var "getAnn" @@ var "t1")]
   where
-    getAnnType = (Types.function
-      (Types.var "x")
-      (Types.optional $ Types.apply (Types.apply (TypeVariable _Annotated) (Types.var "x")) (Types.var "a")))
+    getAnnType = (funT aT (optionalT $ annotatedT aT))
 
 stripTermDef :: Definition (Term -> Term)
 stripTermDef = stripDefinition "stripTerm" $
@@ -69,7 +67,7 @@ stripTypeDef = stripDefinition "stripType" $
     function typeT typeT $
       lambda "x" (ref skipAnnotationsDef @@ (match _Type (Just nothing) [
         Case _Type_annotated --> lambda "ann" (just $ var "ann")]) @@ var "x")
-        
+
 stripTypeParametersDef :: Definition (Type -> Type)
 stripTypeParametersDef = stripDefinition "stripTypeParameters" $
     doc "Strip any top-level type lambdas from a type, extracting the (possibly nested) type body" $

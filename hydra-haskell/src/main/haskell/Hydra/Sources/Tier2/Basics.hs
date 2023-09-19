@@ -384,7 +384,7 @@ isEncodedTypeDef = basicsDefinition "isEncodedType" $
 
 isTypeDef :: Definition (Type -> Bool)
 isTypeDef = basicsDefinition "isType" $
-  functionWithClasses typeT booleanT eqA $
+  function typeT booleanT $
   lambda "t" $ (match _Type (Just false) [
       Case _Type_application --> lambda "a" $
         ref isTypeDef @@ (project _ApplicationType _ApplicationType_function @@ var "a"),
@@ -397,12 +397,12 @@ isTypeDef = basicsDefinition "isType" $
 
 isUnitTermDef :: Definition (Term -> Bool)
 isUnitTermDef = basicsDefinition "isUnitTerm" $
-  functionWithClasses termT booleanT eqA $
+  function termT booleanT $
   lambda "t" $ Equality.equalTerm @@ (ref stripTermDef @@ var "t") @@ Datum (coreEncodeTerm Terms.unit)
 
 isUnitTypeDef :: Definition (Term -> Bool)
 isUnitTypeDef = basicsDefinition "isUnitType" $
-  functionWithClasses typeT booleanT eqA $
+  function typeT booleanT $
   lambda "t" $ Equality.equalType @@ (ref stripTypeDef @@ var "t") @@ Datum (coreEncodeType Types.unit)
 
 elementsToGraphDef :: Definition (Graph -> Maybe Graph -> [Element] -> Graph)

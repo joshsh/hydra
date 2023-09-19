@@ -100,7 +100,7 @@ isLambdaDef = tier1Definition "isLambda" $
 foldOverTermDef :: Definition (TraversalOrder -> (x -> Term -> x) -> x -> Term -> x)
 foldOverTermDef = tier1Definition "foldOverTerm" $
   doc "Fold over a term, traversing its subterms in the specified order" $
-  functionNWithClasses [TypeVariable _TraversalOrder, funT xT (funT termT xT), xT, termT, xT] ordA $
+  functionN [TypeVariable _TraversalOrder, funT xT (funT termT xT), xT, termT, xT] $
   lambda "order" $ lambda "fld" $ lambda "b0" $ lambda "term" $ (match _TraversalOrder Nothing [
     _TraversalOrder_pre>>: constant (Base.fold (ref foldOverTermDef @@ var "order" @@ var "fld")
       @@ (var "fld" @@ var "b0" @@ var "term")
@@ -128,7 +128,7 @@ foldOverTypeDef = tier1Definition "foldOverType" $
 freeVariablesInTermDef :: Definition (Term -> S.Set Name)
 freeVariablesInTermDef = tier1Definition "freeVariablesInTerm" $
   doc "Find the free variables (i.e. variables not bound by a lambda or let) in a term" $
-  functionWithClasses termT (setT nameT) ordA $
+  function termT (setT nameT) $
   lambda "term" (
     (match _Term (Just $ var "dfltVars") [
       _Term_function>>: match _Function (Just $ var "dfltVars") [
@@ -164,7 +164,7 @@ freeVariablesInTypeDef = tier1Definition "freeVariablesInType" $
 subtermsDef :: Definition (Term -> [Term])
 subtermsDef = tier1Definition "subterms" $
   doc "Find the children of a given term" $
-  functionWithClasses termT (listT termT) ordA $
+  function termT (listT termT) $
   match _Term Nothing [
     _Term_annotated>>: lambda "at" $ list [Core.annotatedSubject @@ var "at"],
     _Term_application>>: lambda "p" $ list [
@@ -219,6 +219,7 @@ subtypesDef = tier1Definition "subtypes" $
     _Type_product>>: lambda "pt" $ var "pt",
     _Type_record>>: lambda "rt" (Lists.map @@ Core.fieldTypeType @@ (Core.rowTypeFields @@ var "rt")),
     _Type_set>>: lambda "st" $ list [var "st"],
+    _Type_stream>>: lambda "st" $ list [var "st"],
     _Type_sum>>: lambda "st" $ var "st",
     _Type_union>>: lambda "rt" (Lists.map @@ Core.fieldTypeType @@ (Core.rowTypeFields @@ var "rt")),
     _Type_variable>>: constant $ list [],

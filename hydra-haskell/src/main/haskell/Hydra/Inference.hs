@@ -446,8 +446,11 @@ normalizeType debugLabel = rewriteType f id
                 $ \(TypeProduct rest2) -> TypeProduct $ h1:rest2
           TypeRecord (RowType tname ext fields) -> case fields of
             [] -> TypeRecord (RowType tname ext [])
-            ((FieldType fname h):rest) -> normalize h $ \h1 -> normalize (yank $ TypeRecord (RowType tname ext rest))
-              $ \(TypeRecord (RowType _ _ rest2)) -> TypeRecord $ RowType tname ext ((FieldType fname h1):rest2)
+            ((FieldType fname h):rest) -> normalize h $ \h1 -> normalize (yank $ TypeRecord (RowType tname ext rest)) $ helper h1
+              where
+                helper h1 t = case t of
+                  TypeRecord (RowType _ _ rest2) -> TypeRecord $ RowType tname ext ((FieldType fname h1):rest2)
+                  _ -> throwDebugException $ "failed on " ++ debugLabel ++ " in: " ++ show typ0
           TypeSet st -> normalize st TypeSet
           TypeStream st -> normalize st TypeStream
           TypeSum types -> case types of
@@ -459,8 +462,6 @@ normalizeType debugLabel = rewriteType f id
               where
                 helper h1 t = case t of
                   TypeUnion (RowType _ _ rest2) -> TypeUnion $ RowType tname ext ((FieldType fname h1):rest2)
---                  _ -> throwDebugException $ "expected union type, got: " ++ show t
---                  _ -> throwDebugException $ "in: " ++ show typ0
                   _ -> throwDebugException $ "failed on " ++ debugLabel ++ " in: " ++ show typ0
 
           TypeWrap (Nominal name t) -> normalize t (TypeWrap . Nominal name)
