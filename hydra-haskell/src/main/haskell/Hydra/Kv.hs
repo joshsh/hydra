@@ -46,7 +46,7 @@ expandLambdas term = do
   where
     expand g mtyp args recurse term = case term of
         TermAnnotated (Annotated term' ann) -> do
-          mt <- annotationClassTermType kvAnnotationClass term
+          mt <- getAnnotatedType term
           expanded <- expand g (Y.maybe mtyp Just mt) args recurse term'
           return $ TermAnnotated $ Annotated expanded ann
         TermApplication (Application lhs rhs) -> do
@@ -86,6 +86,9 @@ failOnFlag flag msg = do
   if val
     then fail msg
     else pure ()
+
+getAnnotatedType :: Term -> Flow Graph (Y.Maybe Type)
+getAnnotatedType = getType . termAnnotation
 
 getAttr :: String -> Flow s (Maybe Term)
 getAttr key = Flow q
@@ -138,7 +141,7 @@ kvAnnotationClass = AnnotationClass {
     annotationClassTermDescription = getTermDescription,
     annotationClassTypeDescription = getTypeDescription,
     annotationClassTypeClasses = getTypeClasses,
-    annotationClassTermType = getType . termAnnotation,
+    annotationClassTermType = getAnnotatedType,
     annotationClassSetTermDescription = setTermDescription,
     annotationClassSetTermType = setTermType,
     annotationClassSetTypeClasses = setTypeClasses,

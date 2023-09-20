@@ -4,7 +4,6 @@ module Hydra.Inference (
   annotateTermWithTypes,
   inferGraphTypes,
   inferType,
-  inferTypeAndConstraints,
   Constraint,
 ) where
 
@@ -57,7 +56,7 @@ annotateElements g sortedEls = initializeGraph $ do
     CM.zipWithM rewriteElement subst rels
   where
     rewriteElement subst (name, rel) = do
-        term <- substituteAndNormalizeAnnotations ("element: " ++ unName name) kvAnnotationClass subst $ inferredTerm rel
+        term <- substituteAndNormalizeAnnotations ("element: " ++ unName name) subst $ inferredTerm rel
         return $ Element name term
 
     annotate original annotated = case original of
@@ -66,8 +65,13 @@ annotateElements g sortedEls = initializeGraph $ do
         rel <- inferElementType el
         withBinding (fst rel) (inferredType $ snd rel) $ annotate rest (rel:annotated)
 
+-- TODO: deprecated; inference is performed on graphs, not individual terms. Update tests to use inferElementType
+-- | Solve for the top-level type of an expression in a given environment
 annotateTermWithTypes :: Term -> Flow Graph Term
-annotateTermWithTypes = inferTypeAndConstraints
+annotateTermWithTypes term = withTrace ("infer type") $ initializeGraph $ do
+    rterm <- infer term
+    subst <- withSchemaContext $ solveConstraints (inferredConstraints rterm)
+    substituteAndNormalizeAnnotations "REMOVEME" subst $ inferredTerm rterm
 
 -- Decode a type, eliminating nominal types for the sake of unification
 decodeStructuralType :: Term -> Flow Graph Type
@@ -91,11 +95,12 @@ freshName = normalVariable <$> nextCount "hyInf"
 freshTypeVariable :: Flow Graph Type
 freshTypeVariable = TypeVariable <$> freshName
 
+-- Infer the type of a term, without also unifying or standardizing types; this is done separately
 infer :: Term -> Flow Graph Inferred
 infer term = case term of
     TermAnnotated (Annotated subj ann) -> do
       rsubj <- infer subj
-      otyp <- annotationClassTermType kvAnnotationClass term
+      otyp <- getAnnotatedType term
       let constraints = (inferredConstraints rsubj) ++ case otyp of
             Nothing -> []
             Just t -> [(inferredType rsubj, t)]
@@ -369,42 +374,27 @@ inferLet (Let bindings env) = do
     preExtendEnv bindings e = CM.foldM addPair e $ M.toList bindings
       where
         addPair e (name, term) = do
-          mtyp <- annotatedType term
+          mtyp <- getAnnotatedType term
           return $ case mtyp of
             Nothing -> e
             Just typ -> M.insert name typ e
-          where
-            annotatedType term = do
-              annotationClassTypeOf kvAnnotationClass $ annotationClassTermAnnotation kvAnnotationClass term
 
 -- TODO: deprecated; inference is performed on graphs, not individual terms. Update the Haskell coder to use inferElementType
 inferType :: Term -> Flow Graph Type
---inferType term = (simplifyUniversalTypes . termType) <$> inferTypeAndConstraints term
-inferType term = do
-  term1 <- inferTypeAndConstraints term
-  mtyp <- annotationClassTermType kvAnnotationClass term1
-  return $ Y.fromJust mtyp
-
--- TODO: deprecated; inference is performed on graphs, not individual terms. Update tests to use inferElementType
--- | Solve for the top-level type of an expression in a given environment
-inferTypeAndConstraints :: Term -> Flow Graph Term
-inferTypeAndConstraints term = withTrace ("infer type") $ initializeGraph $ do
-    rterm <- infer term
-    subst <- withSchemaContext $ solveConstraints (inferredConstraints rterm)
-    substituteAndNormalizeAnnotations "REMOVEME" kvAnnotationClass subst $ inferredTerm rterm
+inferType term = Y.fromJust <$> (annotateTermWithTypes term >>= getAnnotatedType)
 
 inferredToField (fname, inferred) = Field fname $ inferredTerm inferred
 inferredToFieldType (fname, inferred) = FieldType fname $ inferredType inferred
 
 initializeGraph flow = do
     g <- getState
-    env <- initialEnv g kvAnnotationClass
+    env <- initialEnv g
     withState (g {graphTypes = env}) flow
   where
-    initialEnv g anns = M.fromList . Y.catMaybes <$> (CM.mapM toPair $ M.elems $ graphElements g)
+    initialEnv g = M.fromList . Y.catMaybes <$> (CM.mapM toPair $ M.elems $ graphElements g)
       where
         toPair el = do
-          mt <- annotationClassTermType anns $ elementData el
+          mt <- getAnnotatedType $ elementData el
           return $ (\t -> (elementName el, t)) <$> mt
 
 instantiate :: Type -> Flow Graph Type
@@ -485,7 +475,7 @@ sortGraphElements g = do
   where
     els = graphElements g
     ifAnnotated el = do
-      mtyp <- annotationClassTermType kvAnnotationClass $ elementData el
+      mtyp <- getAnnotatedType $ elementData el
       return $ case mtyp of
         Nothing -> Nothing
         Just _ -> Just $ elementName el
@@ -499,15 +489,15 @@ sortGraphElements g = do
         -- No need for an inference dependency on an element which is already annotated with a type
         isNotAnnotated name = not $ S.member name annotated
 
-substituteAndNormalizeAnnotations :: String -> AnnotationClass -> Subst -> Term -> Flow Graph Term
-substituteAndNormalizeAnnotations debugLabel anns subst = rewriteTermMetaM rewrite
+substituteAndNormalizeAnnotations :: String -> Subst -> Term -> Flow Graph Term
+substituteAndNormalizeAnnotations debugLabel subst = rewriteTermMetaM rewrite
   where
     -- Note: normalizing each annotation separately results in different variable names for corresponding types
 --    rewrite (x, typ, c) = (x, normalizeTypeVariables $ normalizeType $ substituteTypeVariables subst typ, c) -- TODO: restore this
     rewrite ann = do
-      mtyp <- annotationClassTypeOf anns ann
+      mtyp <- getType ann
       let ntyp = (normalizeType debugLabel . substituteTypeVariables subst) <$> mtyp
-      return $ annotationClassSetTypeOf anns ntyp ann
+      return $ setType ntyp ann
 --    rewrite (x, typ, c) = (x, normalizeType $ substituteTypeVariables subst typ, c)
 --    rewrite (x, typ, c) = (x, normalizeType $ substituteTypeVariables subst typ, c)
 
@@ -538,4 +528,4 @@ yieldTerm term typ constraints = Inferred annTerm typ constraints
     -- In the future, we might choose only to annotate certain subterms as needed, e.g. function terms
     annTerm = case term of
       TermAnnotated _ -> term
-      _ -> annotationClassSetTermType kvAnnotationClass (Just typ) term
+      _ -> setTermType (Just typ) term
