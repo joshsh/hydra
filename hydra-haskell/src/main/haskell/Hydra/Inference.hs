@@ -448,7 +448,7 @@ substituteAndNormalizeAnnotations debugLabel subst = rewriteTermAnnotationsM rew
 --    rewrite (x, typ, c) = (x, normalizeTypeVariables $ normalizePolytypes $ substituteTypeVariables subst typ, c) -- TODO: restore this
     rewrite ann = do
       mtyp <- getType ann
-      let ntyp = (normalizePolytypes debugLabel . substituteTypeVariables subst) <$> mtyp
+      let ntyp = (normalizePolytypes . substituteTypeVariables subst) <$> mtyp
       return $ setType ntyp ann
 --    rewrite (x, typ, c) = (x, normalizePolytypes $ substituteTypeVariables subst typ, c)
 --    rewrite (x, typ, c) = (x, normalizePolytypes $ substituteTypeVariables subst typ, c)

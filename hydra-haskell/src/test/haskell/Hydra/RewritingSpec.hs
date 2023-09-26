@@ -147,6 +147,28 @@ testNormalization = do
       checkNormed
         (Types.product [Types.list $ Types.lambda "a" $ Types.var "a", Types.lambda "b" $ Types.var "b"])
         (Types.lambdas ["a", "b"] $ Types.product [Types.list $ Types.var "a", Types.var "b"])
+      checkNormed
+        (Types.product [
+          Types.lambda "a" $ Types.var "a",
+          Types.lambda "b" $ Types.var "b",
+          Types.lambda "c" $ Types.var "c"])
+        (Types.lambdas ["a", "b", "c"] $ Types.product [
+          Types.var "a",
+          Types.var "b",
+          Types.var "c"])
+
+    H.it "Check records" $ do
+      checkNormed
+        (TypeRecord $ RowType (Name "SomeRecord") Nothing [
+          FieldType (FieldName "one") $ Types.lambda "a" $ Types.var "a",
+          FieldType (FieldName "two") $ Types.list $ Types.lambda "b" $ Types.var "b",
+          FieldType (FieldName "three") $ Types.map Types.string $ Types.lambda "v" $ Types.optional $ Types.var "v",
+          FieldType (FieldName "four") Types.string])
+        (Types.lambdas ["a", "b", "v"] $ TypeRecord $ RowType (Name "SomeRecord") Nothing [
+          FieldType (FieldName "one") $ Types.var "a",
+          FieldType (FieldName "two") $ Types.list $ Types.var "b",
+          FieldType (FieldName "three") $ Types.map Types.string $ Types.optional $ Types.var "v",
+          FieldType (FieldName "four") Types.string])
 
     H.it "Check annotations" $ do
       checkNormed
@@ -174,7 +196,7 @@ testNormalization = do
         (Types.lambda "a" $ Types.product [Types.var "a", Types.list $ Types.lambda "b" $ Types.var "b"])
         (Types.lambdas ["a", "b"] $ Types.product [Types.var "a", Types.list $ Types.var "b"])
   where
-    checkNormed original expected = H.shouldBe (normalizePolytypes "testNormalization" original) expected
+    checkNormed original expected = H.shouldBe (normalizePolytypes original) expected
 
 testFreeVariablesInTerm :: H.SpecWith ()
 testFreeVariablesInTerm = do
@@ -215,21 +237,21 @@ testReplaceTerm = do
 
       H.it "Check that the correct subterms are replaced" $ do
         H.shouldBe
-          (rewriteTerm replaceInts keepKv
+          (rewriteTerm replaceInts
             (int32 42))
           (int64 42)
         H.shouldBe
-          (rewriteTerm replaceInts keepKv
+          (rewriteTerm replaceInts
             (list [int32 42, apply (lambda "x" $ var "x") (int32 137)]))
           (list [int64 42, apply (lambda "x" $ var "x") (int64 137)])
 
       H.it "Check that traversal order is respected" $ do
         H.shouldBe
-          (rewriteTerm replaceListsPre keepKv
+          (rewriteTerm replaceListsPre
             (list [list [list []]]))
           (list [list []])
         H.shouldBe
-          (rewriteTerm replaceListsPost keepKv
+          (rewriteTerm replaceListsPost
             (list [list [list []]]))
           (list [])
 
@@ -239,8 +261,6 @@ testReplaceTerm = do
 --          (list [annot "42" (string "foo")])
   where
     keepTerm recurse term = recurse term
-
-    keepKv = id
 
     replaceInts recurse term = case term2 of
         TermLiteral (LiteralInteger (IntegerValueInt32 v)) -> int64 $ fromIntegral v
