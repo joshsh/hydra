@@ -31,7 +31,7 @@ bootstrapGraph = Graph {
   graphSchema = Nothing}
 
 datatype :: Namespace -> String -> Type -> Element
-datatype gname lname typ = typeElement elName $ rewriteType replacePlaceholders id typ
+datatype gname lname typ = typeElement elName $ rewriteType replacePlaceholders typ
   where
     elName = qualify gname (Name lname)
 

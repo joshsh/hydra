@@ -39,7 +39,7 @@ showTerm term = fromFlow "fail" noGraph $ do
     coder <- termStringCoder
     coderEncode coder encoded
   where
-    encoded = coreEncodeTerm $ rewriteTermMeta (const $ Kv M.empty) term
+    encoded = coreEncodeTerm $ rewriteTermAnnotations (const $ Kv M.empty) term
 
 termStringCoder :: Flow Graph (Coder Graph Graph Term String)
 termStringCoder = do
@@ -56,7 +56,7 @@ showType typ = fromFlow "fail" noGraph $ do
     coder <- typeStringCoder
     coderEncode coder encoded
   where
-    encoded = coreEncodeType $ rewriteTypeMeta (const $ Kv M.empty) typ
+    encoded = coreEncodeType $ rewriteTypeAnnotations (const $ Kv M.empty) typ
 
 typeStringCoder :: Flow Graph (Coder Graph Graph Term String)
 typeStringCoder = do

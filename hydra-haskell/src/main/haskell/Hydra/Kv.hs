@@ -42,7 +42,7 @@ aggregateAnnotations getAnn t = Kv $ M.fromList $ L.concat $ toPairs [] t
 expandLambdas :: Term -> Flow Graph Term
 expandLambdas term = do
     g <- getState
-    rewriteTermM (expand g Nothing []) (pure . id) term
+    rewriteTermM (expand g Nothing []) term
   where
     expand g mtyp args recurse term = case term of
         TermAnnotated (Annotated term' ann) -> do
@@ -245,7 +245,7 @@ whenFlag flag fthen felse = do
 
 -- TODO: move out of Kv and into Rewriting (depends on nextCount)
 unshadowVariables :: Term -> Term
-unshadowVariables term = Y.fromJust $ flowStateValue $ unFlow (rewriteTermM rewrite (pure . id) term) (S.empty, M.empty) emptyTrace
+unshadowVariables term = Y.fromJust $ flowStateValue $ unFlow (rewriteTermM rewrite term) (S.empty, M.empty) emptyTrace
   where
     rewrite recurse term = do
       (reserved, subst) <- getState

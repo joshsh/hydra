@@ -442,7 +442,7 @@ sortGraphElements g = do
         isNotAnnotated name = not $ S.member name annotated
 
 substituteAndNormalizeAnnotations :: String -> Subst -> Term -> Flow Graph Term
-substituteAndNormalizeAnnotations debugLabel subst = rewriteTermMetaM rewrite
+substituteAndNormalizeAnnotations debugLabel subst = rewriteTermAnnotationsM rewrite
   where
     -- Note: normalizing each annotation separately results in different variable names for corresponding types
 --    rewrite (x, typ, c) = (x, normalizeTypeVariables $ normalizePolytypes $ substituteTypeVariables subst typ, c) -- TODO: restore this

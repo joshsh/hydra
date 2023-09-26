@@ -30,7 +30,7 @@ countPrimitiveInvocations = True
 
 -- A term evaluation function which is alternatively lazy or eager
 reduceTerm :: Bool -> M.Map Name Term -> Term -> Flow Graph Term
-reduceTerm eager env = rewriteTermM mapping pure
+reduceTerm eager env = rewriteTermM mapping
   where
     reduce eager = reduceTerm eager M.empty
 
@@ -49,7 +49,7 @@ reduceTerm eager env = rewriteTermM mapping pure
       [] -> fun
       (h:r) -> applyToArguments (Terms.apply fun h) r
 
-    replaceFreeName toReplace replacement = rewriteTerm mapping id
+    replaceFreeName toReplace replacement = rewriteTerm mapping
       where
         mapping recurse inner = case inner of
           TermFunction (FunctionLambda (Lambda param body)) -> if param == toReplace then inner else recurse inner
@@ -111,7 +111,7 @@ reduceTerm eager env = rewriteTermM mapping pure
 betaReduceType :: Type -> Flow Graph Type
 betaReduceType typ = do
     g <- getState :: Flow Graph Graph
-    rewriteTypeM mapExpr (pure . id) typ
+    rewriteTypeM mapExpr typ
   where
     mapExpr recurse t = do
         r <- recurse t
@@ -135,7 +135,7 @@ betaReduceType typ = do
 --     ((\x.e1) e2) = e1[x/e2]
 --  These are both limited forms of beta reduction which help to "clean up" a term without fully evaluating it.
 contractTerm :: Term -> Term
-contractTerm = rewriteTerm rewrite id
+contractTerm = rewriteTerm rewrite
   where
     rewrite recurse term = case rec of
         TermApplication (Application lhs rhs) -> case stripTerm lhs of
