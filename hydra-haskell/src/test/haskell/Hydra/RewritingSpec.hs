@@ -5,6 +5,7 @@ module Hydra.RewritingSpec where
 import Hydra.Kernel
 import Hydra.Dsl.Terms
 import Hydra.Flows
+import qualified Hydra.Dsl.Types as Types
 
 import Hydra.TestUtils
 
@@ -89,17 +90,17 @@ testFoldOverTerm = do
     H.it "Try a simple fold" $ do
       H.shouldBe
         (foldOverTerm TraversalOrderPre addInt32s 0
-          (list [int32 42, apply (lambda "x" $ var "x") (int32 10)] :: Term))
+          (list [int32 42, apply (lambda "x" $ var "x") (int32 10)]))
         52
 
     H.it "Check that traversal order is respected" $ do
       H.shouldBe
         (foldOverTerm TraversalOrderPre listLengths []
-          (list [list [string "foo", string "bar"], apply (lambda "x" $ var "x") (list [string "quux"])] :: Term))
+          (list [list [string "foo", string "bar"], apply (lambda "x" $ var "x") (list [string "quux"])]))
         [1, 2, 2]
       H.shouldBe
         (foldOverTerm TraversalOrderPost listLengths []
-          (list [list [string "foo", string "bar"], apply (lambda "x" $ var "x") (list [string "quux"])] :: Term))
+          (list [list [string "foo", string "bar"], apply (lambda "x" $ var "x") (list [string "quux"])]))
         [2, 1, 2]
   where
     addInt32s sum term = case term of
@@ -109,6 +110,72 @@ testFoldOverTerm = do
       TermList els -> L.length els:l
       _ -> l
 
+testNormalization :: H.SpecWith ()
+testNormalization = do
+  H.describe "Test normalization of polymorphic types" $ do
+
+    H.it "Check that monomorphic types are unaffected" $ do
+      checkNormed
+        Types.string
+        Types.string
+      checkNormed
+        (Types.list Types.int32)
+        (Types.list Types.int32)
+      checkNormed
+        (Types.product [Types.int32, Types.string])
+        (Types.product [Types.int32, Types.string])
+
+    H.it "Check lists" $ do
+      checkNormed
+        (Types.list $ Types.lambda "a" $ Types.var "a")
+        (Types.lambda "a" $ Types.list $ Types.var "a")
+
+    H.it "Check optionals" $ do
+      checkNormed
+        (Types.optional $ Types.lambda "a" $ Types.var "a")
+        (Types.lambda "a" $ Types.optional $ Types.var "a")
+
+    H.it "Check maps" $ do
+      checkNormed
+        (Types.map (Types.lambda "k" $ Types.var "k") (Types.list $ Types.lambda "v" $ Types.var "v"))
+        (Types.lambdas ["k", "v"] $ Types.map (Types.var "k") (Types.list $ Types.var "v"))
+
+    H.it "Check products" $ do
+      checkNormed
+        (Types.product [Types.int32, Types.lambda "a" $ Types.var "a"])
+        (Types.lambda "a" $ Types.product [Types.int32, Types.var "a"])
+      checkNormed
+        (Types.product [Types.list $ Types.lambda "a" $ Types.var "a", Types.lambda "b" $ Types.var "b"])
+        (Types.lambdas ["a", "b"] $ Types.product [Types.list $ Types.var "a", Types.var "b"])
+
+    H.it "Check annotations" $ do
+      checkNormed
+        (TypeAnnotated $ Annotated (Types.list $ Types.lambda "a" $ Types.var "a") emptyKv)
+        (TypeAnnotated $ Annotated (Types.lambda "a" $ Types.list $ Types.var "a") emptyKv)
+      checkNormed
+        (TypeAnnotated $ Annotated (Types.lambda "a" $ Types.list $ Types.var "a") emptyKv)
+        (TypeAnnotated $ Annotated (Types.lambda "a" $ Types.list $ Types.var "a") emptyKv)
+      checkNormed
+        (Types.list $ TypeAnnotated $ Annotated (Types.lambda "a" $ Types.var "a") emptyKv)
+        (Types.lambda "a" $ Types.list $ TypeAnnotated $ Annotated (Types.var "a") emptyKv)
+      checkNormed
+        (TypeRecord $ RowType (Name "SomeRecord") Nothing [
+          FieldType (FieldName "one") $ TypeAnnotated $ Annotated (Types.lambda "a" $ Types.var "a") emptyKv,
+          FieldType (FieldName "two") Types.string])
+        (Types.lambda "a" $ TypeRecord $ RowType (Name "SomeRecord") Nothing [
+          FieldType (FieldName "one") $ TypeAnnotated $ Annotated (Types.var "a") emptyKv,
+          FieldType (FieldName "two") Types.string])
+
+    H.it "Check universal types" $ do
+      checkNormed
+        (Types.lambda "a" $ Types.optional $ Types.var "a")
+        (Types.lambda "a" $ Types.optional $ Types.var "a")
+      checkNormed
+        (Types.lambda "a" $ Types.product [Types.var "a", Types.list $ Types.lambda "b" $ Types.var "b"])
+        (Types.lambdas ["a", "b"] $ Types.product [Types.var "a", Types.list $ Types.var "b"])
+  where
+    checkNormed original expected = H.shouldBe (normalizePolytypes "testNormalization" original) expected
+
 testFreeVariablesInTerm :: H.SpecWith ()
 testFreeVariablesInTerm = do
   H.describe "Test free variables" $ do
@@ -116,21 +183,21 @@ testFreeVariablesInTerm = do
 --    H.it "Generated terms never have free variables" $ do
 --      QC.property $ \(TypedTerm _ term) -> do
 --        H.shouldBe
---          (freeVariablesInTerm (term :: Term))
+--          (freeVariablesInTerm (term))
 --          S.empty
 
     H.it "Free variables in individual terms" $ do
       H.shouldBe
-        (freeVariablesInTerm (string "foo" :: Term))
+        (freeVariablesInTerm (string "foo"))
         S.empty
       H.shouldBe
-        (freeVariablesInTerm (var "x" :: Term))
+        (freeVariablesInTerm (var "x"))
         (S.fromList [Name "x"])
       H.shouldBe
-        (freeVariablesInTerm (list [var "x", apply (lambda "y" $ var "y") (int32 42)] :: Term))
+        (freeVariablesInTerm (list [var "x", apply (lambda "y" $ var "y") (int32 42)]))
         (S.fromList [Name "x"])
       H.shouldBe
-        (freeVariablesInTerm (list [var "x", apply (lambda "y" $ var "y") (var "y")] :: Term))
+        (freeVariablesInTerm (list [var "x", apply (lambda "y" $ var "y") (var "y")]))
         (S.fromList [Name "x", Name "y"])
 
 --testReplaceFreeName :: H.SpecWith ()
@@ -150,25 +217,25 @@ testReplaceTerm = do
         H.shouldBe
           (rewriteTerm replaceInts keepKv
             (int32 42))
-          (int64 42 :: Term)
+          (int64 42)
         H.shouldBe
           (rewriteTerm replaceInts keepKv
             (list [int32 42, apply (lambda "x" $ var "x") (int32 137)]))
-          (list [int64 42, apply (lambda "x" $ var "x") (int64 137)] :: Term)
+          (list [int64 42, apply (lambda "x" $ var "x") (int64 137)])
 
       H.it "Check that traversal order is respected" $ do
         H.shouldBe
           (rewriteTerm replaceListsPre keepKv
             (list [list [list []]]))
-          (list [list []] :: Term)
+          (list [list []])
         H.shouldBe
           (rewriteTerm replaceListsPost keepKv
             (list [list [list []]]))
-          (list [] :: Term)
+          (list [])
 
 --      H.it "Check that metadata is replace recursively" $ do
 --        H.shouldBe
---          (rewriteTerm keepTerm replaceKv (list [annot 42 (string "foo")] :: Term Int))
+--          (rewriteTerm keepTerm replaceKv (list [annot 42 (string "foo")] Int))
 --          (list [annot "42" (string "foo")])
   where
     keepTerm recurse term = recurse term
@@ -212,17 +279,17 @@ testSimplifyTerm = do
     H.it "Check that 'const' applications are simplified" $ do
       H.shouldBe
         (simplifyTerm (apply (lambda "x" (string "foo")) (int32 42)))
-        (string "foo" :: Term)
+        (string "foo")
       H.shouldBe
         (simplifyTerm (apply (lambda "x" $ list [var "x", var "x"]) (var "y")))
-        (list [var "y", var "y"] :: Term)
+        (list [var "y", var "y"])
       H.shouldBe
         (simplifyTerm (apply (lambda "x" $ string "foo") (var "y")))
-        (string "foo" :: Term)
+        (string "foo")
       H.shouldBe
         (simplifyTerm (apply (lambda "x"
           (apply (lambda "a" (list [string "foo", var "a"])) (var "x"))) (var "y")))
-        (list [string "foo", var "y"] :: Term)
+        (list [string "foo", var "y"])
 
 --testStripKv :: H.SpecWith ()
 --testStripKv = do
@@ -248,6 +315,7 @@ spec = do
   testExpandLambdas
   testFoldOverTerm
   testFreeVariablesInTerm
+  testNormalization
 --  testReplaceFreeName
   testReplaceTerm
   testRewriteExampleType

@@ -25,6 +25,26 @@ import qualified Data.Set as S
 import qualified Data.Maybe as Y
 
 
+alphaConvertTerm :: Name -> Term -> Term -> Term
+alphaConvertTerm vold tnew = rewriteTerm rewrite id
+  where
+    rewrite recurse term = case term of
+      TermFunction (FunctionLambda (Lambda v body)) -> if v == vold
+        then term
+        else recurse term
+      TermVariable v -> if v == vold then tnew else TermVariable v
+      _ -> recurse term
+
+alphaConvertType :: Name -> Type -> Type -> Type
+alphaConvertType vold tnew = rewriteType rewrite id
+  where
+    rewrite recurse typ = case typ of
+      TypeLambda (LambdaType v body) -> if v == vold
+        then typ
+        else recurse typ
+      TypeVariable v -> if v == vold then tnew else TypeVariable v
+      _ -> recurse typ
+
 boundVariablesInType :: Type -> S.Set Name
 boundVariablesInType = foldOverType TraversalOrderPre fld S.empty
   where
@@ -43,6 +63,56 @@ freeVariablesInScheme (TypeScheme vars t) = S.difference (freeVariablesInType t)
 
 isFreeIn :: Name -> Term -> Bool
 isFreeIn v term = not $ S.member v $ freeVariablesInTerm term
+
+-- | Implements specific rules which lift "forall" types out of subtype expressions
+--   E.g. [\a.a] becomes \a.[a]
+normalizePolytypes :: String -> Type -> Type
+normalizePolytypes debugLabel = rewriteType f id
+  where
+    f recurse typ0 = yank $ recurse typ0
+      where
+        yank typ = case typ of
+          TypeApplication (ApplicationType lhs rhs) -> normalize lhs $ \lhs1 ->
+            normalize rhs $ \rhs1 -> case lhs of
+              TypeLambda (LambdaType var body) -> alphaConvertType var rhs1 body
+              _ -> TypeApplication $ ApplicationType lhs1 rhs1
+          TypeFunction (FunctionType dom cod) -> normalize dom $
+            \dom1 -> normalize cod $
+            \cod1 -> TypeFunction $ FunctionType dom1 cod1
+          TypeList lt -> normalize lt TypeList
+          TypeMap (MapType kt vt) -> normalize kt (\kt1 -> normalize vt (\vt1 -> TypeMap $ MapType kt1 vt1))
+          TypeOptional ot -> normalize ot TypeOptional
+          TypeProduct types -> case types of
+            [] -> TypeProduct []
+            (h:rest) -> normalize h
+              $ \h1 -> normalize (yank $ TypeProduct rest)
+                $ \(TypeProduct rest2) -> TypeProduct $ h1:rest2
+          TypeRecord (RowType tname ext fields) -> case fields of
+            [] -> TypeRecord (RowType tname ext [])
+            ((FieldType fname h):rest) -> normalize h $ \h1 -> normalize (yank $ TypeRecord (RowType tname ext rest)) $ helper h1
+              where
+                helper h1 t = case t of
+                  TypeRecord (RowType _ _ rest2) -> TypeRecord $ RowType tname ext ((FieldType fname h1):rest2)
+                  _ -> throwDebugException $ debugLabel ++ ": expected record type but found " ++ show t ++ " in " ++ show typ0
+          TypeSet st -> normalize st TypeSet
+          TypeStream st -> normalize st TypeStream
+          TypeSum types -> case types of
+            [] -> TypeSum []
+            (h:rest) -> normalize h $ \h1 -> normalize (yank $ TypeSum rest) $ \(TypeSum rest2) -> TypeSum $ h1:rest2
+          TypeUnion (RowType tname ext fields) -> case fields of
+            [] -> TypeUnion (RowType tname ext [])
+            ((FieldType fname h):rest) -> normalize h $ \h1 -> normalize (yank $ TypeUnion (RowType tname ext rest)) $ helper h1
+              where
+                helper h1 t = case t of
+                  TypeUnion (RowType _ _ rest2) -> TypeUnion $ RowType tname ext ((FieldType fname h1):rest2)
+                  _ -> throwDebugException $ debugLabel ++ ": expected union type but found " ++ show t ++ " in " ++ show typ0
+
+          TypeWrap (Nominal name t) -> normalize t (TypeWrap . Nominal name)
+          t -> t
+        normalize subtype build = case subtype of
+          TypeAnnotated (Annotated t ann) -> normalize t $ \t2 -> build $ TypeAnnotated $ Annotated t2 ann
+          TypeLambda (LambdaType var body) -> TypeLambda $ LambdaType var $ yank $ build body
+          t -> build t
 
 -- | Recursively remove term annotations, including within subterms
 removeTermAnnotations :: Term -> Term
@@ -185,6 +255,7 @@ rewriteType f mf = rewrite fsub f
         TypeProduct types -> TypeProduct (recurse <$> types)
         TypeRecord (RowType name extends fields) -> TypeRecord $ RowType name extends (forField <$> fields)
         TypeSet t -> TypeSet $ recurse t
+        TypeStream t -> TypeStream $ recurse t
         TypeSum types -> TypeSum (recurse <$> types)
         TypeUnion (RowType name extends fields) -> TypeUnion $ RowType name extends (forField <$> fields)
         TypeVariable v -> TypeVariable v
@@ -212,6 +283,7 @@ rewriteTypeM f mf = rewrite fsub f
         TypeRecord (RowType name extends fields) ->
           TypeRecord <$> (RowType <$> pure name <*> pure extends <*> CM.mapM forField fields)
         TypeSet t -> TypeSet <$> recurse t
+        TypeStream t -> TypeStream <$> recurse t
         TypeSum types -> TypeSum <$> CM.mapM recurse types
         TypeUnion (RowType name extends fields) ->
           TypeUnion <$> (RowType <$> pure name <*> pure extends <*> CM.mapM forField fields)

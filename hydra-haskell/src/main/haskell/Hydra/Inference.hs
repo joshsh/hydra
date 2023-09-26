@@ -406,54 +406,6 @@ instantiate typ = case typ of
     return $ TypeLambda $ LambdaType var1 body1
   _ -> pure typ
 
-normalizeType :: String -> Type -> Type
-normalizeType debugLabel = rewriteType f id
-  where
-    f recurse typ0 = yank $ recurse typ0
-      where
-        yank typ = case typ of
-          TypeAnnotated (Annotated typ1 ann) -> normalize typ1 $ \typ2 -> TypeAnnotated $ Annotated typ2 ann
-          TypeApplication (ApplicationType lhs rhs) -> normalize lhs $ \lhs1 ->
-            normalize rhs $ \rhs1 -> case lhs of
-              TypeLambda (LambdaType var body) -> alphaConvertType var rhs1 body
-              _ -> TypeApplication $ ApplicationType lhs1 rhs1
-          TypeFunction (FunctionType dom cod) -> normalize dom $
-            \dom1 -> normalize cod $
-            \cod1 -> TypeFunction $ FunctionType dom1 cod1
-          TypeList lt -> normalize lt TypeList
-          TypeMap (MapType kt vt) -> normalize kt (\kt1 -> normalize vt (\vt1 -> TypeMap $ MapType kt1 vt1))
-          TypeOptional ot -> normalize ot TypeOptional
-          TypeProduct types -> case types of
-            [] -> TypeProduct []
-            (h:rest) -> normalize h
-              $ \h1 -> normalize (yank $ TypeProduct rest)
-                $ \(TypeProduct rest2) -> TypeProduct $ h1:rest2
-          TypeRecord (RowType tname ext fields) -> case fields of
-            [] -> TypeRecord (RowType tname ext [])
-            ((FieldType fname h):rest) -> normalize h $ \h1 -> normalize (yank $ TypeRecord (RowType tname ext rest)) $ helper h1
-              where
-                helper h1 t = case t of
-                  TypeRecord (RowType _ _ rest2) -> TypeRecord $ RowType tname ext ((FieldType fname h1):rest2)
-                  _ -> throwDebugException $ "failed on " ++ debugLabel ++ " in: " ++ show typ0
-          TypeSet st -> normalize st TypeSet
-          TypeStream st -> normalize st TypeStream
-          TypeSum types -> case types of
-            [] -> TypeSum []
-            (h:rest) -> normalize h $ \h1 -> normalize (yank $ TypeSum rest) $ \(TypeSum rest2) -> TypeSum $ h1:rest2
-          TypeUnion (RowType tname ext fields) -> case fields of
-            [] -> TypeUnion (RowType tname ext [])
-            ((FieldType fname h):rest) -> normalize h $ \h1 -> normalize (yank $ TypeUnion (RowType tname ext rest)) $ helper h1
-              where
-                helper h1 t = case t of
-                  TypeUnion (RowType _ _ rest2) -> TypeUnion $ RowType tname ext ((FieldType fname h1):rest2)
-                  _ -> throwDebugException $ "failed on " ++ debugLabel ++ " in: " ++ show typ0
-
-          TypeWrap (Nominal name t) -> normalize t (TypeWrap . Nominal name)
-          t -> t
-        normalize subtype build = case subtype of
-          TypeLambda (LambdaType var body) -> TypeLambda $ LambdaType var $ yank $ build body
-          t -> build t
-
 reduceType :: Type -> Type
 reduceType t = t -- betaReduceType cx t
 
@@ -493,13 +445,13 @@ substituteAndNormalizeAnnotations :: String -> Subst -> Term -> Flow Graph Term
 substituteAndNormalizeAnnotations debugLabel subst = rewriteTermMetaM rewrite
   where
     -- Note: normalizing each annotation separately results in different variable names for corresponding types
---    rewrite (x, typ, c) = (x, normalizeTypeVariables $ normalizeType $ substituteTypeVariables subst typ, c) -- TODO: restore this
+--    rewrite (x, typ, c) = (x, normalizeTypeVariables $ normalizePolytypes $ substituteTypeVariables subst typ, c) -- TODO: restore this
     rewrite ann = do
       mtyp <- getType ann
-      let ntyp = (normalizeType debugLabel . substituteTypeVariables subst) <$> mtyp
+      let ntyp = (normalizePolytypes debugLabel . substituteTypeVariables subst) <$> mtyp
       return $ setType ntyp ann
---    rewrite (x, typ, c) = (x, normalizeType $ substituteTypeVariables subst typ, c)
---    rewrite (x, typ, c) = (x, normalizeType $ substituteTypeVariables subst typ, c)
+--    rewrite (x, typ, c) = (x, normalizePolytypes $ substituteTypeVariables subst typ, c)
+--    rewrite (x, typ, c) = (x, normalizePolytypes $ substituteTypeVariables subst typ, c)
 
 typeOfPrimitive :: Name -> Flow Graph Type
 typeOfPrimitive name = primitiveType <$> requirePrimitive name

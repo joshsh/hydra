@@ -24,26 +24,6 @@ import qualified Data.Set as S
 import qualified Data.Maybe as Y
 
 
-alphaConvertTerm :: Name -> Term -> Term -> Term
-alphaConvertTerm vold tnew = rewriteTerm rewrite id
-  where
-    rewrite recurse term = case term of
-      TermFunction (FunctionLambda (Lambda v body)) -> if v == vold
-        then term
-        else recurse term
-      TermVariable v -> if v == vold then tnew else TermVariable v
-      _ -> recurse term
-
-alphaConvertType :: Name -> Type -> Type -> Type
-alphaConvertType vold tnew = rewriteType rewrite id
-  where
-    rewrite recurse typ = case typ of
-      TypeLambda (LambdaType v body) -> if v == vold
-        then typ
-        else recurse typ
-      TypeVariable v -> if v == vold then tnew else TypeVariable v
-      _ -> recurse typ
-
 -- For demo purposes. This should be generalized to enable additional side effects of interest.
 countPrimitiveInvocations :: Bool
 countPrimitiveInvocations = True
