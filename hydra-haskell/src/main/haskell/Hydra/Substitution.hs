@@ -25,20 +25,6 @@ normalVariables = normalVariable <$> [0..]
 normalVariable :: Int -> Name
 normalVariable i = Name $ "t" ++ show i
 
-normalizeTypeVariables :: Type -> Type
-normalizeTypeVariables = rewriteType (findLambdas 0 M.empty)
-  where
-    findLambdas idx subst recurse typ = case typ of
-      TypeLambda (LambdaType v body) -> TypeLambda $ LambdaType v2 $ rewriteType (findLambdas idx2 subst2) body
-        where
-          v2 = normalVariable idx
-          idx2 = idx + 1
-          subst2 = M.insert v v2 subst
-      TypeVariable v -> TypeVariable $ case M.lookup v subst of
-        Just v2 -> v2
-        Nothing -> v
-      _ -> recurse typ
-
 substituteTypeVariable :: Name -> Type -> Type -> Type
 substituteTypeVariable v subst = substituteTypeVariables (M.singleton v subst)
 

@@ -47,10 +47,8 @@ data Inferred = Inferred {
 -- TODO: deprecated; inference is performed on graphs, not individual terms. Update tests to use inferElementType
 -- | Solve for the top-level type of an expression in a given environment
 annotateTermWithTypes :: Term -> Flow Graph Term
-annotateTermWithTypes term = withTrace ("infer type") $ initializeGraph $ do
-    rterm <- infer term
-    subst <- withSchemaContext $ solveConstraints (inferredConstraints rterm)
-    substituteAndNormalizeAnnotations subst $ inferredTerm rterm
+annotateTermWithTypes term = withTrace ("infer type") $ initializeGraph $
+  infer term >>= normalizeInferredTypes
 
 findMatchingField :: FieldName -> [FieldType] -> Flow Graph FieldType
 findMatchingField fname sfields = case L.filter (\f -> fieldTypeName f == fname) sfields of
@@ -202,7 +200,8 @@ infer term = case term of
             rels <- CM.mapM infer els
             let co = (\e -> (TypeVariable v, inferredType e)) <$> rels
             let ci = L.concat (inferredConstraints <$> rels)
-            return $ yieldTerm (TermList (inferredTerm <$> rels)) (Types.list $ TypeVariable v) (co ++ ci)
+            let typ = TypeLambda $ LambdaType v $ TypeList $ TypeVariable v
+            return $ yieldTerm (TermList (inferredTerm <$> rels)) typ (co ++ ci)
 
     TermLiteral l -> return $ yieldTerm (TermLiteral l) (Types.literal $ literalType l) []
 
@@ -216,7 +215,8 @@ infer term = case term of
             pairs <- CM.mapM toPair $ M.toList m
             let co = L.concat ((\(k, v) -> [(TypeVariable kv, inferredType k), (TypeVariable vv, inferredType v)]) <$> pairs)
             let ci = L.concat ((\(k, v) -> inferredConstraints k ++ inferredConstraints v) <$> pairs)
-            return $ yieldTerm (TermMap $ M.fromList (fromPair <$> pairs)) (Types.map (TypeVariable kv) (TypeVariable vv)) (co ++ ci)
+            let typ = TypeLambda $ LambdaType kv $ TypeLambda $ LambdaType vv $ Types.map (TypeVariable kv) (TypeVariable vv)
+            return $ yieldTerm (TermMap $ M.fromList (fromPair <$> pairs)) typ (co ++ ci)
       where
         fromPair (k, v) = (inferredTerm k, inferredTerm v)
         toPair (k, v) = do
@@ -231,10 +231,8 @@ infer term = case term of
         Just e -> do
           re <- infer e
           let constraints = ((TypeVariable v, inferredType re):(inferredConstraints re))
-          return $ yieldTerm
-            (TermOptional $ Just $ inferredTerm re)
-            (Types.optional $ TypeVariable v)
-            constraints
+          let typ = TypeLambda $ LambdaType v $ TypeOptional $ TypeVariable v
+          return $ yieldTerm (TermOptional $ Just $ inferredTerm re) typ constraints
 
     TermProduct tuple -> do
       rtuple <- CM.mapM infer tuple
@@ -259,7 +257,8 @@ infer term = case term of
           rels <- CM.mapM infer $ S.toList els
           let co = (\e -> (TypeVariable v, inferredType e)) <$> rels
           let ci = L.concat (inferredConstraints <$> rels)
-          return $ yieldTerm (TermSet $ S.fromList (inferredTerm <$> rels)) (Types.set $ TypeVariable v) (co ++ ci)
+          let typ = TypeLambda $ LambdaType v $ Types.set $ TypeVariable v
+          return $ yieldTerm (TermSet $ S.fromList (inferredTerm <$> rels)) typ (co ++ ci)
 
     TermSum (Sum i s trm) -> do
         rtrm <- infer trm
@@ -308,8 +307,7 @@ inferElementTypes g sortedEls = initializeGraph $ inferAll sortedEls [] >>= CM.m
     -- Note: inference occurs over the entire graph at once,
     --       but unification and substitution occur within elements in isolation
     rewriteElement (name, rel) = do
-      subst <- withSchemaContext $ solveConstraints $ inferredConstraints rel
-      term <- substituteAndNormalizeAnnotations subst $ inferredTerm rel
+      term <- normalizeInferredTypes rel
       return $ Element name term
 
     -- Perform inference on elements in the given order, respecting dependencies among elements
@@ -367,7 +365,7 @@ inferLet (Let bindings env) = do
 
 -- TODO: deprecated; inference is performed on graphs, not individual terms. Update the Haskell coder to use inferElementType
 inferType :: Term -> Flow Graph Type
-inferType term = Y.fromJust <$> (annotateTermWithTypes term >>= getAnnotatedType)
+inferType term = annotateTermWithTypes term >>= requireAnnotatedType
 
 inferredToField (fname, inferred) = Field fname $ inferredTerm inferred
 inferredToFieldType (fname, inferred) = FieldType fname $ inferredType inferred
@@ -392,6 +390,39 @@ instantiate typ = case typ of
     return $ TypeLambda $ LambdaType var1 body1
   _ -> pure typ
 
+normalizeInferredTypes :: Inferred -> Flow Graph Term
+normalizeInferredTypes inf = do
+    subst <- withSchemaContext $ solveConstraints $ inferredConstraints inf
+    -- TODO: consider combining these two rewriting steps
+    rewriteTermAnnotationsM (rewrite subst) (inferredTerm inf) >>= normalizeVariables
+  where
+    rewrite subst ann = do
+      mtyp <- getType ann
+      let ntyp = (normalizePolytypes . substituteTypeVariables subst) <$> mtyp
+      return $ setType ntyp ann
+    boundTypeVariablesOf typ = case stripType typ of
+      TypeLambda (LambdaType var body) -> var:(boundTypeVariablesOf body)
+      _ -> []
+    normalizeVariables term = do
+        -- Note: the inferred type is not rewritten and is no longer meaningful; only the type annotations are rewritten
+        typ <- requireAnnotatedType term
+        -- The substitution is derived from the top-level type annotation only,
+        -- but for consistency, the same substitution is also applied to the type annotations of subterms
+        -- We make the assumption that any type variables bound in subterm annotations are the same as the type
+        -- variables bound in the top-level annotation.
+        let subst = toSubst typ
+        rewriteTypeAnnotationsOnTerms (rewriteType $ rewrite subst) term
+      where
+        rewrite subst recurse t = case recurse t of
+          TypeVariable v -> case M.lookup v subst of
+            Nothing -> t
+            Just v1 -> TypeVariable v1
+          TypeLambda (LambdaType v body) -> case M.lookup v subst of
+            Nothing -> t
+            Just v1 -> TypeLambda $ LambdaType v1 body
+          t1 -> t1
+        toSubst typ = M.fromList $ L.zip (boundTypeVariablesOf typ) normalVariables
+
 requireName :: Name -> Flow Graph Type
 requireName v = do
   env <- graphTypes <$> getState
@@ -399,6 +430,24 @@ requireName v = do
     Nothing -> fail $ "variable not bound in environment: " ++ unName v ++ ". Environment: "
       ++ L.intercalate ", " (unName <$> M.keys env)
     Just s -> instantiate s
+
+requireAnnotatedType :: Term -> Flow Graph Type
+requireAnnotatedType term = do
+  mtyp <- getAnnotatedType term
+  case mtyp of
+    Nothing -> fail $ "expected an inferred type annotation"
+    Just typ -> return typ
+
+rewriteTypeAnnotationsOnTerms :: (Type -> Type) -> Term -> Flow Graph Term
+rewriteTypeAnnotationsOnTerms f = rewriteTermM mapExpr
+  where
+    mapExpr recurse term = case term of
+      TermAnnotated (Annotated term1 ann) -> do
+        mtyp <- getType ann
+        case mtyp of
+          Nothing -> TermAnnotated <$> (Annotated <$> recurse term1 <*> pure ann)
+          Just typ -> TermAnnotated <$> (Annotated <$> recurse term1 <*> pure (setType (Just $ f typ) ann))
+      _ -> recurse term
 
 sortGraphElements :: Graph -> Flow Graph [Element]
 sortGraphElements g = do
@@ -421,18 +470,6 @@ sortGraphElements g = do
         isElName name = M.member name els
         -- No need for an inference dependency on an element which is already annotated with a type
         isNotAnnotated name = not $ S.member name annotated
-
-substituteAndNormalizeAnnotations :: Subst -> Term -> Flow Graph Term
-substituteAndNormalizeAnnotations subst = rewriteTermAnnotationsM rewrite
-  where
-    -- Note: normalizing each annotation separately results in different variable names for corresponding types
---    rewrite (x, typ, c) = (x, normalizeTypeVariables $ normalizePolytypes $ substituteTypeVariables subst typ, c) -- TODO: restore this
-    rewrite ann = do
-      mtyp <- getType ann
-      let ntyp = (normalizePolytypes . substituteTypeVariables subst) <$> mtyp
-      return $ setType ntyp ann
---    rewrite (x, typ, c) = (x, normalizePolytypes $ substituteTypeVariables subst typ, c)
---    rewrite (x, typ, c) = (x, normalizePolytypes $ substituteTypeVariables subst typ, c)
 
 typeOfPrimitive :: Name -> Flow Graph Type
 typeOfPrimitive name = primitiveType <$> requirePrimitive name

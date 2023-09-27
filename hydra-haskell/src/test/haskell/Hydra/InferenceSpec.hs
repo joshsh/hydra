@@ -184,7 +184,7 @@ checkIndividualTerms = H.describe "Check a few hand-picked terms" $ do
         expectPolytype
           (lambda "x" (lambda "y" (mapTerm $ M.fromList
             [(var "x", float64 0.1), (var "y", float64 0.2)])))
-          ["t1"] (Types.function (Types.var "t1") (Types.function (Types.var "t1") (Types.map (Types.var "t1") Types.float64)))
+          ["t0"] (Types.function (Types.var "t0") (Types.function (Types.var "t0") (Types.map (Types.var "t0") Types.float64)))
 
     -- -- TODO: add a case for a recursive nominal type -- e.g. MyList := () + (int, Mylist)
     -- H.it "Check nominal (newtype) terms" $ do
@@ -599,7 +599,7 @@ spec = do
   checkFunctionTerms
 --  checkIndividualTerms -- TODO
   checkLetTerms
---  checkLists -- TODO
+  checkLists
   checkLiterals
 --  checkPolymorphism -- TODO
 --  checkPrimitives -- TODO
