@@ -3,8 +3,7 @@
 module Hydra.Inference (
   annotateTermWithTypes,
   inferGraphTypes,
-  inferType,
-  Constraint,
+  inferType
 ) where
 
 import Hydra.Basics
@@ -45,44 +44,13 @@ data Inferred = Inferred {
   inferredConstraints :: [Constraint]
 } deriving Show
 
-annotateElements :: Graph -> [Element] -> Flow Graph [Element]
-annotateElements g sortedEls = initializeGraph $ do
-    rels <- annotate sortedEls []
-
-    -- Note: inference occurs over the entire graph at once,
-    --       but unification and substitution occur within elements in isolation
-    let constraints = inferredConstraints . snd <$> rels
-    subst <- withSchemaContext $ CM.mapM solveConstraints constraints
-    CM.zipWithM rewriteElement subst rels
-  where
-    rewriteElement subst (name, rel) = do
-        term <- substituteAndNormalizeAnnotations ("element: " ++ unName name) subst $ inferredTerm rel
-        return $ Element name term
-
-    annotate original annotated = case original of
-      [] -> pure $ L.reverse annotated
-      (el:rest) -> do
-        rel <- inferElementType el
-        withBinding (fst rel) (inferredType $ snd rel) $ annotate rest (rel:annotated)
-
 -- TODO: deprecated; inference is performed on graphs, not individual terms. Update tests to use inferElementType
 -- | Solve for the top-level type of an expression in a given environment
 annotateTermWithTypes :: Term -> Flow Graph Term
 annotateTermWithTypes term = withTrace ("infer type") $ initializeGraph $ do
     rterm <- infer term
     subst <- withSchemaContext $ solveConstraints (inferredConstraints rterm)
-    substituteAndNormalizeAnnotations "REMOVEME" subst $ inferredTerm rterm
-
--- Decode a type, eliminating nominal types for the sake of unification
-decodeStructuralType :: Term -> Flow Graph Type
-decodeStructuralType term = do
-  typ <- coreDecodeType term
-  let typ' = stripType typ
-  case typ' of
-    TypeVariable name -> withSchemaContext $ withTrace "decode structural type" $ do
-      el <- requireElement name
-      decodeStructuralType $ elementData el
-    _ -> pure typ
+    substituteAndNormalizeAnnotations subst $ inferredTerm rterm
 
 findMatchingField :: FieldName -> [FieldType] -> Flow Graph FieldType
 findMatchingField fname sfields = case L.filter (\f -> fieldTypeName f == fname) sfields of
@@ -95,7 +63,7 @@ freshName = normalVariable <$> nextCount "hyInf"
 freshTypeVariable :: Flow Graph Type
 freshTypeVariable = TypeVariable <$> freshName
 
--- Infer the type of a term, without also unifying or standardizing types; this is done separately
+-- Infer the type of a term, without also unifying or normalizing types; this is done separately
 infer :: Term -> Flow Graph Inferred
 infer term = case term of
     TermAnnotated (Annotated subj ann) -> do
@@ -172,6 +140,7 @@ infer term = case term of
             let constraints = defConstraints ++ codConstraints ++ subtermConstraints
             return $ yieldElimination (EliminationUnion (CaseStatement tname (inferredTerm <$> rdef) (inferredToField <$> rcases)))
               (Types.function (TypeUnion rt) cod)
+--              (Types.function (TypeVariable tname) cod)
               constraints
           where
             productOfMaps ml mr = M.fromList $ Y.catMaybes (toPair <$> M.toList mr)
@@ -333,6 +302,23 @@ inferElementType el = withTrace ("infer type of " ++ unName (elementName el)) $ 
   rterm <- infer $ elementData el
   return (elementName el, rterm)
 
+inferElementTypes :: Graph -> [Element] -> Flow Graph [Element]
+inferElementTypes g sortedEls = initializeGraph $ inferAll sortedEls [] >>= CM.mapM rewriteElement
+  where
+    -- Note: inference occurs over the entire graph at once,
+    --       but unification and substitution occur within elements in isolation
+    rewriteElement (name, rel) = do
+      subst <- withSchemaContext $ solveConstraints $ inferredConstraints rel
+      term <- substituteAndNormalizeAnnotations subst $ inferredTerm rel
+      return $ Element name term
+
+    -- Perform inference on elements in the given order, respecting dependencies among elements
+    inferAll before after = case before of
+      [] -> pure $ L.reverse after
+      (el:rest) -> do
+        rel <- inferElementType el
+        withBinding (fst rel) (inferredType $ snd rel) $ inferAll rest (rel:after)
+
 inferFieldType :: Field -> Flow Graph (FieldName, Inferred)
 inferFieldType (Field fname term) = do
   rterm <- infer term
@@ -343,7 +329,7 @@ inferGraphTypes = getState >>= annotateGraph
   where
     annotateGraph g = withTrace ("infer graph types") $ do
         sorted <- sortGraphElements g
-        els <- sortGraphElements g >>= annotateElements g
+        els <- sortGraphElements g >>= inferElementTypes g
         return g {graphElements = M.fromList (toPair <$> els)}
       where
         toPair el = (elementName el, el)
@@ -406,21 +392,18 @@ instantiate typ = case typ of
     return $ TypeLambda $ LambdaType var1 body1
   _ -> pure typ
 
-reduceType :: Type -> Type
-reduceType t = t -- betaReduceType cx t
-
 requireName :: Name -> Flow Graph Type
 requireName v = do
   env <- graphTypes <$> getState
   case M.lookup v env of
     Nothing -> fail $ "variable not bound in environment: " ++ unName v ++ ". Environment: "
       ++ L.intercalate ", " (unName <$> M.keys env)
-    Just s  -> instantiate s
+    Just s -> instantiate s
 
 sortGraphElements :: Graph -> Flow Graph [Element]
 sortGraphElements g = do
     annotated <- S.fromList . Y.catMaybes <$> (CM.mapM ifAnnotated $ M.elems els)
-    adjList <- CM.mapM (toAdj annotated) $ M.elems els
+    let adjList = (toAdj annotated) <$> M.elems els
     case topologicalSort adjList of
       Left comps -> fail $ "cyclical dependency not resolved through annotations: " ++ L.intercalate ", " (unName <$> L.head comps)
       Right names -> return $ Y.catMaybes ((\n -> M.lookup n els) <$> names)
@@ -431,18 +414,16 @@ sortGraphElements g = do
       return $ case mtyp of
         Nothing -> Nothing
         Just _ -> Just $ elementName el
-    toAdj annotated el = do
-        let deps = L.filter isNotAnnotated $ L.filter isElName $ S.toList $ freeVariablesInTerm $ elementData el
-
-        return (elementName el, deps)
+    toAdj annotated el = (elementName el, deps)
       where
+        deps = L.filter isNotAnnotated $ L.filter isElName $ S.toList $ freeVariablesInTerm $ elementData el
         -- Ignore free variables which are not valid element references
         isElName name = M.member name els
         -- No need for an inference dependency on an element which is already annotated with a type
         isNotAnnotated name = not $ S.member name annotated
 
-substituteAndNormalizeAnnotations :: String -> Subst -> Term -> Flow Graph Term
-substituteAndNormalizeAnnotations debugLabel subst = rewriteTermAnnotationsM rewrite
+substituteAndNormalizeAnnotations :: Subst -> Term -> Flow Graph Term
+substituteAndNormalizeAnnotations subst = rewriteTermAnnotationsM rewrite
   where
     -- Note: normalizing each annotation separately results in different variable names for corresponding types
 --    rewrite (x, typ, c) = (x, normalizeTypeVariables $ normalizePolytypes $ substituteTypeVariables subst typ, c) -- TODO: restore this
@@ -456,13 +437,13 @@ substituteAndNormalizeAnnotations debugLabel subst = rewriteTermAnnotationsM rew
 typeOfPrimitive :: Name -> Flow Graph Type
 typeOfPrimitive name = primitiveType <$> requirePrimitive name
 
-withBinding :: Name -> Type -> Flow Graph x -> Flow Graph x
+withBinding :: Name -> Type -> Flow Graph a -> Flow Graph a
 withBinding n t = withEnvironment (M.insert n t)
 
-withBindings :: M.Map Name Type -> Flow Graph x -> Flow Graph x
+withBindings :: M.Map Name Type -> Flow Graph a -> Flow Graph a
 withBindings bindings = withEnvironment (\e -> M.union bindings e)
 
-withEnvironment :: (M.Map Name Type -> M.Map Name Type) -> Flow Graph x -> Flow Graph x
+withEnvironment :: (M.Map Name Type -> M.Map Name Type) -> Flow Graph a -> Flow Graph a
 withEnvironment m flow = do
   g <- getState
   withState (g {graphTypes = m $ graphTypes g}) flow

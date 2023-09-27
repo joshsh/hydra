@@ -63,7 +63,7 @@ hydraTier1Module = Module (Namespace "hydra/tier1") elements
      el withTraceDef
      ]
 
-floatValueToBigfloatDef :: Definition (Double -> Double)
+floatValueToBigfloatDef :: Definition (FloatValue -> Double)
 floatValueToBigfloatDef = tier1Definition "floatValueToBigfloat" $
   doc "Convert a floating-point value of any precision to a bigfloat" $
   match _FloatValue Nothing [
@@ -71,7 +71,7 @@ floatValueToBigfloatDef = tier1Definition "floatValueToBigfloat" $
     _FloatValue_float32>>: Literals.float32ToBigfloat,
     _FloatValue_float64>>: Literals.float64ToBigfloat]
 
-integerValueToBigintDef :: Definition (Integer -> Integer)
+integerValueToBigintDef :: Definition (IntegerValue -> Integer)
 integerValueToBigintDef = tier1Definition "integerValueToBigint" $
   doc "Convert an integer value of any precision to a bigint" $
   match _IntegerValue Nothing [
@@ -164,7 +164,7 @@ freeVariablesInTypeDef = tier1Definition "freeVariablesInType" $
 subtermsDef :: Definition (Term -> [Term])
 subtermsDef = tier1Definition "subterms" $
   doc "Find the children of a given term" $
-  function termT (listT termT) $
+--  function termT (listT termT) $
   match _Term Nothing [
     _Term_annotated>>: lambda "at" $ list [Core.annotatedSubject @@ var "at"],
     _Term_application>>: lambda "p" $ list [
@@ -184,7 +184,6 @@ subtermsDef = tier1Definition "subterms" $
       @@ (Core.letEnvironment @@ var "lt")
       @@ (Lists.map @@ second @@ (Maps.toList @@ (Core.letBindings @@ var "lt"))),
     _Term_list>>: lambda "l" $ var "l",
-    _Term_literal>>: constant $ list [],
     _Term_map>>: lambda "m" (Lists.concat @@
       (Lists.map @@ (lambda "p" $ list [first @@ var "p", second @@ var "p"]) @@ (Maps.toList @@ var "m"))),
     _Term_optional>>: matchOpt (list []) (lambda "t" $ list [var "t"]),

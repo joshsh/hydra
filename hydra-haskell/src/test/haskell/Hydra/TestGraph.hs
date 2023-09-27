@@ -23,14 +23,28 @@ latLonPolyName :: Name
 latLonPolyName = Name "LatLonPoly"
 
 latlonRecord :: Float -> Float -> Term
-latlonRecord lat lon = record latLonName [Field (FieldName "lat") $ float32 lat, Field (FieldName "lon") $ float32 lon]
+latlonRecord lat lon = record latLonName [
+  Field (FieldName "lat") $ float32 lat,
+  Field (FieldName "lon") $ float32 lon]
 
 latLonType :: Type
-latLonType = TypeRecord $ RowType latLonName Nothing [Types.field "lat" Types.float32, Types.field "lon" Types.float32]
+latLonType = TypeRecord $ RowType latLonName Nothing [
+  Types.field "lat" Types.float32,
+  Types.field "lon" Types.float32]
 
 latLonPolyType :: Type
 latLonPolyType = TypeLambda $ LambdaType (Name "a") $
-  TypeRecord $ RowType latLonPolyName Nothing [Types.field "lat" $ Types.var "a", Types.field "lon" $ Types.var "a"]
+  TypeRecord $ RowType latLonPolyName Nothing [
+    Types.field "lat" $ Types.var "a",
+    Types.field "lon" $ Types.var "a"]
+
+simpleNumberName :: Name
+simpleNumberName = Name "SimpleNumber"
+
+simpleNumberType :: Type
+simpleNumberType = TypeUnion $ RowType simpleNumberName Nothing [
+  Types.field "int" Types.int32,
+  Types.field "float" Types.float32]
 
 stringAliasType :: Type
 stringAliasType = TypeWrap $ Nominal stringAliasTypeName Types.string
@@ -62,6 +76,7 @@ testSchemaGraph = elementsToGraph hydraCore (Just hydraCore) [
     def testTypeComparisonName testTypeComparison,
     def latLonName latLonType,
     def latLonPolyName latLonPolyType,
+    def simpleNumberName simpleNumberType,
     def testTypePersonName testTypePerson,
     def testTypePersonOrSomethingName testTypePersonOrSomething,
     def testTypeTimestampName testTypeTimestamp]

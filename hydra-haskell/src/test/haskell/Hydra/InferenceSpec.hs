@@ -11,6 +11,7 @@ import qualified Hydra.Dsl.Expect as Expect
 import Hydra.Dsl.Terms as Terms
 import qualified Hydra.Dsl.Annotations as Ann
 import qualified Hydra.Dsl.Types as Types
+import Hydra.Dsl.ShorthandTypes
 
 import qualified Test.Hspec as H
 import qualified Test.QuickCheck as QC
@@ -42,6 +43,16 @@ expectTypeAnnotation path term etyp = shouldSucceedWith atyp etyp
      case mtyp of
        Nothing -> fail $ "no type annotation"
        Just t -> pure t
+
+checkEliminations :: H.SpecWith ()
+checkEliminations = H.describe "Check a few hand-picked elimination terms" $ do
+
+  H.it "Check match statements" $ do
+    expectMonotype
+      (match simpleNumberName Nothing [
+        Field (FieldName "int") $ lambda "x" $ var "x",
+        Field (FieldName "float") $ lambda "x" $ int32 42])
+      (funT simpleNumberType Types.int32)
 
 checkFunctionTerms :: H.SpecWith ()
 checkFunctionTerms = H.describe "Check a few hand-picked function terms" $ do
@@ -584,6 +595,7 @@ executeFlow = fromFlow (TermLiteral $ LiteralString "no term") testGraph
 
 spec :: H.Spec
 spec = do
+  checkEliminations
   checkFunctionTerms
 --  checkIndividualTerms -- TODO
   checkLetTerms
