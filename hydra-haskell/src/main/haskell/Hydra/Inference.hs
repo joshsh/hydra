@@ -81,114 +81,7 @@ infer term = case term of
             ++ [(inferredType rfun, Types.function (inferredType rarg) cod)]
       return $ yieldTerm (TermApplication $ Application (inferredTerm rfun) (inferredTerm rarg)) cod constraints
 
-    TermFunction f -> case f of
-
-      FunctionElimination e -> case e of
-
-        EliminationList fun -> do
-          a <- freshTypeVariable
-          b <- freshTypeVariable
-          let expected = Types.function b (Types.function a b)
-          rfun <- infer fun
-          let elim = Types.function b (Types.function (Types.list a) b)
-          return $ yieldElimination (EliminationList $ inferredTerm rfun) elim [(expected, inferredType rfun)]
-
-        EliminationOptional (OptionalCases n j) -> do
-          dom <- freshName
-          cod <- freshName
-          rn <- infer n
-          rj <- infer j
-          let t = TypeLambda $ LambdaType dom $ Types.function (Types.optional $ TypeVariable dom) (TypeVariable cod)
-          let constraints = inferredConstraints rn ++ inferredConstraints rj
-                              ++ [(TypeVariable cod, inferredType rn),
-                                  (Types.function (TypeVariable dom) (TypeVariable cod), inferredType rj)]
-          return $ yieldElimination (EliminationOptional $ OptionalCases (inferredTerm rn) (inferredTerm rj)) t constraints
-
-        EliminationProduct (TupleProjection arity idx) -> do
-          types <- CM.replicateM arity freshTypeVariable
-          let cod = types !! idx
-          let t = Types.function (Types.product types) cod
-          return $ yieldElimination (EliminationProduct $ TupleProjection arity idx) t []
-
-        EliminationRecord (Projection name fname) -> do
-          rt <- requireRecordType True name
-          sfield <- findMatchingField fname (rowTypeFields rt)
-          return $ yieldElimination (EliminationRecord $ Projection name fname)
-            (Types.function (TypeRecord rt) $ fieldTypeType sfield) []
-
-        EliminationUnion (CaseStatement tname def cases) -> do
-            cod <- freshTypeVariable
-
-            -- Union type
-            rt <- requireUnionType True tname
-            checkCaseNames tname def cases $ rowTypeFields rt
-
-            -- Default value
-            rdef <- case def of
-              Nothing -> pure Nothing
-              Just d -> Just <$> infer d
-
-            -- Cases
-            rcases <- CM.mapM inferFieldType cases
-            let pairMap = productOfMaps (M.fromList rcases) (fieldTypeMap $ rowTypeFields rt)
-
-            let defConstraints = Y.maybe [] (\d -> [(cod, inferredType d)]) rdef
-            let codConstraints = (\(d, s) -> (inferredType d, Types.function s cod)) <$> M.elems pairMap
-            let subtermConstraints = L.concat (inferredConstraints . snd <$> rcases)
-            let constraints = defConstraints ++ codConstraints ++ subtermConstraints
-            return $ yieldElimination (EliminationUnion (CaseStatement tname (inferredTerm <$> rdef) (inferredToField <$> rcases)))
-              (Types.function (TypeUnion rt) cod)
---              (Types.function (TypeVariable tname) cod)
-              constraints
-          where
-            productOfMaps ml mr = M.fromList $ Y.catMaybes (toPair <$> M.toList mr)
-              where
-                toPair (k, vr) = (\vl -> (k, (vl, vr))) <$> M.lookup k ml
-            checkCaseNames tname def cases fields = do
-                checkCasesAreSufficient
-                checkCasesAreNotSuperfluous
-              where
-                caseNames = S.fromList (fieldName <$> cases)
-                fieldNames = S.fromList (fieldTypeName <$> fields)
-                checkCasesAreSufficient = if S.null diff || Y.isJust def
-                    then pure ()
-                    else fail $ "cases(s) missing with respect to variant of type " ++ unName tname ++ ": "
-                      ++ L.intercalate ", " (unFieldName <$> S.toList diff)
-                  where
-                    diff = S.difference fieldNames caseNames
-                checkCasesAreNotSuperfluous = if S.null diff
-                    then pure ()
-                    else fail $ "case(s) in case statement which do not exist in type " ++ unName tname ++ ": "
-                      ++ L.intercalate ", " (unFieldName <$> S.toList diff)
-                  where
-                    diff = S.difference caseNames fieldNames
-
-        EliminationWrap name -> do
-          typ <- requireWrappedType name
-          return $ yieldElimination (EliminationWrap name) (Types.function (TypeWrap $ Nominal name typ) typ) []
-
-      FunctionLambda (Lambda v body) -> do
-        vdom <- freshName
-        let dom = TypeVariable vdom
-        rbody <- withBinding v dom $ infer body
-        let cod = inferredType rbody
-        return $ yieldFunction (FunctionLambda $ Lambda v $ inferredTerm rbody)
-          (TypeLambda $ LambdaType vdom $ Types.function dom cod)
-          (inferredConstraints rbody)
-
-      FunctionPrimitive name -> do
-          t <- typeOfPrimitive name >>= replaceFreeVariables
-          return $ yieldFunction (FunctionPrimitive name) t []
-        where
-          -- This prevents type variables from being reused across multiple instantiations of a primitive within a single element,
-          -- which would lead to false unification.
-          replaceFreeVariables t = do
-              pairs <- CM.mapM toPair $ S.toList $ boundVariablesInType t -- freeVariablesInType t
-              return $ substituteTypeVariables (M.fromList pairs) t
-            where
-              toPair v = do
-                v' <- freshTypeVariable
-                return (v, v')
+    TermFunction f -> inferFunction f
 
     TermLet lt -> inferLet lt
 
@@ -317,10 +210,114 @@ inferElementTypes g sortedEls = initializeGraph $ inferAll sortedEls [] >>= CM.m
         rel <- inferElementType el
         withBinding (fst rel) (inferredType $ snd rel) $ inferAll rest (rel:after)
 
+inferElimination :: Elimination -> Flow Graph Inferred
+inferElimination e = case e of
+    EliminationList fun -> do
+      a <- freshTypeVariable
+      b <- freshTypeVariable
+      let expected = Types.function b (Types.function a b)
+      rfun <- infer fun
+      let elim = Types.function b (Types.function (Types.list a) b)
+      return $ yieldElimination (EliminationList $ inferredTerm rfun) elim [(expected, inferredType rfun)]
+
+    EliminationOptional (OptionalCases n j) -> do
+      dom <- freshName
+      cod <- freshName
+      rn <- infer n
+      rj <- infer j
+      let t = TypeLambda $ LambdaType dom $ Types.function (Types.optional $ TypeVariable dom) (TypeVariable cod)
+      let constraints = inferredConstraints rn ++ inferredConstraints rj
+                          ++ [(TypeVariable cod, inferredType rn),
+                              (Types.function (TypeVariable dom) (TypeVariable cod), inferredType rj)]
+      return $ yieldElimination (EliminationOptional $ OptionalCases (inferredTerm rn) (inferredTerm rj)) t constraints
+
+    EliminationProduct (TupleProjection arity idx) -> do
+      types <- CM.replicateM arity freshTypeVariable
+      let cod = types !! idx
+      let t = Types.function (Types.product types) cod
+      return $ yieldElimination (EliminationProduct $ TupleProjection arity idx) t []
+
+    EliminationRecord (Projection name fname) -> do
+      rt <- requireRecordType True name
+      sfield <- findMatchingField fname (rowTypeFields rt)
+      return $ yieldElimination (EliminationRecord $ Projection name fname)
+        (Types.function (TypeRecord rt) $ fieldTypeType sfield) []
+
+    EliminationUnion (CaseStatement tname def cases) -> do
+        cod <- freshTypeVariable
+
+        -- Union type
+        rt <- requireUnionType True tname
+        checkCaseNames tname def cases $ rowTypeFields rt
+
+        -- Default value
+        rdef <- case def of
+          Nothing -> pure Nothing
+          Just d -> Just <$> infer d
+
+        -- Cases
+        rcases <- CM.mapM inferFieldType cases
+        let pairMap = productOfMaps (M.fromList rcases) (fieldTypeMap $ rowTypeFields rt)
+
+        let defConstraints = Y.maybe [] (\d -> [(cod, inferredType d)]) rdef
+        let codConstraints = (\(d, s) -> (inferredType d, Types.function s cod)) <$> M.elems pairMap
+        let subtermConstraints = L.concat (inferredConstraints . snd <$> rcases)
+        let constraints = defConstraints ++ codConstraints ++ subtermConstraints
+        return $ yieldElimination (EliminationUnion (CaseStatement tname (inferredTerm <$> rdef) (inferredToField <$> rcases)))
+          (Types.function (TypeUnion rt) cod)
+          --(Types.function (TypeVariable tname) cod)
+          constraints
+      where
+        productOfMaps ml mr = M.fromList $ Y.catMaybes (toPair <$> M.toList mr)
+          where
+            toPair (k, vr) = (\vl -> (k, (vl, vr))) <$> M.lookup k ml
+        checkCaseNames tname def cases fields = do
+            checkCasesAreSufficient
+            checkCasesAreNotSuperfluous
+          where
+            caseNames = S.fromList (fieldName <$> cases)
+            fieldNames = S.fromList (fieldTypeName <$> fields)
+            checkCasesAreSufficient = if S.null diff || Y.isJust def
+                then pure ()
+                else fail $ "cases(s) missing with respect to variant of type " ++ unName tname ++ ": "
+                  ++ L.intercalate ", " (unFieldName <$> S.toList diff)
+              where
+                diff = S.difference fieldNames caseNames
+            checkCasesAreNotSuperfluous = if S.null diff
+                then pure ()
+                else fail $ "case(s) in case statement which do not exist in type " ++ unName tname ++ ": "
+                  ++ L.intercalate ", " (unFieldName <$> S.toList diff)
+              where
+                diff = S.difference caseNames fieldNames
+
+    EliminationWrap name -> do
+      typ <- requireWrappedType name
+      return $ yieldElimination (EliminationWrap name) (Types.function (TypeWrap $ Nominal name typ) typ) []
+
 inferFieldType :: Field -> Flow Graph (FieldName, Inferred)
 inferFieldType (Field fname term) = do
   rterm <- infer term
   return (fname, rterm)
+
+inferFunction :: Function -> Flow Graph Inferred
+inferFunction f = case f of
+  FunctionElimination e -> inferElimination e
+
+  FunctionLambda (Lambda v body) -> do
+    vdom <- freshName
+    let dom = TypeVariable vdom
+    rbody <- withBinding v dom $ infer body
+    let cod = inferredType rbody
+    return $ yieldFunction (FunctionLambda $ Lambda v $ inferredTerm rbody)
+      (TypeLambda $ LambdaType vdom $ Types.function dom cod)
+      (inferredConstraints rbody)
+
+  FunctionPrimitive name -> do
+      -- Replacing variables prevents type variables from being reused across multiple instantiations of a primitive within a single element,
+      -- which would lead to false unification.
+      t <- typeOfPrimitive name >>= replaceBoundTypeVariables
+
+      return $ yieldFunction (FunctionPrimitive name) t []
 
 inferGraphTypes :: Flow Graph Graph
 inferGraphTypes = getState >>= annotateGraph
@@ -400,9 +397,6 @@ normalizeInferredTypes inf = do
       mtyp <- getType ann
       let ntyp = (normalizePolytypes . substituteTypeVariables subst) <$> mtyp
       return $ setType ntyp ann
-    boundTypeVariablesOf typ = case stripType typ of
-      TypeLambda (LambdaType var body) -> var:(boundTypeVariablesOf body)
-      _ -> []
     normalizeVariables term = do
         -- Note: the inferred type is not rewritten and is no longer meaningful; only the type annotations are rewritten
         typ <- requireAnnotatedType term
@@ -410,18 +404,27 @@ normalizeInferredTypes inf = do
         -- but for consistency, the same substitution is also applied to the type annotations of subterms
         -- We make the assumption that any type variables bound in subterm annotations are the same as the type
         -- variables bound in the top-level annotation.
-        let subst = toSubst typ
-        rewriteTypeAnnotationsOnTerms (rewriteType $ rewrite subst) term
-      where
-        rewrite subst recurse t = case recurse t of
-          TypeVariable v -> case M.lookup v subst of
-            Nothing -> t
-            Just v1 -> TypeVariable v1
-          TypeLambda (LambdaType v body) -> case M.lookup v subst of
-            Nothing -> t
-            Just v1 -> TypeLambda $ LambdaType v1 body
-          t1 -> t1
-        toSubst typ = M.fromList $ L.zip (boundTypeVariablesOf typ) normalVariables
+        let subst = M.fromList $ L.zip (boundTypeVariablesOf typ) normalVariables
+        rewriteTypeAnnotationsOnTerms (replaceTypeVariables subst) term
+
+replaceBoundTypeVariables :: Type -> Flow Graph Type
+replaceBoundTypeVariables t = do
+    pairs <- CM.mapM toPair $ boundTypeVariablesOf t
+    return $ replaceTypeVariables (M.fromList pairs) t
+  where
+    toPair v = do
+      v' <- freshName
+      return (v, v')
+
+replaceTypeVariables :: M.Map Name Name -> Type -> Type
+replaceTypeVariables subst = rewriteType $ \recurse t -> case recurse t of
+  TypeVariable v -> case M.lookup v subst of
+    Nothing -> t
+    Just v1 -> TypeVariable v1
+  TypeLambda (LambdaType v body) -> case M.lookup v subst of
+    Nothing -> t
+    Just v1 -> TypeLambda $ LambdaType v1 body
+  t1 -> t1
 
 requireName :: Name -> Flow Graph Type
 requireName v = do

@@ -45,12 +45,10 @@ alphaConvertType vold tnew = rewriteType rewrite
       TypeVariable v -> if v == vold then tnew else TypeVariable v
       _ -> recurse typ
 
-boundVariablesInType :: Type -> S.Set Name
-boundVariablesInType = foldOverType TraversalOrderPre fld S.empty
-  where
-    fld names typ = case typ of
-      TypeLambda (LambdaType v _) -> S.insert v names
-      _ -> names
+boundTypeVariablesOf :: Type -> [Name]
+boundTypeVariablesOf typ = case stripType typ of
+  TypeLambda (LambdaType var body) -> var:(boundTypeVariablesOf body)
+  _ -> []
 
 elementsWithDependencies :: [Element] -> Flow Graph [Element]
 elementsWithDependencies original = CM.mapM requireElement allDepNames

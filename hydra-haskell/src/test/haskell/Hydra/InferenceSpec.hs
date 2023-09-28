@@ -341,7 +341,7 @@ checkPolymorphism = H.describe "Check polymorphism" $ do
 checkPrimitives :: H.SpecWith ()
 checkPrimitives = H.describe "Check a few hand-picked terms with primitive functions" $ do
 
-    H.describe "Monomorphic primitive functions" $ do
+    H.describe "Check monomorphic primitive functions" $ do
       H.it "test #1" $ do
         expectMonotype
           (primitive $ Name "hydra/lib/strings.length")
@@ -362,17 +362,28 @@ checkPrimitives = H.describe "Check a few hand-picked terms with primitive funct
           (Types.function Types.int32 Types.int32)
       H.it "test #3" $ do
         expectPolytype
+          (primitive _lists_concat)
+          ["t0"] (Types.function (Types.list $ Types.list $ Types.var "t0") (Types.list $ Types.var "t0"))
+      H.it "test #4" $ do
+        expectPolytype
+          (lambda "lists" (primitive _lists_concat @@ var "lists"))
+          ["t0"] (Types.function (Types.list $ Types.list $ Types.var "t0") (Types.list $ Types.var "t0"))
+      H.it "test #5" $ do
+        expectPolytype
+          (lambda "lists" (primitive _lists_length @@ (primitive _lists_concat @@ var "lists")))
+          ["t0"] (Types.function (Types.list $ Types.list $ Types.var "t0") Types.int32)
+      H.it "test #6" $ do
+        expectPolytype
           (lambda "list" (primitive _lists_length @@ (primitive _lists_concat @@ list[var "list", list []])))
           ["t0"] (Types.function (Types.list $ Types.var "t0") Types.int32)
-      H.it "test #4" $ do
+      H.it "test #7" $ do
         expectPolytype
           (lambda "list" (primitive _math_add
             @@ int32 1
             @@ (primitive _lists_length @@ (primitive _lists_concat @@ list[var "list", list []]))))
           ["t0"] (Types.function (Types.list $ Types.var "t0") Types.int32)
 
-
-      H.it "test #5" $ do
+      H.it "test #8" $ do
         expectPolytype
           (lambda "lists" (primitive _lists_length @@ (primitive _lists_concat @@ var "lists")))
           ["t2"] (Types.function (Types.list $ Types.list $ Types.var "t2") Types.int32)
@@ -602,7 +613,7 @@ spec = do
   checkLists
   checkLiterals
 --  checkPolymorphism -- TODO
---  checkPrimitives -- TODO
+  checkPrimitives -- TODO
   checkProducts
 --  checkSubtermAnnotations -- TODO
   checkSums
