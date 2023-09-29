@@ -70,7 +70,6 @@ infer term = case term of
       let constraints = (inferredConstraints rsubj) ++ case otyp of
             Nothing -> []
             Just t -> [(inferredType rsubj, t)]
-
       return $ yieldTerm (TermAnnotated $ Annotated (inferredTerm rsubj) ann) (inferredType rsubj) constraints
 
     TermApplication (Application fun arg) -> do
@@ -305,11 +304,9 @@ inferFunction f = case f of
 
   FunctionLambda (Lambda v body) -> do
     vdom <- freshName
-    let dom = TypeVariable vdom
-    rbody <- withBinding v dom $ infer body
-    let cod = inferredType rbody
+    rbody <- withBinding v (TypeVariable vdom) $ infer body
     return $ yieldFunction (FunctionLambda $ Lambda v $ inferredTerm rbody)
-      (TypeLambda $ LambdaType vdom $ Types.function dom cod)
+      (TypeLambda $ LambdaType vdom $ Types.function (TypeVariable vdom) (inferredType rbody))
       (inferredConstraints rbody)
 
   FunctionPrimitive name -> do
