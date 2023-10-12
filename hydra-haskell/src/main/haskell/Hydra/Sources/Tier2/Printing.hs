@@ -76,6 +76,7 @@ describePrecisionDef = printingDefinition "describePrecision" $
 describeTypeDef :: Definition (Type -> String)
 describeTypeDef = printingDefinition "describeType" $
   doc "Display a type as a string" $
+  function typeT stringT $
   match _Type Nothing [
     Case _Type_annotated   --> lambda "a" $ string "annotated " ++ (ref describeTypeDef @@
       (project _Annotated _Annotated_subject @@ var "a")),

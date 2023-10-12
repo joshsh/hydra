@@ -92,7 +92,8 @@ infer term = case term of
             rels <- CM.mapM infer els
             let co = (\e -> (TypeVariable v, inferredType e)) <$> rels
             let ci = L.concat (inferredConstraints <$> rels)
-            let typ = TypeLambda $ LambdaType v $ TypeList $ TypeVariable v
+--            let typ = TypeLambda $ LambdaType v $ TypeList $ TypeVariable v
+            let typ = TypeList $ TypeVariable v
             return $ yieldTerm (TermList (inferredTerm <$> rels)) typ (co ++ ci)
 
     TermLiteral l -> return $ yieldTerm (TermLiteral l) (Types.literal $ literalType l) []
@@ -107,7 +108,8 @@ infer term = case term of
             pairs <- CM.mapM toPair $ M.toList m
             let co = L.concat ((\(k, v) -> [(TypeVariable kv, inferredType k), (TypeVariable vv, inferredType v)]) <$> pairs)
             let ci = L.concat ((\(k, v) -> inferredConstraints k ++ inferredConstraints v) <$> pairs)
-            let typ = TypeLambda $ LambdaType kv $ TypeLambda $ LambdaType vv $ Types.map (TypeVariable kv) (TypeVariable vv)
+--            let typ = TypeLambda $ LambdaType kv $ TypeLambda $ LambdaType vv $ Types.map (TypeVariable kv) (TypeVariable vv)
+            let typ = Types.map (TypeVariable kv) (TypeVariable vv)
             return $ yieldTerm (TermMap $ M.fromList (fromPair <$> pairs)) typ (co ++ ci)
       where
         fromPair (k, v) = (inferredTerm k, inferredTerm v)
@@ -123,7 +125,8 @@ infer term = case term of
         Just e -> do
           re <- infer e
           let constraints = ((TypeVariable v, inferredType re):(inferredConstraints re))
-          let typ = TypeLambda $ LambdaType v $ TypeOptional $ TypeVariable v
+--          let typ = TypeLambda $ LambdaType v $ TypeOptional $ TypeVariable v
+          let typ = TypeOptional $ TypeVariable v
           return $ yieldTerm (TermOptional $ Just $ inferredTerm re) typ constraints
 
     TermProduct tuple -> do
@@ -305,9 +308,12 @@ inferFunction f = case f of
   FunctionLambda (Lambda v body) -> do
     vdom <- freshName
     rbody <- withBinding v (TypeVariable vdom) $ infer body
-    return $ yieldFunction (FunctionLambda $ Lambda v $ inferredTerm rbody)
-      (TypeLambda $ LambdaType vdom $ Types.function (TypeVariable vdom) (inferredType rbody))
-      (inferredConstraints rbody)
+    let typ = TypeLambda $ LambdaType vdom $ Types.function (TypeVariable vdom) (inferredType rbody)
+--    let typ = TypeLambda $ LambdaType vdom $ Types.apply
+--          (Types.function (TypeVariable vdom) (inferredType rbody))
+--          (TypeVariable vdom)
+--    let typ = Types.function (TypeVariable vdom) (inferredType rbody)
+    return $ yieldFunction (FunctionLambda $ Lambda v $ inferredTerm rbody) typ (inferredConstraints rbody)
 
   FunctionPrimitive name -> do
       -- Replacing variables prevents type variables from being reused across multiple instantiations of a primitive within a single element,

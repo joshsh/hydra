@@ -48,6 +48,7 @@ hydraExtrasModule = Module (Namespace "hydra/extras") elements [hydraGraphModule
 
 functionArityDef :: Definition (Function -> Int)
 functionArityDef = hydraExtrasDefinition "functionArity" $
+  function functionT int32T $
   match _Function Nothing [
     Case _Function_elimination --> constant (int32 1),
     Case _Function_lambda --> (Math.add @@ int32 1) <.> (ref termArityDef <.> project _Lambda _Lambda_body),
@@ -74,6 +75,7 @@ qnameDef = hydraExtrasDefinition "qname" $
 
 termArityDef :: Definition (Term -> Int)
 termArityDef = hydraExtrasDefinition "termArity" $
+  function termT int32T $
   match _Term (Just $ int32 0) [
     Case _Term_application --> (lambda "x" $ Math.sub @@ var "x" @@ int32 1) <.> (ref termArityDef <.> (project _Application _Application_function)),
     Case _Term_function --> ref functionArityDef]
@@ -81,6 +83,7 @@ termArityDef = hydraExtrasDefinition "termArity" $
 
 typeArityDef :: Definition (Type -> Int)
 typeArityDef = hydraExtrasDefinition "typeArity" $
+  function typeT int32T $
   match _Type (Just $ int32 0) [
     Case _Type_annotated --> ref typeArityDef <.> Core.annotatedSubject,
     Case _Type_application --> ref typeArityDef <.> (project _ApplicationType _ApplicationType_function),
@@ -91,6 +94,7 @@ typeArityDef = hydraExtrasDefinition "typeArity" $
 uncurryTypeDef :: Definition (Type -> [Type])
 uncurryTypeDef = hydraExtrasDefinition "uncurryType" $
   doc "Uncurry a type expression into a list of types, turning a function type a -> b into cons a (uncurryType b)" $
+  function typeT (listT typeT) $
   lambda "t" ((match _Type (Just $ list [var "t"]) [
     _Type_annotated>>: ref uncurryTypeDef <.> Core.annotatedSubject,
     _Type_application>>: ref uncurryTypeDef <.> Core.applicationTypeFunction,

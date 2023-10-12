@@ -184,6 +184,7 @@ subtermsDef = tier1Definition "subterms" $
       @@ (Core.letEnvironment @@ var "lt")
       @@ (Lists.map @@ second @@ (Maps.toList @@ (Core.letBindings @@ var "lt"))),
     _Term_list>>: lambda "l" $ var "l",
+    _Term_literal>>: constant $ list [],
     _Term_map>>: lambda "m" (Lists.concat @@
       (Lists.map @@ (lambda "p" $ list [first @@ var "p", second @@ var "p"]) @@ (Maps.toList @@ var "m"))),
     _Term_optional>>: matchOpt (list []) (lambda "t" $ list [var "t"]),

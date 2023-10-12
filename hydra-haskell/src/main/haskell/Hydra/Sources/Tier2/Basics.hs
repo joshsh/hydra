@@ -365,6 +365,7 @@ fieldTypeMapDef = basicsDefinition "fieldTypeMap" $
 
 isEncodedTypeDef :: Definition (Term -> Bool)
 isEncodedTypeDef = basicsDefinition "isEncodedType" $
+  function termT booleanT $
   lambda "t" $ (match _Term (Just false) [
       Case _Term_application --> lambda "a" $
         ref isEncodedTypeDef @@ (project _Application _Application_function @@ var "a"),
@@ -374,6 +375,7 @@ isEncodedTypeDef = basicsDefinition "isEncodedType" $
 
 isTypeDef :: Definition (Type -> Bool)
 isTypeDef = basicsDefinition "isType" $
+  function typeT booleanT $
   lambda "t" $ (match _Type (Just false) [
       Case _Type_application --> lambda "a" $
         ref isTypeDef @@ (project _ApplicationType _ApplicationType_function @@ var "a"),

@@ -17,7 +17,7 @@ import Hydra.Sources.Tier2.Tier2
 
 tier2Modules :: [Module]
 tier2Modules = [
-  hydraBasicsModule,
+  hydraBasicsModule, --
   hydraCoreLanguageModule,
   hydraExtrasModule,
   hydraPrintingModule,

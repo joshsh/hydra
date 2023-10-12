@@ -612,8 +612,8 @@ spec = do
   checkLetTerms
   checkLists
   checkLiterals
---  checkPolymorphism -- TODO
-  checkPrimitives -- TODO
+  checkPolymorphism -- TODO
+--  checkPrimitives -- TODO
   checkProducts
 --  checkSubtermAnnotations -- TODO
   checkSums

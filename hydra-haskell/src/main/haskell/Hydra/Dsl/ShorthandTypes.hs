@@ -43,6 +43,7 @@ funT = Types.function
 functionTypeT = TypeVariable _FunctionType :: Type
 graphT = TypeVariable _Graph :: Type
 injectionT = TypeVariable _Injection :: Type
+int32T = Types.int32 :: Type
 integerValueT = TypeVariable _IntegerValue :: Type
 lambdaT = TypeVariable _Lambda :: Type
 lambdaTypeT = TypeVariable _LambdaType :: Type

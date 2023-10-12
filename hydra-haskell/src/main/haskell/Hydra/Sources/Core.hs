@@ -311,7 +311,6 @@ hydraCoreModule = Module ns elements [] $
           "list">:
             doc "A list" $
             list $ core "Term",
-          -- TODO: list elimination
           "literal">:
             doc "A literal value" $
             core "Literal",
