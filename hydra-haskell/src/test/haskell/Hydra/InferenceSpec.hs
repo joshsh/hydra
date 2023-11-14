@@ -57,13 +57,15 @@ checkEliminations = H.describe "Check a few hand-picked elimination terms" $ do
 checkFunctionTerms :: H.SpecWith ()
 checkFunctionTerms = H.describe "Check a few hand-picked function terms" $ do
 
-    H.it "Check lambdas" $ do
-      expectPolytype
-        (lambda "x" (var "x"))
-        ["t0"] (Types.function (Types.var "t0") (Types.var "t0"))
-      expectPolytype
-        (lambda "x" (int16 137))
-        ["t0"] (Types.function (Types.var "t0") Types.int16)
+    H.describe "Check lambdas" $ do
+      H.it "test #1" $ do
+        expectPolytype
+          (lambda "x" (var "x"))
+          ["t0"] (Types.function (Types.var "t0") (Types.var "t0"))
+      H.it "test #2" $ do
+        expectPolytype
+          (lambda "x" (int16 137))
+          ["t0"] (Types.function (Types.var "t0") Types.int16)
 
     H.it "Check list eliminations" $ do
       let fun = Terms.fold $ primitive _math_add
@@ -146,15 +148,17 @@ checkIndividualTerms = H.describe "Check a few hand-picked terms" $ do
             (TypeRecord $ RowType latLonPolyName Nothing [
               FieldType (FieldName "lat") $ Types.float32,
               FieldType (FieldName "lon") $ Types.float32]))
+
+      -- Note: this test also checks that user-provided type variables are used preferentially to generated ones
       H.it "test #4" $ do
         expectPolytype
           (lambda "latlon" (record latLonPolyName [
             Field (FieldName "lat") $ var "latlon",
             Field (FieldName "lon") $ var "latlon"]))
-          ["t0"] (Types.function (Types.var "t0")
+          ["a"] (Types.function (Types.var "a")
             (TypeRecord $ RowType latLonPolyName Nothing [
-              FieldType (FieldName "lat") $ Types.var "t0",
-              FieldType (FieldName "lon") $ Types.var "t0"]))
+              FieldType (FieldName "lat") $ Types.var "a",
+              FieldType (FieldName "lon") $ Types.var "a"]))
 
     H.it "Check unions" $ do
       expectMonotype
@@ -251,6 +255,15 @@ checkLiterals = H.describe "Check arbitrary literals" $ do
       QC.property $ \l -> expectMonotype
         (TermLiteral l)
         (Types.literal $ literalType l)
+
+checkPathologicalTypes :: H.SpecWith ()
+checkPathologicalTypes = H.describe "Check pathological types" $ do
+--    -- TODO
+--    H.it "Check self-application" $ do
+--      expectFailure
+--        (lambda "x" $ var "x" @@ var "x")
+
+    return ()
 
 checkPolymorphism :: H.SpecWith ()
 checkPolymorphism = H.describe "Check polymorphism" $ do
@@ -386,7 +399,7 @@ checkPrimitives = H.describe "Check a few hand-picked terms with primitive funct
       H.it "test #8" $ do
         expectPolytype
           (lambda "lists" (primitive _lists_length @@ (primitive _lists_concat @@ var "lists")))
-          ["t2"] (Types.function (Types.list $ Types.list $ Types.var "t2") Types.int32)
+          ["t0"] (Types.function (Types.list $ Types.list $ Types.var "t0") Types.int32)
 
 checkProducts :: H.SpecWith ()
 checkProducts = H.describe "Check a few hand-picked product terms" $ do
@@ -549,10 +562,10 @@ checkSubtermAnnotations = H.describe "Check additional subterm annotations" $ do
             (Types.lambda "t0" $ Types.function (Types.var "t0") (Types.var "t0"))
         H.it "condition #2" $ do
           expectTypeAnnotation Expect.lambdaBody testCase
-            (Types.var "t0")
+            (Types.lambda "t0" $ Types.var "t0")
         H.it "condition #3" $ do
           expectTypeAnnotation (Expect.lambdaBody >=> Expect.letBinding "alias") testCase
-            (Types.var "t0")
+            (Types.lambda "t0" $ Types.var "t0")
       H.describe "test #3" $ do
         let testCase = lambda "fun" $ lambda "t" $
                          ((var "funAlias" @@ var "t") `with` [
@@ -563,10 +576,10 @@ checkSubtermAnnotations = H.describe "Check additional subterm annotations" $ do
             (Types.lambdas ["t0", "t1"] $ Types.function funType funType)
         H.it "condition #2" $ do
           expectTypeAnnotation (Expect.lambdaBody >=> Expect.lambdaBody) testCase
-            (Types.var "t2")
+            (Types.lambda "t1" $ Types.var "t1")
         H.it "condition #3" $ do
           expectTypeAnnotation (Expect.lambdaBody >=> Expect.lambdaBody >=> Expect.letBinding "funAlias") testCase
-            funType
+            (Types.lambda "t0" $ Types.lambda "t1" funType)
 
 --     H.describe "Check 'let' terms with type annotations on bindings" $
 
@@ -608,14 +621,15 @@ spec :: H.Spec
 spec = do
   checkEliminations
   checkFunctionTerms
---  checkIndividualTerms -- TODO
+  checkIndividualTerms
   checkLetTerms
   checkLists
   checkLiterals
-  checkPolymorphism -- TODO
---  checkPrimitives -- TODO
+  checkPathologicalTypes
+  checkPolymorphism
+  checkPrimitives
   checkProducts
---  checkSubtermAnnotations -- TODO
+  checkSubtermAnnotations
   checkSums
   checkTypeAnnotations
 --  checkTypedTerms -- (excluded for now)

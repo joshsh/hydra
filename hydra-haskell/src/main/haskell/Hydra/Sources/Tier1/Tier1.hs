@@ -127,7 +127,7 @@ foldOverTypeDef = tier1Definition "foldOverType" $
 
 freeVariablesInTermDef :: Definition (Term -> S.Set Name)
 freeVariablesInTermDef = tier1Definition "freeVariablesInTerm" $
-  doc "Find the free variables (i.e. variables not bound by a lambda or let) in a term" $
+  doc "Find the free variables (i.e. variables not bound by a lambda or let) in a given term" $
   function termT (setT nameT) $
   lambda "term" (
     (match _Term (Just $ var "dfltVars") [
@@ -147,7 +147,7 @@ freeVariablesInTermDef = tier1Definition "freeVariablesInTerm" $
 
 freeVariablesInTypeDef :: Definition (Type -> S.Set Name)
 freeVariablesInTypeDef = tier1Definition "freeVariablesInType" $
-  doc "Find the free variables (i.e. variables not bound by a lambda or let) in a type" $
+  doc "Find the free variables (i.e. variables not bound by a lambda/universal type) in a given type" $
   function typeT (setT nameT) $
   lambda "typ" (
     (match _Type (Just $ var "dfltVars") [

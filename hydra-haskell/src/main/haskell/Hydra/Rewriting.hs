@@ -56,8 +56,28 @@ elementsWithDependencies original = CM.mapM requireElement allDepNames
     depNames = S.toList . termDependencyNames True False False . elementData
     allDepNames = L.nub $ (elementName <$> original) ++ (L.concat $ depNames <$> original)
 
+-- TODO: move into the DSL
+foldOverTermM :: TraversalOrder -> (a -> Term -> Flow s a) -> a -> Term -> Flow s a
+foldOverTermM order fld b0 term = ((\x -> case x of
+  TraversalOrderPre -> do
+    term1 <- fld b0 term
+    CM.foldM (foldOverTermM order fld) term1 (subterms term)
+  TraversalOrderPost -> do
+    res <- CM.foldM (foldOverTermM order fld) b0 (subterms term)
+    fld res term)) order
+
 freeVariablesInScheme :: TypeScheme -> S.Set Name
 freeVariablesInScheme (TypeScheme vars t) = S.difference (freeVariablesInType t) (S.fromList vars)
+
+-- | Find the free variables (i.e. variables not bound by a lambda) in a type,
+--   in a well-defined order following a preorder traversal of the type expression.
+-- TODO: move into the DSL
+freeVariablesInTypeOrdered :: Type -> [Name]
+freeVariablesInTypeOrdered typ = case typ of
+  TypeLambda v -> L.delete (lambdaTypeParameter v) $ freeVariablesInTypeOrdered (lambdaTypeBody v)
+  TypeVariable v -> [v]
+  -- Note: repeated 'nub'
+  _ -> L.nub $ L.concat (freeVariablesInTypeOrdered <$> subtypes typ)
 
 isFreeIn :: Name -> Term -> Bool
 isFreeIn v term = not $ S.member v $ freeVariablesInTerm term

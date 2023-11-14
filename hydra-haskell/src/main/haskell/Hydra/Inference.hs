@@ -19,6 +19,7 @@ import Hydra.Reduction
 import Hydra.Rewriting
 import Hydra.Strip
 import Hydra.Substitution
+import Hydra.Coders
 import Hydra.Tier1
 import Hydra.Tier2
 import Hydra.Tools.Debug
@@ -56,20 +57,23 @@ findMatchingField fname sfields = case L.filter (\f -> fieldTypeName f == fname)
   (h:_) -> return h
 
 freshName :: Flow Graph Name
-freshName = normalVariable <$> nextCount "hyInf"
+freshName = temporaryVariable <$> nextCount "hyInf"
 
 freshTypeVariable :: Flow Graph Type
 freshTypeVariable = TypeVariable <$> freshName
 
--- Infer the type of a term, without also unifying or normalizing types; this is done separately
+-- Infer the type of a term, without also unifying or normalizing types; the latter is done separately
 infer :: Term -> Flow Graph Inferred
 infer term = case term of
     TermAnnotated (Annotated subj ann) -> do
       rsubj <- infer subj
-      otyp <- getAnnotatedType term
+
+      -- If the subject is annotated with a type, unify that type with the inferred type for the subject.
+      otyp <- getType ann
       let constraints = (inferredConstraints rsubj) ++ case otyp of
             Nothing -> []
             Just t -> [(inferredType rsubj, t)]
+
       return $ yieldTerm (TermAnnotated $ Annotated (inferredTerm rsubj) ann) (inferredType rsubj) constraints
 
     TermApplication (Application fun arg) -> do
@@ -87,12 +91,11 @@ infer term = case term of
     TermList els -> do
         v <- freshName
         if L.null els
-          then return $ yieldTerm (TermList []) (TypeLambda $ LambdaType v $ TypeList $ TypeVariable v) []
+          then return $ yieldTerm (TermList []) (TypeList $ TypeVariable v) []
           else do
             rels <- CM.mapM infer els
             let co = (\e -> (TypeVariable v, inferredType e)) <$> rels
             let ci = L.concat (inferredConstraints <$> rels)
---            let typ = TypeLambda $ LambdaType v $ TypeList $ TypeVariable v
             let typ = TypeList $ TypeVariable v
             return $ yieldTerm (TermList (inferredTerm <$> rels)) typ (co ++ ci)
 
@@ -102,13 +105,11 @@ infer term = case term of
         kv <- freshName
         vv <- freshName
         if M.null m
-          then return $ yieldTerm (TermMap M.empty) (TypeLambda $ LambdaType kv $ TypeLambda $ LambdaType vv
-            $ Types.map (TypeVariable kv) (TypeVariable vv)) []
+          then return $ yieldTerm (TermMap M.empty) (Types.map (TypeVariable kv) (TypeVariable vv)) []
           else do
             pairs <- CM.mapM toPair $ M.toList m
             let co = L.concat ((\(k, v) -> [(TypeVariable kv, inferredType k), (TypeVariable vv, inferredType v)]) <$> pairs)
             let ci = L.concat ((\(k, v) -> inferredConstraints k ++ inferredConstraints v) <$> pairs)
---            let typ = TypeLambda $ LambdaType kv $ TypeLambda $ LambdaType vv $ Types.map (TypeVariable kv) (TypeVariable vv)
             let typ = Types.map (TypeVariable kv) (TypeVariable vv)
             return $ yieldTerm (TermMap $ M.fromList (fromPair <$> pairs)) typ (co ++ ci)
       where
@@ -121,11 +122,10 @@ infer term = case term of
     TermOptional m -> do
       v <- freshName
       case m of
-        Nothing -> return $ yieldTerm (TermOptional Nothing) (TypeLambda $ LambdaType v $ TypeOptional $ TypeVariable v) []
+        Nothing -> return $ yieldTerm (TermOptional Nothing) (TypeOptional $ TypeVariable v) []
         Just e -> do
           re <- infer e
           let constraints = ((TypeVariable v, inferredType re):(inferredConstraints re))
---          let typ = TypeLambda $ LambdaType v $ TypeOptional $ TypeVariable v
           let typ = TypeOptional $ TypeVariable v
           return $ yieldTerm (TermOptional $ Just $ inferredTerm re) typ constraints
 
@@ -147,20 +147,19 @@ infer term = case term of
     TermSet els -> do
       v <- freshName
       if S.null els
-        then return $ yieldTerm (TermSet S.empty) (TypeLambda $ LambdaType v $ Types.set $ TypeVariable v) []
+        then return $ yieldTerm (TermSet S.empty) (Types.set $ TypeVariable v) []
         else do
           rels <- CM.mapM infer $ S.toList els
           let co = (\e -> (TypeVariable v, inferredType e)) <$> rels
           let ci = L.concat (inferredConstraints <$> rels)
-          let typ = TypeLambda $ LambdaType v $ Types.set $ TypeVariable v
+          let typ = Types.set $ TypeVariable v
           return $ yieldTerm (TermSet $ S.fromList (inferredTerm <$> rels)) typ (co ++ ci)
 
     TermSum (Sum i s trm) -> do
         rtrm <- infer trm
         vot <- CM.sequence (varOrTerm rtrm <$> [0..(s-1)])
         let types = fst <$> vot
-        let vars = Y.catMaybes (snd <$> vot)
-        let typ = L.foldl (\t v -> TypeLambda $ LambdaType v t) (TypeSum types) vars
+        let typ = TypeSum types
         return $ yieldTerm (TermSum $ Sum i s $ inferredTerm rtrm) typ (inferredConstraints rtrm)
       where
         varOrTerm rtrm j = if i == j
@@ -227,11 +226,11 @@ inferElimination e = case e of
       cod <- freshName
       rn <- infer n
       rj <- infer j
-      let t = TypeLambda $ LambdaType dom $ Types.function (Types.optional $ TypeVariable dom) (TypeVariable cod)
+      let typ = Types.function (Types.optional $ TypeVariable dom) (TypeVariable cod)
       let constraints = inferredConstraints rn ++ inferredConstraints rj
                           ++ [(TypeVariable cod, inferredType rn),
                               (Types.function (TypeVariable dom) (TypeVariable cod), inferredType rj)]
-      return $ yieldElimination (EliminationOptional $ OptionalCases (inferredTerm rn) (inferredTerm rj)) t constraints
+      return $ yieldElimination (EliminationOptional $ OptionalCases (inferredTerm rn) (inferredTerm rj)) typ constraints
 
     EliminationProduct (TupleProjection arity idx) -> do
       types <- CM.replicateM arity freshTypeVariable
@@ -308,11 +307,7 @@ inferFunction f = case f of
   FunctionLambda (Lambda v body) -> do
     vdom <- freshName
     rbody <- withBinding v (TypeVariable vdom) $ infer body
-    let typ = TypeLambda $ LambdaType vdom $ Types.function (TypeVariable vdom) (inferredType rbody)
---    let typ = TypeLambda $ LambdaType vdom $ Types.apply
---          (Types.function (TypeVariable vdom) (inferredType rbody))
---          (TypeVariable vdom)
---    let typ = Types.function (TypeVariable vdom) (inferredType rbody)
+    let typ = Types.function (TypeVariable vdom) (inferredType rbody)
     return $ yieldFunction (FunctionLambda $ Lambda v $ inferredTerm rbody) typ (inferredConstraints rbody)
 
   FunctionPrimitive name -> do
@@ -320,7 +315,11 @@ inferFunction f = case f of
       -- which would lead to false unification.
       t <- typeOfPrimitive name >>= replaceBoundTypeVariables
 
-      return $ yieldFunction (FunctionPrimitive name) t []
+      return $ yieldFunction (FunctionPrimitive name) (stripUniversalTypes t) []
+    where
+      stripUniversalTypes typ = case stripType typ of
+        TypeLambda (LambdaType v body) -> stripUniversalTypes body
+        t -> t
 
 inferGraphTypes :: Flow Graph Graph
 inferGraphTypes = getState >>= annotateGraph
@@ -381,34 +380,40 @@ initializeGraph flow = do
           mt <- getAnnotatedType $ elementData el
           return $ (\t -> (elementName el, t)) <$> mt
 
-instantiate :: Type -> Flow Graph Type
-instantiate typ = case typ of
-  TypeAnnotated (Annotated typ1 ann) -> TypeAnnotated <$> (Annotated <$> instantiate typ1 <*> pure ann)
-  TypeLambda (LambdaType var body) -> do
-    var1 <- freshName
-    body1 <- substituteTypeVariable var (TypeVariable var1) <$> instantiate body
-    return $ TypeLambda $ LambdaType var1 body1
-  _ -> pure typ
+-- | Get the free type variables of a term in order of occurrence in the annotations of the term and its subterms
+--   (following a pre-order traversal in subterms, and in each type expression)
+normalFreeVariables :: Term -> Flow Graph [Name]
+normalFreeVariables = foldOverTermM TraversalOrderPre fld []
+  where
+    fld freeVars term = do
+      mtyp <- getAnnotatedType term
+      return $ case mtyp of
+        Nothing -> freeVars
+        Just typ -> L.nub $ freeVars ++ freeVariablesInTypeOrdered typ
 
 normalizeInferredTypes :: Inferred -> Flow Graph Term
 normalizeInferredTypes inf = do
-    subst <- withSchemaContext $ solveConstraints $ inferredConstraints inf
-    -- TODO: consider combining these two rewriting steps
-    rewriteTermAnnotationsM (rewrite subst) (inferredTerm inf) >>= normalizeVariables
+    subst <- solveConstraints $ inferredConstraints inf
+    pure (inferredTerm inf)
+      >>= replacePreunificationVariables subst
+      >>= replaceTemporaryVariables
+      >>= rewriteTermAnnotationsM createUniversalTypes
   where
     rewrite subst ann = do
       mtyp <- getType ann
-      let ntyp = (normalizePolytypes . substituteTypeVariables subst) <$> mtyp
-      return $ setType ntyp ann
-    normalizeVariables term = do
-        -- Note: the inferred type is not rewritten and is no longer meaningful; only the type annotations are rewritten
-        typ <- requireAnnotatedType term
-        -- The substitution is derived from the top-level type annotation only,
-        -- but for consistency, the same substitution is also applied to the type annotations of subterms
-        -- We make the assumption that any type variables bound in subterm annotations are the same as the type
-        -- variables bound in the top-level annotation.
-        let subst = M.fromList $ L.zip (boundTypeVariablesOf typ) normalVariables
-        rewriteTypeAnnotationsOnTerms (replaceTypeVariables subst) term
+      return $ setType (substituteTypeVariables subst <$> mtyp) ann
+    replacePreunificationVariables subst term = rewriteTermAnnotationsM (rewrite subst) term
+    replaceTemporaryVariables term = do
+      tempVars <- (L.filter isTemporaryVariable) <$> normalFreeVariables term
+      let subst = M.fromList $ L.zip tempVars (TypeVariable <$> normalVariables)
+      rewriteTermAnnotationsM (rewrite subst) term
+    createUniversalTypes ann = do
+        mtyp <- getType ann
+        return $ setType (helper <$> mtyp) ann
+      where
+        helper typ = L.foldl (\t v -> TypeLambda $ LambdaType v t) typ $ L.reverse freeVars
+          where
+            freeVars = freeVariablesInTypeOrdered typ
 
 replaceBoundTypeVariables :: Type -> Flow Graph Type
 replaceBoundTypeVariables t = do
@@ -433,9 +438,9 @@ requireName :: Name -> Flow Graph Type
 requireName v = do
   env <- graphTypes <$> getState
   case M.lookup v env of
-    Nothing -> fail $ "variable not bound in environment: " ++ unName v ++ ". Environment: "
+    Nothing -> fail $ "variable not bound in graph schema: " ++ unName v ++ ". Schema: "
       ++ L.intercalate ", " (unName <$> M.keys env)
-    Just s -> instantiate s
+    Just s -> pure s -- instantiate s
 
 requireAnnotatedType :: Term -> Flow Graph Type
 requireAnnotatedType term = do
