@@ -195,10 +195,10 @@ checkIndividualTerms = H.describe "Check a few hand-picked terms" $ do
           ["t0"] (Types.function (Types.var "t0") (Types.function (Types.var "t0") (Types.map (Types.var "t0") Types.float64)))
 
     -- -- TODO: add a case for a recursive nominal type -- e.g. MyList := () + (int, Mylist)
-    -- H.it "Check nominal (newtype) terms" $ do
-    --   expectMonotype
-    --     testDataArthur
-    --     (Types.wrap "Person")
+--    H.it "Check nominal (newtype) terms" $ do
+--      expectMonotype
+--        testDataArthur
+--        (Types.wrap "Person")
     --   expectMonotype
     --     (lambda "x" (record [
     --       Field "firstName" $ var "x",

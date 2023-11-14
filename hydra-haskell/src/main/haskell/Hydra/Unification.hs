@@ -78,7 +78,7 @@ unify ltyp rtyp = withTrace ("unify " ++ show ltyp ++ " with " ++ show rtyp) $ d
     (TypeVariable v, t2) -> unifyTypeVariable v t2
     (t1, TypeVariable v) -> unifyTypeVariable v t1
 
-    -- All other unification patterns are symmetrical; they require the same type variant on the left and the right
+    -- Most other unification patterns are symmetrical; they require the same type variant on the left and the right
     (TypeApplication (ApplicationType lhs1 rhs1), TypeApplication (ApplicationType lhs2 rhs2))
       -> unifyMany [lhs1, rhs1] [lhs2, rhs2]
     (TypeFunction (FunctionType dom1 cod1), TypeFunction (FunctionType dom2 cod2))
@@ -93,6 +93,12 @@ unify ltyp rtyp = withTrace ("unify " ++ show ltyp ++ " with " ++ show rtyp) $ d
     (TypeUnion rt1, TypeUnion rt2) -> unifyRowType rt1 rt2
     (TypeSum types1, TypeSum types2) -> unifyMany types1 types2
     (TypeWrap nt1, TypeWrap nt2) -> unifyNominalType nt1 nt2
+
+     -- Ignore asymmetrical unification with application types;
+     -- although it is possible to beta-reduce the application type, this usually involves dereferencing types by
+     -- by name which we have already dereferenced, and is usually unnecessary.
+    (TypeApplication _, _) -> pure M.empty
+    (_, TypeApplication _) -> pure M.empty
 
     _ -> failUnificationOf ltyp rtyp
 

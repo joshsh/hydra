@@ -20,7 +20,7 @@ grammarToModule ns (G.Grammar prods) desc = Module ns elements [] desc
     elements = pairToElement <$> L.concat (L.zipWith (makeElements False) (capitalize . fst <$> prodPairs) (snd <$> prodPairs))
       where
         prodPairs = (\(G.Production (G.Symbol s) pat) -> (s, pat)) <$> prods
-        pairToElement (lname, typ) = Bootstrap.typeElement (toName lname) typ
+        pairToElement (lname, typ) = Bootstrap.typeDefinitionElement (toName lname) typ
 
     toName local = unqualifyName $ QualifiedName (Just ns) local
 

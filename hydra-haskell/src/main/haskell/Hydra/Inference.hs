@@ -15,7 +15,7 @@ import Hydra.Graph
 import Hydra.Kv
 import Hydra.Lexical
 import Hydra.Mantle
-import Hydra.Reduction
+--import Hydra.Reduction
 import Hydra.Rewriting
 import Hydra.Strip
 import Hydra.Substitution
@@ -173,10 +173,12 @@ infer term = case term of
         sfield <- findMatchingField (fieldName field) (rowTypeFields rt)
 
         rfield <- inferFieldType field
+
         let ci = inferredConstraints $ snd rfield
         let co = (inferredType $ snd rfield, fieldTypeType sfield)
+        let constraints = (co:ci)
 
-        return $ yieldTerm (TermUnion $ Injection n $ inferredToField rfield) (TypeUnion rt) (co:ci)
+        return $ yieldTerm (TermUnion $ Injection n $ inferredToField rfield) (TypeUnion rt) constraints
 
     TermVariable v -> do
       t <- requireName v
@@ -200,7 +202,7 @@ inferElementTypes g sortedEls = initializeGraph $ inferAll sortedEls [] >>= CM.m
   where
     -- Note: inference occurs over the entire graph at once,
     --       but unification and substitution occur within elements in isolation
-    rewriteElement (name, rel) = do
+    rewriteElement (name, rel) = withTrace ("rewrite " ++ unName name) $ do
       term <- normalizeInferredTypes rel
       return $ Element name term
 

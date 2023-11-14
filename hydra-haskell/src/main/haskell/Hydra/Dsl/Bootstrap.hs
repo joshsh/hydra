@@ -31,9 +31,9 @@ bootstrapGraph = Graph {
   graphSchema = Nothing}
 
 datatype :: Namespace -> String -> Type -> Element
-datatype gname lname typ = typeElement elName $ rewriteType replacePlaceholders typ
+datatype ns lname typ = typeDefinitionElement elName $ rewriteType replacePlaceholders typ
   where
-    elName = qualify gname (Name lname)
+    elName = qualify ns (Name lname)
 
     -- Note: placeholders are only expected at the top level, or beneath annotations and/or type lambdas
     replacePlaceholders rec t = case rect of
@@ -54,10 +54,10 @@ typeref :: Namespace -> String -> Type
 typeref ns = TypeVariable . qualify ns . Name
 
 qualify :: Namespace -> Name -> Name
-qualify (Namespace gname) (Name lname) = Name $ gname ++ "." ++ lname
+qualify (Namespace ns) (Name lname) = Name $ ns ++ "." ++ lname
 
-typeElement :: Name -> Type -> Element
-typeElement name typ = Element {
+typeDefinitionElement :: Name -> Type -> Element
+typeDefinitionElement name typ = Element {
     elementName = name,
     elementData = dataTerm}
   where
