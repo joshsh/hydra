@@ -24,6 +24,10 @@ import Control.Monad
 checkType :: Term -> Type -> H.Expectation
 checkType term typ = expectTypeAnnotation pure term typ
 
+-- TODO: move into the Terms DSL when practical
+typed :: Type -> Term -> Term
+typed typ = setTermType (Just typ)
+
 expectMonotype :: Term -> Type -> H.Expectation
 expectMonotype term = expectPolytype term []
 
@@ -580,9 +584,6 @@ checkSubtermAnnotations = H.describe "Check additional subterm annotations" $ do
         H.it "condition #3" $ do
           expectTypeAnnotation (Expect.lambdaBody >=> Expect.lambdaBody >=> Expect.letBinding "funAlias") testCase
             (Types.lambda "t0" $ Types.lambda "t1" funType)
-
---     H.describe "Check 'let' terms with type annotations on bindings" $
-
   where
     tmp term = shouldSucceedWith flow ()
       where
@@ -595,6 +596,34 @@ checkSubtermAnnotations = H.describe "Check additional subterm annotations" $ do
 --
 --    H.it "Check arbitrary typed terms" $
 --      QC.property $ \(TypedTerm typ term) -> expectMonotype term typ
+
+checkUserProvidedTypes :: H.SpecWith ()
+checkUserProvidedTypes = H.describe "Check that user-provided type annotations are respected" $ do
+
+    H.it "Check top-level type annotations" $ do
+      expectPolytype
+        pretypedEmptyList
+        ["p"] (Types.list $ Types.var "p")
+      expectPolytype
+        pretypedEmptyMap
+        ["k", "v"] (Types.map (Types.var "k") (Types.var "v"))
+
+    H.it "Check type annotations on let-bound terms" $ do
+      expectPolytype
+        (TermLet $ Let (M.fromList [(Name "x", pretypedEmptyList)]) $ var "x")
+        ["p"] (Types.list $ Types.var "p")
+      expectPolytype
+        (TermLet $ Let (M.fromList [(Name "y", pretypedEmptyMap)]) $ var "y")
+        ["k", "v"] (Types.map (Types.var "k") (Types.var "v"))
+      expectPolytype
+        (TermLet $ Let (M.fromList [
+          (Name "x", pretypedEmptyList),
+          (Name "y", pretypedEmptyMap)
+          ]) $ Terms.pair (var "x") (var "y"))
+        ["p", "k", "v"] (Types.pair (Types.list $ Types.var "p") (Types.map (Types.var "k") (Types.var "v")))
+  where
+    pretypedEmptyList = typed (Types.list $ Types.var "p") $ list []
+    pretypedEmptyMap = typed (Types.map (Types.var "k") (Types.var "v")) $ TermMap M.empty
 
 checkWrappedTerms :: H.SpecWith ()
 checkWrappedTerms = H.describe "Check nominal introductions and eliminations" $ do
@@ -633,4 +662,5 @@ spec = do
   checkSums
   checkTypeAnnotations
 --  checkTypedTerms -- (excluded for now)
+  checkUserProvidedTypes
   checkWrappedTerms

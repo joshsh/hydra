@@ -16,7 +16,6 @@ import Hydra.Rewriting
 import Hydra.Tier1
 import Hydra.Tier2
 import qualified Hydra.Dsl.Expect as Expect
-import qualified Hydra.Dsl.Terms as Terms
 import Hydra.Tools.Debug
 
 import qualified Data.List as L
@@ -132,7 +131,7 @@ getTypeDescription :: Type -> Flow Graph (Y.Maybe String)
 getTypeDescription = getDescription . typeAnnotation
 
 hasFlag :: String -> Flow s Bool
-hasFlag flag = getAttrWithDefault flag (Terms.boolean False) >>= Expect.boolean
+hasFlag flag = getAttrWithDefault flag (TermLiteral $ LiteralBoolean False) >>= Expect.boolean
 
 kvAnnotationClass :: AnnotationClass
 kvAnnotationClass = AnnotationClass {
@@ -151,13 +150,13 @@ kvAnnotationClass = AnnotationClass {
 -- | Return a zero-indexed counter for the given key: 0, 1, 2, ...
 nextCount :: String -> Flow s Int
 nextCount attrName = do
-  count <- getAttrWithDefault attrName (Terms.int32 0) >>= Expect.int32
-  putAttr attrName (Terms.int32 $ count + 1)
+  count <- getAttrWithDefault attrName (TermLiteral $ LiteralInteger $ IntegerValueInt32 0) >>= Expect.int32
+  putAttr attrName (TermLiteral $ LiteralInteger $ IntegerValueInt32 $ count + 1)
   return count
 
 resetCount :: String -> Flow s ()
 resetCount attrName = do
-  putAttr attrName (Terms.int32 0)
+  putAttr attrName (TermLiteral $ LiteralInteger $ IntegerValueInt32 0)
   return ()
 
 normalizeTermAnnotations :: Term -> Term
@@ -185,7 +184,7 @@ setAnnotation :: String -> Y.Maybe Term -> Kv -> Kv
 setAnnotation key val (Kv m) = Kv $ M.alter (const val) key m
 
 setDescription :: Y.Maybe String -> Kv -> Kv
-setDescription d = setAnnotation kvDescription (Terms.string <$> d)
+setDescription d = setAnnotation kvDescription (TermLiteral . LiteralString <$> d)
 
 setTermAnnotation :: String -> Y.Maybe Term -> Term -> Term
 setTermAnnotation key val term = if kv == Kv M.empty
@@ -196,7 +195,7 @@ setTermAnnotation key val term = if kv == Kv M.empty
     kv = setAnnotation key val $ termAnnotation term
 
 setTermDescription :: Y.Maybe String -> Term -> Term
-setTermDescription d = setTermAnnotation kvDescription (Terms.string <$> d)
+setTermDescription d = setTermAnnotation kvDescription (TermLiteral . LiteralString <$> d)
 
 setTermType :: Y.Maybe Type -> Term -> Term
 setTermType d = setTermAnnotation kvType (coreEncodeType <$> d)
@@ -217,14 +216,16 @@ setTypeClasses m = setTypeAnnotation kvClasses encoded
   where
     encoded = if M.null m
       then Nothing
-      else Just $ Terms.map $ M.fromList (encodePair <$> M.toList m)
-    encodePair (name, classes) = (coreEncodeName name, Terms.set $ S.fromList (encodeClass <$> (S.toList classes)))
-    encodeClass tc = Terms.unitVariant _TypeClass $ case tc of
-      TypeClassEquality -> _TypeClass_equality
-      TypeClassOrdering -> _TypeClass_ordering
+      else Just $ TermMap $ M.fromList (encodePair <$> M.toList m)
+    encodePair (name, classes) = (coreEncodeName name, TermSet $ S.fromList (encodeClass <$> (S.toList classes)))
+    encodeClass tc = TermUnion $ Injection _TypeClass $ Field fname $ TermRecord $ Record _UnitType []
+      where
+        fname = case tc of
+          TypeClassEquality -> _TypeClass_equality
+          TypeClassOrdering -> _TypeClass_ordering
 
 setTypeDescription :: Y.Maybe String -> Type -> Type
-setTypeDescription d = setTypeAnnotation kvDescription (Terms.string <$> d)
+setTypeDescription d = setTypeAnnotation kvDescription (TermLiteral . LiteralString <$> d)
 
 termAnnotation :: Term -> Kv
 termAnnotation = aggregateAnnotations $ \t -> case t of

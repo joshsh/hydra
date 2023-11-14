@@ -65,11 +65,12 @@ solve :: Subst -> [Constraint] -> Flow s Subst
 solve su cs = case cs of
   [] -> return su
   ((t1, t2):rest) -> do
-    su1  <- unify (normalizeForUnification t1) (normalizeForUnification t2)
+    su1 <- unify (normalizeForUnification t1) (normalizeForUnification t2)
     solve
       (composeSubst su1 su)
       ((\(t1, t2) -> (substituteTypeVariables su1 t1, substituteTypeVariables su1 t2)) <$> rest)
 
+-- Note: types must be normalized (removing annotations and universal types) prior to unification
 unify :: Type -> Type -> Flow s Subst
 unify ltyp rtyp = withTrace ("unify " ++ show ltyp ++ " with " ++ show rtyp) $ do
   case (ltyp, rtyp) of
