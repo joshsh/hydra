@@ -15,7 +15,6 @@ import Hydra.Graph
 import Hydra.Kv
 import Hydra.Lexical
 import Hydra.Mantle
---import Hydra.Reduction
 import Hydra.Rewriting
 import Hydra.Strip
 import Hydra.Substitution
@@ -25,6 +24,7 @@ import Hydra.Tier2
 import Hydra.Tools.Debug
 import Hydra.Tools.Sorting
 import Hydra.Unification
+import Hydra.Lib.Io -- For debugging
 
 import qualified Hydra.Dsl.Terms as Terms
 import qualified Hydra.Dsl.Types as Types
@@ -55,12 +55,6 @@ findMatchingField :: FieldName -> [FieldType] -> Flow Graph FieldType
 findMatchingField fname sfields = case L.filter (\f -> fieldTypeName f == fname) sfields of
   []    -> fail $ "no such field: " ++ unFieldName fname
   (h:_) -> return h
-
-freshName :: Flow Graph Name
-freshName = temporaryVariable <$> nextCount "hyInf"
-
-freshTypeVariable :: Flow Graph Type
-freshTypeVariable = TypeVariable <$> freshName
 
 -- Infer the type of a term, without also unifying or normalizing types; the latter is done separately
 infer :: Term -> Flow Graph Inferred
@@ -181,7 +175,7 @@ infer term = case term of
         return $ yieldTerm (TermUnion $ Injection n $ inferredToField rfield) (TypeUnion rt) constraints
 
     TermVariable v -> do
-      t <- requireName v
+      t <- requireTypeByName v
       return $ yieldTerm (TermVariable v) t []
 
     TermWrap (Nominal name term1) -> do
@@ -315,12 +309,12 @@ inferFunction f = case f of
   FunctionPrimitive name -> do
       -- Replacing variables prevents type variables from being reused across multiple instantiations of a primitive within a single element,
       -- which would lead to false unification.
-      t <- typeOfPrimitive name >>= replaceBoundTypeVariables
+      t <- (primitiveType <$> requirePrimitive name) >>= replaceBoundTypeVariables
 
       return $ yieldFunction (FunctionPrimitive name) (stripUniversalTypes t) []
     where
-      stripUniversalTypes typ = case stripType typ of
-        TypeLambda (LambdaType v body) -> stripUniversalTypes body
+      stripUniversalTypes = rewriteType $ \recurse typ -> case recurse typ of
+        TypeLambda (LambdaType v body) -> body
         t -> t
 
 inferGraphTypes :: Flow Graph Graph
@@ -396,10 +390,11 @@ normalFreeVariables = foldOverTermM TraversalOrderPre fld []
 normalizeInferredTypes :: Inferred -> Flow Graph Term
 normalizeInferredTypes inf = do
     subst <- solveConstraints $ inferredConstraints inf
+    boundVars <- (M.keys . graphTypes) <$> getState
     pure (inferredTerm inf)
       >>= replacePreunificationVariables subst
       >>= replaceTemporaryVariables
-      >>= rewriteTermAnnotationsM createUniversalTypes
+      >>= rewriteTermAnnotationsM (createUniversalTypes boundVars)
   where
     rewrite subst ann = do
       mtyp <- getType ann
@@ -409,40 +404,13 @@ normalizeInferredTypes inf = do
       tempVars <- (L.filter isTemporaryVariable) <$> normalFreeVariables term
       let subst = M.fromList $ L.zip tempVars (TypeVariable <$> normalVariables)
       rewriteTermAnnotationsM (rewrite subst) term
-    createUniversalTypes ann = do
+    createUniversalTypes boundVars ann = do
         mtyp <- getType ann
         return $ setType (helper <$> mtyp) ann
       where
-        helper typ = L.foldl (\t v -> TypeLambda $ LambdaType v t) typ $ L.reverse freeVars
+        helper typ = L.foldl (\t v -> TypeLambda $ LambdaType v t) typ $ L.reverse (freeVars L.\\ boundVars)
           where
             freeVars = freeVariablesInTypeOrdered typ
-
-replaceBoundTypeVariables :: Type -> Flow Graph Type
-replaceBoundTypeVariables t = do
-    pairs <- CM.mapM toPair $ boundTypeVariablesOf t
-    return $ replaceTypeVariables (M.fromList pairs) t
-  where
-    toPair v = do
-      v' <- freshName
-      return (v, v')
-
-replaceTypeVariables :: M.Map Name Name -> Type -> Type
-replaceTypeVariables subst = rewriteType $ \recurse t -> case recurse t of
-  TypeVariable v -> case M.lookup v subst of
-    Nothing -> t
-    Just v1 -> TypeVariable v1
-  TypeLambda (LambdaType v body) -> case M.lookup v subst of
-    Nothing -> t
-    Just v1 -> TypeLambda $ LambdaType v1 body
-  t1 -> t1
-
-requireName :: Name -> Flow Graph Type
-requireName v = do
-  env <- graphTypes <$> getState
-  case M.lookup v env of
-    Nothing -> fail $ "variable not bound in graph schema: " ++ unName v ++ ". Schema: "
-      ++ L.intercalate ", " (unName <$> M.keys env)
-    Just s -> pure s -- instantiate s
 
 requireAnnotatedType :: Term -> Flow Graph Type
 requireAnnotatedType term = do
@@ -461,6 +429,14 @@ rewriteTypeAnnotationsOnTerms f = rewriteTermM mapExpr
           Nothing -> TermAnnotated <$> (Annotated <$> recurse term1 <*> pure ann)
           Just typ -> TermAnnotated <$> (Annotated <$> recurse term1 <*> pure (setType (Just $ f typ) ann))
       _ -> recurse term
+
+requireTypeByName :: Name -> Flow Graph Type
+requireTypeByName v = do
+  env <- graphTypes <$> getState
+  case M.lookup v env of
+    Nothing -> fail $ "variable not bound in graph schema: " ++ unName v ++ ". Schema: "
+      ++ L.intercalate ", " (unName <$> M.keys env)
+    Just s -> pure s -- instantiate s
 
 sortGraphElements :: Graph -> Flow Graph [Element]
 sortGraphElements g = do
@@ -484,9 +460,6 @@ sortGraphElements g = do
         -- No need for an inference dependency on an element which is already annotated with a type
         isNotAnnotated name = not $ S.member name annotated
 
-typeOfPrimitive :: Name -> Flow Graph Type
-typeOfPrimitive name = primitiveType <$> requirePrimitive name
-
 withBinding :: Name -> Type -> Flow Graph a -> Flow Graph a
 withBinding n t = withEnvironment (M.insert n t)
 
@@ -499,13 +472,13 @@ withEnvironment m flow = do
   withState (g {graphTypes = m $ graphTypes g}) flow
 
 yieldFunction :: Function -> Type -> [Constraint] -> Inferred
-yieldFunction fun = yieldTerm (TermFunction fun)
+yieldFunction = yieldTerm . TermFunction
 
 yieldElimination :: Elimination -> Type -> [Constraint] -> Inferred
-yieldElimination e = yieldTerm (TermFunction $ FunctionElimination e)
+yieldElimination = yieldTerm . TermFunction . FunctionElimination
 
 yieldTerm :: Term -> Type -> [Constraint] -> Inferred
-yieldTerm term typ constraints = Inferred annTerm typ constraints
+yieldTerm term typ = Inferred annTerm typ
   where
     -- For now, we simply annotate each and every subterm, except annotation terms.
     -- In the future, we might choose only to annotate certain subterms as needed, e.g. function terms

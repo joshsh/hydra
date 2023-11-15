@@ -2,11 +2,15 @@
 module Hydra.Substitution where
 
 import Hydra.Core
+import Hydra.Compute
+import Hydra.Graph
+import Hydra.Kv
 import Hydra.Mantle
 import Hydra.Rewriting
 import Hydra.Tier1
 import Hydra.Dsl.Types as Types
 
+import qualified Control.Monad as CM
 import qualified Data.List as L
 import qualified Data.Map as M
 import qualified Data.Set as S
@@ -19,6 +23,12 @@ type Subst = M.Map Name Type
 composeSubst :: Subst -> Subst -> Subst
 composeSubst s1 s2 = M.union s1 $ M.map (substituteTypeVariables s1) s2
 
+freshName :: Flow Graph Name
+freshName = temporaryVariable <$> nextCount "hyInf"
+
+freshTypeVariable :: Flow Graph Type
+freshTypeVariable = TypeVariable <$> freshName
+
 isTemporaryVariable :: Name -> Bool
 isTemporaryVariable (Name s) = L.take 3 s == "tv_"
 
@@ -28,6 +38,25 @@ normalVariables = normalVariable <$> [0..]
 -- | Type variable naming convention follows Haskell: t0, t1, etc.
 normalVariable :: Int -> Name
 normalVariable i = Name $ "t" ++ show i
+
+replaceBoundTypeVariables :: Type -> Flow Graph Type
+replaceBoundTypeVariables t = do
+    subst <- M.fromList <$> (CM.mapM toPair $ boundTypeVariablesOf t)
+    return $ replaceTypeVariables subst t
+  where
+    toPair v = do
+      v' <- freshName
+      return (v, v')
+
+replaceTypeVariables :: M.Map Name Name -> Type -> Type
+replaceTypeVariables subst = rewriteType $ \recurse t -> case recurse t of
+  TypeVariable v -> case M.lookup v subst of
+    Nothing -> t
+    Just v1 -> TypeVariable v1
+  TypeLambda (LambdaType v body) -> case M.lookup v subst of
+    Nothing -> TypeLambda $ LambdaType v body
+    Just v1 -> TypeLambda $ LambdaType v1 body
+  t1 -> t1
 
 substituteTypeVariable :: Name -> Type -> Type -> Type
 substituteTypeVariable v subst = substituteTypeVariables (M.singleton v subst)
