@@ -35,7 +35,7 @@ coreEncodingModule = Module (Namespace "hydra/coreEncoding") elements [hydraCore
      Base.el coreEncodeIntegerValueDef,
      Base.el coreEncodeLambdaDef,
      Base.el coreEncodeLambdaTypeDef,
-     --Base.el coreEncodeLetDef,
+     Base.el coreEncodeLetDef,
      Base.el coreEncodeLiteralDef,
      Base.el coreEncodeLiteralTypeDef,
      Base.el coreEncodeMapTypeDef,
@@ -279,13 +279,16 @@ coreEncodeLambdaTypeDef = coreEncodingDefinition "LambdaType" lambdaTypeT $
     (_LambdaType_parameter, ref coreEncodeNameDef @@ (project _LambdaType _LambdaType_parameter @@ var "lt")),
     (_LambdaType_body, ref coreEncodeTypeDef @@ (project _LambdaType _LambdaType_body @@ var "lt"))]
 
--- coreEncodeLetDef :: Definition (Let -> Term)
--- coreEncodeLetDef = coreEncodingDefinition "Let" letT $
---   lambda "l" $ encodedRecord _Let [
---     (_Let_bindings, encodedMap
---       (primitive _maps_mapKeys @@ ref coreEncodeNameDef @@
---         (primitive _maps_map @@ ref coreEncodeTermDef @@ (project _Let _Let_bindings @@ var "l")))),
---     (_Let_environment, ref coreEncodeTermDef @@ (project _Let _Let_environment @@ var "l"))]
+coreEncodeLetDef :: Definition (Let -> Term)
+coreEncodeLetDef = coreEncodingDefinition "Let" letT $
+  lambda "l" $ ((encodedRecord _Let [
+      (_Let_bindings, encodedMap $ primitive _maps_fromList
+        @@ (primitive _lists_map @@ var "mapBinding" @@ (primitive _maps_toList @@ (project _Let _Let_bindings @@ var "l")))),
+      (_Let_environment, ref coreEncodeTermDef @@ (project _Let _Let_environment @@ var "l"))])
+    `with` [
+      Field (FieldName "mapBinding") $ lambda "pair" $ pair
+        (ref coreEncodeNameDef @@ (first @@ var "pair"))
+        (ref coreEncodeTermDef @@ (second @@ var "pair"))])
 
 coreEncodeLiteralDef :: Definition (Literal -> Term)
 coreEncodeLiteralDef = coreEncodingDefinition "Literal" (TypeVariable _Literal) $
@@ -370,17 +373,16 @@ coreEncodeTermDef = coreEncodingDefinition "Term" termT $
     ecase _Term_annotated (ref coreEncodeAnnotatedTermDef),
     ecase _Term_application (ref coreEncodeApplicationDef),
     ecase _Term_function (ref coreEncodeFunctionDef),
-    -- TODO: restore let constructor after finding a way to infer "Ord a =>" for Haskell
-    -- ecase _Term_let (ref coreEncodeLetDef),
+    ecase _Term_let (ref coreEncodeLetDef),
     ecase _Term_literal (ref coreEncodeLiteralDef),
-    ecase' _Term_list $ encodedList (primitive _lists_map @@ (ref coreEncodeTermDef) @@ var "v"),
+    evar _Term_list $ encodedList (primitive _lists_map @@ (ref coreEncodeTermDef) @@ var "v"),
     -- TODO: restore map and set constructors after finding a way to infer "Ord a =>" for Haskell
     -- _Term_map,
-    ecase' _Term_optional $ encodedOptional (primitive _optionals_map @@ ref coreEncodeTermDef @@ var "v"),
-    ecase' _Term_product $ encodedList (primitive _lists_map @@ ref coreEncodeTermDef @@ var "v"),
+    evar _Term_optional $ encodedOptional (primitive _optionals_map @@ ref coreEncodeTermDef @@ var "v"),
+    evar _Term_product $ encodedList (primitive _lists_map @@ ref coreEncodeTermDef @@ var "v"),
     ecase _Term_record (ref coreEncodeRecordDef),
     -- TODO: restore map and set constructors after finding a way to infer "Ord a =>" for Haskell
-    -- ecase' _Term_set $ encodedSet (primitive _sets_map @@ (ref coreEncodeTermDef) @@ var "v")
+    -- evar _Term_set $ encodedSet (primitive _sets_map @@ (ref coreEncodeTermDef) @@ var "v")
     ecase _Term_sum (ref coreEncodeSumDef),
     -- TODO: determine whether streams have a sigma encoding
     -- _ Term_stream
@@ -389,7 +391,7 @@ coreEncodeTermDef = coreEncodingDefinition "Term" termT $
     ecase _Term_wrap (ref coreEncodeNominalTermDef)]
   where
     ecase = encodedCase _Term
-    ecase' fname = Field fname . lambda "v" . encodedVariant _Term fname
+    evar fname = Field fname . lambda "v" . encodedVariant _Term fname
 
 coreEncodeTupleProjectionDef :: Definition (TupleProjection -> Term)
 coreEncodeTupleProjectionDef = coreEncodingDefinition "TupleProjection" (TypeVariable _TupleProjection) $

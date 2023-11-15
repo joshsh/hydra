@@ -4,6 +4,7 @@ module Hydra.CoreEncoding where
 
 import qualified Hydra.Core as Core
 import qualified Hydra.Lib.Lists as Lists
+import qualified Hydra.Lib.Maps as Maps
 import qualified Hydra.Lib.Optionals as Optionals
 import Data.Int
 import Data.List as L
@@ -336,6 +337,19 @@ coreEncodeLambdaType lt = (Core.TermRecord (Core.Record {
       Core.fieldName = (Core.FieldName "body"),
       Core.fieldTerm = (coreEncodeType (Core.lambdaTypeBody lt))}]}))
 
+coreEncodeLet :: (Core.Let -> Core.Term)
+coreEncodeLet l =  
+  let mapBinding = (\pair -> (coreEncodeName (fst pair), (coreEncodeTerm (snd pair))))
+  in (Core.TermRecord (Core.Record {
+    Core.recordTypeName = (Core.Name "hydra/core.Let"),
+    Core.recordFields = [
+      Core.Field {
+        Core.fieldName = (Core.FieldName "bindings"),
+        Core.fieldTerm = (Core.TermMap (Maps.fromList (Lists.map mapBinding (Maps.toList (Core.letBindings l)))))},
+      Core.Field {
+        Core.fieldName = (Core.FieldName "environment"),
+        Core.fieldTerm = (coreEncodeTerm (Core.letEnvironment l))}]}))
+
 coreEncodeLiteral :: (Core.Literal -> Core.Term)
 coreEncodeLiteral x = case x of
   Core.LiteralBinary v -> (Core.TermUnion (Core.Injection {
@@ -514,6 +528,11 @@ coreEncodeTerm x = case x of
     Core.injectionField = Core.Field {
       Core.fieldName = (Core.FieldName "function"),
       Core.fieldTerm = (coreEncodeFunction v)}}))
+  Core.TermLet v -> (Core.TermUnion (Core.Injection {
+    Core.injectionTypeName = (Core.Name "hydra/core.Term"),
+    Core.injectionField = Core.Field {
+      Core.fieldName = (Core.FieldName "let"),
+      Core.fieldTerm = (coreEncodeLet v)}}))
   Core.TermLiteral v -> (Core.TermUnion (Core.Injection {
     Core.injectionTypeName = (Core.Name "hydra/core.Term"),
     Core.injectionField = Core.Field {
