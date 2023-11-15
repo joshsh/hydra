@@ -34,12 +34,24 @@ noGraph = Graph {
   graphSchema = Nothing}
 
 
+-- | Use the "debugging" JSON encoding for now
 showTerm :: Term -> String
-showTerm term = fromFlow "fail" noGraph $ do
-    coder <- termStringCoder
-    coderEncode coder encoded
+showTerm term = tryFlow $ do
+    json <- jsonEncodeTerm $ coreEncodeTerm term
+    return $ jsonValueToString json
   where
-    encoded = coreEncodeTerm $ rewriteTermAnnotations (const $ Kv M.empty) term
+    tryFlow f = case flowStateValue result of
+        Nothing -> "JSON write error: " ++ show (traceMessages $ flowStateTrace result)
+        Just s -> s
+      where
+        result = unFlow f () emptyTrace
+
+--showTerm :: Term -> String
+--showTerm term = fromFlow "fail" noGraph $ do
+--    coder <- termStringCoder
+--    coderEncode coder encoded
+--  where
+--    encoded = coreEncodeTerm $ rewriteTermAnnotations (const $ Kv M.empty) term
 
 termStringCoder :: Flow Graph (Coder Graph Graph Term String)
 termStringCoder = do
