@@ -1,9 +1,9 @@
 -- | Entry point for Hydra type inference, which is a variation on on Hindley-Milner
 
 module Hydra.Inference (
-  annotateTermWithTypes,
   inferGraphTypes,
-  inferType
+  inferTermType,
+  inferredTypeOf
 ) where
 
 import Hydra.Basics
@@ -45,12 +45,6 @@ data Inferred = Inferred {
   inferredConstraints :: [Constraint]
 } deriving Show
 
--- TODO: deprecated; inference is performed on graphs, not individual terms. Update tests to use inferElementType
--- | Solve for the top-level type of an expression in a given environment
-annotateTermWithTypes :: Term -> Flow Graph Term
-annotateTermWithTypes term = withTrace ("infer type") $ initializeGraph $
-  infer term >>= normalizeInferredTypes
-
 findMatchingField :: FieldName -> [FieldType] -> Flow Graph FieldType
 findMatchingField fname sfields = case L.filter (\f -> fieldTypeName f == fname) sfields of
   []    -> fail $ "no such field: " ++ unFieldName fname
@@ -78,9 +72,9 @@ infer term = case term of
             ++ [(inferredType rfun, Types.function (inferredType rarg) cod)]
       return $ yieldTerm (TermApplication $ Application (inferredTerm rfun) (inferredTerm rarg)) cod constraints
 
-    TermFunction f -> inferFunction f
+    TermFunction f -> inferFunctionType f
 
-    TermLet lt -> inferLet lt
+    TermLet lt -> inferLetType lt
 
     TermList els -> do
         v <- freshName
@@ -198,6 +192,7 @@ inferElementTypes g sortedEls = initializeGraph $ inferAll sortedEls [] >>= CM.m
     --       but unification and substitution occur within elements in isolation
     rewriteElement (name, rel) = withTrace ("rewrite " ++ unName name) $ do
       term <- normalizeInferredTypes rel
+--      fail $ "rewritten term: " ++ showTerm term
       return $ Element name term
 
     -- Perform inference on elements in the given order, respecting dependencies among elements
@@ -207,8 +202,8 @@ inferElementTypes g sortedEls = initializeGraph $ inferAll sortedEls [] >>= CM.m
         rel <- inferElementType el
         withBinding (fst rel) (inferredType $ snd rel) $ inferAll rest (rel:after)
 
-inferElimination :: Elimination -> Flow Graph Inferred
-inferElimination e = case e of
+inferEliminationType :: Elimination -> Flow Graph Inferred
+inferEliminationType e = case e of
     EliminationList fun -> do
       a <- freshTypeVariable
       b <- freshTypeVariable
@@ -296,9 +291,9 @@ inferFieldType (Field fname term) = do
   rterm <- infer term
   return (fname, rterm)
 
-inferFunction :: Function -> Flow Graph Inferred
-inferFunction f = case f of
-  FunctionElimination e -> inferElimination e
+inferFunctionType :: Function -> Flow Graph Inferred
+inferFunctionType f = case f of
+  FunctionElimination e -> inferEliminationType e
 
   FunctionLambda (Lambda v body) -> do
     vdom <- freshName
@@ -327,8 +322,8 @@ inferGraphTypes = getState >>= annotateGraph
       where
         toPair el = (elementName el, el)
 
-inferLet :: Let -> Flow Graph Inferred
-inferLet (Let bindings env) = do
+inferLetType :: Let -> Flow Graph Inferred
+inferLetType (Let bindings env) = do
     state0 <- getState
     e <- preExtendEnv bindings $ graphTypes state0
     let state1 = state0 {graphTypes = e}
@@ -358,12 +353,17 @@ inferLet (Let bindings env) = do
             Nothing -> e
             Just typ -> M.insert name typ e
 
--- TODO: deprecated; inference is performed on graphs, not individual terms. Update the Haskell coder to use inferElementType
-inferType :: Term -> Flow Graph Type
-inferType term = annotateTermWithTypes term >>= requireAnnotatedType
+-- | Add inferred type annotations to a single term, considered as a standalone graph
+inferTermType :: Term -> Flow Graph Term
+inferTermType term = withTrace ("infer type") $ initializeGraph $
+  infer term >>= normalizeInferredTypes
 
 inferredToField (fname, inferred) = Field fname $ inferredTerm inferred
 inferredToFieldType (fname, inferred) = FieldType fname $ inferredType inferred
+
+-- | Find the inferred type of a single term, considered as a standalone graph. Mainly useful in tests.
+inferredTypeOf :: Term -> Flow Graph Type
+inferredTypeOf term = inferTermType term >>= requireAnnotatedType
 
 initializeGraph flow = do
     g <- getState
@@ -419,6 +419,14 @@ requireAnnotatedType term = do
     Nothing -> fail $ "expected an inferred type annotation"
     Just typ -> return typ
 
+requireTypeByName :: Name -> Flow Graph Type
+requireTypeByName v = do
+  env <- graphTypes <$> getState
+  case M.lookup v env of
+    Nothing -> fail $ "variable not bound in graph schema: " ++ unName v ++ ". Schema: "
+      ++ L.intercalate ", " (unName <$> M.keys env)
+    Just s -> pure s -- instantiate s
+
 rewriteTypeAnnotationsOnTerms :: (Type -> Type) -> Term -> Flow Graph Term
 rewriteTypeAnnotationsOnTerms f = rewriteTermM mapExpr
   where
@@ -429,14 +437,6 @@ rewriteTypeAnnotationsOnTerms f = rewriteTermM mapExpr
           Nothing -> TermAnnotated <$> (Annotated <$> recurse term1 <*> pure ann)
           Just typ -> TermAnnotated <$> (Annotated <$> recurse term1 <*> pure (setType (Just $ f typ) ann))
       _ -> recurse term
-
-requireTypeByName :: Name -> Flow Graph Type
-requireTypeByName v = do
-  env <- graphTypes <$> getState
-  case M.lookup v env of
-    Nothing -> fail $ "variable not bound in graph schema: " ++ unName v ++ ". Schema: "
-      ++ L.intercalate ", " (unName <$> M.keys env)
-    Just s -> pure s -- instantiate s
 
 sortGraphElements :: Graph -> Flow Graph [Element]
 sortGraphElements g = do
@@ -471,11 +471,11 @@ withEnvironment m flow = do
   g <- getState
   withState (g {graphTypes = m $ graphTypes g}) flow
 
-yieldFunction :: Function -> Type -> [Constraint] -> Inferred
-yieldFunction = yieldTerm . TermFunction
-
 yieldElimination :: Elimination -> Type -> [Constraint] -> Inferred
 yieldElimination = yieldTerm . TermFunction . FunctionElimination
+
+yieldFunction :: Function -> Type -> [Constraint] -> Inferred
+yieldFunction = yieldTerm . TermFunction
 
 yieldTerm :: Term -> Type -> [Constraint] -> Inferred
 yieldTerm term typ = Inferred annTerm typ

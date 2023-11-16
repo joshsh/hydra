@@ -34,14 +34,14 @@ expectMonotype term = expectPolytype term []
 expectPolytype :: Term -> [String] -> Type -> H.Expectation
 expectPolytype term vars typ = do
     shouldSucceedWith
-      (inferType term)
+      (inferredTypeOf term)
       (Types.lambdas vars typ)
 
 expectTypeAnnotation :: (Term -> Flow Graph Term) -> Term -> Type -> H.Expectation
 expectTypeAnnotation path term etyp = shouldSucceedWith atyp etyp
   where
    atyp = do
-     iterm <- annotateTermWithTypes term
+     iterm <- inferTermType term
      selected <- path iterm
      mtyp <- getType (termAnnotation selected)
      case mtyp of
@@ -451,13 +451,13 @@ checkTypeAnnotations = H.describe "Check that type annotations are added to term
     H.it "Check literals" $
       QC.property $ \l -> do
         let term = TermLiteral l
-        let term1 = executeFlow (annotateTermWithTypes term)
+        let term1 = executeFlow (inferTermType term)
         checkType term1 (Types.literal $ literalType l)
 
     H.it "Check lists of literals" $
       QC.property $ \l -> do
         let term = TermList [TermLiteral l]
-        let term1 = executeFlow (annotateTermWithTypes term)
+        let term1 = executeFlow (inferTermType term)
         checkType term1 (Types.list $ Types.literal $ literalType l)
         let (TermAnnotated (Annotated (TermList [term2]) _)) = term1
         checkType term2 (Types.literal $ literalType l)
@@ -588,7 +588,7 @@ checkSubtermAnnotations = H.describe "Check additional subterm annotations" $ do
     tmp term = shouldSucceedWith flow ()
       where
         flow = do
-          iterm <- annotateTermWithTypes term
+          iterm <- inferTermType term
           fail $ "iterm: " ++ show iterm
 
 --checkTypedTerms :: H.SpecWith ()
