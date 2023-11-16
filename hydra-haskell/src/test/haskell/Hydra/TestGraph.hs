@@ -5,10 +5,10 @@ module Hydra.TestGraph (
 
 import Hydra.Kernel
 import Hydra.Sources.Libraries
-import Hydra.Dsl.Terms
 import Hydra.Sources.Core
 import Hydra.Dsl.Annotations as Ann
 import Hydra.Dsl.Bootstrap
+import Hydra.Dsl.Terms
 import qualified Hydra.Dsl.Types as Types
 
 import qualified Data.Map  as M
@@ -81,7 +81,7 @@ testSchemaGraph = elementsToGraph hydraCore (Just hydraCore) [
     def testTypePersonOrSomethingName testTypePersonOrSomething,
     def testTypeTimestampName testTypeTimestamp]
   where
-    def = typeElement
+    def = typeDefinitionElement
 
 testSchemaNamespace :: Namespace
 testSchemaNamespace = Namespace "testSchemaGraph"

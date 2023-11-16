@@ -56,7 +56,7 @@ checkEliminations = H.describe "Check a few hand-picked elimination terms" $ do
       (match simpleNumberName Nothing [
         Field (FieldName "int") $ lambda "x" $ var "x",
         Field (FieldName "float") $ lambda "x" $ int32 42])
-      (funT simpleNumberType Types.int32)
+      (funT (TypeVariable simpleNumberName) Types.int32)
 
 checkFunctionTerms :: H.SpecWith ()
 checkFunctionTerms = H.describe "Check a few hand-picked function terms" $ do
@@ -86,7 +86,7 @@ checkFunctionTerms = H.describe "Check a few hand-picked function terms" $ do
     H.it "Check projections" $ do
       expectMonotype
         (project testTypePersonName (FieldName "firstName"))
-        (Types.function testTypePerson Types.string)
+        (Types.function (TypeVariable testTypePersonName) Types.string)
 
     H.it "Check case statements" $ do
       expectMonotype
@@ -94,7 +94,7 @@ checkFunctionTerms = H.describe "Check a few hand-picked function terms" $ do
           Field (FieldName "bool") (lambda "x" (boolean True)),
           Field (FieldName "string") (lambda "x" (boolean False)),
           Field (FieldName "unit") (lambda "x" (boolean False))])
-        (Types.function testTypeFoobarValue Types.boolean)
+        (Types.function (TypeVariable testTypeFoobarValueName) Types.boolean)
 
 checkIndividualTerms :: H.SpecWith ()
 checkIndividualTerms = H.describe "Check a few hand-picked terms" $ do
@@ -152,17 +152,15 @@ checkIndividualTerms = H.describe "Check a few hand-picked terms" $ do
             (TypeRecord $ RowType latLonPolyName Nothing [
               FieldType (FieldName "lat") $ Types.float32,
               FieldType (FieldName "lon") $ Types.float32]))
-
-      -- Note: this test also checks that user-provided type variables are used preferentially to generated ones
       H.it "test #4" $ do
         expectPolytype
           (lambda "latlon" (record latLonPolyName [
             Field (FieldName "lat") $ var "latlon",
             Field (FieldName "lon") $ var "latlon"]))
-          ["a"] (Types.function (Types.var "a")
+          ["t0"] (Types.function (Types.var "t0")
             (TypeRecord $ RowType latLonPolyName Nothing [
-              FieldType (FieldName "lat") $ Types.var "a",
-              FieldType (FieldName "lon") $ Types.var "a"]))
+              FieldType (FieldName "lat") $ Types.var "t0",
+              FieldType (FieldName "lon") $ Types.var "t0"]))
 
     H.it "Check unions" $ do
       expectMonotype
@@ -499,20 +497,20 @@ checkSubtermAnnotations = H.describe "Check additional subterm annotations" $ do
     H.it "Check projections" $ do
       expectTypeAnnotation pure
         (project testTypePersonName $ FieldName "firstName")
-        (Types.function testTypePerson Types.string)
+        (Types.function (TypeVariable testTypePersonName) Types.string)
 
     H.describe "Check case statements" $ do
       H.it "test #1" $ do
         expectTypeAnnotation pure
           (match testTypeNumberName (Just $ string "it's something else") [
             Field (FieldName "int") $ constant $ string "it's an integer"])
-          (Types.function testTypeNumber Types.string)
+          (Types.function (TypeVariable testTypeNumberName) Types.string)
       H.it "test #2" $ do
         let  testCase = match testTypeNumberName Nothing [
                           Field (FieldName "int") $ constant $ string "it's an integer",
                           Field (FieldName "float") $ constant $ string "it's a float"]
         expectTypeAnnotation pure testCase
-          (Types.function testTypeNumber Types.string)
+          (Types.function (TypeVariable testTypeNumberName) Types.string)
         expectTypeAnnotation (Expect.casesCase testTypeNumberName "int" >=> (pure . fieldTerm)) testCase
           (Types.function Types.int32 Types.string)
 

@@ -126,7 +126,7 @@ infer term = case term of
         (L.concat (inferredConstraints <$> rtuple))
 
     TermRecord (Record n fields) -> do
-        rt <- requireRecordType True n
+        rt <- requireRecordType True n -- >>= replaceBoundTypeVariables
 
         rfields <- CM.mapM inferFieldType fields
         let ci = L.concat (inferredConstraints . snd <$> rfields)
@@ -193,7 +193,6 @@ inferElementTypes g sortedEls = initializeGraph $ inferAll sortedEls [] >>= CM.m
     --       but unification and substitution occur within elements in isolation
     rewriteElement (name, rel) = withTrace ("rewrite " ++ unName name) $ do
       term <- normalizeInferredTypes rel
---      fail $ "rewritten term: " ++ showTerm term
       return $ Element name term
 
     -- Perform inference on elements in the given order, respecting dependencies among elements
@@ -230,17 +229,20 @@ inferEliminationType e = case e of
       let t = Types.function (Types.product types) cod
       return $ yieldElimination (EliminationProduct $ TupleProjection arity idx) t []
 
-    EliminationRecord (Projection name fname) -> do
-      rt <- requireRecordType True name
+    EliminationRecord (Projection tname fname) -> do
+      rt <- requireRecordType True tname
       sfield <- findMatchingField fname (rowTypeFields rt)
-      return $ yieldElimination (EliminationRecord $ Projection name fname)
-        (Types.function (TypeRecord rt) $ fieldTypeType sfield) []
+      let elim = EliminationRecord $ Projection tname fname
+--      let typ = Types.function (TypeRecord rt) $ fieldTypeType sfield
+      let typ = Types.function (TypeVariable tname) $ fieldTypeType sfield
+      return $ yieldElimination elim typ []
 
     EliminationUnion (CaseStatement tname def cases) -> do
         cod <- freshTypeVariable
 
         -- Union type
         rt <- requireUnionType True tname
+--        fail $ "rt: " ++ show rt
         checkCaseNames tname def cases $ rowTypeFields rt
 
         -- Default value
@@ -256,10 +258,10 @@ inferEliminationType e = case e of
         let codConstraints = (\(d, s) -> (inferredType d, Types.function s cod)) <$> M.elems pairMap
         let subtermConstraints = L.concat (inferredConstraints . snd <$> rcases)
         let constraints = defConstraints ++ codConstraints ++ subtermConstraints
-        return $ yieldElimination (EliminationUnion (CaseStatement tname (inferredTerm <$> rdef) (inferredToField <$> rcases)))
-          (Types.function (TypeUnion rt) cod)
-          --(Types.function (TypeVariable tname) cod)
-          constraints
+        let elim = EliminationUnion (CaseStatement tname (inferredTerm <$> rdef) (inferredToField <$> rcases))
+--        let typ = Types.function (TypeUnion rt) cod
+        let typ = Types.function (TypeVariable tname) cod
+        return $ yieldElimination elim typ constraints
       where
         productOfMaps ml mr = M.fromList $ Y.catMaybes (toPair <$> M.toList mr)
           where
@@ -283,9 +285,12 @@ inferEliminationType e = case e of
               where
                 diff = S.difference caseNames fieldNames
 
-    EliminationWrap name -> do
-      typ <- requireWrappedType name
-      return $ yieldElimination (EliminationWrap name) (Types.function (TypeWrap $ Nominal name typ) typ) []
+    EliminationWrap tname -> do
+      wt <- requireWrappedType tname
+      let elim = EliminationWrap tname
+--      let typ = Types.function (TypeWrap $ Nominal tname wt) wt
+      let typ = Types.function (TypeVariable tname) wt
+      return $ yieldElimination elim typ []
 
 inferFieldType :: Field -> Flow Graph (FieldName, Inferred)
 inferFieldType (Field fname term) = do
@@ -316,6 +321,7 @@ inferGraphTypes = getState >>= annotateGraph
   where
     annotateGraph g = withTrace ("infer graph types") $ do
         sorted <- sortGraphElements g
+--        fail $ "head: " ++ showTerm (elementData $ L.head sorted)
         els <- sortGraphElements g >>= inferElementTypes g
         return g {graphElements = M.fromList (toPair <$> els)}
       where
@@ -390,11 +396,13 @@ normalizeInferredTypes :: Inferred -> Flow Graph Term
 normalizeInferredTypes inf = do
     subst <- solveConstraints $ inferredConstraints inf
 --    fail $ "subst: " ++ show subst
-    boundVars <- (M.keys . graphTypes) <$> getState
-    pure (inferredTerm inf)
+    g <- getState
+    term1 <- pure (inferredTerm inf)
       >>= replacePreunificationVariables subst
       >>= replaceTemporaryVariables
-      >>= rewriteTermAnnotationsM (createUniversalTypes boundVars)
+      >>= rewriteTermAnnotationsM (createUniversalTypes g)
+--    fail $ "normalized term: " ++ showTerm term1
+    return term1
   where
     rewrite subst ann = do
       mtyp <- getType ann
@@ -407,13 +415,16 @@ normalizeInferredTypes inf = do
       tempVars <- (L.filter isTemporaryVariable) <$> normalFreeVariables term
       let subst = M.fromList $ L.zip tempVars (TypeVariable <$> normalVariables)
       rewriteTermAnnotationsM (rewrite subst) term
-    createUniversalTypes boundVars ann = do
+    createUniversalTypes g ann = do
         mtyp <- getType ann
         return $ setType (helper <$> mtyp) ann
       where
-        helper typ = L.foldl (\t v -> TypeLambda $ LambdaType v t) typ $ L.reverse (freeVars L.\\ boundVars)
+        helper typ = L.foldl (\t v -> TypeLambda $ LambdaType v t) typ $ L.reverse (freeVars L.\\ typeNames)
           where
             freeVars = freeVariablesInTypeOrdered typ
+        typeNames = case graphSchema g of
+          Nothing -> []
+          Just s -> M.keys $ graphElements s
 
 requireAnnotatedType :: Term -> Flow Graph Type
 requireAnnotatedType term = do
