@@ -23,6 +23,7 @@ import Hydra.Rewriting
 import Hydra.LiteralAdapters
 import Hydra.Dsl.Terms
 import Hydra.Reduction
+import Hydra.Schemas
 import Hydra.Tier1
 import Hydra.Tier2
 import qualified Hydra.Dsl.Expect as Expect

@@ -19,6 +19,7 @@ import Hydra.Rewriting
 import Hydra.Strip
 import Hydra.Substitution
 import Hydra.Coders
+import Hydra.Schemas
 import Hydra.Tier1
 import Hydra.Tier2
 import Hydra.Tools.Debug

@@ -18,6 +18,7 @@ import Hydra.Module
 import Hydra.TermAdapters
 import Hydra.AdapterUtils
 import Hydra.Reduction
+import Hydra.Schemas
 import Hydra.Tier1
 import Hydra.Tier2
 
