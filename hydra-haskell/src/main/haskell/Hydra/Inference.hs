@@ -303,9 +303,7 @@ inferFunctionType f = case f of
     return $ yieldFunction (FunctionLambda $ Lambda v $ inferredTerm rbody) typ (inferredConstraints rbody)
 
   FunctionPrimitive name -> do
-      -- Replacing variables prevents type variables from being reused across multiple instantiations of a primitive within a single element,
-      -- which would lead to false unification.
-      t <- (primitiveType <$> requirePrimitive name) >>= replaceBoundTypeVariables
+      t <- requirePrimitiveType name
 
       return $ yieldFunction (FunctionPrimitive name) (stripUniversalTypes t) []
     where

@@ -5,6 +5,7 @@ module Hydra.Schemas (
   fieldTypes,
   isSerializable,
   moduleDependencyNamespaces,
+  requirePrimitiveType,
   requireRecordType,
   requireType,
   requireUnionType,
@@ -25,6 +26,7 @@ import Hydra.Mantle
 import Hydra.Module
 import Hydra.Lexical
 import Hydra.Rewriting
+import Hydra.Substitution
 import Hydra.Tier1
 import Hydra.Tier2
 import qualified Hydra.Dsl.Expect as Expect
@@ -90,6 +92,10 @@ moduleDependencyNamespaces withVars withPrims withNoms withSchema mod = do
         else pure S.empty
       return $ S.unions [dataNames, schemaNames, typeNames]
 
+-- | Resolve a name to the type of the corresponding primitive, replacing any bound type variables with temporary variables
+requirePrimitiveType :: Name -> Flow Graph Type
+requirePrimitiveType name = (primitiveType <$> requirePrimitive name) >>= replaceBoundTypeVariables
+
 requireRecordType :: Bool -> Name -> Flow Graph RowType
 requireRecordType infer = requireRowType "record" infer $ \t -> case t of
   TypeRecord rt -> Just rt
@@ -114,7 +120,8 @@ requireRowType label infer getter name = do
       _ -> t
 
 requireType :: Name -> Flow Graph Type
-requireType name = withTrace ("require type " ++ unName name) $ requireElement name >>= (coreDecodeType . elementData)
+requireType name = withTrace ("require type " ++ unName name) $
+  requireElement name >>= (coreDecodeType . elementData) >>= replaceBoundTypeVariables
 
 requireUnionType :: Bool -> Name -> Flow Graph RowType
 requireUnionType infer = requireRowType "union" infer $ \t -> case t of
@@ -129,6 +136,7 @@ requireWrappedType name = do
     _ -> return typ -- TODO: stop allowing this "slop" once typedefs are clearly separated from newtypes
 --     _ -> fail $ "expected wrapped type for " ++ unName name ++ " but got " ++ show typ
 
+-- TODO: remove this function once TermAdapters no longer needs it
 resolveType :: Type -> Flow Graph (Maybe Type)
 resolveType typ = case stripType typ of
     TypeVariable name -> withSchemaContext $ do

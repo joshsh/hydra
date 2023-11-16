@@ -67,6 +67,7 @@ forTypeReference name = withTrace ("adapt named type " ++ unName name) $ do
       putState (cx {adapterContextAdapters = M.insert name placeholder adapters})
       mt <- withGraphContext $ resolveType $ TypeVariable name
       case mt of
+        -- TODO: identify scenarios in which an undefined type is acceptable, or require the type instead of resolving it
         Nothing -> pure $ Adapter lossy (TypeVariable name) (TypeVariable name) $ bidirectional $ const pure
         Just t -> do
           actual <- termAdapter t

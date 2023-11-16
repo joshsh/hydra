@@ -39,6 +39,9 @@ normalVariables = normalVariable <$> [0..]
 normalVariable :: Int -> Name
 normalVariable i = Name $ "t" ++ show i
 
+-- | Replacing variables prevents type variables from being reused across multiple instantiations of a primitive
+--   or occurrences of a named type, or from conflation of type variables across primitives or elements,
+--   either of which could lead to false unification.
 replaceBoundTypeVariables :: Type -> Flow Graph Type
 replaceBoundTypeVariables t = do
     subst <- M.fromList <$> (CM.mapM toPair $ boundTypeVariablesOf t)

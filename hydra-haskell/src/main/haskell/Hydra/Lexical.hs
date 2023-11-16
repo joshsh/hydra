@@ -22,7 +22,7 @@ dereferenceElement name = do
   g <- getState
   return $ M.lookup name (graphElements g)
 
-requireElement :: Name -> Flow Graph (Element)
+requireElement :: Name -> Flow Graph Element
 requireElement name = do
     mel <- dereferenceElement name
     case mel of
@@ -37,7 +37,7 @@ requireElement name = do
           then L.take 3 strings ++ ["..."]
           else strings
 
-requirePrimitive :: Name -> Flow Graph (Primitive)
+requirePrimitive :: Name -> Flow Graph Primitive
 requirePrimitive fn = do
     cx <- getState
     Y.maybe err pure $ lookupPrimitive cx fn
