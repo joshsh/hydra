@@ -379,17 +379,18 @@ initializeGraph flow = do
 -- | Get the free type variables of a term in order of occurrence in the annotations of the term and its subterms
 --   (following a pre-order traversal in subterms, and in each type expression)
 normalFreeVariables :: Term -> Flow Graph [Name]
-normalFreeVariables = foldOverTermM TraversalOrderPre fld []
+normalFreeVariables term = L.nub <$> foldOverTermM TraversalOrderPre fld [] term
   where
     fld freeVars term = do
       mtyp <- getAnnotatedType term
       return $ case mtyp of
         Nothing -> freeVars
-        Just typ -> L.nub $ freeVars ++ freeVariablesInTypeOrdered typ
+        Just typ -> freeVars ++ freeVariablesInTypeOrdered typ
 
 normalizeInferredTypes :: Inferred -> Flow Graph Term
 normalizeInferredTypes inf = do
     subst <- solveConstraints $ inferredConstraints inf
+--    fail $ "subst: " ++ show subst
     boundVars <- (M.keys . graphTypes) <$> getState
     pure (inferredTerm inf)
       >>= replacePreunificationVariables subst
@@ -399,7 +400,10 @@ normalizeInferredTypes inf = do
     rewrite subst ann = do
       mtyp <- getType ann
       return $ setType (substituteTypeVariables subst <$> mtyp) ann
-    replacePreunificationVariables subst term = rewriteTermAnnotationsM (rewrite subst) term
+    replacePreunificationVariables subst term = do
+      term1 <- rewriteTermAnnotationsM (rewrite subst) term
+--      fail $ "term: " ++ showTerm term1
+      return term1
     replaceTemporaryVariables term = do
       tempVars <- (L.filter isTemporaryVariable) <$> normalFreeVariables term
       let subst = M.fromList $ L.zip tempVars (TypeVariable <$> normalVariables)

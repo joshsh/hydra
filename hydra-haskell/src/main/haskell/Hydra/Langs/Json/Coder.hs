@@ -202,7 +202,6 @@ jsonEncodeTerm term = case term of
           Just keyval -> [keyval]
       TermVariable name -> pure $ Json.ValueString $ "?" ++ unName name -- TODO
       TermWrap (Nominal _ body) -> jsonEncodeTerm body
-      t -> fail $ "unexpected value: " ++ show t
   where
     fieldToKeyval f = do
         mjson <- forTerm $ fieldTerm f

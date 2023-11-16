@@ -234,9 +234,11 @@ rewriteTermAnnotations f = rewriteTerm mapExpr
 rewriteTermAnnotationsM :: (Kv -> Flow s Kv) -> Term -> Flow s Term
 rewriteTermAnnotationsM f = rewriteTermM mapExpr
   where
-    mapExpr recurse term = case term of
-      TermAnnotated (Annotated term1 ann) -> TermAnnotated <$> (Annotated <$> recurse term1 <*> f ann)
-      _ -> pure term
+    mapExpr recurse term = do
+      rec <- recurse term
+      case rec of
+        TermAnnotated (Annotated subj ann) -> TermAnnotated <$> (Annotated <$> pure subj <*> f ann)
+        _ -> pure rec
 
 rewriteType :: ((Type -> Type) -> Type -> Type) -> Type -> Type
 rewriteType = rewrite $ \recurse typ -> case typ of
