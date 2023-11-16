@@ -12,7 +12,7 @@ import Hydra.Models.Osv
 import Hydra.Models.StacItems
 
 
-hydraExtensionsModules :: [Module Kv]
+hydraExtensionsModules :: [Module]
 hydraExtensionsModules = [
   atlasModelModule,
   coqSyntaxModule,

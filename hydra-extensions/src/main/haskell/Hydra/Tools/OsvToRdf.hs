@@ -12,7 +12,7 @@ import Hydra.Langs.Json.Coder
 import Hydra.CoreDecoding
 import Hydra.Codegen
 import Hydra.Tools.Formatting
-import qualified Hydra.Langs.Json.Model as Json
+import qualified Hydra.Json as Json
 import qualified Hydra.Langs.Shacl.Coder as Shacl
 import Hydra.Langs.Rdf.Serde
 import Hydra.Workflow
@@ -31,7 +31,7 @@ import System.FilePath.Posix
 import System.Directory
 
 
-emptyInstanceContext :: Graph Kv -> Graph Kv
+emptyInstanceContext :: Graph -> Graph
 emptyInstanceContext scx = elementsToGraph scx (Just scx) []
 
 -- | A convenience for osvJsonDirectoryToNtriples, bundling all of the input parameters together as a workflow
@@ -46,8 +46,8 @@ executeOsvToRdfWorkflow (TransformWorkflow name schemaSpec srcDir destDir) = do
 -- Replace all lists with sets, for better query performance.
 -- This is a last-mile step which breaks type/term conformance
 -- (a more robust solution would modify the target language in the SHACL coder, so that list types are also transformed to set types).
-listsToSets :: Term Kv -> Term Kv
-listsToSets = rewriteTerm mapExpr id
+listsToSets :: Term -> Term
+listsToSets = rewriteTerm mapExpr
   where
     mapExpr recurse = recurse . replaceLists
     replaceLists term = case term of
@@ -77,7 +77,7 @@ osvContext = modulesToGraph [osvSchemaModule]
 
 osvInstanceContext = emptyInstanceContext osvContext
 
-osvJsonToNtriples :: Coder (Graph Kv) (Graph Kv) (Term Kv) Json.Value -> FilePath -> FilePath -> IO ()
+osvJsonToNtriples :: Coder Graph Graph (Term) Json.Value -> FilePath -> FilePath -> IO ()
 osvJsonToNtriples coder inFile outFile = do
     contents <- readFile inFile
     case stringToJsonValue contents of

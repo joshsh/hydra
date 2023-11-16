@@ -3,7 +3,7 @@
 module Org.Geojson.Model where
 
 import qualified Hydra.Core as Core
-import qualified Hydra.Langs.Json.Model as Model
+import qualified Hydra.Json as Model
 import Data.List
 import Data.Map
 import Data.Set

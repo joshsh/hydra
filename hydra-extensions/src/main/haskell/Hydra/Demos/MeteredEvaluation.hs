@@ -25,7 +25,7 @@ import Prelude hiding ((++))
 
 testNs = Namespace "hydra/demos/meteredEvaluation"
 
-testModule :: Module Kv
+testModule :: Module
 testModule = Module testNs elements [hydraMantleModule] Nothing
   where
     test local datum = Definition (unqualifyName $ QualifiedName (Just testNs) local) datum

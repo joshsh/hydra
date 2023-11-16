@@ -6,7 +6,7 @@ import Hydra.Dsl.Bootstrap
 import Hydra.Dsl.Annotations
 
 
-geoJsonModule :: Module Kv
+geoJsonModule :: Module
 geoJsonModule = Module ns elements [jsonModelModule] $
     Just ("A GeoJSON model based on the specification at https://www.rfc-editor.org/rfc/rfc7946. " ++
           "This model provides some additional structure beyond the JSON encoding described in the specification; " ++

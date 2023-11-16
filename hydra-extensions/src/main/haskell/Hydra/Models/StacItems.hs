@@ -9,7 +9,7 @@ import Hydra.Models.GeoJson
 import Hydra.Models.IanaRelations
 
 
-stacModule :: Module Kv
+stacModule :: Module
 stacModule = Module ns elements [geoJsonModule, ianaRelationsModule] $
     Just ("A model for SpatioTemporal Asset Catalog (STAC) Items. " ++
           "See https://github.com/radiantearth/stac-spec/blob/master/item-spec/item-spec.md")
