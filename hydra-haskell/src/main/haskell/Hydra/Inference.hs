@@ -55,15 +55,23 @@ findMatchingField fname sfields = case L.filter (\f -> fieldTypeName f == fname)
 infer :: Term -> Flow Graph Inferred
 infer term = case term of
     TermAnnotated (Annotated subj ann) -> do
-      rsubj <- infer subj
+        rsubj <- infer subj
 
-      -- If the subject is annotated with a type, unify that type with the inferred type for the subject.
-      otyp <- getType ann
-      let constraints = (inferredConstraints rsubj) ++ case otyp of
-            Nothing -> []
-            Just t -> [(inferredType rsubj, t)]
+        -- If the subject is annotated with a type, unify that type with the inferred type for the subject.
+        otyp <- getType ann
+        let constraints = (inferredConstraints rsubj) ++ case otyp of
+              Nothing -> []
+              Just t -> [(inferredType rsubj, t)]
 
-      return $ yieldTerm (TermAnnotated $ Annotated (inferredTerm rsubj) ann) (inferredType rsubj) constraints
+        -- Remove the type annotation; it is no longer needed, and may interfere with the inferred type annotation
+        let ann1 = removeTypeAnnotation ann
+        let term1 = if M.null (kvAnnotations ann1)
+              then inferredTerm rsubj
+              else TermAnnotated (Annotated (inferredTerm rsubj) ann1)
+
+        return $ yieldTerm term1 (inferredType rsubj) constraints
+      where
+        removeTypeAnnotation ann = ann {kvAnnotations = M.delete kvType (kvAnnotations ann)}
 
     TermApplication (Application fun arg) -> do
       rfun <- infer fun
@@ -197,6 +205,7 @@ infer term = case term of
 inferElementType :: Element -> Flow Graph (Name, Inferred)
 inferElementType el = withTrace ("infer type of " ++ unName (elementName el)) $ do
   rterm <- infer $ elementData el
+--  fail $ "constraints: " ++ show (inferredConstraints rterm)
   return (elementName el, rterm)
 
 inferElementTypes :: Graph -> [Element] -> Flow Graph [Element]
@@ -410,6 +419,7 @@ normalFreeVariables term = L.nub <$> foldOverTermM TraversalOrderPre fld [] term
 
 normalizeInferredTypes :: Inferred -> Flow Graph Term
 normalizeInferredTypes inf = do
+--    fail $ "inferred term: " ++ showTerm (inferredTerm inf)
     subst <- solveConstraints $ inferredConstraints inf
 --    fail $ "subst: " ++ show subst
     g <- getState
@@ -495,7 +505,7 @@ sortGraphElements g = do
 toApplicationType :: Name -> Type -> Type
 toApplicationType name typ = L.foldl
     (\lhs v -> TypeApplication $ ApplicationType lhs $ TypeVariable v)
-    (TypeVariable name) $ L.reverse vars
+    (TypeVariable name) vars
   where
     vars = forallVars typ
     -- Note: does not dereference unbound variables

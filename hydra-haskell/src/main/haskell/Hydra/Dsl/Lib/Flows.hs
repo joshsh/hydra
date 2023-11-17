@@ -13,36 +13,36 @@ import qualified Data.Map as M
 
 -- Primitives
 
-apply :: Datum (Flow s (x -> y) -> Flow s x -> Flow s y)
+apply :: Datum (Flow s (a -> b) -> Flow s a -> Flow s b)
 apply = Datum $ Terms.primitive _flows_apply
 
-bind :: Datum (Flow s x -> (x -> Flow s y) -> Flow s y)
+bind :: Datum (Flow s a -> (a -> Flow s b) -> Flow s b)
 bind = Datum $ Terms.primitive _flows_bind
 
-fail :: Datum (String -> Flow s x)
+fail :: Datum (String -> Flow s a)
 fail = Datum $ Terms.primitive _flows_fail
 
-map :: Datum ((x -> y) -> Flow s x -> Flow s y)
+map :: Datum ((a -> b) -> Flow s a -> Flow s b)
 map = Datum $ Terms.primitive _flows_map
 
-pure :: Datum (x -> Flow s x)
+pure :: Datum (a -> Flow s a)
 pure = Datum $ Terms.primitive _flows_pure
 
 -- Accessors
 
-flowState :: Datum (Maybe x) -> Datum s -> Datum Trace -> Datum (FlowState s x)
+flowState :: Datum (Maybe a) -> Datum s -> Datum Trace -> Datum (FlowState s a)
 flowState value state trace = record _FlowState [
     _FlowState_value>>: value,
     _FlowState_state>>: state,
     _FlowState_trace>>: trace]
 
-flowStateState :: Datum (FlowState s x -> s)
+flowStateState :: Datum (FlowState s a -> s)
 flowStateState = project _FlowState _FlowState_state
 
-flowStateTrace :: Datum (FlowState s x -> Trace)
+flowStateTrace :: Datum (FlowState s a -> Trace)
 flowStateTrace = project _FlowState _FlowState_trace
 
-flowStateValue :: Datum (FlowState s x -> Maybe x)
+flowStateValue :: Datum (FlowState s a -> Maybe a)
 flowStateValue = project _FlowState _FlowState_value
 
 trace :: Datum [String] -> Datum [String] -> Datum (M.Map String Term) -> Datum Trace
@@ -60,5 +60,5 @@ traceMessages = project _Trace _Trace_messages
 traceOther :: Datum (Trace -> M.Map String Term)
 traceOther = project _Trace _Trace_other
 
-unFlow :: Datum (Flow s x -> s -> Trace -> FlowState s x)
+unFlow :: Datum (Flow s a -> s -> Trace -> FlowState s a)
 unFlow = unwrap _Flow

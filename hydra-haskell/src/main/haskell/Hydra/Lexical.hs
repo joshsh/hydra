@@ -39,8 +39,8 @@ requireElement name = do
 
 requirePrimitive :: Name -> Flow Graph Primitive
 requirePrimitive fn = do
-    cx <- getState
-    Y.maybe err pure $ lookupPrimitive cx fn
+    g <- getState
+    Y.maybe err pure $ lookupPrimitive g fn
   where
     err = fail $ "no such primitive function: " ++ unName fn
 
@@ -58,7 +58,7 @@ resolveTerm name = do
 schemaContext :: Graph -> Graph
 schemaContext g = Y.fromMaybe g (graphSchema g)
 
-withSchemaContext :: Flow Graph x -> Flow Graph x
+withSchemaContext :: Flow Graph a -> Flow Graph a
 withSchemaContext f = do
-  cx <- getState
-  withState (schemaContext cx) f
+  g <- getState
+  withState (schemaContext g) f

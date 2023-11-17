@@ -245,6 +245,7 @@ emptyTraceDef = tier1Definition "emptyTrace" $
 flowSucceedsDef :: Definition (s -> Flow s a -> Bool)
 flowSucceedsDef = tier1Definition "flowSucceeds" $
   doc "Check whether a flow succeeds" $
+--  typed (Types.lambdas ["s", "a"] $ Types.functionN [sT, flowSA, booleanT]) $
   functionN [sT, flowSA, booleanT] $
   lambda "state" $ lambda "f" $
     Optionals.isJust @@ (Flows.flowStateValue @@ (Flows.unFlow @@ var "f" @@ var "state" @@ ref emptyTraceDef))
@@ -275,7 +276,6 @@ mutateTraceDef = tier1Definition "mutateTrace" $
             lambda "msg" $ Flows.flowState nothing (var "s0") (ref pushErrorDef @@ var "msg" @@ var "t0"),
           -- retain the updated state, but reset the trace after execution
           "forRight">:
-            function traceT (flowStateT (Types.var "s") (Types.var "s")) $
             lambda "t1" ((Flows.flowState
                 (Flows.flowStateValue @@ var "f2")
                 (Flows.flowStateState @@ var "f2")

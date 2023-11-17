@@ -8,6 +8,7 @@ import Hydra.Dsl.Terms
 import Hydra.Tools.Serialization
 import Hydra.Langs.Haskell.Serde
 import Hydra.Langs.Haskell.Settings
+import Hydra.Lib.Io
 import qualified Hydra.Langs.Haskell.Ast as H
 import qualified Hydra.Lib.Strings as Strings
 import qualified Hydra.Dsl.Types as Types
@@ -192,9 +193,7 @@ encodeType :: Namespaces -> Type -> Flow Graph H.Type
 encodeType namespaces typ = withTrace "encode type" $ case stripType typ of
     TypeApplication (ApplicationType lhs rhs) -> toTypeApplication <$> CM.sequence [encode lhs, encode rhs]
     TypeFunction (FunctionType dom cod) -> H.TypeFunction <$> (H.Type_Function <$> encode dom <*> encode cod)
-    TypeLambda (LambdaType (Name v) body) -> toTypeApplication <$> CM.sequence [
-      encode body,
-      pure $ H.TypeVariable $ simpleName v]
+    TypeLambda (LambdaType _ body) -> encode body
     TypeList lt -> H.TypeList <$> encode lt
     TypeLiteral lt -> H.TypeVariable . rawName <$> case lt of
       LiteralTypeBoolean -> pure "Bool"

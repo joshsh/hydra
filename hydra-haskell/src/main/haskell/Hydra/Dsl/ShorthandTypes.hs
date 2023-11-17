@@ -35,6 +35,7 @@ flowS2A = flowT (Types.var "s2") (Types.var "a") :: Type
 flowSA = flowT (Types.var "s") (Types.var "a") :: Type
 flowSS = flowT (Types.var "s") (Types.var "s") :: Type
 flowSY = flowT (Types.var "s") (Types.var "y") :: Type
+flowStateSA = flowStateT (Types.var "s") (Types.var "a") :: Type
 flowStateSS = flowStateT (Types.var "s") (Types.var "s") :: Type
 flowStateT s x = Types.apply (Types.apply (TypeVariable _FlowState) s) x
 flowT s x = Types.apply (Types.apply (TypeVariable _Flow) s) x
