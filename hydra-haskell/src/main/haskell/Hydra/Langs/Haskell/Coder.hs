@@ -104,7 +104,8 @@ encodeFunction namespaces fun = case fun of
       EliminationUnion (CaseStatement dn def fields) -> hslambda "x" <$> caseExpr -- note: could use a lambda case here
         where
           caseExpr = do
-            rt <- withSchemaContext $ requireUnionType False dn
+            t <- withSchemaContext $ requireType dn
+            rt <- toUnionType dn t
             let fieldMap = M.fromList $ (\f -> (fieldTypeName f, f)) <$> rowTypeFields rt
             ecases <- CM.mapM (toAlt fieldMap) fields
             dcases <- case def of

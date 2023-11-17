@@ -132,40 +132,30 @@ checkIndividualTerms = H.describe "Check a few hand-picked terms" $ do
           (record latLonName [
             Field (FieldName "lat") $ float32 37.7749,
             Field (FieldName "lon") $ float32 $ negate 122.4194])
-          (TypeRecord $ RowType latLonName Nothing [
-            FieldType (FieldName "lat") Types.float32,
-            FieldType (FieldName "lon") Types.float32])
+          (TypeVariable latLonName)
       H.it "test #2" $ do
         expectMonotype
           (record latLonPolyName [
             Field (FieldName "lat") $ float32 37.7749,
             Field (FieldName "lon") $ float32 $ negate 122.4194])
-          (TypeRecord $ RowType latLonPolyName Nothing [
-            FieldType (FieldName "lat") Types.float32,
-            FieldType (FieldName "lon") Types.float32])
+          (Types.apply (TypeVariable latLonPolyName) Types.float32)
       H.it "test #3" $ do
         expectMonotype
           (lambda "lon" (record latLonPolyName [
             Field (FieldName "lat") $ float32 37.7749,
             Field (FieldName "lon") $ var "lon"]))
-          (Types.function (Types.float32)
-            (TypeRecord $ RowType latLonPolyName Nothing [
-              FieldType (FieldName "lat") $ Types.float32,
-              FieldType (FieldName "lon") $ Types.float32]))
+          (Types.function (Types.float32) (Types.apply (TypeVariable latLonPolyName) Types.float32))
       H.it "test #4" $ do
         expectPolytype
           (lambda "latlon" (record latLonPolyName [
             Field (FieldName "lat") $ var "latlon",
             Field (FieldName "lon") $ var "latlon"]))
-          ["t0"] (Types.function (Types.var "t0")
-            (TypeRecord $ RowType latLonPolyName Nothing [
-              FieldType (FieldName "lat") $ Types.var "t0",
-              FieldType (FieldName "lon") $ Types.var "t0"]))
+          ["t0"] (Types.function (Types.var "t0") (Types.apply (TypeVariable latLonPolyName) (Types.var "t0")))
 
     H.it "Check unions" $ do
       expectMonotype
         (inject testTypeTimestampName $ Field (FieldName "unixTimeMillis") $ uint64 1638200308368)
-        testTypeTimestamp
+        (TypeVariable testTypeTimestampName)
 
     H.describe "Check sets" $ do
       H.it "test #1" $ do
@@ -488,11 +478,11 @@ checkSubtermAnnotations = H.describe "Check additional subterm annotations" $ do
       H.it "test #1" $ do
         expectTypeAnnotation pure
           (inject testTypeTimestampName $ Field (FieldName "date") $ string "2023-05-11")
-          testTypeTimestamp
+          (TypeVariable testTypeTimestampName)
       H.it "test #2" $ do
         expectTypeAnnotation pure
           (lambda "ignored" $ (inject testTypeTimestampName $ Field (FieldName "date") $ string "2023-05-11"))
-          (Types.lambda "t0" $ Types.function (Types.var "t0") testTypeTimestamp)
+          (Types.lambda "t0" $ Types.function (Types.var "t0") (TypeVariable testTypeTimestampName))
 
     H.it "Check projections" $ do
       expectTypeAnnotation pure
@@ -626,13 +616,15 @@ checkUserProvidedTypes = H.describe "Check that user-provided type annotations a
 checkWrappedTerms :: H.SpecWith ()
 checkWrappedTerms = H.describe "Check nominal introductions and eliminations" $ do
 
-    H.it "Check nominal introductions" $ do
-      expectMonotype
-        (wrap stringAliasTypeName $ string "foo")
-        stringAliasType
-      expectMonotype
-        (lambda "v" $ wrap stringAliasTypeName $ var "v")
-        (Types.function Types.string stringAliasType)
+    H.describe "Check nominal introductions" $ do
+      H.it "test #1" $
+        expectMonotype
+          (wrap stringAliasTypeName $ string "foo")
+          (TypeVariable stringAliasTypeName)
+      H.it "test #2" $
+        expectMonotype
+          (lambda "v" $ wrap stringAliasTypeName $ var "v")
+          (Types.function Types.string (TypeVariable stringAliasTypeName))
 
     H.it "Check nominal eliminations" $ do
 --       expectMonotype

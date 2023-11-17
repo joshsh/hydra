@@ -6,10 +6,10 @@ module Hydra.Schemas (
   isSerializable,
   moduleDependencyNamespaces,
   requirePrimitiveType,
-  requireRecordType,
+  toRecordType,
   requireType,
-  requireUnionType,
-  requireWrappedType,
+  toUnionType,
+  toWrappedType,
   resolveType,
   typeDependencies,
   typeDependencyNames,
@@ -96,45 +96,9 @@ moduleDependencyNamespaces withVars withPrims withNoms withSchema mod = do
 requirePrimitiveType :: Name -> Flow Graph Type
 requirePrimitiveType name = (primitiveType <$> requirePrimitive name) >>= replaceBoundTypeVariables
 
-requireRecordType :: Bool -> Name -> Flow Graph RowType
-requireRecordType infer = requireRowType "record" infer $ \t -> case t of
-  TypeRecord rt -> Just rt
-  _ -> Nothing
-
-requireRowType :: String -> Bool -> (Type -> Maybe RowType) -> Name -> Flow Graph RowType
-requireRowType label infer getter name = do
-  t <- withSchemaContext $ requireType name
-  case getter (rawType t) of
-    Just rt -> if infer
-      then case rowTypeExtends rt of
-        Nothing -> return rt
-        Just name' -> do
-          rt' <- requireRowType label True getter name'
-          return $ RowType name Nothing (rowTypeFields rt' ++ rowTypeFields rt)
-      else return rt
-    Nothing -> fail $ show name ++ " does not resolve to a " ++ label ++ " type: " ++ show t
-  where
-    rawType t = case t of
-      TypeAnnotated (Annotated t' _) -> rawType t'
-      TypeLambda (LambdaType _ body) -> rawType body -- Note: throwing away quantification here
-      _ -> t
-
 requireType :: Name -> Flow Graph Type
 requireType name = withTrace ("require type " ++ unName name) $
   requireElement name >>= (coreDecodeType . elementData) >>= replaceBoundTypeVariables
-
-requireUnionType :: Bool -> Name -> Flow Graph RowType
-requireUnionType infer = requireRowType "union" infer $ \t -> case t of
-  TypeUnion rt -> Just rt
-  _ -> Nothing
-
-requireWrappedType :: Name -> Flow Graph Type
-requireWrappedType name = do
-  typ <- withSchemaContext $ requireType name
-  case stripType typ of
-    TypeWrap (Nominal name t) -> return t
-    _ -> return typ -- TODO: stop allowing this "slop" once typedefs are clearly separated from newtypes
---     _ -> fail $ "expected wrapped type for " ++ unName name ++ " but got " ++ show typ
 
 -- TODO: remove this function once TermAdapters no longer needs it
 resolveType :: Type -> Flow Graph (Maybe Type)
@@ -145,6 +109,40 @@ resolveType typ = case stripType typ of
         Nothing -> pure Nothing
         Just t -> Just <$> coreDecodeType t
     _ -> pure $ Just typ
+
+toRecordType :: Name -> Type -> Flow Graph RowType
+toRecordType = toRowType "record" getType
+  where
+    getType t = case stripType t of
+      TypeLambda (LambdaType _ body) -> getType body
+      TypeRecord rt -> Just rt
+      _ -> Nothing
+
+toRowType :: String -> (Type -> Maybe RowType) -> Name -> Type -> Flow Graph RowType
+toRowType label getter name t = do
+  case getter (rawType t) of
+    Just rt -> return rt
+    Nothing -> fail $ show name ++ " does not resolve to a " ++ label ++ " type: " ++ show t
+  where
+    rawType t = case t of
+      TypeAnnotated (Annotated t' _) -> rawType t'
+      TypeLambda (LambdaType _ body) -> rawType body -- Note: throwing away quantification here
+      _ -> t
+
+toUnionType :: Name -> Type -> Flow Graph RowType
+toUnionType = toRowType "union" getType
+  where
+    getType t = case stripType t of
+      TypeLambda (LambdaType _ body) -> getType body
+      TypeUnion rt -> Just rt
+      _ -> Nothing
+
+toWrappedType :: Name -> Type -> Flow Graph Type
+toWrappedType name typ = case stripType typ of
+    TypeLambda (LambdaType _ body) -> toWrappedType name body
+    TypeWrap (Nominal name t) -> return t
+    _ -> return typ -- TODO: stop allowing this "slop" once typedefs are clearly separated from newtypes
+--     _ -> fail $ "expected wrapped type for " ++ unName name ++ " but got " ++ show typ
 
 typeDependencies :: Name -> Flow Graph (M.Map Name Type)
 typeDependencies name = deps (S.fromList [name]) M.empty

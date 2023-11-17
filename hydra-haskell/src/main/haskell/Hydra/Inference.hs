@@ -125,13 +125,19 @@ infer term = case term of
         (TypeProduct (inferredType <$> rtuple))
         (L.concat (inferredConstraints <$> rtuple))
 
-    TermRecord (Record n fields) -> do
-        rt <- requireRecordType True n -- >>= replaceBoundTypeVariables
+    TermRecord (Record tname fields) -> do
+        refType <- withSchemaContext $ requireType tname
+        rt <- toRecordType tname refType
 
         rfields <- CM.mapM inferFieldType fields
         let ci = L.concat (inferredConstraints . snd <$> rfields)
-        let irt = TypeRecord $ RowType n Nothing (inferredToFieldType <$> rfields)
-        return $ yieldTerm (TermRecord $ Record n (inferredToField <$> rfields)) irt ((TypeRecord rt, irt):ci)
+        let irt = TypeRecord $ RowType tname Nothing (inferredToFieldType <$> rfields)
+
+        let term = TermRecord $ Record tname (inferredToField <$> rfields)
+--        let typ = irt
+        let typ = toApplicationType tname refType
+        let constraints = ((TypeRecord rt, irt):ci)
+        return $ yieldTerm term typ constraints
 
     TermSet els -> do
       v <- freshName
@@ -157,8 +163,9 @@ infer term = case term of
             v <- freshName
             return (TypeVariable v, Just v)
 
-    TermUnion (Injection n field) -> do
-        rt <- requireUnionType True n
+    TermUnion (Injection tname field) -> do
+        refType <- withSchemaContext $ requireType tname
+        rt <- toUnionType tname refType
         sfield <- findMatchingField (fieldName field) (rowTypeFields rt)
 
         rfield <- inferFieldType field
@@ -167,19 +174,25 @@ infer term = case term of
         let co = (inferredType $ snd rfield, fieldTypeType sfield)
         let constraints = (co:ci)
 
-        return $ yieldTerm (TermUnion $ Injection n $ inferredToField rfield) (TypeUnion rt) constraints
+        let term = TermUnion $ Injection tname $ inferredToField rfield
+--        let typ = TypeUnion rt
+        let typ = toApplicationType tname refType
+        return $ yieldTerm term typ constraints
 
     TermVariable v -> do
       t <- requireTypeByName v
       return $ yieldTerm (TermVariable v) t []
 
-    TermWrap (Nominal name term1) -> do
-      typ <- requireWrappedType name
+    TermWrap (Nominal tname term1) -> do
+      refType <- withSchemaContext $ requireType tname
+      wt <- toWrappedType tname refType
       rterm1 <- infer term1
-      return $ yieldTerm
-        (TermWrap $ Nominal name $ inferredTerm rterm1)
-        (TypeWrap $ Nominal name typ)
-        (inferredConstraints rterm1 ++ [(typ, inferredType rterm1)])
+
+      let term = TermWrap $ Nominal tname $ inferredTerm rterm1
+--      let typ = TypeWrap $ Nominal tname wt
+      let typ = toApplicationType tname refType
+      let constraints = inferredConstraints rterm1 ++ [(wt, inferredType rterm1)]
+      return $ yieldTerm term typ constraints
 
 inferElementType :: Element -> Flow Graph (Name, Inferred)
 inferElementType el = withTrace ("infer type of " ++ unName (elementName el)) $ do
@@ -230,18 +243,21 @@ inferEliminationType e = case e of
       return $ yieldElimination (EliminationProduct $ TupleProjection arity idx) t []
 
     EliminationRecord (Projection tname fname) -> do
-      rt <- requireRecordType True tname
+      refType <- withSchemaContext $ requireType tname
+      rt <- toRecordType tname refType
+      
       sfield <- findMatchingField fname (rowTypeFields rt)
       let elim = EliminationRecord $ Projection tname fname
 --      let typ = Types.function (TypeRecord rt) $ fieldTypeType sfield
-      let typ = Types.function (TypeVariable tname) $ fieldTypeType sfield
+      let typ = Types.function (toApplicationType tname refType) $ fieldTypeType sfield
       return $ yieldElimination elim typ []
 
     EliminationUnion (CaseStatement tname def cases) -> do
         cod <- freshTypeVariable
 
         -- Union type
-        rt <- requireUnionType True tname
+        refType <- withSchemaContext $ requireType tname
+        rt <- toUnionType tname refType
 --        fail $ "rt: " ++ show rt
         checkCaseNames tname def cases $ rowTypeFields rt
 
@@ -260,7 +276,7 @@ inferEliminationType e = case e of
         let constraints = defConstraints ++ codConstraints ++ subtermConstraints
         let elim = EliminationUnion (CaseStatement tname (inferredTerm <$> rdef) (inferredToField <$> rcases))
 --        let typ = Types.function (TypeUnion rt) cod
-        let typ = Types.function (TypeVariable tname) cod
+        let typ = Types.function (toApplicationType tname refType) cod
         return $ yieldElimination elim typ constraints
       where
         productOfMaps ml mr = M.fromList $ Y.catMaybes (toPair <$> M.toList mr)
@@ -286,10 +302,11 @@ inferEliminationType e = case e of
                 diff = S.difference caseNames fieldNames
 
     EliminationWrap tname -> do
-      wt <- requireWrappedType tname
+      refType <- withSchemaContext $ requireType tname
+      wt <- toWrappedType tname refType
       let elim = EliminationWrap tname
 --      let typ = Types.function (TypeWrap $ Nominal tname wt) wt
-      let typ = Types.function (TypeVariable tname) wt
+      let typ = Types.function (toApplicationType tname refType) wt
       return $ yieldElimination elim typ []
 
 inferFieldType :: Field -> Flow Graph (FieldName, Inferred)
@@ -309,7 +326,6 @@ inferFunctionType f = case f of
 
   FunctionPrimitive name -> do
       t <- requirePrimitiveType name
-
       return $ yieldFunction (FunctionPrimitive name) (stripUniversalTypes t) []
     where
       stripUniversalTypes = rewriteType $ \recurse typ -> case recurse typ of
@@ -473,6 +489,20 @@ sortGraphElements g = do
         isElName name = M.member name els
         -- No need for an inference dependency on an element which is already annotated with a type
         isNotAnnotated name = not $ S.member name annotated
+
+-- | Expands a type reference like "Pair" to an application type like (Pair a b) using fresh type variables,
+--   depending on whether "Pair" resolves to a forall type like forall a b. record_Pair{fst: a, snd: b}
+toApplicationType :: Name -> Type -> Type
+toApplicationType name typ = L.foldl
+    (\lhs v -> TypeApplication $ ApplicationType lhs $ TypeVariable v)
+    (TypeVariable name) $ L.reverse vars
+  where
+    vars = forallVars typ
+    -- Note: does not dereference unbound variables
+    forallVars t = case stripType t of
+      TypeApplication (ApplicationType lhs _) -> L.drop 1 $ forallVars lhs
+      TypeLambda (LambdaType v body) -> (v:(forallVars body))
+      _ -> []
 
 withBinding :: Name -> Type -> Flow Graph a -> Flow Graph a
 withBinding n t = withEnvironment (M.insert n t)
