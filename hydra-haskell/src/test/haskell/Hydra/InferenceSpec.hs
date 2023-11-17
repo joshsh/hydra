@@ -64,11 +64,11 @@ checkFunctionTerms = H.describe "Check a few hand-picked function terms" $ do
     H.describe "Check lambdas" $ do
       H.it "test #1" $ do
         expectPolytype
-          (lambda "x" (var "x"))
+          (lambda "x" $ var "x")
           ["t0"] (Types.function (Types.var "t0") (Types.var "t0"))
       H.it "test #2" $ do
         expectPolytype
-          (lambda "x" (int16 137))
+          (lambda "x" $ int16 137)
           ["t0"] (Types.function (Types.var "t0") Types.int16)
 
     H.it "Check list eliminations" $ do
@@ -609,6 +609,21 @@ checkUserProvidedTypes = H.describe "Check that user-provided type annotations a
           (Name "y", pretypedEmptyMap)
           ]) $ Terms.pair (var "x") (var "y"))
         ["p", "k", "v"] (Types.pair (Types.list $ Types.var "p") (Types.map (Types.var "k") (Types.var "v")))
+
+    H.describe "Check type annotations on subterms" $ do
+      H.it "test #1" $ do
+        expectPolytype
+          (typed (Types.function (Types.var "a") (Types.var "a")) $ lambda "x" $ var "x")
+          ["a"] (Types.function (Types.var "a") (Types.var "a"))
+      H.it "test #2" $ do
+        expectPolytype
+          (typed (Types.lambda "a" $ Types.function (Types.var "a") (Types.var "a")) $ lambda "x" $ var "x")
+          ["a"] (Types.function (Types.var "a") (Types.var "a"))
+      H.it "test #3" $ do
+        expectPolytype
+          (lambda "x" $ typed (Types.var "a") $ var "x")
+          ["a"] (Types.function (Types.var "a") (Types.var "a"))
+
   where
     pretypedEmptyList = typed (Types.list $ Types.var "p") $ list []
     pretypedEmptyMap = typed (Types.map (Types.var "k") (Types.var "v")) $ TermMap M.empty
