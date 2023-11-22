@@ -40,8 +40,8 @@ hydraGrammarModule = Module ns elements [hydraCoreModule] $
       def "LabeledPattern" $
         doc "A pattern together with a name (label)" $
         record [
-        "label">: grammar "Label",
-        "pattern">: grammar "Pattern"],
+          "label">: grammar "Label",
+          "pattern">: grammar "Pattern"],
 
       def "Pattern" $
         doc "A pattern which matches valid expressions in the language" $

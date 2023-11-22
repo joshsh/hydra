@@ -606,11 +606,14 @@ coreEncodeType x = case x of
     Core.injectionField = Core.Field {
       Core.fieldName = (Core.FieldName "function"),
       Core.fieldTerm = (coreEncodeFunctionType v)}}))
-  Core.TypeLambda v -> (Core.TermUnion (Core.Injection {
-    Core.injectionTypeName = (Core.Name "hydra/core.Type"),
-    Core.injectionField = Core.Field {
-      Core.fieldName = (Core.FieldName "lambda"),
-      Core.fieldTerm = (coreEncodeLambdaType v)}}))
+--  Core.TypeLambda v -> (Core.TermUnion (Core.Injection {
+--    Core.injectionTypeName = (Core.Name "hydra/core.Type"),
+--    Core.injectionField = Core.Field {
+--      Core.fieldName = (Core.FieldName "lambda"),
+--      Core.fieldTerm = (coreEncodeLambdaType v)}}))
+  Core.TypeLambda (Core.LambdaType v body) -> (Core.TermFunction (Core.FunctionLambda (Core.Lambda {
+    Core.lambdaParameter = v,
+    Core.lambdaBody = coreEncodeType body})))
   Core.TypeList v -> (Core.TermUnion (Core.Injection {
     Core.injectionTypeName = (Core.Name "hydra/core.Type"),
     Core.injectionField = Core.Field {
@@ -661,11 +664,12 @@ coreEncodeType x = case x of
     Core.injectionField = Core.Field {
       Core.fieldName = (Core.FieldName "union"),
       Core.fieldTerm = (coreEncodeRowType v)}}))
-  Core.TypeVariable v -> (Core.TermUnion (Core.Injection {
-    Core.injectionTypeName = (Core.Name "hydra/core.Type"),
-    Core.injectionField = Core.Field {
-      Core.fieldName = (Core.FieldName "variable"),
-      Core.fieldTerm = (coreEncodeName v)}}))
+  Core.TypeVariable v -> Core.TermVariable v
+--  Core.TypeVariable v -> (Core.TermUnion (Core.Injection {
+--    Core.injectionTypeName = (Core.Name "hydra/core.Type"),
+--    Core.injectionField = Core.Field {
+--      Core.fieldName = (Core.FieldName "variable"),
+--      Core.fieldTerm = (coreEncodeName v)}}))
   Core.TypeWrap v -> (Core.TermUnion (Core.Injection {
     Core.injectionTypeName = (Core.Name "hydra/core.Type"),
     Core.injectionField = Core.Field {

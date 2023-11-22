@@ -275,9 +275,10 @@ coreEncodeLambdaDef = coreEncodingDefinition "Lambda" lambdaT $
 
 coreEncodeLambdaTypeDef :: Definition (LambdaType -> Term)
 coreEncodeLambdaTypeDef = coreEncodingDefinition "LambdaType" lambdaTypeT $
-  lambda "lt" $ encodedRecord _LambdaType [
-    (_LambdaType_parameter, ref coreEncodeNameDef @@ (project _LambdaType _LambdaType_parameter @@ var "lt")),
-    (_LambdaType_body, ref coreEncodeTypeDef @@ (project _LambdaType _LambdaType_body @@ var "lt"))]
+  lambda "lt" $ variant _Term _Term_function $ variant _Function _Function_lambda $
+    TermRecord $ Record _Lambda [
+      Field _Lambda_parameter (project _LambdaType _LambdaType_parameter @@ var "lt"),
+      Field _Lambda_body (ref coreEncodeTypeDef @@ (project _LambdaType _LambdaType_body @@ var "lt"))]
 
 coreEncodeLetDef :: Definition (Let -> Term)
 coreEncodeLetDef = coreEncodingDefinition "Let" letT $
@@ -407,7 +408,8 @@ coreEncodeTypeDef = coreEncodingDefinition "Type" typeT $
       Field _Annotated_annotation $ project _Annotated _Annotated_annotation @@ var "v"],
     csref _Type_application coreEncodeApplicationTypeDef,
     csref _Type_function coreEncodeFunctionTypeDef,
-    csref _Type_lambda coreEncodeLambdaTypeDef,
+--    csref _Type_lambda coreEncodeLambdaTypeDef,
+    Field _Type_lambda $ ref coreEncodeLambdaTypeDef,
     csref _Type_list coreEncodeTypeDef,
     csref _Type_literal coreEncodeLiteralTypeDef,
     csref _Type_map coreEncodeMapTypeDef,
@@ -418,7 +420,8 @@ coreEncodeTypeDef = coreEncodingDefinition "Type" typeT $
     csref _Type_stream coreEncodeTypeDef,
     cs _Type_sum $ encodedList $ primitive _lists_map @@ ref coreEncodeTypeDef @@ var "v",
     csref _Type_union coreEncodeRowTypeDef,
-    csref _Type_variable coreEncodeNameDef,
+--    csref _Type_variable coreEncodeNameDef,
+    Field _Type_variable $ lambda "v" $ variant _Term _Term_variable $ var "v",
     csref _Type_wrap coreEncodeNominalTypeDef]
   where
     cs fname term = Field fname $ lambda "v" $ encodedVariant _Type fname term

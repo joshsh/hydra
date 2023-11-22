@@ -208,60 +208,6 @@ inferElementTypes g els = withState g $ do
             Just term -> return $ Element name term
       _ -> unexpected "let term" $ showTerm term2
 
-
---inferElementTypes :: Graph -> [Element] -> Flow Graph [Element]
---inferElementTypes g els = withState g $ do
-----    fail $ "elements: " ++ show (unName . elementName <$> els)
---    withTempBindings (elementName <$> els) $ \tempBindings -> do
-----      fail $ "temp bindings: " ++ show (unName <$> M.keys tempBindings)
-----      fail $ "temp bindings: " ++ show (tempBindings)
---      -- Perform inference on elements in the given order, respecting dependencies among elements
---      inferredEls <- inferAll els []
-----      fail $ "inferred elements: " ++ show (unName . fst <$> inferredEls)
-----      fail $ "inferred: " ++ show (fmap (\(name, inf) -> (name, inferredType inf)) inferredEls)
---
---      let constraints = L.zip (M.elems tempBindings) (inferredType . snd <$> inferredEls)
-----      fail $ "binding constraints: " ++ show (constraints)
---
-----      let allVars = foldOverType TraversalOrderPre (\s t -> case t of
-----                      TypeVariable n -> if isTemporaryVariable n then S.insert (read (L.drop 3 $ unName n) :: Int) s else s
-----                      _ -> s) S.empty
-----      let showConstraint (t1, t2) = (S.union (allVars t1) (allVars t2))
-----      let showConstraints c = S.toList $ L.foldl S.union S.empty (showConstraint <$> c)
-----      fail $ "inferred constraints: " ++ show (showConstraints . inferredConstraints . snd <$> inferredEls)
---
---      pure inferredEls
---        -- Solve all constraints at once (for the sake of inter-element dependencies)
---        >>= unifyAll constraints
---  --    >>= CM.mapM unifyIndividual
---        -- Perform the final substitutions and normalization on elements individually
---        >>= CM.mapM rewriteElement
---  where
---    -- Note: inference occurs over the entire graph at once,
---    --       but unification and substitution occur within elements in isolation
---    rewriteElement (name, rel) = withTrace ("rewrite " ++ unName name) $ do
---      term <- normalizeInferredTypes $ inferredTerm rel
---      return $ Element name term
---
---    inferAll before after = case before of
---      [] -> pure $ L.reverse after
---      (el:rest) -> do
---        rel <- inferElementType el
---        withBinding (fst rel) (inferredType $ snd rel) $ inferAll rest (rel:after)
---
-----    unifyIndividual (name, inf) = do
-----      subst <- solveConstraints $ inferredConstraints inf
-----      term1 <- rewriteTermAnnotationsM (rewriteAnnotation subst) $ inferredTerm inf
-----      return (name, inf { inferredTerm = term1 })
---
---    unifyAll constraints els = do
---        subst <- solveConstraints $ constraints ++ L.concat (inferredConstraints . snd <$> els)
---        CM.mapM (update subst) els
---      where
---        update subst (name, inf) = do
---          term1 <- rewriteTermAnnotationsM (rewriteAnnotation subst) $ inferredTerm inf
---          return (name, inf { inferredTerm = term1 })
-
 inferEliminationType :: Elimination -> Flow Graph Inferred
 inferEliminationType e = case e of
     EliminationList fun -> do
@@ -400,7 +346,12 @@ inferLetType (Let bindingMap env) = do
       [] -> do
         ienv <- infer env
         return ([], ienv)
-      ((name, term):rest) -> do
+      ((name, term):rest) -> withTrace ("inferring type of " ++ unName name) $ do
+--        if name == Name "hydra/grammar.LabeledPattern"
+----          then fail $ "term: " ++ showTerm term
+----          then fail $ "term: " ++ show term
+--            then fail $ "ordered bindings: " ++ show (unName . fst <$> ordered)
+--          else pure ()
         mtyp <- getAnnotatedType term
         tempType <- case mtyp of
           Just t -> pure t

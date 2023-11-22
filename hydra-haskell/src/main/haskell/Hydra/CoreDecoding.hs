@@ -111,6 +111,8 @@ coreDecodeString = Expect.string . stripTerm
 coreDecodeType :: Term -> Flow Graph Type
 coreDecodeType dat = case dat of
   TermAnnotated (Annotated term ann) -> (\t -> TypeAnnotated $ Annotated t ann) <$> coreDecodeType term
+  TermVariable name -> pure $ TypeVariable name
+  TermFunction (FunctionLambda (Lambda v body)) -> TypeLambda <$> (LambdaType <$> pure v <*> coreDecodeType body)
   _ -> matchUnion _Type [
 --    (_Type_annotated, fmap TypeAnnotated . coreDecodeAnnotated),
     (_Type_application, fmap TypeApplication . coreDecodeApplicationType),
@@ -127,7 +129,8 @@ coreDecodeType dat = case dat of
     (_Type_set, fmap TypeSet . coreDecodeType),
     (_Type_sum, \(TermList types) -> TypeSum <$> (CM.mapM coreDecodeType types)),
     (_Type_union, fmap TypeUnion . coreDecodeRowType),
-    (_Type_variable, fmap TypeVariable . coreDecodeName),
+--    (_Type_variable, fmap TypeVariable . coreDecodeName),
+    (_Type_variable, fmap TypeVariable . Expect.variable),
     (_Type_wrap, fmap TypeWrap . (coreDecodeNominal coreDecodeType))] dat
 
 getField :: M.Map FieldName Term -> FieldName -> (Term -> Flow Graph b) -> Flow Graph b

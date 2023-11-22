@@ -121,6 +121,11 @@ testRoundTripsFromType = do
           (coreDecodeType $ coreEncodeType typ)
           typ
 
+    H.it "Try type variables" $
+      shouldSucceedWith
+        (coreDecodeType $ coreEncodeType $ TypeVariable $ Name "MyType")
+        (TypeVariable $ Name "MyType")
+
 spec :: H.Spec
 spec = do
   individualEncoderTestCases

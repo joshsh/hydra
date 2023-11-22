@@ -111,7 +111,10 @@ product :: [Type] -> Type
 product = TypeProduct
 
 record :: [FieldType] -> Type
-record fields = TypeRecord $ RowType placeholderName Nothing fields
+record = recordWithName placeholderName
+
+recordWithName :: Name -> [FieldType] -> Type
+recordWithName name = TypeRecord . RowType name Nothing
 
 set :: Type -> Type
 set = TypeSet
