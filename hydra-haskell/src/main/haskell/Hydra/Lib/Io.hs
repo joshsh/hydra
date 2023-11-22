@@ -12,7 +12,7 @@ import Hydra.Langs.Json.Coder
 import Hydra.Dsl.Annotations
 import Hydra.Langs.Json.Serde
 import Hydra.CoreEncoding
-import Hydra.Rewriting
+--import Hydra.Rewriting
 import Hydra.Kv
 import Hydra.Tier1
 import qualified Hydra.Json as Json
@@ -68,7 +68,8 @@ showType typ = fromFlow "fail" noGraph $ do
     coder <- typeStringCoder
     coderEncode coder encoded
   where
-    encoded = coreEncodeType $ rewriteTypeAnnotations (const $ Kv M.empty) typ
+--    encoded = coreEncodeType $ rewriteTypeAnnotations (const $ Kv M.empty) typ
+    encoded = coreEncodeType typ
 
 typeStringCoder :: Flow Graph (Coder Graph Graph Term String)
 typeStringCoder = do

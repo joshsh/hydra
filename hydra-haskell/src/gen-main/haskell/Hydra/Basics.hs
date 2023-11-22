@@ -274,9 +274,7 @@ isEncodedType t = ((\x -> case x of
 
 isType :: (Core.Type -> Bool)
 isType t = ((\x -> case x of
-  Core.TypeApplication v -> (isType (Core.applicationTypeFunction v))
-  Core.TypeLambda v -> (isType (Core.lambdaTypeBody v))
-  Core.TypeUnion v -> (Equality.equalString "hydra/core.Type" (Core.unName (Core.rowTypeTypeName v)))
+  Core.TypeVariable (Core.Name "hydra/core.Type") -> True
   _ -> False) (Strip.stripType t))
 
 isUnitTerm :: (Core.Term -> Bool)

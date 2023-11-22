@@ -34,6 +34,18 @@ aggregateAnnotations getAnn t = Kv $ M.fromList $ L.concat $ toPairs [] t
       Nothing -> rest
       Just (Annotated t' (Kv other)) -> toPairs ((M.toList other):rest) t'
 
+compressTermAnnotations :: Term -> Term
+compressTermAnnotations term = if M.null ann1
+    then term1
+    else TermAnnotated (Annotated term1 $ Kv ann1)
+  where
+    (term1, ann1) = compress term
+    compress term = case term of
+      TermAnnotated (Annotated subj ann) -> (term2, M.union (kvAnnotations ann) ann2)
+        where
+          (term2, ann2) = compress subj
+      _ -> (term, M.empty)
+
 failOnFlag :: String -> String -> Flow s ()
 failOnFlag flag msg = do
   val <- hasFlag flag
@@ -191,6 +203,9 @@ typeAnnotation :: Type -> Kv
 typeAnnotation = aggregateAnnotations $ \t -> case t of
   TypeAnnotated a -> Just a
   _ -> Nothing
+
+hasTypeAnnotation :: Term -> Bool
+hasTypeAnnotation = M.member kvType . kvAnnotations . termAnnotation
 
 whenFlag :: String -> Flow s a -> Flow s a -> Flow s a
 whenFlag flag fthen felse = do

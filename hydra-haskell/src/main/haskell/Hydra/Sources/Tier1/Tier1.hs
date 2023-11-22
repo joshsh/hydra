@@ -330,7 +330,7 @@ withFlagDef = tier1Definition "withFlag" $
 
 withStateDef :: Definition (s1 -> Flow s1 a -> Flow s2 a)
 withStateDef = tier1Definition "withState" $
-  doc "Continue a flow using a given state" $
+  doc "Continue a flow using a given temporary state" $
   function (Types.var "s1") (Types.function flowS1A flowS2A) $
   lambda "cx0" $ lambda "f" $
     wrap _Flow $ lambda "cx1" $ lambda "t1" (

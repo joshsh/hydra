@@ -54,24 +54,14 @@ findMatchingField fname sfields = case L.filter (\f -> fieldTypeName f == fname)
 -- Infer the type of a term, without also unifying or normalizing types; the latter is done separately
 infer :: Term -> Flow Graph Inferred
 infer term = case term of
+    -- Note: type annotations are not used during the first phase of type inference;
+    --       they are used later for the sake of respecting user-provided names for type parameters.
     TermAnnotated (Annotated subj ann) -> do
-        rsubj <- infer subj
-
-        -- If the subject is annotated with a type, unify that type with the inferred type for the subject.
-        otyp <- getType ann
-        let constraints = (inferredConstraints rsubj) ++ case otyp of
-              Nothing -> []
-              Just t -> [(inferredType rsubj, t)]
-
-        -- Remove the type annotation; it is no longer needed, and may interfere with the inferred type annotation
-        let ann1 = removeTypeAnnotation ann
-        let term1 = if M.null (kvAnnotations ann1)
-              then inferredTerm rsubj
-              else TermAnnotated (Annotated (inferredTerm rsubj) ann1)
-
-        return $ yieldTerm term1 (inferredType rsubj) constraints
-      where
-        removeTypeAnnotation ann = ann {kvAnnotations = M.delete kvType (kvAnnotations ann)}
+      rsubj <- infer subj
+      return $ Inferred
+        (compressTermAnnotations $ TermAnnotated $ Annotated (inferredTerm rsubj) ann)
+        (inferredType rsubj)
+        (inferredConstraints rsubj)
 
     TermApplication (Application fun arg) -> do
       rfun <- infer fun
@@ -142,7 +132,6 @@ infer term = case term of
         let irt = TypeRecord $ RowType tname Nothing (inferredToFieldType <$> rfields)
 
         let term = TermRecord $ Record tname (inferredToField <$> rfields)
---        let typ = irt
         let typ = toApplicationType tname refType
         let constraints = ((TypeRecord rt, irt):ci)
         return $ yieldTerm term typ constraints
@@ -183,7 +172,6 @@ infer term = case term of
         let constraints = (co:ci)
 
         let term = TermUnion $ Injection tname $ inferredToField rfield
---        let typ = TypeUnion rt
         let typ = toApplicationType tname refType
         return $ yieldTerm term typ constraints
 
@@ -197,7 +185,6 @@ infer term = case term of
       rterm1 <- infer term1
 
       let term = TermWrap $ Nominal tname $ inferredTerm rterm1
---      let typ = TypeWrap $ Nominal tname wt
       let typ = toApplicationType tname refType
       let constraints = inferredConstraints rterm1 ++ [(wt, inferredType rterm1)]
       return $ yieldTerm term typ constraints
@@ -205,24 +192,75 @@ infer term = case term of
 inferElementType :: Element -> Flow Graph (Name, Inferred)
 inferElementType el = withTrace ("infer type of " ++ unName (elementName el)) $ do
   rterm <- infer $ elementData el
---  fail $ "constraints: " ++ show (inferredConstraints rterm)
   return (elementName el, rterm)
 
 inferElementTypes :: Graph -> [Element] -> Flow Graph [Element]
-inferElementTypes g sortedEls = initializeGraph $ inferAll sortedEls [] >>= CM.mapM rewriteElement
-  where
-    -- Note: inference occurs over the entire graph at once,
-    --       but unification and substitution occur within elements in isolation
-    rewriteElement (name, rel) = withTrace ("rewrite " ++ unName name) $ do
-      term <- normalizeInferredTypes rel
-      return $ Element name term
+inferElementTypes g els = withState g $ do
+    inf <- infer $ TermLet $ Let (M.fromList (fmap (\e -> (elementName e, elementData e)) els)) $ Terms.boolean False
+    subst <- solveConstraints $ inferredConstraints inf
+    term1 <- rewriteTermAnnotationsM (rewriteAnnotation subst) $ inferredTerm inf
+    term2 <- normalizeInferredTypes term1
+    case stripTerm term2 of
+      TermLet (Let bindings _) -> CM.mapM toElement (elementName <$> els)
+        where
+          toElement name = case M.lookup name bindings of
+            Nothing -> fail $ "no inferred term for " ++ unName name
+            Just term -> return $ Element name term
+      _ -> unexpected "let term" $ showTerm term2
 
-    -- Perform inference on elements in the given order, respecting dependencies among elements
-    inferAll before after = case before of
-      [] -> pure $ L.reverse after
-      (el:rest) -> do
-        rel <- inferElementType el
-        withBinding (fst rel) (inferredType $ snd rel) $ inferAll rest (rel:after)
+
+--inferElementTypes :: Graph -> [Element] -> Flow Graph [Element]
+--inferElementTypes g els = withState g $ do
+----    fail $ "elements: " ++ show (unName . elementName <$> els)
+--    withTempBindings (elementName <$> els) $ \tempBindings -> do
+----      fail $ "temp bindings: " ++ show (unName <$> M.keys tempBindings)
+----      fail $ "temp bindings: " ++ show (tempBindings)
+--      -- Perform inference on elements in the given order, respecting dependencies among elements
+--      inferredEls <- inferAll els []
+----      fail $ "inferred elements: " ++ show (unName . fst <$> inferredEls)
+----      fail $ "inferred: " ++ show (fmap (\(name, inf) -> (name, inferredType inf)) inferredEls)
+--
+--      let constraints = L.zip (M.elems tempBindings) (inferredType . snd <$> inferredEls)
+----      fail $ "binding constraints: " ++ show (constraints)
+--
+----      let allVars = foldOverType TraversalOrderPre (\s t -> case t of
+----                      TypeVariable n -> if isTemporaryVariable n then S.insert (read (L.drop 3 $ unName n) :: Int) s else s
+----                      _ -> s) S.empty
+----      let showConstraint (t1, t2) = (S.union (allVars t1) (allVars t2))
+----      let showConstraints c = S.toList $ L.foldl S.union S.empty (showConstraint <$> c)
+----      fail $ "inferred constraints: " ++ show (showConstraints . inferredConstraints . snd <$> inferredEls)
+--
+--      pure inferredEls
+--        -- Solve all constraints at once (for the sake of inter-element dependencies)
+--        >>= unifyAll constraints
+--  --    >>= CM.mapM unifyIndividual
+--        -- Perform the final substitutions and normalization on elements individually
+--        >>= CM.mapM rewriteElement
+--  where
+--    -- Note: inference occurs over the entire graph at once,
+--    --       but unification and substitution occur within elements in isolation
+--    rewriteElement (name, rel) = withTrace ("rewrite " ++ unName name) $ do
+--      term <- normalizeInferredTypes $ inferredTerm rel
+--      return $ Element name term
+--
+--    inferAll before after = case before of
+--      [] -> pure $ L.reverse after
+--      (el:rest) -> do
+--        rel <- inferElementType el
+--        withBinding (fst rel) (inferredType $ snd rel) $ inferAll rest (rel:after)
+--
+----    unifyIndividual (name, inf) = do
+----      subst <- solveConstraints $ inferredConstraints inf
+----      term1 <- rewriteTermAnnotationsM (rewriteAnnotation subst) $ inferredTerm inf
+----      return (name, inf { inferredTerm = term1 })
+--
+--    unifyAll constraints els = do
+--        subst <- solveConstraints $ constraints ++ L.concat (inferredConstraints . snd <$> els)
+--        CM.mapM (update subst) els
+--      where
+--        update subst (name, inf) = do
+--          term1 <- rewriteTermAnnotationsM (rewriteAnnotation subst) $ inferredTerm inf
+--          return (name, inf { inferredTerm = term1 })
 
 inferEliminationType :: Elimination -> Flow Graph Inferred
 inferEliminationType e = case e of
@@ -257,7 +295,6 @@ inferEliminationType e = case e of
       
       sfield <- findMatchingField fname (rowTypeFields rt)
       let elim = EliminationRecord $ Projection tname fname
---      let typ = Types.function (TypeRecord rt) $ fieldTypeType sfield
       let typ = Types.function (toApplicationType tname refType) $ fieldTypeType sfield
       return $ yieldElimination elim typ []
 
@@ -267,7 +304,6 @@ inferEliminationType e = case e of
         -- Union type
         refType <- withSchemaContext $ requireType tname
         rt <- toUnionType tname refType
---        fail $ "rt: " ++ show rt
         checkCaseNames tname def cases $ rowTypeFields rt
 
         -- Default value
@@ -284,7 +320,6 @@ inferEliminationType e = case e of
         let subtermConstraints = L.concat (inferredConstraints . snd <$> rcases)
         let constraints = defConstraints ++ codConstraints ++ subtermConstraints
         let elim = EliminationUnion (CaseStatement tname (inferredTerm <$> rdef) (inferredToField <$> rcases))
---        let typ = Types.function (TypeUnion rt) cod
         let typ = Types.function (toApplicationType tname refType) cod
         return $ yieldElimination elim typ constraints
       where
@@ -314,7 +349,6 @@ inferEliminationType e = case e of
       refType <- withSchemaContext $ requireType tname
       wt <- toWrappedType tname refType
       let elim = EliminationWrap tname
---      let typ = Types.function (TypeWrap $ Nominal tname wt) wt
       let typ = Types.function (toApplicationType tname refType) wt
       return $ yieldElimination elim typ []
 
@@ -345,66 +379,57 @@ inferGraphTypes :: Flow Graph Graph
 inferGraphTypes = getState >>= annotateGraph
   where
     annotateGraph g = withTrace ("infer graph types") $ do
-        sorted <- sortGraphElements g
---        fail $ "head: " ++ showTerm (elementData $ L.head sorted)
-        els <- sortGraphElements g >>= inferElementTypes g
+        els <- inferElementTypes g $ M.elems $ graphElements g
         return g {graphElements = M.fromList (toPair <$> els)}
       where
         toPair el = (elementName el, el)
 
 inferLetType :: Let -> Flow Graph Inferred
-inferLetType (Let bindings env) = do
-    state0 <- getState
-    e <- preExtendEnv bindings $ graphTypes state0
-    let state1 = state0 {graphTypes = e}
-    withState state1 $ do
-      -- TODO: perform a topological sort on these bindings; this process should be unified with that of elements in a graph
-      let bl = M.toList bindings
-
-      -- Infer types of bindings in the pre-extended environment
-      rvalues <- CM.mapM infer (snd <$> bl)
-      let rbindings = M.fromList (L.zip (fst <$> bl) (inferredTerm <$> rvalues))
-      let bc = L.concat (inferredConstraints <$> rvalues)
-
-      let tbindings = M.fromList (L.zip (fst <$> bl) (inferredType <$> rvalues))
-      renv <- withBindings tbindings $ infer env
-
-      return $ yieldTerm
-        (TermLet $ Let rbindings $ inferredTerm renv)
-        (inferredType renv)
-        (bc ++ inferredConstraints renv)
+inferLetType (Let bindingMap env) = do
+    (pairs, (Inferred ienv typ constraints)) <- inferRecursive ordered
+    return $ yieldTerm (TermLet $ Let (M.fromList pairs) ienv) typ constraints
   where
-    -- Add any manual type annotations for the bindings to the environment, enabling type inference over recursive definitions
-    preExtendEnv bindings e = CM.foldM addPair e $ M.toList bindings
+    ordered = fmap toPair (L.concat $ topologicalSortComponents (depsOf <$> (M.toList bindingMap)))
       where
-        addPair e (name, term) = do
-          mtyp <- getAnnotatedType term
-          return $ case mtyp of
-            Nothing -> e
-            Just typ -> M.insert name typ e
+        keys = S.fromList $ M.keys bindingMap
+        depsOf (name, term) = (name, if hasTypeAnnotation term
+          then []
+          else S.toList (S.intersection keys $ freeVariablesInTerm term))
+        toPair name = (name, Y.fromMaybe (Terms.string "Impossible!") $ M.lookup name bindingMap)
+    inferRecursive bindings = case bindings of
+      [] -> do
+        ienv <- infer env
+        return ([], ienv)
+      ((name, term):rest) -> do
+        mtyp <- getAnnotatedType term
+        tempType <- case mtyp of
+          Just t -> pure t
+          Nothing -> TypeVariable <$> freshName
+        withBinding name tempType $ do
+          inf <- infer term
+          let infType = inferredType inf
+          let infTerm = inferredTerm inf
+          (restPairs, Inferred ienv typ restConstraints) <- withBinding name infType $ inferRecursive rest
+          let constraints = [(tempType, infType)] ++ (inferredConstraints inf) ++ restConstraints
+          return $ (((name, infTerm):restPairs), Inferred ienv typ constraints)
 
 -- | Add inferred type annotations to a single term, considered as a standalone graph
 inferTermType :: Term -> Flow Graph Term
-inferTermType term = withTrace ("infer type") $ initializeGraph $
-  infer term >>= normalizeInferredTypes
+inferTermType term = do
+  g <- getState
+  els <- inferElementTypes g [Element (Name "SingleElement") term]
+  return $ elementData $ L.head els
 
 inferredToField (fname, inferred) = Field fname $ inferredTerm inferred
 inferredToFieldType (fname, inferred) = FieldType fname $ inferredType inferred
 
 -- | Find the inferred type of a single term, considered as a standalone graph. Mainly useful in tests.
 inferredTypeOf :: Term -> Flow Graph Type
-inferredTypeOf term = inferTermType term >>= requireAnnotatedType
-
-initializeGraph flow = do
-    g <- getState
-    env <- initialEnv g
-    withState (g {graphTypes = env}) flow
-  where
-    initialEnv g = M.fromList . Y.catMaybes <$> (CM.mapM toPair $ M.elems $ graphElements g)
-      where
-        toPair el = do
-          mt <- getAnnotatedType $ elementData el
-          return $ (\t -> (elementName el, t)) <$> mt
+inferredTypeOf term = do
+  mtyp <- inferTermType term >>= getAnnotatedType
+  case mtyp of
+    Nothing -> fail $ "expected an inferred type annotation"
+    Just typ -> return typ
 
 -- | Get the free type variables of a term in order of occurrence in the annotations of the term and its subterms
 --   (following a pre-order traversal in subterms, and in each type expression)
@@ -417,30 +442,19 @@ normalFreeVariables term = L.nub <$> foldOverTermM TraversalOrderPre fld [] term
         Nothing -> freeVars
         Just typ -> freeVars ++ freeVariablesInTypeOrdered typ
 
-normalizeInferredTypes :: Inferred -> Flow Graph Term
-normalizeInferredTypes inf = do
---    fail $ "inferred term: " ++ showTerm (inferredTerm inf)
-    subst <- solveConstraints $ inferredConstraints inf
---    fail $ "subst: " ++ show subst
+normalizeInferredTypes :: Term -> Flow Graph Term
+normalizeInferredTypes term = do
     g <- getState
-    term1 <- pure (inferredTerm inf)
-      >>= replacePreunificationVariables subst
+    term1 <- pure term
       >>= replaceTemporaryVariables
       >>= rewriteTermAnnotationsM (createUniversalTypes g)
 --    fail $ "normalized term: " ++ showTerm term1
     return term1
   where
-    rewrite subst ann = do
-      mtyp <- getType ann
-      return $ setType (substituteTypeVariables subst <$> mtyp) ann
-    replacePreunificationVariables subst term = do
-      term1 <- rewriteTermAnnotationsM (rewrite subst) term
---      fail $ "term: " ++ showTerm term1
-      return term1
     replaceTemporaryVariables term = do
       tempVars <- (L.filter isTemporaryVariable) <$> normalFreeVariables term
       let subst = M.fromList $ L.zip tempVars (TypeVariable <$> normalVariables)
-      rewriteTermAnnotationsM (rewrite subst) term
+      rewriteTermAnnotationsM (rewriteAnnotation subst) term
     createUniversalTypes g ann = do
         mtyp <- getType ann
         return $ setType (helper <$> mtyp) ann
@@ -452,20 +466,18 @@ normalizeInferredTypes inf = do
           Nothing -> []
           Just s -> M.keys $ graphElements s
 
-requireAnnotatedType :: Term -> Flow Graph Type
-requireAnnotatedType term = do
-  mtyp <- getAnnotatedType term
-  case mtyp of
-    Nothing -> fail $ "expected an inferred type annotation"
-    Just typ -> return typ
-
 requireTypeByName :: Name -> Flow Graph Type
 requireTypeByName v = do
   env <- graphTypes <$> getState
   case M.lookup v env of
     Nothing -> fail $ "variable not bound in graph schema: " ++ unName v ++ ". Schema: "
       ++ L.intercalate ", " (unName <$> M.keys env)
-    Just s -> pure s -- instantiate s
+    Just s -> instantiate s
+
+rewriteAnnotation :: Subst -> Kv -> Flow Graph Kv
+rewriteAnnotation subst ann = do
+  mtyp <- getType ann
+  return $ setType (substituteTypeVariables subst <$> mtyp) ann
 
 rewriteTypeAnnotationsOnTerms :: (Type -> Type) -> Term -> Flow Graph Term
 rewriteTypeAnnotationsOnTerms f = rewriteTermM mapExpr
@@ -477,28 +489,6 @@ rewriteTypeAnnotationsOnTerms f = rewriteTermM mapExpr
           Nothing -> TermAnnotated <$> (Annotated <$> recurse term1 <*> pure ann)
           Just typ -> TermAnnotated <$> (Annotated <$> recurse term1 <*> pure (setType (Just $ f typ) ann))
       _ -> recurse term
-
-sortGraphElements :: Graph -> Flow Graph [Element]
-sortGraphElements g = do
-    annotated <- S.fromList . Y.catMaybes <$> (CM.mapM ifAnnotated $ M.elems els)
-    let adjList = (toAdj annotated) <$> M.elems els
-    case topologicalSort adjList of
-      Left comps -> fail $ "cyclical dependency not resolved through annotations: " ++ L.intercalate ", " (unName <$> L.head comps)
-      Right names -> return $ Y.catMaybes ((\n -> M.lookup n els) <$> names)
-  where
-    els = graphElements g
-    ifAnnotated el = do
-      mtyp <- getAnnotatedType $ elementData el
-      return $ case mtyp of
-        Nothing -> Nothing
-        Just _ -> Just $ elementName el
-    toAdj annotated el = (elementName el, deps)
-      where
-        deps = L.filter isNotAnnotated $ L.filter isElName $ S.toList $ freeVariablesInTerm $ elementData el
-        -- Ignore free variables which are not valid element references
-        isElName name = M.member name els
-        -- No need for an inference dependency on an element which is already annotated with a type
-        isNotAnnotated name = not $ S.member name annotated
 
 -- | Expands a type reference like "Pair" to an application type like (Pair a b) using fresh type variables,
 --   depending on whether "Pair" resolves to a forall type like forall a b. record_Pair{fst: a, snd: b}
@@ -519,6 +509,12 @@ withBinding n t = withEnvironment (M.insert n t)
 
 withBindings :: M.Map Name Type -> Flow Graph a -> Flow Graph a
 withBindings bindings = withEnvironment (\e -> M.union bindings e)
+
+withTempBindings :: [Name] -> ((M.Map Name Type) -> Flow Graph a) -> Flow Graph a
+withTempBindings names f = do
+  tempVariableNames <- CM.replicateM (L.length names) freshName
+  let bindings = M.fromList $ L.zip names (TypeVariable <$> tempVariableNames)
+  withBindings bindings $ f bindings
 
 withEnvironment :: (M.Map Name Type -> M.Map Name Type) -> Flow Graph a -> Flow Graph a
 withEnvironment m flow = do

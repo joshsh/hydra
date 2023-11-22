@@ -29,6 +29,19 @@ freshName = temporaryVariable <$> nextCount "hyInf"
 freshTypeVariable :: Flow Graph Type
 freshTypeVariable = TypeVariable <$> freshName
 
+-- | Create a copy of a type in which all bound type variables are replaced with fresh variables.
+--   Replacing variables prevents type variables from being reused across multiple instantiations of a primitive
+--   or occurrences of a named type, or from conflation of type variables across primitives or elements,
+--   either of which could lead to false unification.
+instantiate :: Type -> Flow Graph Type
+instantiate t = do
+    subst <- M.fromList <$> (CM.mapM toPair $ boundTypeVariablesOf t)
+    return $ replaceTypeVariables subst t
+  where
+    toPair v = do
+      v' <- freshName
+      return (v, v')
+
 isTemporaryVariable :: Name -> Bool
 isTemporaryVariable (Name s) = L.take 3 s == "tv_"
 
@@ -38,18 +51,6 @@ normalVariables = normalVariable <$> [0..]
 -- | Type variable naming convention follows Haskell: t0, t1, etc.
 normalVariable :: Int -> Name
 normalVariable i = Name $ "t" ++ show i
-
--- | Replacing variables prevents type variables from being reused across multiple instantiations of a primitive
---   or occurrences of a named type, or from conflation of type variables across primitives or elements,
---   either of which could lead to false unification.
-replaceBoundTypeVariables :: Type -> Flow Graph Type
-replaceBoundTypeVariables t = do
-    subst <- M.fromList <$> (CM.mapM toPair $ boundTypeVariablesOf t)
-    return $ replaceTypeVariables subst t
-  where
-    toPair v = do
-      v' <- freshName
-      return (v, v')
 
 replaceTypeVariables :: M.Map Name Name -> Type -> Type
 replaceTypeVariables subst = rewriteType $ \recurse t -> case recurse t of

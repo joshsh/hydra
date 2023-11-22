@@ -40,7 +40,7 @@ import qualified Data.Maybe as Y
 
 
 dereferenceType :: Name -> Flow Graph (Maybe Type)
-dereferenceType name = do
+dereferenceType name = withTrace ("dereference" ++ unName name) $ do
   mel <- dereferenceElement name
   case mel of
     Nothing -> return Nothing
@@ -52,7 +52,7 @@ elementAsTypedTerm el = do
   return $ TypedTerm typ (elementData el)
 
 fieldTypes :: Type -> Flow Graph (M.Map FieldName Type)
-fieldTypes t = case stripType t of
+fieldTypes t = withTrace "field types" $ case stripType t of
     TypeLambda (LambdaType _ body) -> fieldTypes body
     TypeRecord rt -> pure $ toMap $ rowTypeFields rt
     TypeUnion rt -> pure $ toMap $ rowTypeFields rt
@@ -75,7 +75,7 @@ isSerializable el = do
 
 -- | Find dependency namespaces in various dimensions of a term: va
 moduleDependencyNamespaces :: Bool -> Bool -> Bool -> Bool -> Module -> Flow Graph (S.Set Namespace)
-moduleDependencyNamespaces withVars withPrims withNoms withSchema mod = do
+moduleDependencyNamespaces withVars withPrims withNoms withSchema mod = withTrace "dependency namespaces" $ do
     allNames <- S.unions <$> (CM.mapM elNames $ moduleElements mod)
     let namespaces = S.fromList $ Y.catMaybes (namespaceOfEager <$> S.toList allNames)
     return $ S.delete (moduleNamespace mod) namespaces
@@ -94,15 +94,15 @@ moduleDependencyNamespaces withVars withPrims withNoms withSchema mod = do
 
 -- | Resolve a name to the type of the corresponding primitive, replacing any bound type variables with temporary variables
 requirePrimitiveType :: Name -> Flow Graph Type
-requirePrimitiveType name = (primitiveType <$> requirePrimitive name) >>= replaceBoundTypeVariables
+requirePrimitiveType name = (primitiveType <$> requirePrimitive name) >>= instantiate
 
 requireType :: Name -> Flow Graph Type
 requireType name = withTrace ("require type " ++ unName name) $
-  requireElement name >>= (coreDecodeType . elementData) >>= replaceBoundTypeVariables
+  requireElement name >>= (coreDecodeType . elementData) >>= instantiate
 
 -- TODO: remove this function once TermAdapters no longer needs it
 resolveType :: Type -> Flow Graph (Maybe Type)
-resolveType typ = case stripType typ of
+resolveType typ = withTrace "resolve type" $ case stripType typ of
     TypeVariable name -> withSchemaContext $ do
       mterm <- resolveTerm name
       case mterm of
@@ -145,7 +145,7 @@ toWrappedType name typ = case stripType typ of
 --     _ -> fail $ "expected wrapped type for " ++ unName name ++ " but got " ++ show typ
 
 typeDependencies :: Name -> Flow Graph (M.Map Name Type)
-typeDependencies name = deps (S.fromList [name]) M.empty
+typeDependencies name = withTrace ("dependencies of " ++ unName name) $ deps (S.fromList [name]) M.empty
   where
     deps seeds names = if S.null seeds
         then return names

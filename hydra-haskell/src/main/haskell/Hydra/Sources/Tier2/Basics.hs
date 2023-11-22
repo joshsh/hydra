@@ -377,13 +377,7 @@ isTypeDef :: Definition (Type -> Bool)
 isTypeDef = basicsDefinition "isType" $
   function typeT booleanT $
   lambda "t" $ (match _Type (Just false) [
-      Case _Type_application --> lambda "a" $
-        ref isTypeDef @@ (project _ApplicationType _ApplicationType_function @@ var "a"),
-      Case _Type_lambda --> lambda "l" $
-        ref isTypeDef @@ (project _LambdaType _LambdaType_body @@ var "l"),
-      Case _Type_union --> lambda "rt" $
-        Equality.equalString @@ (string $ unName _Type) @@ (unwrap _Name @@ (project _RowType _RowType_typeName @@ var "rt"))
---      Case _Type_variable --> constant true
+      Case _Type_variable --> lambda "v" $ Equality.equalString @@ (string $ unName _Type) @@ (unwrap _Name @@ var "v")
     ]) @@ (ref stripTypeDef @@ var "t")
 
 isUnitTermDef :: Definition (Term -> Bool)

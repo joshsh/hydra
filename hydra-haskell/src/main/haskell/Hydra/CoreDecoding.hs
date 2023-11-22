@@ -153,7 +153,7 @@ matchUnion tname pairs term = case stripTerm term of
         Nothing -> fail $ "no matching case for field " ++ show fname
         Just f -> f val
       else unexpected ("injection for type " ++ show tname) $ show term
-    _ -> unexpected ("union with one of {" ++ L.intercalate ", " (unFieldName . fst <$> pairs) ++ "}") $ show term
+    _ -> unexpected ("union of type " ++ unName tname ++ " with one of {" ++ L.intercalate ", " (unFieldName . fst <$> pairs) ++ "}") $ show term
   where
     mapping = M.fromList pairs
 
