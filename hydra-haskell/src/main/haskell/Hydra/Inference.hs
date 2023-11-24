@@ -332,37 +332,76 @@ inferGraphTypes = getState >>= annotateGraph
 
 inferLetType :: Let -> Flow Graph Inferred
 inferLetType (Let bindingMap env) = do
-    (pairs, (Inferred ienv typ constraints)) <- inferRecursive ordered
+--    (pairs, (Inferred ienv typ constraints)) <- inferRecursive ordered
+    (pairs, (Inferred ienv typ constraints)) <- inferComponents orderedComponents
     return $ yieldTerm (TermLet $ Let (M.fromList pairs) ienv) typ constraints
   where
-    ordered = fmap toPair (L.concat $ topologicalSortComponents (depsOf <$> (M.toList bindingMap)))
+--    ordered = fmap toPair (L.concat $ topologicalSortComponents (depsOf <$> (M.toList bindingMap)))
+--      where
+--        keys = S.fromList $ M.keys bindingMap
+--        depsOf (name, term) = (name, if hasTypeAnnotation term
+--          then []
+--          else S.toList (S.intersection keys $ freeVariablesInTerm term))
+--        toPair name = (name, Y.fromMaybe (Terms.string "Impossible!") $ M.lookup name bindingMap)
+--
+    orderedComponents = fmap (fmap toPair) (topologicalSortComponents (depsOf <$> (M.toList bindingMap)))
       where
         keys = S.fromList $ M.keys bindingMap
         depsOf (name, term) = (name, if hasTypeAnnotation term
           then []
           else S.toList (S.intersection keys $ freeVariablesInTerm term))
         toPair name = (name, Y.fromMaybe (Terms.string "Impossible!") $ M.lookup name bindingMap)
-    inferRecursive bindings = case bindings of
+    inferComponents components = case components of
       [] -> do
         ienv <- infer env
         return ([], ienv)
-      ((name, term):rest) -> withTrace ("inferring type of " ++ unName name) $ do
---        if name == Name "hydra/grammar.LabeledPattern"
-----          then fail $ "term: " ++ showTerm term
-----          then fail $ "term: " ++ show term
---            then fail $ "ordered bindings: " ++ show (unName . fst <$> ordered)
---          else pure ()
-        mtyp <- getAnnotatedType term
-        tempType <- case mtyp of
-          Just t -> pure t
-          Nothing -> TypeVariable <$> freshName
-        withBinding name tempType $ do
-          inf <- infer term
-          let infType = inferredType inf
-          let infTerm = inferredTerm inf
-          (restPairs, Inferred ienv typ restConstraints) <- withBinding name infType $ inferRecursive rest
-          let constraints = [(tempType, infType)] ++ (inferredConstraints inf) ++ restConstraints
-          return $ (((name, infTerm):restPairs), Inferred ienv typ constraints)
+      (bindings:rest) -> inferMutuallyRecursiveBindings bindings rest
+--    inferSingletonBinding (name, term) rest = do
+--        mtyp <- getAnnotatedType term
+--        tempType <- case mtyp of
+--          Just t -> pure t
+--          Nothing -> TypeVariable <$> freshName
+--        withBinding name tempType $ do
+--          inf <- infer term
+--          let infType = inferredType inf
+--          let infTerm = inferredTerm inf
+--          (restPairs, Inferred ienv typ restConstraints) <- withBinding name infType $ inferComponents rest
+--          let constraints = [(tempType, infType)] ++ (inferredConstraints inf) ++ restConstraints
+--          return $ (((name, infTerm):restPairs), Inferred ienv typ constraints)
+--
+    inferMutuallyRecursiveBindings bindings rest = do
+      tempTypes <- CM.replicateM (L.length bindings) (TypeVariable <$> freshName)
+      let tempBindings = M.fromList $ L.zip (fst <$> bindings) tempTypes
+      withBindings tempBindings $ do
+        (restPairs, Inferred ienv typ restConstraints) <- inferComponents rest
+        infs <- CM.mapM infer (snd <$> bindings)
+        let tempConstraints = L.zip tempTypes (inferredType <$> infs)
+        let constraints = tempConstraints ++ L.concat (inferredConstraints <$> infs) ++ restConstraints
+        return $ (L.zip (fst <$> bindings) (inferredTerm <$> infs) ++ restPairs, Inferred ienv typ constraints)
+
+
+
+--    inferRecursive bindings = case bindings of
+--      [] -> do
+--        ienv <- infer env
+--        return ([], ienv)
+--      ((name, term):rest) -> withTrace ("inferring type of " ++ unName name) $ do
+----        if name == Name "hydra/grammar.LabeledPattern"
+------          then fail $ "term: " ++ showTerm term
+------          then fail $ "term: " ++ show term
+----            then fail $ "ordered bindings: " ++ show (unName . fst <$> ordered)
+----          else pure ()
+--        mtyp <- getAnnotatedType term
+--        tempType <- case mtyp of
+--          Just t -> pure t
+--          Nothing -> TypeVariable <$> freshName
+--        withBinding name tempType $ do
+--          inf <- infer term
+--          let infType = inferredType inf
+--          let infTerm = inferredTerm inf
+--          (restPairs, Inferred ienv typ restConstraints) <- withBinding name infType $ inferRecursive rest
+--          let constraints = [(tempType, infType)] ++ (inferredConstraints inf) ++ restConstraints
+--          return $ (((name, infTerm):restPairs), Inferred ienv typ constraints)
 
 -- | Add inferred type annotations to a single term, considered as a standalone graph
 inferTermType :: Term -> Flow Graph Term

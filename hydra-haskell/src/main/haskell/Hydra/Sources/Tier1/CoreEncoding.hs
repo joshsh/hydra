@@ -155,9 +155,13 @@ coreEncodeApplicationDef = coreEncodingDefinition "Application" applicationT $
 
 coreEncodeApplicationTypeDef :: Definition (ApplicationType -> Term)
 coreEncodeApplicationTypeDef = coreEncodingDefinition "ApplicationType" applicationTypeT $
-  lambda "at" $ encodedRecord _ApplicationType [
-    (_ApplicationType_function, ref coreEncodeTypeDef @@ (project _ApplicationType _ApplicationType_function @@ var "at")),
-    (_ApplicationType_argument, ref coreEncodeTypeDef @@ (project _ApplicationType _ApplicationType_argument @@ var "at"))]
+--  lambda "at" $ encodedRecord _ApplicationType [
+--    (_ApplicationType_function, ref coreEncodeTypeDef @@ (project _ApplicationType _ApplicationType_function @@ var "at")),
+--    (_ApplicationType_argument, ref coreEncodeTypeDef @@ (project _ApplicationType _ApplicationType_argument @@ var "at"))]
+  lambda "at" $ variant _Term _Term_application $
+     record _Application [
+       Field _Application_function $ ref coreEncodeTypeDef @@ (project _ApplicationType _ApplicationType_function @@ var "at"),
+       Field _Application_argument $ ref coreEncodeTypeDef @@ (project _ApplicationType _ApplicationType_argument @@ var "at")]
 
 coreEncodeCaseStatementDef :: Definition (CaseStatement -> Term)
 coreEncodeCaseStatementDef = coreEncodingDefinition "CaseStatement" caseStatementT $
@@ -406,7 +410,8 @@ coreEncodeTypeDef = coreEncodingDefinition "Type" typeT $
     Field _Type_annotated $ lambda "v" $ variant _Term _Term_annotated $ record _Annotated [
       Field _Annotated_subject $ ref coreEncodeTypeDef @@ (project _Annotated _Annotated_subject @@ var "v"),
       Field _Annotated_annotation $ project _Annotated _Annotated_annotation @@ var "v"],
-    csref _Type_application coreEncodeApplicationTypeDef,
+--    csref _Type_application coreEncodeApplicationTypeDef,
+    Field _Type_application $ ref coreEncodeApplicationTypeDef,
     csref _Type_function coreEncodeFunctionTypeDef,
 --    csref _Type_lambda coreEncodeLambdaTypeDef,
     Field _Type_lambda $ ref coreEncodeLambdaTypeDef,

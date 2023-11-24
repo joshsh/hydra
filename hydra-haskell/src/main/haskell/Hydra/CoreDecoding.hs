@@ -30,10 +30,12 @@ import qualified Data.Set as S
 import qualified Data.Maybe as Y
 
 
-coreDecodeApplicationType :: Term -> Flow Graph ApplicationType
-coreDecodeApplicationType = matchRecord $ \m -> ApplicationType
-  <$> getField m _ApplicationType_function coreDecodeType
-  <*> getField m _ApplicationType_argument coreDecodeType
+--coreDecodeApplicationType :: Term -> Flow Graph ApplicationType
+--coreDecodeApplicationType = matchRecord $ \m -> ApplicationType
+--  <$> getField m _ApplicationType_function coreDecodeType
+--  <*> getField m _ApplicationType_argument coreDecodeType
+coreDecodeApplicationType :: Application -> Flow Graph ApplicationType
+coreDecodeApplicationType (Application lhs rhs) = ApplicationType <$> coreDecodeType lhs <*> coreDecodeType rhs
 
 coreDecodeFieldName :: Term -> Flow Graph FieldName
 coreDecodeFieldName term = FieldName <$> (Expect.wrap _FieldName term >>= Expect.string)
@@ -111,11 +113,12 @@ coreDecodeString = Expect.string . stripTerm
 coreDecodeType :: Term -> Flow Graph Type
 coreDecodeType dat = case dat of
   TermAnnotated (Annotated term ann) -> (\t -> TypeAnnotated $ Annotated t ann) <$> coreDecodeType term
-  TermVariable name -> pure $ TypeVariable name
+  TermApplication app -> TypeApplication <$> coreDecodeApplicationType app
   TermFunction (FunctionLambda (Lambda v body)) -> TypeLambda <$> (LambdaType <$> pure v <*> coreDecodeType body)
+  TermVariable name -> pure $ TypeVariable name
   _ -> matchUnion _Type [
 --    (_Type_annotated, fmap TypeAnnotated . coreDecodeAnnotated),
-    (_Type_application, fmap TypeApplication . coreDecodeApplicationType),
+--    (_Type_application, fmap TypeApplication . coreDecodeApplicationType),
     (_Type_function, fmap TypeFunction . coreDecodeFunctionType),
     (_Type_lambda, fmap TypeLambda . coreDecodeLambdaType),
     (_Type_list, fmap TypeList . coreDecodeType),
@@ -130,7 +133,7 @@ coreDecodeType dat = case dat of
     (_Type_sum, \(TermList types) -> TypeSum <$> (CM.mapM coreDecodeType types)),
     (_Type_union, fmap TypeUnion . coreDecodeRowType),
 --    (_Type_variable, fmap TypeVariable . coreDecodeName),
-    (_Type_variable, fmap TypeVariable . Expect.variable),
+--    (_Type_variable, fmap TypeVariable . Expect.variable),
     (_Type_wrap, fmap TypeWrap . (coreDecodeNominal coreDecodeType))] dat
 
 getField :: M.Map FieldName Term -> FieldName -> (Term -> Flow Graph b) -> Flow Graph b

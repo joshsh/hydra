@@ -13,8 +13,68 @@ import qualified Test.QuickCheck as QC
 import qualified Data.Map as M
 
 
-individualEncoderTestCases :: H.SpecWith ()
-individualEncoderTestCases = do
+checkAnnotationsArePreserved :: H.SpecWith ()
+checkAnnotationsArePreserved = do
+  H.describe "Check that metadata is preserved through a type-encoding round trip" $ do
+
+    H.it "Basic metadata" $ do
+      shouldSucceedWith
+        (coreDecodeType $ coreEncodeType annotatedStringType)
+        annotatedStringType
+  where
+    annotatedStringType :: Type
+    annotatedStringType = TypeAnnotated $ Annotated Types.string $ Kv $ M.fromList [
+      (kvDescription, Terms.string "The string literal type"),
+      (kvType, coreEncodeType $ TypeVariable _Type)]
+
+checkDecodingIndividualTypes :: H.SpecWith ()
+checkDecodingIndividualTypes = do
+  H.describe "Individual decoder test cases" $ do
+
+    H.it "float32 literal type" $ do
+      shouldSucceedWith
+        (coreDecodeLiteralType
+          (variant _LiteralType _LiteralType_float $ unitVariant _FloatType _FloatType_float32))
+        (LiteralTypeFloat FloatTypeFloat32)
+
+    H.it "float32 type" $ do
+      shouldSucceedWith
+        (coreDecodeType
+          (variant _Type _Type_literal $ variant _LiteralType _LiteralType_float $ unitVariant _FloatType _FloatType_float32))
+        Types.float32
+
+    H.it "union type" $ do
+      shouldSucceedWith
+        (coreDecodeType $
+          variant _Type _Type_union $ record _RowType [
+            Field _RowType_typeName $ wrap _Name $ string (unName testTypeName),
+            Field _RowType_extends $ optional Nothing,
+            Field _RowType_fields $
+              list [
+                record _FieldType [
+                  Field _FieldType_name $ wrap _FieldName $ string "left",
+                  Field _FieldType_type $ variant _Type _Type_literal $ variant _LiteralType _LiteralType_integer $
+                    unitVariant _IntegerType _IntegerType_int64],
+                record _FieldType [
+                  Field _FieldType_name $ wrap _FieldName $ string "right",
+                  Field _FieldType_type $ variant _Type _Type_literal $ variant _LiteralType _LiteralType_float $
+                    unitVariant _FloatType _FloatType_float64]]])
+          (TypeUnion $ RowType testTypeName Nothing [
+            Types.field "left" Types.int64,
+            Types.field "right" Types.float64])
+
+checkDecodingInvalidTerms :: H.SpecWith ()
+checkDecodingInvalidTerms = do
+  H.describe "Decode invalid terms" $ do
+
+    H.it "Try to decode a term with wrong fields for Type" $ do
+      shouldFail (coreDecodeType $ variant untyped (FieldName "unknownField") $ list [])
+
+    H.it "Try to decode an incomplete representation of a Type" $ do
+      shouldFail (coreDecodeType $ variant _Type _Type_literal $ unitVariant _LiteralType _LiteralType_integer)
+
+checkEncodingIndividualTypes :: H.SpecWith ()
+checkEncodingIndividualTypes = do
   H.describe "Individual encoder test cases" $ do
 
     H.it "string literal type" $ do
@@ -51,85 +111,49 @@ individualEncoderTestCases = do
                   Field _RowType_extends $ optional Nothing,
                   Field _RowType_fields $ list []]]]])
 
-individualDecoderTestCases :: H.SpecWith ()
-individualDecoderTestCases = do
-  H.describe "Individual decoder test cases" $ do
+checkRoundTripsFromMonomorphicTypes :: H.SpecWith ()
+checkRoundTripsFromMonomorphicTypes = do
+  H.describe "Check that encoding, then decoding randomly generated monomorphic types is a no-op" $
 
-    H.it "float32 literal type" $ do
-      shouldSucceedWith
-        (coreDecodeLiteralType
-          (variant _LiteralType _LiteralType_float $ unitVariant _FloatType _FloatType_float32))
-        (LiteralTypeFloat FloatTypeFloat32)
+    H.it "Try random types" $ QC.property roundTripSucceeds
 
-    H.it "float32 type" $ do
-      shouldSucceedWith
-        (coreDecodeType
-          (variant _Type _Type_literal $ variant _LiteralType _LiteralType_float $ unitVariant _FloatType _FloatType_float32))
-        Types.float32
+checkRoundTripsFromPolymorphicTypes :: H.SpecWith ()
+checkRoundTripsFromPolymorphicTypes = do
+  -- Note: type generation does not yet support polymorphic types
+  H.describe "Check that encoding, then decoding individual polymorphic types is a no-op" $ do
 
-    H.it "union type" $ do
-      shouldSucceedWith
-        (coreDecodeType $
-          variant _Type _Type_union $ record _RowType [
-            Field _RowType_typeName $ wrap _Name $ string (unName testTypeName),
-            Field _RowType_extends $ optional Nothing,
-            Field _RowType_fields $
-              list [
-                record _FieldType [
-                  Field _FieldType_name $ wrap _FieldName $ string "left",
-                  Field _FieldType_type $ variant _Type _Type_literal $ variant _LiteralType _LiteralType_integer $
-                    unitVariant _IntegerType _IntegerType_int64],
-                record _FieldType [
-                  Field _FieldType_name $ wrap _FieldName $ string "right",
-                  Field _FieldType_type $ variant _Type _Type_literal $ variant _LiteralType _LiteralType_float $
-                    unitVariant _FloatType _FloatType_float64]]])
-          (TypeUnion $ RowType testTypeName Nothing [
-            Types.field "left" Types.int64,
-            Types.field "right" Types.float64])
+      H.it "Try unbound type variables" $ roundTripSucceeds $
+        Types.var "MyType"
 
-decodeInvalidTerms :: H.SpecWith ()
-decodeInvalidTerms = do
-  H.describe "Decode invalid terms" $ do
+      H.it "Try function types with unbound type variables" $ roundTripSucceeds $
+        Types.function (Types.var "a") (Types.var "b")
 
-    H.it "Try to decode a term with wrong fields for Type" $ do
-      shouldFail (coreDecodeType $ variant untyped (FieldName "unknownField") $ list [])
+      H.describe "Try 'forall' (lambda) types" $ do
+        H.it "test #1" $ roundTripSucceeds $
+          Types.lambda "a" $ Types.list $ Types.var "a"
+        H.it "test #2" $ roundTripSucceeds $
+          Types.lambda "a" $ Types.lambda "b" $ Types.function (Types.var "a") (Types.var "b")
+        -- Note: we do not test type lambdas in subtypes (except on the left hand side of applications),
+        --       as these are not meaningful in Hydra
 
-    H.it "Try to decode an incomplete representation of a Type" $ do
-      shouldFail (coreDecodeType $ variant _Type _Type_literal $ unitVariant _LiteralType _LiteralType_integer)
+      H.describe "Try type applications" $ do
+        H.it "test #1" $ roundTripSucceeds $
+          Types.apply (Types.var "Type1") (Types.var "Type2")
+        H.it "test #2" $ roundTripSucceeds $
+          Types.apply (Types.apply (Types.var "Type1") (Types.var "Type2")) (Types.var "Type3")
+        H.it "test #3" $ roundTripSucceeds $
+          Types.apply (Types.apply (Types.var "Type1") (Types.var "Type1")) (Types.var "Type1")
+        H.it "test #4" $ roundTripSucceeds $
+          Types.apply (Types.lambda "a" $ Types.list $ Types.var "a") Types.int32
 
-metadataIsPreserved :: H.SpecWith ()
-metadataIsPreserved = do
-  H.describe "Check that metadata is preserved through a type-encoding round trip" $ do
-
-    H.it "Basic metadata" $ do
-      shouldSucceedWith
-        (coreDecodeType $ coreEncodeType annotatedStringType)
-        annotatedStringType
-  where
-    annotatedStringType :: Type
-    annotatedStringType = TypeAnnotated $ Annotated Types.string $ Kv $ M.fromList [
-      (kvDescription, Terms.string "The string literal type"),
-      (kvType, coreEncodeType $ TypeVariable _Type)]
-
-testRoundTripsFromType :: H.SpecWith ()
-testRoundTripsFromType = do
-  H.describe "Check that encoding, then decoding random types is a no-op" $ do
-
-    H.it "Try random types" $
-      QC.property $ \typ ->
-        shouldSucceedWith
-          (coreDecodeType $ coreEncodeType typ)
-          typ
-
-    H.it "Try type variables" $
-      shouldSucceedWith
-        (coreDecodeType $ coreEncodeType $ TypeVariable $ Name "MyType")
-        (TypeVariable $ Name "MyType")
+roundTripSucceeds :: Type -> H.Expectation
+roundTripSucceeds typ = shouldSucceedWith (coreDecodeType $ coreEncodeType typ) typ
 
 spec :: H.Spec
 spec = do
-  individualEncoderTestCases
-  individualDecoderTestCases
-  decodeInvalidTerms
-  metadataIsPreserved
-  testRoundTripsFromType
+  checkAnnotationsArePreserved
+  checkDecodingIndividualTypes
+  checkDecodingInvalidTerms
+  checkEncodingIndividualTypes
+  checkRoundTripsFromMonomorphicTypes
+  checkRoundTripsFromPolymorphicTypes
