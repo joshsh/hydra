@@ -610,7 +610,7 @@ checkUserProvidedTypes = H.describe "Check that user-provided type annotations a
           ]) $ Terms.pair (var "x") (var "y"))
         ["p", "k", "v"] (Types.pair (Types.list $ Types.var "p") (Types.map (Types.var "k") (Types.var "v")))
 
-    H.describe "Check that type variables in subterm annotations are *not* preserved" $ do
+    H.describe "Check that type variables in subterm annotations are also preserved" $ do
       H.it "test #1" $ do
         expectPolytype
           (typed (Types.function (Types.var "a") (Types.var "a")) $ lambda "x" $ var "x")
@@ -622,8 +622,7 @@ checkUserProvidedTypes = H.describe "Check that user-provided type annotations a
       H.it "test #3" $ do
         expectPolytype
           (lambda "x" $ typed (Types.var "a") $ var "x")
-          ["t0"] (Types.function (Types.var "t0") (Types.var "t0"))
-
+          ["a"] (Types.function (Types.var "a") (Types.var "a"))
   where
     pretypedEmptyList = typed (Types.list $ Types.var "p") $ list []
     pretypedEmptyMap = typed (Types.map (Types.var "k") (Types.var "v")) $ TermMap M.empty
