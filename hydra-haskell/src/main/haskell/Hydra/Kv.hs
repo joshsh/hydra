@@ -147,6 +147,12 @@ putAttr key val = Flow q
   where
     q s0 t0 = FlowState (Just ()) s0 (t0 {traceOther = M.insert key val $ traceOther t0})
 
+removeAnnotation :: String -> Kv -> Kv
+removeAnnotation key = setAnnotation key Nothing
+
+removeType :: Kv -> Kv
+removeType = removeAnnotation kvType
+
 setAnnotation :: String -> Y.Maybe Term -> Kv -> Kv
 setAnnotation key val (Kv m) = Kv $ M.alter (const val) key m
 

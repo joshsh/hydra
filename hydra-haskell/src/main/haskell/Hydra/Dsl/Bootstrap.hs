@@ -61,7 +61,7 @@ typeDefinitionElement name typ = Element {
     elementName = name,
     elementData = dataTerm}
   where
-    dataTerm = coreEncodeType typ
---    -- These type annotations allow type inference to proceed despite cyclic type definitions, e.g. in Hydra Core
---    dataTerm = normalizeTermAnnotations $ TermAnnotated $ Annotated (coreEncodeType typ) $ Kv $ M.fromList [(kvType, schemaTerm)]
---    schemaTerm = TermVariable _Type
+    -- We annotate the encoded type with the type hydra/core.Type, as the inferred type will actually be the *kind*.
+    -- E.g. the inferred type of the Name type is just Type, but the inferred type of the Nominal type is Type -> Type,
+    -- as it has a type parameter.
+    dataTerm = TermAnnotated $ Annotated (coreEncodeType typ) $ Kv $ M.fromList [(kvType, TermVariable _Type)]

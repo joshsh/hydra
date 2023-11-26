@@ -73,7 +73,7 @@ isSerializable el = do
   where
     variants typ = typeVariant <$> foldOverType TraversalOrderPre (\m t -> t:m) [] typ
 
--- | Find dependency namespaces in various dimensions of a term: va
+-- | Find dependency namespaces in various dimensions of a term
 moduleDependencyNamespaces :: Bool -> Bool -> Bool -> Bool -> Module -> Flow Graph (S.Set Namespace)
 moduleDependencyNamespaces withVars withPrims withNoms withSchema mod = withTrace "dependency namespaces" $ do
     allNames <- S.unions <$> (CM.mapM elNames $ moduleElements mod)

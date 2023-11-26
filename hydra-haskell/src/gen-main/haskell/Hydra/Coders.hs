@@ -91,7 +91,6 @@ _LanguageConstraints_types = (Core.FieldName "types")
 -- | The unique name of a language
 newtype LanguageName = 
   LanguageName {
-    -- | The unique name of a language
     unLanguageName :: String}
   deriving (Eq, Ord, Read, Show)
 
