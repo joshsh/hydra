@@ -33,17 +33,9 @@ coreEncodeApplication app = (Core.TermRecord (Core.Record {
       Core.fieldTerm = (coreEncodeTerm (Core.applicationArgument app))}]}))
 
 coreEncodeApplicationType :: (Core.ApplicationType -> Core.Term)
-coreEncodeApplicationType (Core.ApplicationType lhs rhs) = Core.TermApplication $
-  Core.Application (coreEncodeType lhs) (coreEncodeType rhs)
---coreEncodeApplicationType at = (Core.TermRecord (Core.Record {
---  Core.recordTypeName = (Core.Name "hydra/core.ApplicationType"),
---  Core.recordFields = [
---    Core.Field {
---      Core.fieldName = (Core.FieldName "function"),
---      Core.fieldTerm = (coreEncodeType (Core.applicationTypeFunction at))},
---    Core.Field {
---      Core.fieldName = (Core.FieldName "argument"),
---      Core.fieldTerm = (coreEncodeType (Core.applicationTypeArgument at))}]}))
+coreEncodeApplicationType at = (Core.TermApplication (Core.Application {
+  Core.applicationFunction = (coreEncodeType (Core.applicationTypeFunction at)),
+  Core.applicationArgument = (coreEncodeType (Core.applicationTypeArgument at))}))
 
 coreEncodeCaseStatement :: (Core.CaseStatement -> Core.Term)
 coreEncodeCaseStatement cs = (Core.TermRecord (Core.Record {
@@ -329,15 +321,9 @@ coreEncodeLambda l = (Core.TermRecord (Core.Record {
       Core.fieldTerm = (coreEncodeTerm (Core.lambdaBody l))}]}))
 
 coreEncodeLambdaType :: (Core.LambdaType -> Core.Term)
-coreEncodeLambdaType lt = (Core.TermRecord (Core.Record {
-  Core.recordTypeName = (Core.Name "hydra/core.LambdaType"),
-  Core.recordFields = [
-    Core.Field {
-      Core.fieldName = (Core.FieldName "parameter"),
-      Core.fieldTerm = (coreEncodeName (Core.lambdaTypeParameter lt))},
-    Core.Field {
-      Core.fieldName = (Core.FieldName "body"),
-      Core.fieldTerm = (coreEncodeType (Core.lambdaTypeBody lt))}]}))
+coreEncodeLambdaType lt = (Core.TermFunction (Core.FunctionLambda (Core.Lambda {
+  Core.lambdaParameter = (Core.lambdaTypeParameter lt),
+  Core.lambdaBody = (coreEncodeType (Core.lambdaTypeBody lt))})))
 
 coreEncodeLet :: (Core.Let -> Core.Term)
 coreEncodeLet l =  
@@ -598,27 +584,13 @@ coreEncodeType x = case x of
   Core.TypeAnnotated v -> (Core.TermAnnotated (Core.Annotated {
     Core.annotatedSubject = (coreEncodeType (Core.annotatedSubject v)),
     Core.annotatedAnnotation = (Core.annotatedAnnotation v)}))
---  Core.TypeApplication v -> (Core.TermUnion (Core.Injection {
---    Core.injectionTypeName = (Core.Name "hydra/core.Type"),
---    Core.injectionField = Core.Field {
---      Core.fieldName = (Core.FieldName "application"),
---      Core.fieldTerm = (coreEncodeApplicationType v)}}))
-  Core.TypeApplication (Core.ApplicationType lhs rhs) -> (Core.TermApplication (Core.Application {
-    Core.applicationFunction = (coreEncodeType lhs),
-    Core.applicationArgument = (coreEncodeType rhs)}))
+  Core.TypeApplication v -> (coreEncodeApplicationType v)
   Core.TypeFunction v -> (Core.TermUnion (Core.Injection {
     Core.injectionTypeName = (Core.Name "hydra/core.Type"),
     Core.injectionField = Core.Field {
       Core.fieldName = (Core.FieldName "function"),
       Core.fieldTerm = (coreEncodeFunctionType v)}}))
---  Core.TypeLambda v -> (Core.TermUnion (Core.Injection {
---    Core.injectionTypeName = (Core.Name "hydra/core.Type"),
---    Core.injectionField = Core.Field {
---      Core.fieldName = (Core.FieldName "lambda"),
---      Core.fieldTerm = (coreEncodeLambdaType v)}}))
-  Core.TypeLambda (Core.LambdaType v body) -> (Core.TermFunction (Core.FunctionLambda (Core.Lambda {
-    Core.lambdaParameter = v,
-    Core.lambdaBody = coreEncodeType body})))
+  Core.TypeLambda v -> (coreEncodeLambdaType v)
   Core.TypeList v -> (Core.TermUnion (Core.Injection {
     Core.injectionTypeName = (Core.Name "hydra/core.Type"),
     Core.injectionField = Core.Field {
@@ -669,12 +641,7 @@ coreEncodeType x = case x of
     Core.injectionField = Core.Field {
       Core.fieldName = (Core.FieldName "union"),
       Core.fieldTerm = (coreEncodeRowType v)}}))
-  Core.TypeVariable v -> Core.TermVariable v
---  Core.TypeVariable v -> (Core.TermUnion (Core.Injection {
---    Core.injectionTypeName = (Core.Name "hydra/core.Type"),
---    Core.injectionField = Core.Field {
---      Core.fieldName = (Core.FieldName "variable"),
---      Core.fieldTerm = (coreEncodeName v)}}))
+  Core.TypeVariable v -> (Core.TermVariable v)
   Core.TypeWrap v -> (Core.TermUnion (Core.Injection {
     Core.injectionTypeName = (Core.Name "hydra/core.Type"),
     Core.injectionField = Core.Field {
