@@ -36,31 +36,32 @@ tier1Definition = definitionInModule hydraTier1Module
 
 hydraTier1Module :: Module
 hydraTier1Module = Module (Namespace "hydra/tier1") elements
-    [hydraGraphModule, hydraMantleModule, hydraComputeModule, hydraStripModule, hydraConstantsModule, hydraStripModule] $
+    [hydraStripModule] $
+--    [hydraGraphModule, hydraMantleModule, hydraComputeModule, hydraStripModule, hydraConstantsModule] $
     Just ("A module for miscellaneous tier-1 functions and constants.")
   where
    elements = [
-     el floatValueToBigfloatDef,
-     el integerValueToBigintDef,
-     el isLambdaDef,
-     el unqualifyNameDef,
-     -- Rewriting.hs
-     el foldOverTermDef,
-     el foldOverTypeDef,
-     el freeVariablesInTermDef,
-     el freeVariablesInTypeDef,
-     el subtermsDef,
-     el subtypesDef,
-     -- Flows.hs
-     el emptyTraceDef,
-     el flowSucceedsDef,
-     el fromFlowDef,
-     el mutateTraceDef,
-     el pushErrorDef,
-     el warnDef,
-     el withFlagDef,
-     el withStateDef,
-     el withTraceDef
+--     el floatValueToBigfloatDef,
+--     el integerValueToBigintDef,
+--     el isLambdaDef,
+--     el unqualifyNameDef,
+--     -- Rewriting.hs
+--     el foldOverTermDef,
+--     el foldOverTypeDef,
+--     el freeVariablesInTermDef,
+--     el freeVariablesInTypeDef,
+--     el subtermsDef,
+     el subtypesDef
+--     -- Flows.hs
+--     el emptyTraceDef,
+--     el flowSucceedsDef,
+--     el fromFlowDef,
+--     el mutateTraceDef,
+--     el pushErrorDef,
+--     el warnDef,
+--     el withFlagDef,
+--     el withStateDef,
+--     el withTraceDef
      ]
 
 floatValueToBigfloatDef :: Definition (FloatValue -> Double)
@@ -197,33 +198,68 @@ subtermsDef = tier1Definition "subterms" $
     _Term_variable>>: constant $ list [],
     _Term_wrap>>: lambda "n" $ list [Core.nominalObject @@ var "n"]]
 
+--subtypesDef :: Definition (Type -> [Type])
+--subtypesDef = tier1Definition "subtypes" $
+--  doc "Find the children of a given type expression" $
+----  function typeT (listT typeT) $
+--  match _Type Nothing [
+--    _Type_annotated>>: lambda "at" $ list [Core.annotatedSubject @@ var "at"],
+--    _Type_application>>: lambda "at" $ list [
+--      Core.applicationTypeFunction @@ var "at",
+--      Core.applicationTypeArgument @@ var "at"],
+--    _Type_function>>: lambda "ft" $ list [
+--      Core.functionTypeDomain @@ var "ft",
+--      Core.functionTypeCodomain @@ var "ft"],
+--    _Type_lambda>>: lambda "lt" $ list [Core.lambdaTypeBody @@ var "lt"],
+--    _Type_list>>: lambda "lt" $ list [var "lt"],
+--    _Type_literal>>: constant $ list [],
+--    _Type_map>>: lambda "mt" $ list [
+--      Core.mapTypeKeys @@ var "mt",
+--      Core.mapTypeValues @@ var "mt"],
+--    _Type_optional>>: lambda "ot" $ list [var "ot"],
+--    _Type_product>>: lambda "pt" $ var "pt",
+--    _Type_record>>: lambda "rt" (Lists.map @@ Core.fieldTypeType @@ (Core.rowTypeFields @@ var "rt")),
+--    _Type_set>>: lambda "st" $ list [var "st"],
+--    _Type_stream>>: lambda "st" $ list [var "st"],
+--    _Type_sum>>: lambda "st" $ var "st",
+--    _Type_union>>: lambda "rt" (Lists.map @@ Core.fieldTypeType @@ (Core.rowTypeFields @@ var "rt")),
+--    _Type_variable>>: constant $ list [],
+--    _Type_wrap>>: lambda "nt" $ list [Core.nominalObject @@ var "nt"]]
+
+
+
+
 subtypesDef :: Definition (Type -> [Type])
 subtypesDef = tier1Definition "subtypes" $
-  doc "Find the children of a given type expression" $
-  function typeT (listT typeT) $
-  match _Type Nothing [
-    _Type_annotated>>: lambda "at" $ list [Core.annotatedSubject @@ var "at"],
-    _Type_application>>: lambda "at" $ list [
-      Core.applicationTypeFunction @@ var "at",
-      Core.applicationTypeArgument @@ var "at"],
-    _Type_function>>: lambda "ft" $ list [
-      Core.functionTypeDomain @@ var "ft",
-      Core.functionTypeCodomain @@ var "ft"],
-    _Type_lambda>>: lambda "lt" $ list [Core.lambdaTypeBody @@ var "lt"],
-    _Type_list>>: lambda "lt" $ list [var "lt"],
-    _Type_literal>>: constant $ list [],
-    _Type_map>>: lambda "mt" $ list [
-      Core.mapTypeKeys @@ var "mt",
-      Core.mapTypeValues @@ var "mt"],
-    _Type_optional>>: lambda "ot" $ list [var "ot"],
-    _Type_product>>: lambda "pt" $ var "pt",
-    _Type_record>>: lambda "rt" (Lists.map @@ Core.fieldTypeType @@ (Core.rowTypeFields @@ var "rt")),
-    _Type_set>>: lambda "st" $ list [var "st"],
-    _Type_stream>>: lambda "st" $ list [var "st"],
-    _Type_sum>>: lambda "st" $ var "st",
-    _Type_union>>: lambda "rt" (Lists.map @@ Core.fieldTypeType @@ (Core.rowTypeFields @@ var "rt")),
-    _Type_variable>>: constant $ list [],
-    _Type_wrap>>: lambda "nt" $ list [Core.nominalObject @@ var "nt"]]
+  match (Name "hydra/core.Type") (Just $ list []) [
+--    _Type_annotated>>: lambda "at" $ list [Core.annotatedSubject @@ var "at"],
+--    _Type_application>>: lambda "at" $ list [
+--      Core.applicationTypeFunction @@ var "at",
+--      Core.applicationTypeArgument @@ var "at"],
+--    _Type_function>>: lambda "ft" $ list [
+--      Core.functionTypeDomain @@ var "ft",
+--      Core.functionTypeCodomain @@ var "ft"],
+--    _Type_lambda>>: lambda "lt" $ list [Core.lambdaTypeBody @@ var "lt"],
+--    _Type_list>>: lambda "lt" $ list [var "lt"],
+--    _Type_literal>>: constant $ list []
+--    _Type_map>>: lambda "mt" $ list [
+--      Core.mapTypeKeys @@ var "mt",
+--      Core.mapTypeValues @@ var "mt"],
+--    _Type_optional>>: lambda "ot" $ list [var "ot"],
+--    _Type_product>>: lambda "pt" $ var "pt",
+--    _Type_record>>: lambda "rt" (Lists.map @@ Core.fieldTypeType @@ (Core.rowTypeFields @@ var "rt")),
+--    _Type_set>>: lambda "st" $ list [var "st"],
+--    _Type_stream>>: lambda "st" $ list [var "st"],
+--    _Type_sum>>: lambda "st" $ var "st",
+--    _Type_union>>: lambda "rt" (Lists.map @@ Core.fieldTypeType @@ (Core.rowTypeFields @@ var "rt")),
+--    _Type_variable>>: constant $ list [],
+--    _Type_wrap>>: lambda "nt" $ list [Core.nominalObject @@ var "nt"]
+    ]
+
+
+
+
+
 
 unqualifyNameDef :: Definition (QualifiedName -> Name)
 unqualifyNameDef = tier1Definition "unqualifyName" $
