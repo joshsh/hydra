@@ -347,18 +347,56 @@ inferGraphTypes = getState >>= annotateGraph
       where
         toPair el = (elementName el, el)
 
-inferLetType :: Let -> Flow Graph Inferred
-inferLetType (Let bindingMap env) = do
-  let bindings = M.toList bindingMap
-  tempTypes <- CM.replicateM (L.length bindings) (TypeVariable <$> freshName)
-  withBindings (M.fromList $ L.zip (fst <$> bindings) tempTypes) $ do
-    (Inferred ienv typ envConstraints) <- infer env
-    ielems <- CM.mapM infer (snd <$> bindings)
-    let constraints = envConstraints
-          ++ L.concat (inferredConstraints <$> ielems)
-          ++ L.zip tempTypes (inferredType <$> ielems)
-    let ibindings = L.zip (fst <$> bindings) (inferredTerm <$> ielems)
-    return $ yieldTerm (TermLet $ Let (M.fromList ibindings) ienv) typ constraints
+--inferLetType :: Let -> Flow Graph Inferred
+--inferLetType (Let bindingMap env) = do
+--  let bindings = M.toList bindingMap
+--  tempTypes <- CM.replicateM (L.length bindings) (TypeVariable <$> freshName)
+--  withBindings (M.fromList $ L.zip (fst <$> bindings) tempTypes) $ do
+--    (Inferred ienv typ envConstraints) <- infer env
+--    ielems <- CM.mapM infer (snd <$> bindings)
+--    let constraints = envConstraints
+--          ++ L.concat (inferredConstraints <$> ielems)
+--          ++ L.zip tempTypes (inferredType <$> ielems)
+--    let ibindings = L.zip (fst <$> bindings) (inferredTerm <$> ielems)
+--    return $ yieldTerm (TermLet $ Let (M.fromList ibindings) ienv) typ constraints
+
+
+
+inferLetType = inferLetTypeNew
+
+inferLetTypeNew :: Let -> Flow Graph Inferred
+inferLetTypeNew (Let bindingMap env) = do
+    (Inferred envTerm envType constraints, pairs) <- forComponents orderedComponents
+    return $ yieldTerm (TermLet $ Let (M.fromList pairs) envTerm) envType constraints
+  where
+    bindings = M.toList bindingMap
+    orderedComponents = fmap (fmap toPair) (topologicalSortComponents (depsOf <$> bindings))
+      where
+        keys = S.fromList (fst <$> bindings)
+        depsOf (name, term) = (name, if hasTypeAnnotation term
+          then []
+          else S.toList (S.intersection keys $ freeVariablesInTerm term))
+        toPair name = (name, Y.fromMaybe (Terms.string "Impossible!") $ M.lookup name bindingMap)
+    forComponents comps = case comps of
+      [] -> do
+        ienv <- infer env
+        return (ienv, [])
+      (bindings:rest) -> do
+        typeBindings <- CM.mapM toTypeBinding bindings
+        withBindings (M.fromList typeBindings) $ do
+          (Inferred envTerm envType restConstraints, restPairs) <- forComponents rest
+          ielems <- CM.mapM infer (snd <$> bindings)
+          let constraints = restConstraints
+                ++ L.concat (inferredConstraints <$> ielems)
+                ++ L.zip (snd <$> typeBindings) (inferredType <$> ielems)
+          let pairs = L.zip (fst <$> bindings) (inferredTerm <$> ielems)
+          return (Inferred envTerm envType constraints, pairs ++ restPairs)
+    toTypeBinding (name, term) = do
+      mtyp <- getAnnotatedType term
+      typ <- case mtyp of
+        Nothing -> TypeVariable <$> freshName
+        Just t -> instantiate t
+      return (name, typ)
 
 -- | Add inferred type annotations to a single term, considered as a standalone graph
 inferTermType :: Term -> Flow Graph Term
@@ -425,7 +463,7 @@ requireBoundType v = do
   case M.lookup v env of
     Nothing -> fail $ "name is not bound to a type: " ++ unName v ++ ". Environment: "
       ++ L.intercalate ", " (unName <$> M.keys env)
-    Just s -> instantiate s
+    Just t -> instantiate t
 
 rewriteAnnotation :: Subst -> Kv -> Flow Graph Kv
 rewriteAnnotation subst ann = do

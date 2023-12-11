@@ -28,6 +28,10 @@ checkType term typ = expectTypeAnnotation pure term typ
 typed :: Type -> Term -> Term
 typed typ = setTermType (Just typ)
 
+expectFailure :: Term -> H.Expectation
+expectFailure term = do
+  shouldFail (inferredTypeOf term)
+
 expectMonotype :: Term -> Type -> H.Expectation
 expectMonotype term = expectPolytype term []
 
