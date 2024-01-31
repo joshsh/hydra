@@ -12,7 +12,9 @@ import Hydra.TestUtils
 import qualified Test.Hspec as H
 import qualified Test.QuickCheck as QC
 import qualified Data.List as L
+import qualified Data.Map as M
 import qualified Data.Set as S
+import qualified Data.Maybe as Y
 
 
 data Quux a = QuuxUnit | QuuxValue a | QuuxPair (Quux a) (Quux a) deriving (Eq, Ord, Show)
@@ -330,6 +332,37 @@ testSimplifyTerm = do
 --    typeOf term = annotationClassTermType kvAnnotationClass term
 --    withType typ = annotationClassSetTermType kvAnnotationClass (Just typ)
 
+testTopologicalSortBindings :: H.SpecWith ()
+testTopologicalSortBindings = do
+    H.describe "Test topological sort of bindings" $ do
+
+      H.it "Isolated bindings" $ do
+        checkBindings
+          [("a", string "foo"), ("b", string "bar")]
+          [["b"], ["a"]]
+
+      H.it "Single recursive binding" $ do
+        checkBindings
+          [("a", list [var "a"])]
+          [["a"]]
+
+      H.it "Mutually recursive bindings" $ do
+        checkBindings
+          [("a", list [var "b"]), ("b", list [var "a"])]
+          [["a", "b"]]
+
+      H.it "Mixed bindings" $ do
+        checkBindings
+          [("a", var "b"), ("b", list [var "a", var "c"]), ("c", string "foo"), ("d", string "bar")]
+          [["d"], ["c"], ["a", "b"]]
+  where
+    checkBindings bindings expectedVars = H.shouldBe
+        (topologicalSortBindings bindingMap)
+        expected
+      where
+        bindingMap = M.mapKeys (\k -> Name k) $ M.fromList bindings
+        expected = fmap (fmap (\k -> (Name k, Y.fromMaybe unit $ M.lookup (Name k) bindingMap))) expectedVars
+
 spec :: H.Spec
 spec = do
   testExpandLambdas
@@ -341,3 +374,4 @@ spec = do
   testRewriteExampleType
   testSimplifyTerm
 --  testStripKv -- TODO: restore me
+  testTopologicalSortBindings

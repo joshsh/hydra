@@ -360,23 +360,11 @@ inferGraphTypes = getState >>= annotateGraph
 --    let ibindings = L.zip (fst <$> bindings) (inferredTerm <$> ielems)
 --    return $ yieldTerm (TermLet $ Let (M.fromList ibindings) ienv) typ constraints
 
-
-
-inferLetType = inferLetTypeNew
-
-inferLetTypeNew :: Let -> Flow Graph Inferred
-inferLetTypeNew (Let bindingMap env) = do
-    (Inferred envTerm envType constraints, pairs) <- forComponents orderedComponents
+inferLetType :: Let -> Flow Graph Inferred
+inferLetType (Let bindingMap env) = do
+    (Inferred envTerm envType constraints, pairs) <- forComponents $ topologicalSortBindings bindingMap
     return $ yieldTerm (TermLet $ Let (M.fromList pairs) envTerm) envType constraints
   where
-    bindings = M.toList bindingMap
-    orderedComponents = fmap (fmap toPair) (topologicalSortComponents (depsOf <$> bindings))
-      where
-        keys = S.fromList (fst <$> bindings)
-        depsOf (name, term) = (name, if hasTypeAnnotation term
-          then []
-          else S.toList (S.intersection keys $ freeVariablesInTerm term))
-        toPair name = (name, Y.fromMaybe (Terms.string "Impossible!") $ M.lookup name bindingMap)
     forComponents comps = case comps of
       [] -> do
         ienv <- infer env

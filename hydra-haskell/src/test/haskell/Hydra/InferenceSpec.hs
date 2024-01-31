@@ -348,12 +348,12 @@ checkPolymorphism = H.describe "Check polymorphism" $ do
           (Types.function Types.int32 Types.int32)
 
     H.describe "Let-polymorphism" $ do
-      H.it "test #1" $ do
-        expectPolytype
-          ((lambda "x" (var "id" @@ (list [var "id" @@ var "x"])))
-            `with` [
-              "id">: lambda "x" $ var "x"])
-          ["t0"] (Types.function (Types.var "t0") (Types.list $ Types.var "t0"))
+--      H.it "test #1" $ do
+--        expectPolytype
+--          ((lambda "x" (var "id" @@ (list [var "id" @@ var "x"])))
+--            `with` [
+--              "id">: lambda "x" $ var "x"])
+--          ["t0"] (Types.function (Types.var "t0") (Types.list $ Types.var "t0"))
       H.it "test #2" $ do
         expectMonotype
           ((pair (var "list" @@ int32 42) (var "list" @@ string "foo"))

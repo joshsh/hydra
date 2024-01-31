@@ -395,6 +395,17 @@ termDependencyNames withVars withPrims withNoms = foldOverTerm TraversalOrderPre
         prim name = if withPrims then S.insert name names else names
         var name = if withVars then S.insert name names else names
 
+-- Topological sort of connected components, in terms of dependencies between varable/term binding pairs
+topologicalSortBindings :: M.Map Name Term -> [[(Name, Term)]]
+topologicalSortBindings bindingMap = fmap (fmap toPair) (topologicalSortComponents (depsOf <$> bindings))
+  where
+    bindings = M.toList bindingMap
+    keys = S.fromList (fst <$> bindings)
+    depsOf (name, term) = (name, if hasTypeAnnotation term
+      then []
+      else S.toList (S.intersection keys $ freeVariablesInTerm term))
+    toPair name = (name, Y.fromMaybe (TermLiteral $ LiteralString "Impossible!") $ M.lookup name bindingMap)
+
 topologicalSortElements :: [Element] -> Either [[Name]] [Name]
 topologicalSortElements els = topologicalSort $ adjlist <$> els
   where
