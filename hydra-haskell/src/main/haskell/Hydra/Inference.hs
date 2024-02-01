@@ -366,9 +366,11 @@ inferLetType (Let bindingMap env) = do
     return $ yieldTerm (TermLet $ Let (M.fromList pairs) envTerm) envType constraints
   where
     forComponents comps = case comps of
+      -- No remaining bindings; process the environment
       [] -> do
         ienv <- infer env
         return (ienv, [])
+      -- Process the bindings before proceeding to the environment
       (bindings:rest) -> do
         typeBindings <- CM.mapM toTypeBinding bindings
         withBindings (M.fromList typeBindings) $ do
