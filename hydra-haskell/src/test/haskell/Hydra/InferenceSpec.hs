@@ -165,6 +165,66 @@ checkIndividualTerms = H.describe "Check a few hand-picked terms" $ do
           Field (FieldName "lon") $ var "latlon"]))
         ["t0"] (Types.function (Types.var "t0") (Types.apply (TypeVariable latLonPolyName) (Types.var "t0")))
 
+  H.describe "Check record instances of simply recursive record types" $ do
+    H.it "test #1" $
+      expectMonotype
+        (record testTypeIntListName [
+          Field (FieldName "head") $ int32 42,
+          Field (FieldName "tail") $ optional $ Just $ record testTypeIntListName [
+            Field (FieldName "head") $ int32 43,
+            Field (FieldName "tail") $ optional Nothing]])
+        (TypeVariable testTypeIntListName)
+    H.it "test #2" $
+      expectMonotype
+        ((lambda "x" $ record testTypeIntListName [
+          Field (FieldName "head") $ var "x",
+          Field (FieldName "tail") $ optional $ Just $ record testTypeIntListName [
+            Field (FieldName "head") $ var "x",
+            Field (FieldName "tail") $ optional Nothing]]) @@ int32 42)
+        (TypeVariable testTypeIntListName)
+    H.it "test #3" $
+      expectMonotype
+        (record testTypeListName [
+          Field (FieldName "head") $ int32 42,
+          Field (FieldName "tail") $ optional $ Just $ record testTypeListName [
+            Field (FieldName "head") $ int32 43,
+            Field (FieldName "tail") $ optional Nothing]])
+        (Types.apply (TypeVariable testTypeListName) Types.int32)
+    H.it "test #4" $
+      expectMonotype
+        ((lambda "x" $ record testTypeListName [
+          Field (FieldName "head") $ var "x",
+          Field (FieldName "tail") $ optional $ Just $ record testTypeListName [
+            Field (FieldName "head") $ var "x",
+            Field (FieldName "tail") $ optional Nothing]]) @@ int32 42)
+        (Types.apply (TypeVariable testTypeListName) Types.int32)
+    H.it "test #5" $
+      expectPolytype
+        (lambda "x" $ record testTypeListName [
+          Field (FieldName "head") $ var "x",
+          Field (FieldName "tail") $ optional $ Just $ record testTypeListName [
+            Field (FieldName "head") $ var "x",
+            Field (FieldName "tail") $ optional Nothing]])
+        ["t0"] (Types.function (Types.var "t0") (Types.apply (TypeVariable testTypeListName) (Types.var "t0")))
+
+  H.describe "Check record instances of mutually recursive record types" $ do
+    H.it "test #1" $
+      expectMonotype
+        ((lambda "x" $ record testTypeBuddyListAName [
+          Field (FieldName "head") $ var "x",
+          Field (FieldName "tail") $ optional $ Just $ record testTypeBuddyListBName [
+            Field (FieldName "head") $ var "x",
+            Field (FieldName "tail") $ optional Nothing]]) @@ int32 42)
+        (Types.apply (TypeVariable testTypeBuddyListAName) Types.int32)
+    H.it "test #2" $
+      expectPolytype
+        (lambda "x" $ record testTypeBuddyListAName [
+          Field (FieldName "head") $ var "x",
+          Field (FieldName "tail") $ optional $ Just $ record testTypeBuddyListBName [
+            Field (FieldName "head") $ var "x",
+            Field (FieldName "tail") $ optional Nothing]])
+        ["t0"] (Types.function (Types.var "t0") (Types.apply (TypeVariable testTypeBuddyListAName) (Types.var "t0")))
+
   H.it "Check unions" $ do
     expectMonotype
       (inject testTypeTimestampName $ Field (FieldName "unixTimeMillis") $ uint64 1638200308368)
@@ -195,7 +255,6 @@ checkIndividualTerms = H.describe "Check a few hand-picked terms" $ do
           [(var "x", float64 0.1), (var "y", float64 0.2)])))
         ["t0"] (Types.function (Types.var "t0") (Types.function (Types.var "t0") (Types.map (Types.var "t0") Types.float64)))
 
-    -- -- TODO: add a case for a recursive nominal type -- e.g. MyList := () + (int, Mylist)
 --    H.it "Check nominal (newtype) terms" $ do
 --      expectMonotype
 --        testDataArthur

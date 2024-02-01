@@ -71,7 +71,11 @@ testNamespace = Namespace "testGraph"
 testSchemaGraph :: Graph
 testSchemaGraph = elementsToGraph hydraCore (Just hydraCore) [
     def stringAliasTypeName $ Ann.doc "An alias for the string type" stringAliasType,
+    def testTypeBuddyListAName testTypeBuddyListA,
+    def testTypeBuddyListBName testTypeBuddyListB,
     def testTypeFoobarValueName testTypeFoobarValue,
+    def testTypeIntListName testTypeIntList,
+    def testTypeListName testTypeList,
     def testTypeNumberName testTypeNumber,
     def testTypeComparisonName testTypeComparison,
     def latLonName latLonType,
@@ -92,6 +96,22 @@ testDataArthur = record testTypePersonName [
   Field (FieldName "lastName") $ string "Dent",
   Field (FieldName "age") $ int32 42]
 
+testTypeBuddyListA :: Type
+testTypeBuddyListA = Types.lambda "a" $ TypeRecord $ RowType testTypeBuddyListAName Nothing [
+  Types.field "head" $ Types.var "a",
+  Types.field "tail" $ Types.optional $ Types.apply (TypeVariable testTypeBuddyListBName) (Types.var "a")]
+
+testTypeBuddyListAName :: Name
+testTypeBuddyListAName = Name "BuddyListA"
+
+testTypeBuddyListB :: Type
+testTypeBuddyListB = Types.lambda "a" $ TypeRecord $ RowType testTypeBuddyListBName Nothing [
+  Types.field "head" $ Types.var "a",
+  Types.field "tail" $ Types.optional $ Types.apply (TypeVariable testTypeBuddyListAName) (Types.var "a")]
+
+testTypeBuddyListBName :: Name
+testTypeBuddyListBName = Name "BuddyListB"
+
 testTypeComparison :: Type
 testTypeComparison = TypeUnion $ RowType testTypeComparisonName Nothing [
   Types.field "lessThan" Types.unit,
@@ -109,6 +129,22 @@ testTypeFoobarValue = TypeUnion $ RowType testTypeFoobarValueName Nothing [
 
 testTypeFoobarValueName :: Name
 testTypeFoobarValueName = Name "FoobarValue"
+
+testTypeIntList :: Type
+testTypeIntList = TypeRecord $ RowType testTypeIntListName Nothing [
+  Types.field "head" $ Types.int32,
+  Types.field "tail" $ Types.optional $ TypeVariable testTypeIntListName]
+
+testTypeIntListName :: Name
+testTypeIntListName = Name "IntList"
+
+testTypeList :: Type
+testTypeList = Types.lambda "a" $ TypeRecord $ RowType testTypeListName Nothing [
+  Types.field "head" $ Types.var "a",
+  Types.field "tail" $ Types.optional $ Types.apply (TypeVariable testTypeListName) (Types.var "a")]
+
+testTypeListName :: Name
+testTypeListName = Name "List"
 
 testTypeNumber :: Type
 testTypeNumber = TypeUnion $ RowType testTypeNumberName Nothing [
