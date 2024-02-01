@@ -231,31 +231,31 @@ checkLetTerms = H.describe "Check a few hand-picked let terms" $ do
 checkLists :: H.SpecWith ()
 checkLists = H.describe "Check a few hand-picked list terms" $ do
 
-  H.it "Check list of strings" $ do
+  H.it "Check list of strings" $
     expectMonotype
       (list [string "foo", string "bar"])
       (Types.list Types.string)
-  H.it "Check list of lists of strings" $ do
+  H.it "Check list of lists of strings" $
     expectMonotype
       (list [list [string "foo"], list []])
       (Types.list $ Types.list Types.string)
-  H.it "Check empty list" $ do
+  H.it "Check empty list" $
     expectPolytype
       (list [])
       ["t0"] (Types.list $ Types.var "t0")
-  H.it "Check list containing an empty list" $ do
+  H.it "Check list containing an empty list" $
     expectPolytype
       (list [list []])
       ["t0"] (Types.list $ Types.list $ Types.var "t0")
-  H.it "Check lambda producing a polymorphic list" $ do
+  H.it "Check lambda producing a polymorphic list" $
     expectPolytype
       (lambda "x" (list [var "x"]))
       ["t0"] (Types.function (Types.var "t0") (Types.list $ Types.var "t0"))
-  H.it "Check lambda producing a list of integers" $ do
+  H.it "Check lambda producing a list of integers" $
     expectMonotype
       (lambda "x" (list [var "x", int32 42]))
       (Types.function Types.int32 $ Types.list Types.int32)
-  H.it "Check list with repeated variables" $ do
+  H.it "Check list with repeated variables" $
     expectMonotype
       (lambda "x" (list [var "x", string "foo", var "x"]))
       (Types.function Types.string (Types.list Types.string))
@@ -269,12 +269,35 @@ checkLiterals = H.describe "Check arbitrary literals" $ do
       (Types.literal $ literalType l)
 
 checkPathologicalTypes :: H.SpecWith ()
-checkPathologicalTypes = H.describe "Check pathological types" $ do
+checkPathologicalTypes = H.describe "Check pathological terms" $ do
+
+  H.describe "Check infinite lists" $ do
+    H.it "test #1" $
+      expectMonotype
+        ((var "self") `with` [
+          "self">: primitive _lists_cons @@ (int32 42) @@ (var "self")])
+        (Types.list Types.int32)
+    H.it "test #2" $
+      expectPolytype
+        (lambda "x" ((var "self") `with` [
+          "self">: primitive _lists_cons @@ (var "x") @@ (var "self")]))
+        ["t0"] (Types.function (Types.var "t0") (Types.list $ Types.var "t0"))
+    H.it "test #3" $
+      expectPolytype
+        ((lambda "x" $ var "self" @@ var "x") `with` [
+          "self">: lambda "e" $ primitive _lists_cons @@ (var "e") @@ (var "self" @@ var "e")])
+        ["t0"] (Types.function (Types.var "t0") (Types.list $ Types.var "t0"))
+    H.it "test #4" $
+      expectMonotype
+        ((var "build" @@ int32 0) `with` [
+          "build">: lambda "x" $ primitive _lists_cons @@ var "x" @@ (var "build" @@
+            (primitive _math_add @@ var "x" @@ int32 1))])
+        (Types.list Types.int32)
+
   -- TODO: this term *should* fail inference, but doesn't
 --    H.it "Check self-application" $ do
 --      expectFailure
 --        (lambda "x" $ var "x" @@ var "x")
-  return ()
 
 checkPolymorphism :: H.SpecWith ()
 checkPolymorphism = H.describe "Check polymorphism" $ do
