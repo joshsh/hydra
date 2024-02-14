@@ -2,8 +2,13 @@
 
 module Hydra.Inference (
   inferGraphTypes,
+
+  -- The following are exposed only for testing purposes
+  Inferred(..),
+  infer,
   inferTermType,
-  inferredTypeOf
+  inferredTypeOf,
+  normalizeInferredTypes
 ) where
 
 import Hydra.Basics
@@ -327,7 +332,8 @@ inferFunctionType f = case f of
   FunctionLambda (Lambda v body) -> do
     vdom <- freshName
     rbody <- withBinding v (TypeVariable vdom) $ infer body
-    let typ = Types.function (TypeVariable vdom) (inferredType rbody)
+--    let typ = Types.function (TypeVariable vdom) (inferredType rbody)
+    let typ = TypeLambda $ LambdaType vdom $ Types.function (TypeVariable vdom) (inferredType rbody)
     return $ yieldFunction (FunctionLambda $ Lambda v $ inferredTerm rbody) typ (inferredConstraints rbody)
 
   FunctionPrimitive name -> do
@@ -415,27 +421,26 @@ isGoodAnnotatedType typ = do
 
 -- | Get the free type variables of a term in order of occurrence in the annotations of the term and its subterms
 --   (following a pre-order traversal in subterms, and in each type expression)
-normalFreeVariables :: Term -> Flow Graph [Name]
-normalFreeVariables term = L.nub <$> foldOverTermM TraversalOrderPre fld [] term
+normalTypeAnnotationVariables :: Term -> Flow Graph [Name]
+normalTypeAnnotationVariables term = L.nub <$> foldOverTermM TraversalOrderPre fld [] term
   where
-    fld freeVars term = do
+    fld vars term = do
       mtyp <- getAnnotatedType term
       return $ case mtyp of
-        Nothing -> freeVars
-        Just typ -> freeVars ++ freeVariablesInTypeOrdered typ
+        Nothing -> vars
+        Just typ -> vars ++ variablesInTypeOrdered typ
 
 normalizeInferredTypes :: Term -> Flow Graph Term
 normalizeInferredTypes term = do
     g <- getState
     term1 <- pure term
-      >>= replaceTemporaryVariables
+      >>= rewriteTermTypeAnnotations simplifyUniversalTypes
+      >>= replaceTemporaryTypeVariables
+      -- TODO: eliminate this step; universal types should be created during the initial phase of inference and kept intact
       >>= rewriteTermAnnotationsM (createUniversalTypes g)
     return term1
   where
-    replaceTemporaryVariables term = do
-      tempVars <- (L.filter isTemporaryVariable) <$> normalFreeVariables term
-      let subst = M.fromList $ L.zip tempVars (TypeVariable <$> normalVariables)
-      rewriteTermAnnotationsM (rewriteAnnotation subst) term
+    -- TODO: eliminate this
     createUniversalTypes g ann = do
         mtyp <- getType ann
         return $ setType (helper <$> mtyp) ann
@@ -446,6 +451,18 @@ normalizeInferredTypes term = do
         typeNames = case graphSchema g of
           Nothing -> []
           Just s -> M.keys $ graphElements s
+
+-- | Replace temporary type varables like "tv_42" with normalized variables like "t0" in a specific order
+-- Note: this affects both bound and free type variables
+replaceTemporaryTypeVariables :: Term -> Flow Graph Term
+replaceTemporaryTypeVariables term = do
+    tempVars <- (L.filter isTemporaryVariable) <$> normalTypeAnnotationVariables term
+    let subst = M.fromList $ L.zip tempVars normalVariables
+    rewriteTermAnnotationsM (replace subst) term
+  where
+    replace subst ann = do
+      mtyp <- getType ann
+      return $ setType (replaceTypeVariables subst <$> mtyp) ann
 
 requireBoundType :: Name -> Flow Graph Type
 requireBoundType v = do
@@ -460,8 +477,8 @@ rewriteAnnotation subst ann = do
   mtyp <- getType ann
   return $ setType (substituteTypeVariables subst <$> mtyp) ann
 
-rewriteTypeAnnotationsOnTerms :: (Type -> Type) -> Term -> Flow Graph Term
-rewriteTypeAnnotationsOnTerms f = rewriteTermM mapExpr
+rewriteTermTypeAnnotations :: (Type -> Type) -> Term -> Flow Graph Term
+rewriteTermTypeAnnotations f = rewriteTermM mapExpr
   where
     mapExpr recurse term = case term of
       TermAnnotated (Annotated term1 ann) -> do

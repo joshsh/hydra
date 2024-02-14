@@ -46,10 +46,12 @@ alphaConvertType vold tnew = rewriteType rewrite
       TypeVariable v -> if v == vold then tnew else TypeVariable v
       _ -> recurse typ
 
-boundTypeVariablesOf :: Type -> [Name]
-boundTypeVariablesOf typ = case stripType typ of
-  TypeLambda (LambdaType var body) -> var:(boundTypeVariablesOf body)
-  _ -> []
+-- | Finds all of the universal type variables in a type expression, in the order in which they appear.
+-- Note: this function assumes that there are no shadowed type variables, as in (forall a. forall a. a)
+boundVariablesInTypeOrdered :: Type -> [Name]
+boundVariablesInTypeOrdered typ = case typ of
+  TypeLambda (LambdaType var body) -> var:(boundVariablesInTypeOrdered body)
+  t -> L.concat (boundVariablesInTypeOrdered <$> subtypes t)
 
 elementsWithDependencies :: [Element] -> Flow Graph [Element]
 elementsWithDependencies original = CM.mapM requireElement allDepNames
@@ -101,7 +103,6 @@ expandLambdas term = do
                   _ -> throwDebugException $ "expandLambdas: expected function type, got " ++ show t
                 Nothing -> Nothing
 
--- TODO: move into the DSL
 foldOverTermM :: TraversalOrder -> (a -> Term -> Flow s a) -> a -> Term -> Flow s a
 foldOverTermM order fld b0 term = ((\x -> case x of
   TraversalOrderPre -> do
@@ -116,7 +117,6 @@ freeVariablesInScheme (TypeScheme vars t) = S.difference (freeVariablesInType t)
 
 -- | Find the free variables (i.e. variables not bound by a lambda) in a type,
 --   in a well-defined order following a preorder traversal of the type expression.
--- TODO: move into the DSL
 freeVariablesInTypeOrdered :: Type -> [Name]
 freeVariablesInTypeOrdered typ = case typ of
   TypeLambda v -> L.delete (lambdaTypeParameter v) $ freeVariablesInTypeOrdered (lambdaTypeBody v)
@@ -352,15 +352,31 @@ simplifyTerm = rewriteTerm simplify
         _ -> term
       _ -> term
 
+-- | Pulls all universal type variables to the top of a type expression (but beneath any annotations).
+--   Bound type variables which would not otherwise appear free in the body of the type are omitted.
 simplifyUniversalTypes :: Type -> Type
-simplifyUniversalTypes = rewriteType f
+simplifyUniversalTypes typ = bury addUniversals stripped
   where
-    f recurse t = case recurse t of
-      -- Caution: time complexity
-      TypeLambda (LambdaType v body) -> if S.member v (freeVariablesInType body)
-        then t
-        else body
-      _ -> t
+    boundVars = boundVariablesInTypeOrdered typ
+    bury f t = case t of
+      TypeAnnotated (Annotated t1 ann) -> TypeAnnotated $ Annotated (f t1) ann
+      _ -> f t
+    addUniversals t = foldl (\t v -> TypeLambda (LambdaType v t)) t minimalBoundVars
+    stripUniversals = rewriteType $ \recurse t -> case recurse t of
+      TypeLambda (LambdaType _ body) -> body
+      t -> t
+    stripped = stripUniversals typ
+    freeVars = freeVariablesInType stripped
+    minimalBoundVars = L.filter (`S.member` freeVars) boundVars
+
+--simplifyUniversalTypes = rewriteType simplify
+--  where
+--    -- Note: this could be implemented somewhat more efficiently
+--    simplify recurse t = case recurse t of
+--      TypeLambda (LambdaType v body) -> if S.member v (freeVariablesInType body)
+--        then TypeLambda (LambdaType v body)
+--        else body
+--      _ -> t
 
 substituteVariable :: Name -> Name -> Term -> Term
 substituteVariable from to = rewriteTerm replace
@@ -434,6 +450,15 @@ unshadowVariables term = Y.fromJust $ flowStateValue $ unFlow (rewriteTermM rewr
             return $ TermFunction $ FunctionLambda $ Lambda v body'
         _ -> recurse term
     freshName = (\n -> Name $ "s" ++ show n) <$> nextCount "unshadow"
+
+-- | Find the variables (both bound and free) in a type expression, following a preorder traversal of the expression.
+variablesInTypeOrdered :: Type -> [Name]
+variablesInTypeOrdered = L.nub . vars -- Note: we rely on the fact that 'nub' keeps the first occurrence
+  where
+    vars t = case t of
+      TypeLambda (LambdaType v body) -> v:(vars body)
+      TypeVariable v -> [v]
+      _ -> L.concat (vars <$> subtypes t)
 
 -- | Where non-lambda terms with nonzero arity occur at the top level, turn them into lambdas,
 --   also adding an appropriate type annotation to each new lambda.

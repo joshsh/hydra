@@ -8,6 +8,7 @@ import Hydra.Kv
 import Hydra.Mantle
 import Hydra.Rewriting
 import Hydra.Tier1
+import Hydra.Tier2
 import Hydra.Dsl.Types as Types
 
 import qualified Control.Monad as CM
@@ -35,7 +36,8 @@ freshTypeVariable = TypeVariable <$> freshName
 --   either of which could lead to false unification.
 instantiate :: Type -> Flow Graph Type
 instantiate t = do
-    subst <- M.fromList <$> (CM.mapM toPair $ boundTypeVariablesOf t)
+    g <- getState
+    subst <- M.fromList <$> (CM.mapM toPair $ L.nub $ boundVariablesInTypeOrdered t)
     return $ replaceTypeVariables subst t
   where
     toPair v = do
@@ -54,13 +56,11 @@ normalVariable i = Name $ "t" ++ show i
 
 replaceTypeVariables :: M.Map Name Name -> Type -> Type
 replaceTypeVariables subst = rewriteType $ \recurse t -> case recurse t of
-  TypeVariable v -> case M.lookup v subst of
-    Nothing -> t
-    Just v1 -> TypeVariable v1
-  TypeLambda (LambdaType v body) -> case M.lookup v subst of
-    Nothing -> TypeLambda $ LambdaType v body
-    Just v1 -> TypeLambda $ LambdaType v1 body
-  t1 -> t1
+    TypeVariable v -> TypeVariable $ replace v
+    TypeLambda (LambdaType v body) -> TypeLambda $ LambdaType (replace v) body
+    t1 -> t1
+  where
+    replace v = M.findWithDefault v v subst
 
 substituteTypeVariable :: Name -> Type -> Type -> Type
 substituteTypeVariable v subst = substituteTypeVariables (M.singleton v subst)

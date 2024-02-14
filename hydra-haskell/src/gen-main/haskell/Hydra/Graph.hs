@@ -70,7 +70,7 @@ data Graph =
     graphElements :: (Map Core.Name Element),
     -- | The lambda environment of this graph context; it indicates whether a variable is bound by a lambda (Nothing) or a let (Just term)
     graphEnvironment :: (Map Core.Name (Maybe Core.Term)),
-    -- | The typing environment of the graph
+    -- | The typing environment of the graph, i.e. the types to which term variables are bound
     graphTypes :: (Map Core.Name Core.Type),
     -- | The body of the term which generated this context
     graphBody :: Core.Term,
