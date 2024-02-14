@@ -200,7 +200,7 @@ hydraCoreModule = Module ns elements [] $
             core "Type"],
 
       def "Let" $
-        doc "A set of (possibly recursive) 'let' bindings" $
+        doc "A set of (possibly recursive) 'let' bindings; a multi-let expression" $
         record [
           "bindings">: Types.map (core "Name") (core "Term"),
           "environment">: core "Term"],

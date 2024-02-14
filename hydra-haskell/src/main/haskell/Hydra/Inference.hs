@@ -211,16 +211,16 @@ infer term = case term of
       let constraints = inferredConstraints rterm1 ++ [(wt, inferredType rterm1)]
       return $ yieldTerm term typ constraints
 
-inferElementType :: Element -> Flow Graph (Name, Inferred)
-inferElementType el = withTrace ("infer type of " ++ unName (elementName el)) $ do
-  rterm <- infer $ elementData el
-  return (elementName el, rterm)
+-- | Infer the type of a term, and also perform unification (but no normalization)
+inferAndUnify :: Term -> Flow Graph Term
+inferAndUnify term = do
+  inf <- infer term
+  subst <- solveConstraints $ inferredConstraints inf
+  rewriteTermAnnotationsM (rewriteAnnotation subst) $ inferredTerm inf
 
 inferElementTypes :: Graph -> [Element] -> Flow Graph [Element]
 inferElementTypes g els = withState g $ do
-    inf <- infer $ TermLet $ Let (M.fromList (fmap (\e -> (elementName e, elementData e)) els)) $ Terms.boolean False
-    subst <- solveConstraints $ inferredConstraints inf
-    term1 <- rewriteTermAnnotationsM (rewriteAnnotation subst) $ inferredTerm inf
+    term1 <- inferAndUnify graphAsLetTerm
     term2 <- normalizeInferredTypes term1
     case stripTerm term2 of
       TermLet (Let bindings _) -> CM.mapM toElement (elementName <$> els)
@@ -229,6 +229,8 @@ inferElementTypes g els = withState g $ do
             Nothing -> fail $ "no inferred term for " ++ unName name
             Just term -> return $ Element name term
       _ -> unexpected "let term" $ showTerm term2
+  where
+    graphAsLetTerm = TermLet $ Let (M.fromList (fmap (\e -> (elementName e, elementData e)) els)) $ Terms.boolean False
 
 inferEliminationType :: Elimination -> Flow Graph Inferred
 inferEliminationType e = case e of
@@ -332,7 +334,6 @@ inferFunctionType f = case f of
   FunctionLambda (Lambda v body) -> do
     vdom <- freshName
     rbody <- withBinding v (TypeVariable vdom) $ infer body
---    let typ = Types.function (TypeVariable vdom) (inferredType rbody)
     let typ = TypeLambda $ LambdaType vdom $ Types.function (TypeVariable vdom) (inferredType rbody)
     return $ yieldFunction (FunctionLambda $ Lambda v $ inferredTerm rbody) typ (inferredConstraints rbody)
 
@@ -353,19 +354,6 @@ inferGraphTypes = getState >>= annotateGraph
       where
         toPair el = (elementName el, el)
 
---inferLetType :: Let -> Flow Graph Inferred
---inferLetType (Let bindingMap env) = do
---  let bindings = M.toList bindingMap
---  tempTypes <- CM.replicateM (L.length bindings) (TypeVariable <$> freshName)
---  withBindings (M.fromList $ L.zip (fst <$> bindings) tempTypes) $ do
---    (Inferred ienv typ envConstraints) <- infer env
---    ielems <- CM.mapM infer (snd <$> bindings)
---    let constraints = envConstraints
---          ++ L.concat (inferredConstraints <$> ielems)
---          ++ L.zip tempTypes (inferredType <$> ielems)
---    let ibindings = L.zip (fst <$> bindings) (inferredTerm <$> ielems)
---    return $ yieldTerm (TermLet $ Let (M.fromList ibindings) ienv) typ constraints
-
 inferLetType :: Let -> Flow Graph Inferred
 inferLetType (Let bindingMap env) = do
     (Inferred envTerm envType constraints, pairs) <- forComponents $ topologicalSortBindings bindingMap
@@ -376,17 +364,24 @@ inferLetType (Let bindingMap env) = do
       [] -> do
         ienv <- infer env
         return (ienv, [])
-      -- Process the bindings before proceeding to the environment
+      -- Process the bindings in one component before proceeding to downstream components and the let environment.
       (bindings:rest) -> do
+        -- Assign initial, temporary types for the bindings in this component
         typeBindings <- CM.mapM toTypeBinding bindings
         withBindings (M.fromList typeBindings) $ do
-          (Inferred envTerm envType restConstraints, restPairs) <- forComponents rest
-          ielems <- CM.mapM infer (snd <$> bindings)
-          let constraints = restConstraints
-                ++ L.concat (inferredConstraints <$> ielems)
-                ++ L.zip (snd <$> typeBindings) (inferredType <$> ielems)
-          let pairs = L.zip (fst <$> bindings) (inferredTerm <$> ielems)
-          return (Inferred envTerm envType constraints, pairs ++ restPairs)
+          -- Perform inference on the bound terms
+          inferred <- CM.mapM inferAndUnify (snd <$> bindings)
+          inferredTypes <- CM.mapM requireTermType inferred
+          -- After inference, update the typing environment before processing downstream terms.
+          -- This is necessary when a let-bound term is polymorphic and is referenced multiple times downstream,
+          -- i.e. when we have let-polymorphism, so that we have a universal type expression
+          -- (rather than just a temporary variable) for instantiation.
+          withBindings (M.fromList $ L.zip (fst <$> bindings) inferredTypes) $ do
+            (Inferred envTerm envType restConstraints, restPairs) <- forComponents rest
+            let constraints = restConstraints
+                  ++ L.zip (snd <$> typeBindings) inferredTypes
+            let pairs = L.zip (fst <$> bindings) inferred
+            return (Inferred envTerm envType constraints, pairs ++ restPairs)
     toTypeBinding (name, term) = do
       mtyp <- getAnnotatedType term
       typ <- case mtyp of
@@ -406,11 +401,7 @@ inferredToFieldType (fname, inferred) = FieldType fname $ inferredType inferred
 
 -- | Find the inferred type of a single term, considered as a standalone graph. Mainly useful in tests.
 inferredTypeOf :: Term -> Flow Graph Type
-inferredTypeOf term = do
-  mtyp <- inferTermType term >>= getAnnotatedType
-  case mtyp of
-    Nothing -> fail $ "expected an inferred type annotation"
-    Just typ -> return typ
+inferredTypeOf term = inferTermType term >>= requireTermType
 
 -- | A "good" annotated type is either monomorphic, or is a proper "forall" type with no free type variables
 isGoodAnnotatedType :: Type -> Flow Graph Bool
