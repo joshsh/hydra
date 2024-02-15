@@ -136,7 +136,7 @@ checkIndividualTerms = H.describe "Check a few hand-picked terms" $ do
   H.it "Let terms" $ do
     expectPolytype
       (letTerm (Name "x") (float32 42.0) (lambda "y" (lambda "z" (var "x"))))
-      ["t0", "t1"] (Types.function (Types.var "t1") (Types.function (Types.var "t0") Types.float32))
+      ["t0", "t1"] (Types.function (Types.var "t0") (Types.function (Types.var "t1") Types.float32))
 
   H.describe "Optionals" $ do
     H.it "test #1" $
@@ -712,7 +712,7 @@ checkSubtermAnnotations = H.describe "Check additional subterm annotations" $ do
         let constStringType = Types.function (Types.var "t0") Types.string
         H.it "condition #1" $
           expectTypeAnnotation pure testCase
-            (Types.lambdas ["t1", "t0"] $ Types.function getOptType constStringType)
+            (Types.lambdas ["t0", "t1"] $ Types.function getOptType constStringType)
         H.it "condition #2" $
           expectTypeAnnotation Expect.lambdaBody testCase
             (Types.lambda "t0" $ constStringType)
@@ -750,13 +750,13 @@ checkSubtermAnnotations = H.describe "Check additional subterm annotations" $ do
         let funType = Types.function (Types.var "t0") (Types.var "t1")
         H.it "condition #1" $
           expectTypeAnnotation pure testCase
-            (Types.lambdas ["t1", "t0"] $ Types.function funType funType)
+            (Types.lambdas ["t0", "t1"] $ Types.function funType funType)
         H.it "condition #2" $
           expectTypeAnnotation (Expect.lambdaBody >=> Expect.lambdaBody) testCase
             (Types.lambda "t1" $ Types.var "t1")
         H.it "condition #3" $
           expectTypeAnnotation (Expect.lambdaBody >=> Expect.lambdaBody >=> Expect.letBinding "funAlias") testCase
-            (Types.lambda "t0" $ Types.lambda "t1" funType)
+            (Types.lambdas ["t0", "t1"] funType)
   where
     tmp term = shouldSucceedWith flow ()
       where

@@ -352,6 +352,7 @@ simplifyTerm = rewriteTerm simplify
         _ -> term
       _ -> term
 
+-- NOTE: currently unused
 -- | Pulls all universal type variables to the top of a type expression (but beneath any annotations).
 --   Bound type variables which would not otherwise appear free in the body of the type are omitted.
 simplifyUniversalTypes :: Type -> Type
@@ -361,7 +362,7 @@ simplifyUniversalTypes typ = bury addUniversals stripped
     bury f t = case t of
       TypeAnnotated (Annotated t1 ann) -> TypeAnnotated $ Annotated (f t1) ann
       _ -> f t
-    addUniversals t = foldl (\t v -> TypeLambda (LambdaType v t)) t minimalBoundVars
+    addUniversals t = L.foldl (\t v -> TypeLambda (LambdaType v t)) t $ L.reverse minimalBoundVars
     stripUniversals = rewriteType $ \recurse t -> case recurse t of
       TypeLambda (LambdaType _ body) -> body
       t -> t
@@ -369,14 +370,10 @@ simplifyUniversalTypes typ = bury addUniversals stripped
     freeVars = freeVariablesInType stripped
     minimalBoundVars = L.filter (`S.member` freeVars) boundVars
 
---simplifyUniversalTypes = rewriteType simplify
---  where
---    -- Note: this could be implemented somewhat more efficiently
---    simplify recurse t = case recurse t of
---      TypeLambda (LambdaType v body) -> if S.member v (freeVariablesInType body)
---        then TypeLambda (LambdaType v body)
---        else body
---      _ -> t
+stripUniversalTypes :: Type -> Type
+stripUniversalTypes = rewriteType $ \recurse typ -> case recurse typ of
+  TypeLambda (LambdaType v body) -> body
+  t -> t
 
 substituteVariable :: Name -> Name -> Term -> Term
 substituteVariable from to = rewriteTerm replace
