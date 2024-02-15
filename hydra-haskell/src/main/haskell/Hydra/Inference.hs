@@ -370,7 +370,7 @@ inferLetType (Let bindingMap env) = do
         typeBindings <- CM.mapM toTypeBinding bindings
         withBindings (M.fromList typeBindings) $ do
           -- Perform inference on the bound terms
-          inferred <- CM.mapM inferAndUnify (snd <$> bindings)
+          inferred <- CM.mapM inferBinding bindings
           inferredTypes <- CM.mapM requireTermType inferred
           -- After inference, update the typing environment before processing downstream terms.
           -- This is necessary when a let-bound term is polymorphic and is referenced multiple times downstream,
@@ -388,6 +388,8 @@ inferLetType (Let bindingMap env) = do
         Nothing -> TypeVariable <$> freshName
         Just t -> instantiate t
       return (name, typ)
+    inferBinding (name, term) = withTrace ("infer type of " ++ show (unName name)) $
+      inferAndUnify term
 
 -- | Add inferred type annotations to a single term, considered as a standalone graph
 inferTermType :: Term -> Flow Graph Term

@@ -323,7 +323,7 @@ _LambdaType_parameter = (FieldName "parameter")
 
 _LambdaType_body = (FieldName "body")
 
--- | A set of (possibly recursive) 'let' bindings
+-- | A set of (possibly recursive) 'let' bindings; a multi-let expression
 data Let = 
   Let {
     letBindings :: (Map Name Term),
