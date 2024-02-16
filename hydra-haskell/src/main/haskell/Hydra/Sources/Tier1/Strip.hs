@@ -33,79 +33,45 @@ hydraStripModule :: Module
 hydraStripModule = Module (Namespace "hydra/strip") elements [hydraCoreModule] $
     Just "Several functions for stripping annotations from types and terms."
   where
---   elements = [
---     el skipAnnotationsDef,
---     el stripTermDef,
---     el stripTypeDef,
---     el stripTypeParametersDef]
-
    elements = [
-     el tryLetPolymorphismDef,
-     el identityDef,
---     el stripTermDef,
-     el tryMeDef]
---     el stripTypeParametersDef]
-
-
-
-
-tryLetPolymorphismDef :: Definition (a -> [a])
-tryLetPolymorphismDef = stripDefinition "tryLetPolymorphism" $
-  (lambda "x" (var "id" @@ (list [var "id" @@ var "x"])))
-  `with` [
-    "id">: lambda "x" $ var "x"]
-
-
-
-
-
-
-identityDef :: Definition (a -> a)
-identityDef = stripDefinition "identity" $
-  lambda "x" $ var "x"
-
-tryMeDef :: Definition (Int)
-tryMeDef = stripDefinition "tryMe" $
-  ref identityDef @@ int32 42
-
-
-
-
-
+     el skipAnnotationsDef,
+     el stripTermDef,
+     el stripTypeDef,
+     el stripTypeParametersDef]
 
 skipAnnotationsDef :: Definition ((a -> Maybe (Annotated a)) -> a -> a)
 skipAnnotationsDef = stripDefinition "skipAnnotations" $
---  function getAnnType (funT aT aT) $
+  function getAnnType (funT aT aT) $
   lambda "getAnn" $ lambda "t" $
     (var "skip" @@ var "t") `with` [
       "skip">:
---        function (Types.var "x") (Types.var "x") $
+        function (Types.var "x") (Types.var "x") $
         lambda "t1" $
           (matchOpt
             (var "t1")
             (lambda "ann" $ var "skip" @@ (project _Annotated _Annotated_subject @@ var "ann")))
           @@ (var "getAnn" @@ var "t1")]
---  where
---    getAnnType = (funT aT (optionalT $ annotatedT aT))
+  where
+    getAnnType = (funT aT (optionalT $ annotatedT aT))
 
 stripTermDef :: Definition (Term -> Term)
 stripTermDef = stripDefinition "stripTerm" $
   doc "Strip all annotations from a term" $
---  function termT termT $
+  function termT termT $
   lambda "x" (ref skipAnnotationsDef @@ (match _Term (Just nothing) [
     Case _Term_annotated --> lambda "ann" (just $ var "ann")]) @@ var "x")
 
 stripTypeDef :: Definition (Type -> Type)
 stripTypeDef = stripDefinition "stripType" $
   doc "Strip all annotations from a type" $
---  function typeT typeT $
+  function typeT typeT $
   lambda "x" (ref skipAnnotationsDef @@ (match _Type (Just nothing) [
     Case _Type_annotated --> lambda "ann" (just $ var "ann")]) @@ var "x")
 
 stripTypeParametersDef :: Definition (Type -> Type)
 stripTypeParametersDef = stripDefinition "stripTypeParameters" $
     doc "Strip any top-level type lambdas from a type, extracting the (possibly nested) type body" $
---    function typeT typeT $
+    function typeT typeT $
       lambda "t" $ match _Type (Just $ var "t") [
         Case _Type_lambda --> lambda "lt" (ref stripTypeParametersDef @@ (project _LambdaType _LambdaType_body @@ var "lt"))
         ] @@ (ref stripTypeDef @@ var "t")
