@@ -296,6 +296,58 @@ checkLetTerms = H.describe "Check a few hand-picked let terms" $ do
         "bar">: int32 137])
       (Types.list Types.int32)
 
+  H.describe "Let-polymorphism" $ do
+    H.it "test #1" $
+      expectPolytype
+        ((lambda "x" $ var "id" @@ (var "id" @@ var "x")) `with` [
+          "id">: lambda "x" $ var "x"])
+        ["t0"] (Types.function (Types.var "t0") (Types.var "t0"))
+    H.it "test #2" $
+      expectType
+        ((var "id" @@ (list [var "id" @@ int32 42])) `with` [
+          "id">: lambda "x" $ var "x"])
+        (Types.list Types.int32)
+    H.it "test #3" $
+      expectPolytype
+        ((lambda "x" (var "id" @@ (list [var "id" @@ var "x"])))
+          `with` [
+            "id">: lambda "x" $ var "x"])
+        ["t0"] (Types.function (Types.var "t0") (Types.list $ Types.var "t0"))
+    H.it "test #4" $
+      expectType
+        ((pair (var "id" @@ int32 42) (var "id" @@ string "foo"))
+          `with` [
+            "id">: lambda "x" $ var "x"])
+        (Types.pair Types.int32 Types.string)
+    H.it "test #5" $
+      expectType
+        ((pair (var "list" @@ int32 42) (var "list" @@ string "foo"))
+          `with` [
+            "list">: lambda "x" $ list [var "x"]])
+        (Types.pair (Types.list Types.int32) (Types.list Types.string))
+
+  H.describe "Recursive and mutually recursive let (@wisnesky's test cases)" $ do
+--    H.it "test #1" $
+--      expectPolytype
+--        ((var "f") `with` [
+--          "f">: lambda "x" $ lambda "y" (var "f" @@ int32 0 @@ var "x")])
+--        ["t0"] (Types.function Types.int32 (Types.function Types.int32 (Types.var "t0")))
+    H.it "test #2" $
+      expectPolytype
+        ((pair (var "f") (var "g")) `with` [
+          "f">: var "g",
+          "g">: var "f"])
+        -- Note: Haskell fails to unify the left and right types, giving forall ab. (a, b)
+        ["t0"] (Types.pair (Types.var "t0") (Types.var "t0"))
+--    H.it "test #3" $
+--      expectPolytype
+--        ((pair (var "f") (var "g")) `with` [
+--          "f">: lambda "x" $ lambda "y" (var "g" @@ int32 0 @@ var "x"),
+--          "g">: lambda "u" $ lambda "v" (var "f" @@ var "v" @@ int32 0)])
+--        ["t0", "t1"] (Types.pair
+--          (Types.function (Types.var "v0") (Types.function Types.int32 (Types.var "t1")))
+--          (Types.function Types.int32 (Types.function (Types.var "v0") (Types.var "t1"))))
+
 checkLists :: H.SpecWith ()
 checkLists = H.describe "Check a few hand-picked list terms" $ do
 
@@ -438,41 +490,6 @@ checkPolymorphism = H.describe "Check polymorphism" $ do
         (lambda "x" $
             (primitive _math_sub @@ (primitive _math_add @@ var "x" @@ var "x") @@ int32 1))
         (Types.function Types.int32 Types.int32)
-
-  H.describe "Let-polymorphism" $ do
-    H.it "test #1" $
-      expectPolytype
-        ((lambda "x" $ var "id" @@ (var "id" @@ var "x")) `with` [
-          "id">: lambda "x" $ var "x"])
-        ["t0"] (Types.function (Types.var "t0") (Types.var "t0"))
-    H.it "test #2" $
-      expectType
-        ((var "id" @@ (list [var "id" @@ int32 42])) `with` [
-          "id">: lambda "x" $ var "x"])
-        (Types.list Types.int32)
-    H.it "test #3" $
-      expectPolytype
-        ((lambda "x" (var "id" @@ (list [var "id" @@ var "x"])))
-          `with` [
-            "id">: lambda "x" $ var "x"])
-        ["t0"] (Types.function (Types.var "t0") (Types.list $ Types.var "t0"))
-    H.it "test #4" $
-      expectType
-        ((pair (var "id" @@ int32 42) (var "id" @@ string "foo"))
-          `with` [
-            "id">: lambda "x" $ var "x"])
-        (Types.pair Types.int32 Types.string)
-    H.it "test #5" $
-      expectType
-        ((pair (var "list" @@ int32 42) (var "list" @@ string "foo"))
-          `with` [
-            "list">: lambda "x" $ list [var "x"]])
-        (Types.pair (Types.list Types.int32) (Types.list Types.string))
---    H.it "test #6" $
---      expectPolytype
---        ((var "f") `with` [
---          "f">: lambda "x" $ lambda "y" (var "f" @@ int32 0 @@ var "x")])
---        ["t0"] (Types.function Types.int32 (Types.function Types.int32 (Types.var "t0")))
 
 checkPrimitives :: H.SpecWith ()
 checkPrimitives = H.describe "Check a few hand-picked terms with primitive functions" $ do
