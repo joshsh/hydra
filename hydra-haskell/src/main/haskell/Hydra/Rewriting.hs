@@ -413,10 +413,8 @@ topologicalSortBindings :: M.Map Name Term -> [[(Name, Term)]]
 topologicalSortBindings bindingMap = fmap (fmap toPair) (topologicalSortComponents (depsOf <$> bindings))
   where
     bindings = M.toList bindingMap
-    keys = S.fromList (fst <$> bindings)
-    depsOf (name, term) = (name, if hasTypeAnnotation term
-      then []
-      else S.toList (S.intersection keys $ freeVariablesInTerm term))
+    keys = S.fromList (M.keys bindingMap)
+    depsOf (name, term) = (name, S.toList (S.intersection keys $ freeVariablesInTerm term))
     toPair name = (name, Y.fromMaybe (TermLiteral $ LiteralString "Impossible!") $ M.lookup name bindingMap)
 
 topologicalSortElements :: [Element] -> Either [[Name]] [Name]

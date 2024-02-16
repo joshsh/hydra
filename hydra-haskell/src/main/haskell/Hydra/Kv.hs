@@ -46,6 +46,11 @@ compressTermAnnotations term = if M.null ann1
           (term2, ann2) = compress subj
       _ -> (term, M.empty)
 
+debug :: String -> Flow Graph ()
+debug msg = do
+  counter <- nextCount "debugCounter"
+  warn ("[" ++ show counter ++ "] " ++ msg) $ pure ()
+
 failOnFlag :: String -> String -> Flow s ()
 failOnFlag flag msg = do
   val <- hasFlag flag

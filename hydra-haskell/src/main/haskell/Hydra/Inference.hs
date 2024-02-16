@@ -366,8 +366,9 @@ inferGraphTypes = getState >>= annotateGraph
         toPair el = (elementName el, el)
 
 inferLetType :: Let -> Flow Graph Inferred
-inferLetType (Let bindingMap env) = do
-    (Inferred envTerm envType constraints, pairs) <- forComponents $ topologicalSortBindings bindingMap
+inferLetType lt@(Let bindingMap env) = do
+    let comps = topologicalSortBindings bindingMap
+    (Inferred envTerm envType constraints, pairs) <- forComponents comps
     return $ yieldTerm (TermLet $ Let (M.fromList pairs) envTerm) envType constraints
   where
     forComponents comps = case comps of

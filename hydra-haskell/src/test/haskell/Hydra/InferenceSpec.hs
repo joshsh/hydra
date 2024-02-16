@@ -325,6 +325,15 @@ checkLetTerms = H.describe "Check a few hand-picked let terms" $ do
           `with` [
             "list">: lambda "x" $ list [var "x"]])
         (Types.pair (Types.list Types.int32) (Types.list Types.string))
+--    H.it "test #6" $
+--      expectPolytype
+--        ((var "f") `with` [
+--          "singleton">: lambda "x" $ list [var "x"],
+--          "f">: lambda "x" $ lambda "y" $ Terms.primitive _lists_cons
+--            @@ (pair (var "singleton" @@ var "x") (var "singleton" @@ var "y"))
+--            @@ (var "g" @@ var "x" @@ var "y"),
+--          "g">: lambda "x" $ lambda "y" $ var "f" @@ int32 42 @@ var "y"])
+--        ["t0"] (Types.list $ Types.pair Types.int32 (Types.var "t0"))
 
   H.describe "Recursive and mutually recursive let (@wisnesky's test cases)" $ do
 --    H.it "test #1" $
@@ -337,7 +346,8 @@ checkLetTerms = H.describe "Check a few hand-picked let terms" $ do
         ((pair (var "f") (var "g")) `with` [
           "f">: var "g",
           "g">: var "f"])
-        -- Note: Haskell fails to unify the left and right types, giving forall ab. (a, b)
+        -- Note: GHC finds (a, b) rather than (a, a)
+        -- Try: :t (let (f, g) = (g, f) in (f, g))
         ["t0"] (Types.pair (Types.var "t0") (Types.var "t0"))
 --    H.it "test #3" $
 --      expectPolytype
