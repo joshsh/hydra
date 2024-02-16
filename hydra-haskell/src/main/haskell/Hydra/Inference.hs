@@ -1,4 +1,4 @@
--- | Entry point for Hydra type inference, which is a variation on on Hindley-Milner
+-- | Entry point for Hydra type inference, which is a variation on Algorithm W
 
 module Hydra.Inference (
   inferGraphTypes,

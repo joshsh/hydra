@@ -468,6 +468,11 @@ checkPolymorphism = H.describe "Check polymorphism" $ do
           `with` [
             "list">: lambda "x" $ list [var "x"]])
         (Types.pair (Types.list Types.int32) (Types.list Types.string))
+--    H.it "test #6" $
+--      expectPolytype
+--        ((var "f") `with` [
+--          "f">: lambda "x" $ lambda "y" (var "f" @@ int32 0 @@ var "x")])
+--        ["t0"] (Types.function (Types.var "t0") (Types.function (Types.var "t0") Types.int32))
 
 checkPrimitives :: H.SpecWith ()
 checkPrimitives = H.describe "Check a few hand-picked terms with primitive functions" $ do
