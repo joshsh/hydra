@@ -358,6 +358,16 @@ checkLetTerms = H.describe "Check a few hand-picked let terms" $ do
 --          (Types.function (Types.var "v0") (Types.function Types.int32 (Types.var "t1")))
 --          (Types.function Types.int32 (Types.function (Types.var "v0") (Types.var "t1"))))
 
+    -- letrec + = (\x . (\y . (S (+ (P x) y)))) in (+ (S (S 0)) (S 0))
+--    let s = primitive _math_neg
+--        p = primitive _math_neg
+--    H.it "test #4" $
+--      expectPolytype
+--        ((var "plus" @@ (s @@ (s @@ int32 0)) @@ (s @@ int32 0)) `with` [
+--          "plus">: lambda "x" $ lambda "y" (s @@ (var "plus" @@ (p @@ var "x") @@ var "y"))])
+--        ["t0"] (Types.function Types.int32 $ Types.function (Types.var "t0") Types.int32)
+
+
 checkLists :: H.SpecWith ()
 checkLists = H.describe "Check a few hand-picked list terms" $ do
 
