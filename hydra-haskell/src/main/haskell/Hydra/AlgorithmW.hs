@@ -5,7 +5,7 @@
 -- to system F translation by Ryan Wisnesky.
 -- License: Apache 2.0 https://www.apache.org/licenses/LICENSE-2.0 
 
-module Hydra.W where
+module Hydra.AlgorithmW where
 
 import Prelude
 import Control.Monad.Error
