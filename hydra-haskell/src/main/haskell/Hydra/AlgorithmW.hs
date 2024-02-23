@@ -7,11 +7,15 @@
 
 module Hydra.AlgorithmW where
 
+import qualified Hydra.Core as Core
+
 import Prelude
 import Control.Monad.Error
 import Control.Monad.State
 import Data.List (nub)
 
+import qualified Data.List as L
+import qualified Data.Map as M
 
 ------------------------
 -- STLC
@@ -432,12 +436,74 @@ subst'' phi (FTyAbs vs a) = FTyAbs vs $ subst'' phi a
 subst'' phi (FLetrec es e) = FLetrec (map (\(k,t,f)->(k,t,subst'' phi' f)) es) (subst'' phi' e)
  where phi' = filter (\(k,v) -> not (elem k ns)) phi
        (ns,ts,es') = unzip3 es 
-       
+
+----------------------------------------
+-- Hydra Core support
+
+hydraTermToStlc :: Core.Term -> Expr
+hydraTermToStlc term = case term of
+  Core.TermVariable (Core.Name v) -> Var v
+  Core.TermApplication (Core.Application t1 t2) -> App (hydraTermToStlc t1) (hydraTermToStlc t2)
+  Core.TermFunction f -> case f of
+    Core.FunctionLambda (Core.Lambda (Core.Name v) body) -> Abs v (hydraTermToStlc body)
+  Core.TermLet (Core.Let bindings env) -> Letrec (bindingToStlc <$> M.toList bindings) $ hydraTermToStlc env
+    where
+      bindingToStlc (Core.Name v, term) = (v, hydraTermToStlc term)
+
+systemFExprToHydra :: FExpr -> Core.Term
+systemFExprToHydra expr = case expr of
+  FVar v -> Core.TermVariable (Core.Name v)
+  FApp e1 e2 -> Core.TermApplication (Core.Application (systemFExprToHydra e1) (systemFExprToHydra e2))
+  -- TODO: annotate with domain type
+  FAbs v dom e -> Core.TermFunction $ Core.FunctionLambda (Core.Lambda (Core.Name v) (systemFExprToHydra e))
+  -- TODO: FTyApp FExpr [FTy]
+  -- TODO: FTyAbs [Var] FExpr
+  FLetrec bindings env -> Core.TermLet $ Core.Let (M.fromList $ bindingToHydra <$> bindings) $ systemFExprToHydra env
+    where
+      bindingToHydra (v, ty, term) = (Core.Name v, systemFExprToHydra term) -- TODO: type annotation
+
+systemFTypeToHydra :: FTy -> Core.Type
+systemFTypeToHydra ty = case ty of
+  FTyNat -> Core.TypeLiteral $ Core.LiteralTypeInteger Core.IntegerTypeInt32
+  FTyString -> Core.TypeLiteral $ Core.LiteralTypeString
+  FTyList lt -> Core.TypeList $ systemFTypeToHydra lt
+  FTyFn dom cod -> Core.TypeFunction $ Core.FunctionType (systemFTypeToHydra dom) (systemFTypeToHydra cod)
+  FTyProd t1 t2 -> Core.TypeProduct (systemFTypeToHydra <$> (t1:(componentsTypesOf t2)))
+    where
+      componentsTypesOf t = case t of
+        FTyProd t1 t2 -> t1:(componentsTypesOf t2)
+        _ -> [t]
+  FTySum t1 t2 -> Core.TypeSum (systemFTypeToHydra <$> (t1:(componentsTypesOf t2)))
+    where
+      componentsTypesOf t = case t of
+        FTySum t1 t2 -> t1:(componentsTypesOf t2)
+        _ -> [t]
+  FTyUnit -> Core.TypeProduct []
+  FTyVoid -> Core.TypeSum []
+  FForall vars body -> L.foldl (\e v -> Core.TypeLambda $ Core.LambdaType (Core.Name v) e)
+    (systemFTypeToHydra body) $ L.reverse vars
+
+inferWithAlgorithmW :: Core.Term -> IO (Core.Term, Core.Type)
+inferWithAlgorithmW term = do
+  (fexpr, fty) <- inferExpr $ hydraTermToStlc term
+  return (systemFExprToHydra fexpr, systemFTypeToHydra fty)
+
+inferExpr :: Expr -> IO (FExpr, FTy)
+inferExpr t = case (fst $ runState (runErrorT (w [] t)) 0) of
+  Left e -> fail $ "err: " ++ e
+  Right (s, (ty, f)) -> case (typeOf [] [] f) of
+    Left err -> fail $ "err: " ++ err
+    Right tt -> if ty == ty
+      then return (f, tt)
+      else fail "**** !!! NO MATCH"
+
+
 ----------------------------------------
 -- Main
  
 tests = [test4, testC, testA, test0, test1, testB, test2, test3a, test5, test6]
 
+testOne :: Expr -> IO ()
 testOne t = do { putStrLn $ "Untyped input: "
                ; putStrLn $ "\t" ++  show t 
                ; let out = fst $ runState (runErrorT (w [] t)) 0
@@ -524,7 +590,6 @@ test5 = Letrec [("f", f), ("g", g)] b
  where b = App (App (Const Pair) (Var "f")) (Var "g")
        f = Abs "x" $ Abs "y" $ App (App (Var "g") (Const $ PrimNat 0)) (Const $ PrimNat 0)
        g = Abs "u" $ Abs "v" $ App (App (Var "f") (Var "v")) (Const $ PrimNat 0) 
-       
 
 test6 :: Expr
 test6 = Letrec [("f", f), ("g", g)] b
