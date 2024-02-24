@@ -556,6 +556,11 @@ coreEncodeTerm x = case x of
     Core.injectionField = Core.Field {
       Core.fieldName = (Core.FieldName "union"),
       Core.fieldTerm = (coreEncodeInjection v)}}))
+  Core.TermTyped tt -> (Core.TermUnion (Core.Injection {
+    Core.injectionTypeName = (Core.Name "hydra/core.Term"),
+    Core.injectionField = Core.Field {
+      Core.fieldName = (Core.FieldName "typed"),
+      Core.fieldTerm = coreEncodeTypedTerm tt}}))
   Core.TermVariable v -> (Core.TermUnion (Core.Injection {
     Core.injectionTypeName = (Core.Name "hydra/core.Term"),
     Core.injectionField = Core.Field {
@@ -647,3 +652,14 @@ coreEncodeType x = case x of
     Core.injectionField = Core.Field {
       Core.fieldName = (Core.FieldName "wrap"),
       Core.fieldTerm = (coreEncodeNominalType v)}}))
+
+coreEncodeTypedTerm :: (Core.TypedTerm -> Core.Term)
+coreEncodeTypedTerm tt = (Core.TermRecord (Core.Record {
+  Core.recordTypeName = (Core.Name "hydra/core.TypedTerm"),
+  Core.recordFields = [
+    Core.Field {
+      Core.fieldName = (Core.FieldName "type"),
+      Core.fieldTerm = (coreEncodeType (Core.typedTermType tt))},
+    Core.Field {
+      Core.fieldName = (Core.FieldName "term"),
+      Core.fieldTerm = (coreEncodeTerm (Core.typedTermTerm tt))}]}))

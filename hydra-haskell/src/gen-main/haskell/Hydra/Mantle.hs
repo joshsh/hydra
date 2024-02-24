@@ -107,6 +107,7 @@ data TermVariant =
   TermVariantSet  |
   TermVariantStream  |
   TermVariantSum  |
+  TermVariantTyped |
   TermVariantUnion  |
   TermVariantVariable  |
   TermVariantWrap 
@@ -139,6 +140,8 @@ _TermVariant_set = (Core.FieldName "set")
 _TermVariant_stream = (Core.FieldName "stream")
 
 _TermVariant_sum = (Core.FieldName "sum")
+
+_TermVariant_typed = (Core.FieldName "typed")
 
 _TermVariant_union = (Core.FieldName "union")
 
@@ -212,16 +215,3 @@ _TypeVariant_union = (Core.FieldName "union")
 _TypeVariant_variable = (Core.FieldName "variable")
 
 _TypeVariant_wrap = (Core.FieldName "wrap")
-
--- | A type together with an instance of the type
-data TypedTerm = 
-  TypedTerm {
-    typedTermType :: Core.Type,
-    typedTermTerm :: Core.Term}
-  deriving (Eq, Ord, Read, Show)
-
-_TypedTerm = (Core.Name "hydra/mantle.TypedTerm")
-
-_TypedTerm_type = (Core.FieldName "type")
-
-_TypedTerm_term = (Core.FieldName "term")

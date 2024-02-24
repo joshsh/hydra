@@ -80,6 +80,7 @@ hydraMantleModule = Module ns elements [hydraCoreModule] $
           "set",
           "stream",
           "sum",
+          "typed",
           "union",
           "variable",
           "wrap"],
@@ -108,10 +109,4 @@ hydraMantleModule = Module ns elements [hydraCoreModule] $
           "sum",
           "union",
           "variable",
-          "wrap"],
-
-      def "TypedTerm" $
-        doc "A type together with an instance of the type" $
-        record [
-          "type">: core "Type",
-          "term">: core "Term"]]
+          "wrap"]]

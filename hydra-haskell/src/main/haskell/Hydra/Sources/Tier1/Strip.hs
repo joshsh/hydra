@@ -58,8 +58,9 @@ stripTermDef :: Definition (Term -> Term)
 stripTermDef = stripDefinition "stripTerm" $
   doc "Strip all annotations from a term" $
   function termT termT $
-  lambda "x" (ref skipAnnotationsDef @@ (match _Term (Just nothing) [
-    Case _Term_annotated --> lambda "ann" (just $ var "ann")]) @@ var "x")
+  lambda "x" $ (match _Term (Just $ var "x") [
+    Case _Term_typed --> lambda "tt" $ ref stripTermDef @@ (project _TypedTerm _TypedTerm_term @@ var "tt"),
+    Case _Term_annotated --> lambda "at" $ ref stripTermDef @@ (project _Annotated _Annotated_subject @@ var "at")]) @@ var "x"
 
 stripTypeDef :: Definition (Type -> Type)
 stripTypeDef = stripDefinition "stripType" $

@@ -178,6 +178,7 @@ termVariant x = case x of
   Core.TermSet _ -> Mantle.TermVariantSet
   Core.TermStream _ -> Mantle.TermVariantStream
   Core.TermSum _ -> Mantle.TermVariantSum
+  Core.TermTyped _ -> Mantle.TermVariantTyped
   Core.TermUnion _ -> Mantle.TermVariantUnion
   Core.TermVariable _ -> Mantle.TermVariantVariable
   Core.TermWrap _ -> Mantle.TermVariantWrap
@@ -197,6 +198,7 @@ termVariants = [
   Mantle.TermVariantSet,
   Mantle.TermVariantStream,
   Mantle.TermVariantSum,
+  Mantle.TermVariantTyped,
   Mantle.TermVariantUnion,
   Mantle.TermVariantVariable,
   Mantle.TermVariantWrap]

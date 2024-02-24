@@ -533,6 +533,8 @@ data Term =
   TermStream Stream |
   -- | A variant tuple
   TermSum Sum |
+  -- | A term annotated with a type
+  TermTyped TypedTerm |
   -- | An injection; an instance of a union type
   TermUnion Injection |
   -- | A variable reference
@@ -567,6 +569,8 @@ _Term_set = (FieldName "set")
 _Term_stream = (FieldName "stream")
 
 _Term_sum = (FieldName "sum")
+
+_Term_typed = (FieldName "typed")
 
 _Term_union = (FieldName "union")
 
@@ -643,6 +647,19 @@ _Type_union = (FieldName "union")
 _Type_variable = (FieldName "variable")
 
 _Type_wrap = (FieldName "wrap")
+
+-- | A type together with an instance of the type
+data TypedTerm = 
+  TypedTerm {
+    typedTermType :: Type,
+    typedTermTerm :: Term}
+  deriving (Eq, Ord, Read, Show)
+
+_TypedTerm = (Name "hydra/core.TypedTerm")
+
+_TypedTerm_type = (FieldName "type")
+
+_TypedTerm_term = (FieldName "term")
 
 -- | An empty record type as a canonical unit type
 data UnitType = 

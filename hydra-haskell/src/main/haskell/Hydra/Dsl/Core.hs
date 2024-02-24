@@ -204,3 +204,9 @@ sumSize = project _Sum _Sum_size
 
 sumTerm :: Datum (Sum -> Term)
 sumTerm = project _Sum _Sum_term
+
+typedTermTerm :: Datum (TypedTerm -> Term)
+typedTermTerm = project _TypedTerm _TypedTerm_term
+
+typedTermType :: Datum (TypedTerm -> Type)
+typedTermType = project _TypedTerm _TypedTerm_type

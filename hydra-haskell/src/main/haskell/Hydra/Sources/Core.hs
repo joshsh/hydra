@@ -335,6 +335,9 @@ hydraCoreModule = Module ns elements [] $
           "sum">:
             doc "A variant tuple" $
             core "Sum",
+          "typed">:
+            doc "A term annotated with a type" $
+            core "TypedTerm",
           "union">:
             doc "An injection; an instance of a union type" $
             core "Injection",
@@ -375,6 +378,12 @@ hydraCoreModule = Module ns elements [] $
           "union">: core "RowType",
           "variable">: core "Name",
           "wrap">: core "Nominal" @@ core "Type"],
+
+      def "TypedTerm" $
+        doc "A type together with an instance of the type" $
+        record [
+          "type">: core "Type",
+          "term">: core "Term"],
 
       def "UnitType" $
         doc "An empty record type as a canonical unit type" $

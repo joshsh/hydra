@@ -9,10 +9,8 @@ module Hydra.AlgorithmW where
 
 import qualified Hydra.Core as Core
 
-import Prelude
 import Control.Monad.Error
 import Control.Monad.State
-import Data.List (nub)
 
 import qualified Data.List as L
 import qualified Data.Map as M
@@ -371,7 +369,7 @@ inst (Forall vs ty) = do { vs' <- mapM (\_->fresh) vs; return $ (subst (zip vs v
                         
 gen :: Ctx -> MTy -> (TypSch, [Var])
 gen g t = (Forall vs t , vs)
- where vs = nub $ filter (\v -> not $ elem v (vars g)) (vars t)  
+ where vs = L.nub $ filter (\v -> not $ elem v (vars g)) (vars t)
 
 fTyApp x [] = x
 fTyApp x y = FTyApp x y
@@ -422,7 +420,6 @@ w g (Letrec xe0 e1) = do { t0s <- mapM (\(k,v) -> do { f <- fresh; return (k, f)
        w' g  ((k,v):tl) = do { (u,(u', j)) <- w g v
                              ; (r,(r', h)) <- w' (subst u g ) tl
                              ; return (r `o` u, ((subst r u'):r', (subst r j):h)) }  
-       
 
 subst'' :: [(Var, FExpr)] -> FExpr -> FExpr
 subst'' phi (FConst c) = FConst c
@@ -486,8 +483,7 @@ systemFExprToHydra expr = case expr of
       bindingToHydra (v, ty, term) = do
         hterm <- systemFExprToHydra term
         htyp <- systemFTypeToHydra ty
-        -- TODO: attach htyp
-        return $ Core.Field (Core.FieldName v) hterm
+        return $ Core.Field (Core.FieldName v) $ Core.TermTyped $ Core.TypedTerm htyp hterm
   _ -> Left $ "unsupported expression: " ++ show expr
 
 systemFTypeToHydra :: FTy -> Either String Core.Type

@@ -49,7 +49,8 @@ coreEncodingModule = Module (Namespace "hydra/coreEncoding") elements [hydraCore
      Base.el coreEncodeSumDef,
      Base.el coreEncodeTermDef,
      Base.el coreEncodeTupleProjectionDef,
-     Base.el coreEncodeTypeDef]
+     Base.el coreEncodeTypeDef,
+     Base.el coreEncodeTypedTermDef]
 
 coreEncodingDefinition :: String -> Term -> Definition x
 coreEncodingDefinition label term = Base.definitionInModule coreEncodingModule ("coreEncode" ++ label) $ Datum term
@@ -368,25 +369,26 @@ coreEncodeSumDef = coreEncodingDefinition "Sum" $
 coreEncodeTermDef :: Definition (Term -> Term)
 coreEncodeTermDef = coreEncodingDefinition "Term" $
   match _Term (Just $ encodedString $ string "not implemented") [
-    ecase _Term_annotated (ref coreEncodeAnnotatedTermDef),
-    ecase _Term_application (ref coreEncodeApplicationDef),
-    ecase _Term_function (ref coreEncodeFunctionDef),
-    ecase _Term_let (ref coreEncodeLetDef),
-    ecase _Term_literal (ref coreEncodeLiteralDef),
+    ecase _Term_annotated $ ref coreEncodeAnnotatedTermDef,
+    ecase _Term_application $ ref coreEncodeApplicationDef,
+    ecase _Term_function $ ref coreEncodeFunctionDef,
+    ecase _Term_let $ ref coreEncodeLetDef,
+    ecase _Term_literal $ ref coreEncodeLiteralDef,
     evar _Term_list $ encodedList (primitive _lists_map @@ (ref coreEncodeTermDef) @@ var "v"),
     -- TODO: restore map and set constructors after finding a way to infer "Ord a =>" for Haskell
     -- _Term_map,
     evar _Term_optional $ encodedOptional (primitive _optionals_map @@ ref coreEncodeTermDef @@ var "v"),
     evar _Term_product $ encodedList (primitive _lists_map @@ ref coreEncodeTermDef @@ var "v"),
-    ecase _Term_record (ref coreEncodeRecordDef),
+    ecase _Term_record $ ref coreEncodeRecordDef,
     -- TODO: restore map and set constructors after finding a way to infer "Ord a =>" for Haskell
     -- evar _Term_set $ encodedSet (primitive _sets_map @@ (ref coreEncodeTermDef) @@ var "v")
-    ecase _Term_sum (ref coreEncodeSumDef),
+    ecase _Term_sum $ ref coreEncodeSumDef,
     -- TODO: determine whether streams have a sigma encoding
     -- _ Term_stream
-    ecase _Term_union (ref coreEncodeInjectionDef),
-    ecase _Term_variable (ref coreEncodeNameDef),
-    ecase _Term_wrap (ref coreEncodeNominalTermDef)]
+    ecase _Term_typed $ ref coreEncodeTypedTermDef,
+    ecase _Term_union $ ref coreEncodeInjectionDef,
+    ecase _Term_variable $ ref coreEncodeNameDef,
+    ecase _Term_wrap $ ref coreEncodeNominalTermDef]
   where
     ecase = encodedCase _Term
     evar fname = Field fname . lambda "v" . encodedVariant _Term fname
@@ -424,3 +426,9 @@ coreEncodeTypeDef = coreEncodingDefinition "Type" $
   where
     cs fname term = Field fname $ lambda "v" $ encodedVariant _Type fname term
     csref fname fun = cs fname (ref fun @@ var "v")
+
+coreEncodeTypedTermDef :: Definition (TypedTerm -> Term)
+coreEncodeTypedTermDef = coreEncodingDefinition "TypedTerm" $
+  lambda "tt" $ encodedRecord _TypedTerm [
+    (_TypedTerm_type, ref coreEncodeTypeDef @@ (project _TypedTerm _TypedTerm_type @@ var "tt")),
+    (_TypedTerm_term, ref coreEncodeTermDef @@ (project _TypedTerm _TypedTerm_term @@ var "tt"))]

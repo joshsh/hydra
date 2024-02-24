@@ -259,6 +259,7 @@ termVariantDef = basicsDefinition "termVariant" $
     _Term_set         @-> _TermVariant_set,
     _Term_stream      @-> _TermVariant_stream,
     _Term_sum         @-> _TermVariant_sum,
+    _Term_typed       @-> _TermVariant_typed,
     _Term_union       @-> _TermVariant_union,
     _Term_variable    @-> _TermVariant_variable,
     _Term_wrap        @-> _TermVariant_wrap]
@@ -279,6 +280,7 @@ termVariantsDef = basicsDefinition "termVariants" $
     _TermVariant_set,
     _TermVariant_stream,
     _TermVariant_sum,
+    _TermVariant_typed,
     _TermVariant_union,
     _TermVariant_variable,
     _TermVariant_wrap]

@@ -193,6 +193,7 @@ subtermsDef = tier1Definition "subterms" $
     _Term_set>>: Sets.toList,
     _Term_stream>>: constant $ list [],
     _Term_sum>>: lambda "st" $ list [Core.sumTerm @@ var "st"],
+    _Term_typed>>: lambda "tt" $ list [Core.typedTermTerm @@ var "tt"],
     _Term_union>>: lambda "ut" $ list [Core.fieldTerm @@ (Core.injectionField @@ var "ut")],
     _Term_variable>>: constant $ list [],
     _Term_wrap>>: lambda "n" $ list [Core.nominalObject @@ var "n"]]
