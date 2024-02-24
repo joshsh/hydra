@@ -16,6 +16,7 @@ import Data.List (nub)
 
 import qualified Data.List as L
 import qualified Data.Map as M
+import qualified Control.Monad as CM
 
 ------------------------
 -- STLC
@@ -113,7 +114,7 @@ data FExpr = FConst Prim
 instance Show FExpr where 
   show (FConst p) = show p
   show (FVar v) = v
-  show (FTyApp e t) = "(" ++ show e ++ " " ++ show t ++ ")"
+  show (FTyApp e t) = "(" ++ show e ++ " : " ++ show t ++ ")"
   show (FApp (FApp (FApp a' a) b) b') = "(" ++ show a' ++ " " ++ show a ++ " " ++ show b ++ " " ++ show b' ++ ")"
   show (FApp (FApp a b) b') = "(" ++ show a ++ " " ++ show b ++ " " ++ show b' ++ ")"
   show (FApp a b) = "(" ++ show a ++ " " ++ show b ++ ")"
@@ -440,8 +441,14 @@ subst'' phi (FLetrec es e) = FLetrec (map (\(k,t,f)->(k,t,subst'' phi' f)) es) (
 ----------------------------------------
 -- Hydra Core support
 
+-- Note: no support for @wisnesky's Prim constructors other than PrimStr and PrimNat
 hydraTermToStlc :: Core.Term -> Expr
 hydraTermToStlc term = case term of
+  Core.TermLiteral lit -> case lit of
+    Core.LiteralString s -> Const $ PrimStr s
+    Core.LiteralInteger int -> case int of
+      Core.IntegerValueBigint n -> Const $ PrimNat n
+  Core.TermList els -> foldr (\el acc -> App (App (Const Cons) (hydraTermToStlc el)) acc) (Const Nil) els
   Core.TermVariable (Core.Name v) -> Var v
   Core.TermApplication (Core.Application t1 t2) -> App (hydraTermToStlc t1) (hydraTermToStlc t2)
   Core.TermFunction f -> case f of
@@ -452,8 +459,18 @@ hydraTermToStlc term = case term of
 
 systemFExprToHydra :: FExpr -> Core.Term
 systemFExprToHydra expr = case expr of
+  FConst prim -> case prim of
+    PrimStr s -> Core.TermLiteral $ Core.LiteralString s
+    PrimNat n -> Core.TermLiteral $ Core.LiteralInteger $ Core.IntegerValueBigint n
+    -- Note: other prims are unsupported
   FVar v -> Core.TermVariable (Core.Name v)
-  FApp e1 e2 -> Core.TermApplication (Core.Application (systemFExprToHydra e1) (systemFExprToHydra e2))
+  FApp e1 e2 -> case e1 of
+    FApp (FConst Cons) hd -> Core.TermList (systemFExprToHydra <$> (hd:(gather e2)))
+      where
+        gather e = case e of
+          FConst Nil -> []
+          FApp (FApp (FConst Cons) hd) tl -> hd:(gather tl)
+    _ -> Core.TermApplication (Core.Application (systemFExprToHydra e1) (systemFExprToHydra e2))
   -- TODO: annotate with domain type
   FAbs v dom e -> Core.TermFunction $ Core.FunctionLambda (Core.Lambda (Core.Name v) (systemFExprToHydra e))
   -- TODO: FTyApp FExpr [FTy]
@@ -462,46 +479,59 @@ systemFExprToHydra expr = case expr of
     where
       bindingToHydra (v, ty, term) = (Core.Name v, systemFExprToHydra term) -- TODO: type annotation
 
-systemFTypeToHydra :: FTy -> Core.Type
+systemFTypeToHydra :: FTy -> Either String Core.Type
 systemFTypeToHydra ty = case ty of
-  FTyNat -> Core.TypeLiteral $ Core.LiteralTypeInteger Core.IntegerTypeInt32
-  FTyString -> Core.TypeLiteral $ Core.LiteralTypeString
-  FTyList lt -> Core.TypeList $ systemFTypeToHydra lt
-  FTyFn dom cod -> Core.TypeFunction $ Core.FunctionType (systemFTypeToHydra dom) (systemFTypeToHydra cod)
-  FTyProd t1 t2 -> Core.TypeProduct (systemFTypeToHydra <$> (t1:(componentsTypesOf t2)))
+  FTyVar v -> pure $ Core.TypeVariable $ Core.Name v
+  FTyNat -> pure $ Core.TypeLiteral $ Core.LiteralTypeInteger Core.IntegerTypeBigint
+  FTyString -> pure $ Core.TypeLiteral $ Core.LiteralTypeString
+  FTyList lt -> Core.TypeList <$> systemFTypeToHydra lt
+  FTyFn dom cod -> Core.TypeFunction <$> (Core.FunctionType <$> systemFTypeToHydra dom <*> systemFTypeToHydra cod)
+  FTyProd t1 t2 -> Core.TypeProduct <$> CM.mapM systemFTypeToHydra (t1:(componentsTypesOf t2))
     where
       componentsTypesOf t = case t of
         FTyProd t1 t2 -> t1:(componentsTypesOf t2)
         _ -> [t]
-  FTySum t1 t2 -> Core.TypeSum (systemFTypeToHydra <$> (t1:(componentsTypesOf t2)))
+  FTySum t1 t2 -> Core.TypeSum <$> CM.mapM systemFTypeToHydra (t1:(componentsTypesOf t2))
     where
       componentsTypesOf t = case t of
         FTySum t1 t2 -> t1:(componentsTypesOf t2)
         _ -> [t]
-  FTyUnit -> Core.TypeProduct []
-  FTyVoid -> Core.TypeSum []
-  FForall vars body -> L.foldl (\e v -> Core.TypeLambda $ Core.LambdaType (Core.Name v) e)
-    (systemFTypeToHydra body) $ L.reverse vars
+  FTyUnit -> pure $ Core.TypeProduct []
+  FTyVoid -> pure $ Core.TypeSum []
+  FForall vars body -> do
+    body' <- systemFTypeToHydra body
+    return $ L.foldl (\e v -> Core.TypeLambda $ Core.LambdaType (Core.Name v) e) body' $ L.reverse vars
+  _ -> Left $ "unsupported type: " ++ show ty
 
 inferWithAlgorithmW :: Core.Term -> IO (Core.Term, Core.Type)
 inferWithAlgorithmW term = do
-  (fexpr, fty) <- inferExpr $ hydraTermToStlc term
-  return (systemFExprToHydra fexpr, systemFTypeToHydra fty)
+    (fexpr, _) <- inferExpr $ hydraTermToStlc $ wrap term
+    let (uexpr, uty) = unwrap fexpr
+    let hydraTerm = systemFExprToHydra uexpr
+    hydraType <- case systemFTypeToHydra uty of
+      Left err -> fail err
+      Right t -> return t
+    return (hydraTerm, hydraType)
+  where
+    wrap term = Core.TermLet $ Core.Let (M.fromList [(Core.Name "x", term)]) $
+      Core.TermLiteral $ Core.LiteralString "placeholder"
+    unwrap expr = case expr of
+      FLetrec bindings env -> case bindings of
+        [(_, ty, e)] -> (e, ty)
 
 inferExpr :: Expr -> IO (FExpr, FTy)
 inferExpr t = case (fst $ runState (runErrorT (w [] t)) 0) of
-  Left e -> fail $ "err: " ++ e
+  Left e -> fail $ "inference error: " ++ e
   Right (s, (ty, f)) -> case (typeOf [] [] f) of
-    Left err -> fail $ "err: " ++ err
-    Right tt -> if ty == ty
+    Left err -> fail $ "type error: " ++ err
+    Right tt -> if tt == mTyToFTy ty
       then return (f, tt)
-      else fail "**** !!! NO MATCH"
-
+      else fail "no match"
 
 ----------------------------------------
 -- Main
  
-tests = [test4, testC, testA, test0, test1, testB, test2, test3a, test5, test6]
+tests = [test_0, test_1, test_2, test_3, test_4, test_5, test_6, test_7, test_8, test_10, test_11, test_12]
 
 testOne :: Expr -> IO ()
 testOne t = do { putStrLn $ "Untyped input: "
@@ -518,7 +548,7 @@ testOne t = do { putStrLn $ "Untyped input: "
                                             ; case (typeOf [] [] f) of
                                                Left err -> putStrLn $ "\t" ++  "err: " ++ err
                                                Right tt -> do { putStrLn $ " \t" ++ show tt
-                                                              ; if ty == ty then return () else putStrLn "**** !!! NO MATCH" } }
+                                                              ; if tt == mTyToFTy ty then return () else putStrLn "** !!! NO MATCH" } }
                ; putStrLn ""
                ; putStrLn "------------------------" 
                ; putStrLn ""  }
@@ -527,31 +557,37 @@ main = mapM testOne tests
 
 letrec' x e f = Letrec [(x,e)] f
 
-testA :: Expr
-testA =  Let "f" ( (Abs "x" (Var "x"))) $ App (Var "f")  (Const $ PrimNat 0)
+test_0 :: Expr
+test_0 = Abs "x" $ Var "x"
+
+test_1 :: Expr
+test_1 = Letrec [("foo", Abs "x" $ Var "x")] $ Const $ PrimNat 42
+
+test_2 :: Expr
+test_2 =  Let "f" ( (Abs "x" (Var "x"))) $ App (Var "f")  (Const $ PrimNat 0)
  where sng0 = App (Var "sng") (Const $ PrimNat 0)
        sngAlice = App (Var "sng") (Const $ PrimStr "alice")
        body = (Var "sng")
        
-test0 :: Expr
-test0 =  Let "f" (App (Abs "x" (Var "x")) (Const $ PrimNat 0)) (Var "f")  
+test_3 :: Expr
+test_3 =  Let "f" (App (Abs "x" (Var "x")) (Const $ PrimNat 0)) (Var "f")  
  where sng0 = App (Var "sng") (Const $ PrimNat 0)
        sngAlice = App (Var "sng") (Const $ PrimStr "alice")
 
        
-testB :: Expr
-testB = Let "sng" (Abs "x" (App (App (Const Cons) (Var "x")) (Const Nil))) body 
+test_4 :: Expr
+test_4 = Let "sng" (Abs "x" (App (App (Const Cons) (Var "x")) (Const Nil))) body 
  where 
        body = (Var "sng")
-       
-test1 :: Expr
-test1 = Let "sng" (Abs "x" (App (App (Const Cons) (Var "x")) (Const Nil))) body 
+
+test_5 :: Expr
+test_5 = Let "sng" (Abs "x" (App (App (Const Cons) (Var "x")) (Const Nil))) body 
  where sng0 = App (Var "sng") (Const $ PrimNat 0)
        sngAlice = App (Var "sng") (Const $ PrimStr "alice")
        body = App (App (Const Pair) sng0) sngAlice 
        
-test2 :: Expr
-test2 = letrec' "+" (Abs "x" $ Abs "y" $ recCall) twoPlusOne 
+test_6 :: Expr
+test_6 = letrec' "+" (Abs "x" $ Abs "y" $ recCall) twoPlusOne 
  where
    recCall = App (Const Succ) $ App (App (Var "+") (App (Const Pred) (Var "x"))) (Var "y") 
    ifz x y z = App (App (App (Const If0) x) y) z
@@ -559,8 +595,8 @@ test2 = letrec' "+" (Abs "x" $ Abs "y" $ recCall) twoPlusOne
    two = App (Const Succ) one
    one = App (Const Succ) (Const $ PrimNat 0)
 
-testC :: Expr
-testC = letrec' "+" (Abs "x" $ Abs "y" $ recCall) $ twoPlusOne 
+test_7 :: Expr
+test_7 = letrec' "+" (Abs "x" $ Abs "y" $ recCall) $ twoPlusOne 
  where
    recCall = App (Const Succ) $ App (App (Var "+") (App (Const Pred) (Var "x"))) ( (Var "y"))
    ifz x y z = App (App (App (Const If0) x) y) z
@@ -568,35 +604,31 @@ testC = letrec' "+" (Abs "x" $ Abs "y" $ recCall) $ twoPlusOne
    two = App (Const Succ) one
    one = App (Const Succ) (Const $ PrimNat 0)  
 
-test3 :: Expr
-test3 = letrec' "f" f x 
+test_8 :: Expr
+test_8 = letrec' "f" f x 
  where x =  (Var "f")
        f = Abs "x" $ Abs "y" $ App (App (Var "f") (Const $ PrimNat 0)) (Var "x") 
 
-test3a :: Expr
-test3a = Letrec [("f", f), ("g", g)] x 
+test_9 :: Expr
+test_9 = Letrec [("f", f), ("g", g)] x 
  where x =  App (App (Const $ Pair) (Var "f")) (Var "g")
        f = Abs "x" $ Abs "y" $ App (App (Var "f") (Const $ PrimNat 0)) (Var "x")        
        g = Abs "xx" $ Abs "yy" $ App (App (Var "g") (Const $ PrimNat 0)) (Var "xx")   
-         
-test4 :: Expr
-test4 = Letrec [("f", f), ("g", g)] b
+
+test_10 :: Expr
+test_10 = Letrec [("f", f), ("g", g)] b
  where b = App (App (Const Pair) (Var "f")) (Var "g")
        f = Abs "x" $ Abs "y" $ App (App (Var "g") (Const $ PrimNat 0)) (Var "x") 
        g = Abs "u" $ Abs "v" $ App (App (Var "f") (Var "v")) (Const $ PrimNat 0) 
 
-test5 :: Expr
-test5 = Letrec [("f", f), ("g", g)] b
+test_11 :: Expr
+test_11 = Letrec [("f", f), ("g", g)] b
  where b = App (App (Const Pair) (Var "f")) (Var "g")
        f = Abs "x" $ Abs "y" $ App (App (Var "g") (Const $ PrimNat 0)) (Const $ PrimNat 0)
        g = Abs "u" $ Abs "v" $ App (App (Var "f") (Var "v")) (Const $ PrimNat 0) 
 
-test6 :: Expr
-test6 = Letrec [("f", f), ("g", g)] b
+test_12 :: Expr
+test_12 = Letrec [("f", f), ("g", g)] b
  where b = App (App (Const Pair) (Var "f")) (Var "g")
        f = Abs "x" $ Abs "y" $ App (App (Var "g") (Const $ PrimNat 0)) (Var "x") 
        g = Abs "u" $ Abs "v" $ App (App (Var "f") (Const $ PrimNat 0)) (Const $ PrimNat 0) 
-   
-
-
-
