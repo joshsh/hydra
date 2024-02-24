@@ -180,13 +180,13 @@ hydraCoreModule = Module ns elements [] $
             Types.map string (core "Term")],
 
       def "Lambda" $
-        doc "A function abstraction (lambda)" $
+        doc "A function abstraction (lambda), or alternatively, a System F type abstraction term" $
         record [
           "parameter">:
-            doc "The parameter of the lambda" $
+            doc "The parameter of the lambda or type abstraction" $
             core "Name",
           "body">:
-            doc "The body of the lambda" $
+            doc "The body of the lambda or type abstraction" $
             core "Term"],
 
       def "LambdaType" $
@@ -335,6 +335,12 @@ hydraCoreModule = Module ns elements [] $
           "sum">:
             doc "A variant tuple" $
             core "Sum",
+          "typeAbstraction">:
+            doc "A System F type abstraction term" $
+            core "Lambda",
+          "typeApplication">:
+            doc "A System F type application term" $
+            core "TypedTerm",
           "typed">:
             doc "A term annotated with a type" $
             core "TypedTerm",
@@ -380,7 +386,8 @@ hydraCoreModule = Module ns elements [] $
           "wrap">: core "Nominal" @@ core "Type"],
 
       def "TypedTerm" $
-        doc "A type together with an instance of the type" $
+        doc ("A type paired with a term. "
+          ++ "Typed terms are used for type annotations on terms, as well as for System F type applications") $
         record [
           "type">: core "Type",
           "term">: core "Term"],

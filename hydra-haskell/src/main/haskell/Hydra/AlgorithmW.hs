@@ -475,8 +475,13 @@ systemFExprToHydra expr = case expr of
   FAbs v dom e -> do
     term <- systemFExprToHydra e
     return $ Core.TermFunction $ Core.FunctionLambda (Core.Lambda (Core.Name v) term)
-  -- TODO: FTyApp FExpr [FTy]
-  -- TODO: FTyAbs [Var] FExpr
+  FTyAbs params body -> do
+    hbody <- systemFExprToHydra body
+    return $ L.foldl (\t v -> Core.TermTypeAbstraction $ Core.Lambda (Core.Name v) t) hbody $ L.reverse params
+  FTyApp fun args -> do
+    hfun <- systemFExprToHydra fun
+    hargs <- CM.mapM systemFTypeToHydra args
+    return $ L.foldl (\t a -> Core.TermTypeApplication $ Core.TypedTerm a t) hfun $ L.reverse hargs
   FLetrec bindings env -> Core.TermLet <$>
       (Core.Let <$> CM.mapM bindingToHydra bindings <*> systemFExprToHydra env)
     where

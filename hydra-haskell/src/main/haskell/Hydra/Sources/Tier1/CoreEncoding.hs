@@ -385,6 +385,8 @@ coreEncodeTermDef = coreEncodingDefinition "Term" $
     ecase _Term_sum $ ref coreEncodeSumDef,
     -- TODO: determine whether streams have a sigma encoding
     -- _ Term_stream
+    ecase _Term_typeAbstraction $ ref coreEncodeLambdaDef,
+    ecase _Term_typeApplication $ ref coreEncodeTypedTermDef,
     ecase _Term_typed $ ref coreEncodeTypedTermDef,
     ecase _Term_union $ ref coreEncodeInjectionDef,
     ecase _Term_variable $ ref coreEncodeNameDef,

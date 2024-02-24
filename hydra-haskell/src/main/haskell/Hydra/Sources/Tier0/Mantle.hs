@@ -80,6 +80,8 @@ hydraMantleModule = Module ns elements [hydraCoreModule] $
           "set",
           "stream",
           "sum",
+          "typeAbstraction",
+          "typeApplication",
           "typed",
           "union",
           "variable",

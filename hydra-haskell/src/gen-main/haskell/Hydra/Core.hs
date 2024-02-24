@@ -293,12 +293,12 @@ _Kv = (Name "hydra/core.Kv")
 
 _Kv_annotations = (FieldName "annotations")
 
--- | A function abstraction (lambda)
+-- | A function abstraction (lambda), or alternatively, a System F type abstraction term
 data Lambda = 
   Lambda {
-    -- | The parameter of the lambda
+    -- | The parameter of the lambda or type abstraction
     lambdaParameter :: Name,
-    -- | The body of the lambda
+    -- | The body of the lambda or type abstraction
     lambdaBody :: Term}
   deriving (Eq, Ord, Read, Show)
 
@@ -533,6 +533,10 @@ data Term =
   TermStream Stream |
   -- | A variant tuple
   TermSum Sum |
+  -- | A System F type abstraction term
+  TermTypeAbstraction Lambda |
+  -- | A System F type application term
+  TermTypeApplication TypedTerm |
   -- | A term annotated with a type
   TermTyped TypedTerm |
   -- | An injection; an instance of a union type
@@ -569,6 +573,10 @@ _Term_set = (FieldName "set")
 _Term_stream = (FieldName "stream")
 
 _Term_sum = (FieldName "sum")
+
+_Term_typeAbstraction = (FieldName "typeAbstraction")
+
+_Term_typeApplication = (FieldName "typeApplication")
 
 _Term_typed = (FieldName "typed")
 
@@ -648,7 +656,7 @@ _Type_variable = (FieldName "variable")
 
 _Type_wrap = (FieldName "wrap")
 
--- | A type together with an instance of the type
+-- | A type paired with a term. Typed terms are used for type annotations on terms, as well as for System F type applications
 data TypedTerm = 
   TypedTerm {
     typedTermType :: Type,

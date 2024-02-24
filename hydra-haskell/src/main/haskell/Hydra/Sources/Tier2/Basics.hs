@@ -246,23 +246,25 @@ termVariantDef :: Definition (Term -> TermVariant)
 termVariantDef = basicsDefinition "termVariant" $
   doc "Find the term variant (constructor) for a given term" $
   matchToEnum _Term _TermVariant Nothing [
-    _Term_annotated   @-> _TermVariant_annotated,
-    _Term_application @-> _TermVariant_application,
-    _Term_function    @-> _TermVariant_function,
-    _Term_let         @-> _TermVariant_let,
-    _Term_list        @-> _TermVariant_list,
-    _Term_literal     @-> _TermVariant_literal,
-    _Term_map         @-> _TermVariant_map,
-    _Term_optional    @-> _TermVariant_optional,
-    _Term_product     @-> _TermVariant_product,
-    _Term_record      @-> _TermVariant_record,
-    _Term_set         @-> _TermVariant_set,
-    _Term_stream      @-> _TermVariant_stream,
-    _Term_sum         @-> _TermVariant_sum,
-    _Term_typed       @-> _TermVariant_typed,
-    _Term_union       @-> _TermVariant_union,
-    _Term_variable    @-> _TermVariant_variable,
-    _Term_wrap        @-> _TermVariant_wrap]
+    _Term_annotated       @-> _TermVariant_annotated,
+    _Term_application     @-> _TermVariant_application,
+    _Term_function        @-> _TermVariant_function,
+    _Term_let             @-> _TermVariant_let,
+    _Term_list            @-> _TermVariant_list,
+    _Term_literal         @-> _TermVariant_literal,
+    _Term_map             @-> _TermVariant_map,
+    _Term_optional        @-> _TermVariant_optional,
+    _Term_product         @-> _TermVariant_product,
+    _Term_record          @-> _TermVariant_record,
+    _Term_set             @-> _TermVariant_set,
+    _Term_stream          @-> _TermVariant_stream,
+    _Term_sum             @-> _TermVariant_sum,
+    _Term_typeAbstraction @-> _TermVariant_typeAbstraction,
+    _Term_typeApplication @-> _TermVariant_typeApplication,
+    _Term_typed           @-> _TermVariant_typed,
+    _Term_union           @-> _TermVariant_union,
+    _Term_variable        @-> _TermVariant_variable,
+    _Term_wrap            @-> _TermVariant_wrap]
 
 termVariantsDef :: Definition [TermVariant]
 termVariantsDef = basicsDefinition "termVariants" $
@@ -280,6 +282,8 @@ termVariantsDef = basicsDefinition "termVariants" $
     _TermVariant_set,
     _TermVariant_stream,
     _TermVariant_sum,
+    _TermVariant_typeAbstraction,
+    _TermVariant_typeApplication,
     _TermVariant_typed,
     _TermVariant_union,
     _TermVariant_variable,

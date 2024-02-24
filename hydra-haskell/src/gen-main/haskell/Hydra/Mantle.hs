@@ -107,6 +107,8 @@ data TermVariant =
   TermVariantSet  |
   TermVariantStream  |
   TermVariantSum  |
+  TermVariantTypeAbstraction |
+  TermVariantTypeApplication |
   TermVariantTyped |
   TermVariantUnion  |
   TermVariantVariable  |
@@ -140,6 +142,10 @@ _TermVariant_set = (Core.FieldName "set")
 _TermVariant_stream = (Core.FieldName "stream")
 
 _TermVariant_sum = (Core.FieldName "sum")
+
+_TermVariant_typeAbstraction = (Core.FieldName "typeAbstraction")
+
+_TermVariant_typeApplication = (Core.FieldName "typeApplication")
 
 _TermVariant_typed = (Core.FieldName "typed")
 

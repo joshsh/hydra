@@ -134,6 +134,9 @@ subterms x = case x of
   Core.TermStream _ -> []
   Core.TermSum v -> [
     Core.sumTerm v]
+  Core.TermTypeAbstraction v -> [Core.lambdaBody v]
+  Core.TermTypeApplication v -> [Core.typedTermTerm v]
+  Core.TermTyped v -> [Core.typedTermTerm v]
   Core.TermUnion v -> [
     Core.fieldTerm (Core.injectionField v)]
   Core.TermVariable _ -> []
