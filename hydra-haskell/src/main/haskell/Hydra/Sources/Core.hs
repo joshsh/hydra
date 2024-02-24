@@ -50,6 +50,13 @@ hydraCoreModule = Module ns elements [] $
             doc "The right-hand side of the application" $
             core "Type"],
 
+      def "Binding" $
+        doc "A name bound to an optionally-typed term; a field or element" $
+        record [
+          "name">: core "Name",
+          "term">: core "Term",
+          "type">: optional $ core "Type"],
+
       def "CaseStatement" $
         doc "A union elimination; a case statement" $
         record [
