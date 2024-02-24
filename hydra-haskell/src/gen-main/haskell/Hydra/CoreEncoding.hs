@@ -333,7 +333,7 @@ coreEncodeLet l =
     Core.recordFields = [
       Core.Field {
         Core.fieldName = (Core.FieldName "bindings"),
-        Core.fieldTerm = (Core.TermMap (Maps.fromList (Lists.map mapBinding (Maps.toList (Core.letBindings l)))))},
+        Core.fieldTerm = (Core.TermList (Lists.map coreEncodeField (Core.letBindings l)))},
       Core.Field {
         Core.fieldName = (Core.FieldName "environment"),
         Core.fieldTerm = (coreEncodeTerm (Core.letEnvironment l))}]}))

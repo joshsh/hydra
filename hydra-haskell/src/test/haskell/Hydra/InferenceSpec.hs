@@ -828,18 +828,17 @@ checkUserProvidedTypes = H.describe "Check that user-provided type annotations a
     H.describe "Type annotations on let-bound terms" $ do
       H.it "test #1" $
         expectPolytype
-          (TermLet $ Let (M.fromList [(Name "x", pretypedEmptyList)]) $ var "x")
+          (TermLet $ Let [Field (FieldName "x") pretypedEmptyList] $ var "x")
           ["p"] (Types.list $ Types.var "p")
       H.it "test #2" $
         expectPolytype
-          (TermLet $ Let (M.fromList [(Name "y", pretypedEmptyMap)]) $ var "y")
+          (TermLet $ Let [Field (FieldName "y") pretypedEmptyMap] $ var "y")
           ["k", "v"] (Types.map (Types.var "k") (Types.var "v"))
       H.it "test #3" $
         expectPolytype
-          (TermLet $ Let (M.fromList [
-            (Name "x", pretypedEmptyList),
-            (Name "y", pretypedEmptyMap)
-            ]) $ Terms.pair (var "x") (var "y"))
+          (TermLet $ Let [
+            Field (FieldName "x") pretypedEmptyList,
+            Field (FieldName "y") pretypedEmptyMap] $ Terms.pair (var "x") (var "y"))
           ["p", "k", "v"] (Types.pair (Types.list $ Types.var "p") (Types.map (Types.var "k") (Types.var "v")))
 
     H.describe "Check that type variables in subterm annotations are also preserved" $ do

@@ -153,15 +153,15 @@ jsonEncodeTerm term = case term of
                   ("body", bodyJson)]
         FunctionPrimitive name -> return $ Json.ValueString $ "!" ++ unName name
       TermLet (Let bindings env) -> do
-        bindingsJson <- CM.mapM bindingToJson $ M.toList bindings
+        bindingsJson <- CM.mapM fieldToJson bindings
         envJson <- jsonEncodeTerm env
         return $ Json.ValueObject $ M.fromList [
                   ("bindings", Json.ValueObject $ M.fromList bindingsJson),
                   ("environment", envJson)]
         where
-          bindingToJson (v, b) = do
+          fieldToJson (Field v b) = do
             bJson <- jsonEncodeTerm b
-            return (unName v, bJson)
+            return (unFieldName v, bJson)
       TermList terms -> Json.ValueArray <$> (CM.mapM jsonEncodeTerm terms)
       TermLiteral lit -> pure $ case lit of
         LiteralBinary s -> Json.ValueString s

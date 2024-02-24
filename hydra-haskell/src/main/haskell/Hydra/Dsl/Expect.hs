@@ -157,9 +157,10 @@ lambda term = case stripTerm term of
 letBinding :: String -> Term -> Flow s Term
 letBinding n term = do
   bindings <- letBindings <$> letTerm term
-  case M.lookup (Name n) bindings of
-    Nothing -> fail $ "no such binding: " ++ show n
-    Just term' -> pure term'
+  case L.filter (\b -> fieldName b == FieldName n) bindings of
+    [] -> fail $ "no such binding: " ++ show n
+    [b] -> pure $ fieldTerm b
+    _ -> fail $ "multiple bindings named " ++ show n
 
 lambdaBody :: Term -> Flow s Term
 lambdaBody term = Hydra.Core.lambdaBody <$> lambda term

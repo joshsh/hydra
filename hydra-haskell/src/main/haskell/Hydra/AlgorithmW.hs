@@ -453,31 +453,42 @@ hydraTermToStlc term = case term of
   Core.TermApplication (Core.Application t1 t2) -> App (hydraTermToStlc t1) (hydraTermToStlc t2)
   Core.TermFunction f -> case f of
     Core.FunctionLambda (Core.Lambda (Core.Name v) body) -> Abs v (hydraTermToStlc body)
-  Core.TermLet (Core.Let bindings env) -> Letrec (bindingToStlc <$> M.toList bindings) $ hydraTermToStlc env
+  Core.TermLet (Core.Let bindings env) -> Letrec (fieldToStlc <$> bindings) $ hydraTermToStlc env
     where
-      bindingToStlc (Core.Name v, term) = (v, hydraTermToStlc term)
+      fieldToStlc (Core.Field (Core.FieldName v) term) = (v, hydraTermToStlc term)
 
-systemFExprToHydra :: FExpr -> Core.Term
+systemFExprToHydra :: FExpr -> Either String Core.Term
 systemFExprToHydra expr = case expr of
   FConst prim -> case prim of
-    PrimStr s -> Core.TermLiteral $ Core.LiteralString s
-    PrimNat n -> Core.TermLiteral $ Core.LiteralInteger $ Core.IntegerValueBigint n
+    PrimStr s -> pure $ Core.TermLiteral $ Core.LiteralString s
+    PrimNat n -> pure $ Core.TermLiteral $ Core.LiteralInteger $ Core.IntegerValueBigint n
+    _ -> Left $ "unsupported primitive: " ++ show prim
     -- Note: other prims are unsupported
-  FVar v -> Core.TermVariable (Core.Name v)
+  FVar v -> pure $ Core.TermVariable $ Core.Name v
   FApp e1 e2 -> case e1 of
-    FApp (FConst Cons) hd -> Core.TermList (systemFExprToHydra <$> (hd:(gather e2)))
+    FApp (FConst Cons) hd -> do
+        els <- CM.mapM systemFExprToHydra (hd:(gather e2))
+        return $ Core.TermList els
       where
         gather e = case e of
           FConst Nil -> []
           FApp (FApp (FConst Cons) hd) tl -> hd:(gather tl)
-    _ -> Core.TermApplication (Core.Application (systemFExprToHydra e1) (systemFExprToHydra e2))
+    _ -> Core.TermApplication <$> (Core.Application <$> systemFExprToHydra e1 <*> systemFExprToHydra e2)
   -- TODO: annotate with domain type
-  FAbs v dom e -> Core.TermFunction $ Core.FunctionLambda (Core.Lambda (Core.Name v) (systemFExprToHydra e))
+  FAbs v dom e -> do
+    term <- systemFExprToHydra e
+    return $ Core.TermFunction $ Core.FunctionLambda (Core.Lambda (Core.Name v) term)
   -- TODO: FTyApp FExpr [FTy]
   -- TODO: FTyAbs [Var] FExpr
-  FLetrec bindings env -> Core.TermLet $ Core.Let (M.fromList $ bindingToHydra <$> bindings) $ systemFExprToHydra env
+  FLetrec bindings env -> Core.TermLet <$>
+      (Core.Let <$> CM.mapM bindingToHydra bindings <*> systemFExprToHydra env)
     where
-      bindingToHydra (v, ty, term) = (Core.Name v, systemFExprToHydra term) -- TODO: type annotation
+      bindingToHydra (v, ty, term) = do
+        hterm <- systemFExprToHydra term
+        htyp <- systemFTypeToHydra ty
+        -- TODO: attach htyp
+        return $ Core.Field (Core.FieldName v) hterm
+  _ -> Left $ "unsupported expression: " ++ show expr
 
 systemFTypeToHydra :: FTy -> Either String Core.Type
 systemFTypeToHydra ty = case ty of
@@ -507,13 +518,15 @@ inferWithAlgorithmW :: Core.Term -> IO (Core.Term, Core.Type)
 inferWithAlgorithmW term = do
     (fexpr, _) <- inferExpr $ hydraTermToStlc $ wrap term
     let (uexpr, uty) = unwrap fexpr
-    let hydraTerm = systemFExprToHydra uexpr
+    hydraTerm <- case systemFExprToHydra uexpr of
+      Left err -> fail err
+      Right t -> return t
     hydraType <- case systemFTypeToHydra uty of
       Left err -> fail err
       Right t -> return t
     return (hydraTerm, hydraType)
   where
-    wrap term = Core.TermLet $ Core.Let (M.fromList [(Core.Name "x", term)]) $
+    wrap term = Core.TermLet $ Core.Let ([Core.Field (Core.FieldName "x") term]) $
       Core.TermLiteral $ Core.LiteralString "placeholder"
     unwrap expr = case expr of
       FLetrec bindings env -> case bindings of
@@ -530,7 +543,7 @@ inferExpr t = case (fst $ runState (runErrorT (w [] t)) 0) of
 
 ----------------------------------------
 -- Main
- 
+
 tests = [test_0, test_1, test_2, test_3, test_4, test_5, test_6, test_7, test_8, test_10, test_11, test_12]
 
 testOne :: Expr -> IO ()
@@ -574,7 +587,6 @@ test_3 =  Let "f" (App (Abs "x" (Var "x")) (Const $ PrimNat 0)) (Var "f")
  where sng0 = App (Var "sng") (Const $ PrimNat 0)
        sngAlice = App (Var "sng") (Const $ PrimStr "alice")
 
-       
 test_4 :: Expr
 test_4 = Let "sng" (Abs "x" (App (App (Const Cons) (Var "x")) (Const Nil))) body 
  where 

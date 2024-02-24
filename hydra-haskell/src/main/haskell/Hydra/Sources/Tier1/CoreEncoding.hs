@@ -284,14 +284,9 @@ coreEncodeLambdaTypeDef = coreEncodingDefinition "LambdaType" $
 
 coreEncodeLetDef :: Definition (Let -> Term)
 coreEncodeLetDef = coreEncodingDefinition "Let" $
-  lambda "l" $ ((encodedRecord _Let [
-      (_Let_bindings, encodedMap $ primitive _maps_fromList
-        @@ (primitive _lists_map @@ var "mapBinding" @@ (primitive _maps_toList @@ (project _Let _Let_bindings @@ var "l")))),
-      (_Let_environment, ref coreEncodeTermDef @@ (project _Let _Let_environment @@ var "l"))])
-    `with` [
-      Field (FieldName "mapBinding") $ lambda "pair" $ pair
-        (ref coreEncodeNameDef @@ (first @@ var "pair"))
-        (ref coreEncodeTermDef @@ (second @@ var "pair"))])
+  lambda "l" $ encodedRecord _Let [
+      (_Let_bindings, encodedList $ primitive _lists_map @@ ref coreEncodeFieldDef @@ (project _Let _Let_bindings @@ var "l")),
+      (_Let_environment, ref coreEncodeTermDef @@ (project _Let _Let_environment @@ var "l"))]
 
 coreEncodeLiteralDef :: Definition (Literal -> Term)
 coreEncodeLiteralDef = coreEncodingDefinition "Literal" $

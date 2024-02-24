@@ -182,7 +182,7 @@ subtermsDef = tier1Definition "subterms" $
         _Function_lambda>>: lambda "l" $ list [Core.lambdaBody @@ var "l"]],
     _Term_let>>: lambda "lt" $ Lists.cons
       @@ (Core.letEnvironment @@ var "lt")
-      @@ (Lists.map @@ second @@ (Maps.toList @@ (Core.letBindings @@ var "lt"))),
+      @@ (Lists.map @@ Core.fieldTerm @@ (Core.letBindings @@ var "lt")),
     _Term_list>>: lambda "l" $ var "l",
     _Term_literal>>: constant $ list [],
     _Term_map>>: lambda "m" (Lists.concat @@

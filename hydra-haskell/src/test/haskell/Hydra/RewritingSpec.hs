@@ -356,12 +356,15 @@ testTopologicalSortBindings = do
           [("a", var "b"), ("b", list [var "a", var "c"]), ("c", string "foo"), ("d", string "bar")]
           [["d"], ["c"], ["a", "b"]]
   where
-    checkBindings bindings expectedVars = H.shouldBe
-        (topologicalSortBindings bindingMap)
+    checkBindings bindings0 expectedVars = H.shouldBe
+        (topologicalSortBindings bindings)
         expected
       where
-        bindingMap = M.mapKeys (\k -> Name k) $ M.fromList bindings
-        expected = fmap (fmap (\k -> (Name k, Y.fromMaybe unit $ M.lookup (Name k) bindingMap))) expectedVars
+        bindings = fmap (\(k, v) -> Field (FieldName k) v) bindings0
+        expected = fmap (fmap (\k -> (Name k, unbind k))) expectedVars
+        unbind k = case L.filter (\f -> k == unFieldName (fieldName f)) bindings of
+          [field] -> fieldTerm field
+          _ -> unit
 
 spec :: H.Spec
 spec = do

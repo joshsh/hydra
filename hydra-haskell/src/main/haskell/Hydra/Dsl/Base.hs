@@ -203,9 +203,7 @@ variant :: Name -> FieldName -> Datum a -> Datum b
 variant name fname (Datum term) = Datum $ Terms.inject name $ Field fname term
 
 with :: Datum a -> [Field] -> Datum a
-(Datum env) `with` bindings = Datum $ TermLet $ Let (M.fromList $ toPair <$> bindings) env
-  where
-     toPair (Field name value) = (Name $ unFieldName name, value)
+(Datum env) `with` bindings = Datum $ TermLet $ Let bindings env
 
 wrap :: Name -> Datum a -> Datum b
 wrap name (Datum term) = Datum $ Terms.wrap name term

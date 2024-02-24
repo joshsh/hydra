@@ -118,7 +118,7 @@ subterms x = case x of
     Core.FunctionLambda v -> [
       Core.lambdaBody v]
     _ -> []) v)
-  Core.TermLet v -> (Lists.cons (Core.letEnvironment v) (Lists.map snd (Maps.toList (Core.letBindings v))))
+  Core.TermLet v -> (Lists.cons (Core.letEnvironment v) (Lists.map Core.fieldTerm (Core.letBindings v)))
   Core.TermList v -> v
   Core.TermLiteral _ -> []
   Core.TermMap v -> (Lists.concat (Lists.map (\p -> [

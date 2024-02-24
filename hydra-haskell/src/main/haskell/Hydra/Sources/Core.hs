@@ -50,13 +50,6 @@ hydraCoreModule = Module ns elements [] $
             doc "The right-hand side of the application" $
             core "Type"],
 
-      def "Binding" $
-        doc "A name bound to an optionally-typed term; a field or element" $
-        record [
-          "name">: core "Name",
-          "term">: core "Term",
-          "type">: optional $ core "Type"],
-
       def "CaseStatement" $
         doc "A union elimination; a case statement" $
         record [
@@ -209,7 +202,7 @@ hydraCoreModule = Module ns elements [] $
       def "Let" $
         doc "A set of (possibly recursive) 'let' bindings; a multi-let expression" $
         record [
-          "bindings">: Types.map (core "Name") (core "Term"),
+          "bindings">: list $ core "Field",
           "environment">: core "Term"],
 
       def "Literal" $

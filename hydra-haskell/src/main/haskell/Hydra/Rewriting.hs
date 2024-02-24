@@ -207,9 +207,9 @@ rewriteTerm = rewrite $ \recurse term -> case term of
         EliminationWrap name -> EliminationWrap name
       FunctionLambda (Lambda v body) -> FunctionLambda $ Lambda v $ recurse body
       FunctionPrimitive name -> FunctionPrimitive name
-    TermLet (Let bindings env) -> TermLet $ Let (M.fromList (mapBinding <$> M.toList bindings)) (recurse env)
+    TermLet (Let bindings env) -> TermLet $ Let (mapBinding <$> bindings) (recurse env)
       where
-        mapBinding (k, t) = (k, recurse t)
+        mapBinding (Field k t) = Field k $ recurse t
     TermList els -> TermList $ recurse <$> els
     TermLiteral v -> TermLiteral v
     TermMap m -> TermMap $ M.fromList $ (\(k, v) -> (recurse k, recurse v)) <$> M.toList m
@@ -243,11 +243,11 @@ rewriteTermM = rewrite $ \recurse term -> case term of
         EliminationWrap name -> pure $ EliminationWrap name
       FunctionLambda (Lambda v body) -> FunctionLambda <$> (Lambda v <$> recurse body)
       FunctionPrimitive name -> pure $ FunctionPrimitive name
-    TermLet (Let bindings env) -> TermLet <$> (Let <$> (M.fromList <$> (CM.mapM mapBinding $ M.toList bindings)) <*> recurse env)
+    TermLet (Let bindings env) -> TermLet <$> (Let <$> (CM.mapM mapBinding bindings) <*> recurse env)
       where
-        mapBinding (k, t) = do
+        mapBinding (Field k t) = do
           t' <- recurse t
-          return (k, t')
+          return $ Field k t'
     TermList els -> TermList <$> (CM.mapM recurse els)
     TermLiteral v -> pure $ TermLiteral v
     TermMap m -> TermMap <$> (M.fromList <$> CM.mapM forPair (M.toList m))
@@ -409,13 +409,15 @@ termDependencyNames withVars withPrims withNoms = foldOverTerm TraversalOrderPre
         var name = if withVars then S.insert name names else names
 
 -- Topological sort of connected components, in terms of dependencies between varable/term binding pairs
-topologicalSortBindings :: M.Map Name Term -> [[(Name, Term)]]
-topologicalSortBindings bindingMap = fmap (fmap toPair) (topologicalSortComponents (depsOf <$> bindings))
+topologicalSortBindings :: [Field] -> [[(Name, Term)]]
+topologicalSortBindings bindings = fmap (fmap toPair) (topologicalSortComponents (depsOf <$> bindings))
   where
-    bindings = M.toList bindingMap
-    keys = S.fromList (M.keys bindingMap)
-    depsOf (name, term) = (name, S.toList (S.intersection keys $ freeVariablesInTerm term))
-    toPair name = (name, Y.fromMaybe (TermLiteral $ LiteralString "Impossible!") $ M.lookup name bindingMap)
+    keys = S.fromList (Name . unFieldName . fieldName <$> bindings)
+    depsOf (Field (FieldName name) term) = (Name name, S.toList (S.intersection keys $ freeVariablesInTerm term))
+    toPair name = (name, unbind name)
+    unbind (Name name) = case L.filter (\f -> name == (unFieldName $ fieldName f)) bindings of
+      [f] -> fieldTerm f
+      _ -> TermLiteral $ LiteralString "Impossible!"
 
 topologicalSortElements :: [Element] -> Either [[Name]] [Name]
 topologicalSortElements els = topologicalSort $ adjlist <$> els

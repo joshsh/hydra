@@ -844,6 +844,9 @@ maybeLet aliases term cons = helper [] term
           maybeLet aliasesWithRecursive env $ \aliases' tm stmts' -> cons aliases' (reannotate anns tm) (stmts ++ stmts')
         where
           aliasesWithRecursive = aliases { aliasesRecursiveVars = recursiveVars }
+          lookupBinding (Name name) = case L.filter (\f -> name == (unFieldName $ fieldName f)) bindings of
+            [f] -> fieldTerm f
+
           toDeclStatements names = do
             inits <- Y.catMaybes <$> CM.mapM toDeclInit names
             impls <- CM.mapM toDeclStatement names
@@ -852,7 +855,7 @@ maybeLet aliases term cons = helper [] term
           toDeclInit name = if S.member name recursiveVars
             then do
               -- TODO: repeated
-              let value = Y.fromJust $ M.lookup name bindings
+              let value = lookupBinding name
               typ <- requireAnnotatedType value
               jtype <- adaptTypeToJavaAndEncode aliasesWithRecursive typ
               let id = variableToJavaIdentifier name
@@ -870,7 +873,7 @@ maybeLet aliases term cons = helper [] term
 
           toDeclStatement name = do
             -- TODO: repeated
-            let value = Y.fromJust $ M.lookup name bindings
+            let value = lookupBinding name
             typ <- requireAnnotatedType value
             jtype <- adaptTypeToJavaAndEncode aliasesWithRecursive typ
             let id = variableToJavaIdentifier name
@@ -879,7 +882,7 @@ maybeLet aliases term cons = helper [] term
               then Java.BlockStatementStatement $ javaMethodInvocationToJavaStatement $
                 methodInvocation (Just $ Left $ Java.ExpressionName Nothing id) (Java.Identifier setMethodName) [rhs]
               else variableDeclarationStatement aliasesWithRecursive jtype id rhs
-          bindingVars = S.fromList $ M.keys bindings
+          bindingVars = S.fromList (Name . unFieldName . fieldName <$> bindings)
           recursiveVars = S.fromList $ L.concat (ifRec <$> sorted)
             where
               ifRec names = case names of
@@ -889,9 +892,9 @@ maybeLet aliases term cons = helper [] term
                     then [name]
                     else []
                 _ -> names
-          allDeps = M.fromList (toDeps <$> M.toList bindings)
+          allDeps = M.fromList (toDeps <$> bindings)
             where
-              toDeps (key, value) = (key, S.filter (\n -> S.member n bindingVars) $ freeVariablesInTerm value)
+              toDeps (Field (FieldName key) value) = (Name key, S.filter (\n -> S.member n bindingVars) $ freeVariablesInTerm value)
           sorted = topologicalSortComponents (toDeps <$> M.toList allDeps)
             where
               toDeps (key, deps) = (key, S.toList deps)

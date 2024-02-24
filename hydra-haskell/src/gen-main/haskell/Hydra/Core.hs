@@ -50,22 +50,6 @@ _ApplicationType_function = (FieldName "function")
 
 _ApplicationType_argument = (FieldName "argument")
 
--- | A name bound to an optionally-typed term; a field or element
-data Binding = 
-  Binding {
-    bindingName :: Name,
-    bindingTerm :: Term,
-    bindingType :: (Maybe Type)}
-  deriving (Eq, Ord, Read, Show)
-
-_Binding = (Name "hydra/core.Binding")
-
-_Binding_name = (FieldName "name")
-
-_Binding_term = (FieldName "term")
-
-_Binding_type = (FieldName "type")
-
 -- | A union elimination; a case statement
 data CaseStatement = 
   CaseStatement {
@@ -342,7 +326,7 @@ _LambdaType_body = (FieldName "body")
 -- | A set of (possibly recursive) 'let' bindings; a multi-let expression
 data Let = 
   Let {
-    letBindings :: (Map Name Term),
+    letBindings :: [Field],
     letEnvironment :: Term}
   deriving (Eq, Ord, Read, Show)
 

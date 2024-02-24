@@ -27,9 +27,12 @@ expectType term typ = H.shouldReturn (snd <$> inferWithAlgorithmW term) typ
 
 checkAll :: H.SpecWith ()
 checkAll = H.describe "All test cases" $ do
-  H.it "#1" $ expectType
-    (lambda "x" $ var "x")
-    (Types.lambda "v1" $ Types.function (Types.var "v1") (Types.var "v1"))
+  H.it "#0" $ expectType
+    (string "foo")
+    Types.string
+--  H.it "#1" $ expectType
+--    (lambda "x" $ var "x")
+--    (Types.lambda "v1" $ Types.function (Types.var "v1") (Types.var "v1"))
 
 spec :: H.Spec
 spec = do

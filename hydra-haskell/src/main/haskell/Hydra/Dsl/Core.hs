@@ -125,7 +125,7 @@ letExpression bindings environment = Base.record _Let [
     _Let_bindings>>: bindings,
     _Let_environment>>: environment]
 
-letBindings :: Datum (Let -> M.Map Name Term)
+letBindings :: Datum (Let -> [Field])
 letBindings = project _Let _Let_bindings
 
 letEnvironment :: Datum (Let -> Term)

@@ -236,12 +236,14 @@ inferElementTypes g els = withState g $ do
     case stripTerm term2 of
       TermLet (Let bindings _) -> CM.mapM toElement (elementName <$> els)
         where
-          toElement name = case M.lookup name bindings of
-            Nothing -> fail $ "no inferred term for " ++ unName name
-            Just term -> return $ Element name term
+          toElement name = case L.filter (\f -> unName name == (unFieldName $ fieldName f)) bindings of
+            [] -> fail $ "no inferred term for " ++ unName name
+            [field] -> return $ Element name $ fieldTerm field
+            _ -> fail $ "multiple inferred terms for " ++ unName name
       _ -> unexpected "let term" $ showTerm term2
   where
-    graphAsLetTerm = TermLet $ Let (M.fromList (fmap (\e -> (elementName e, elementData e)) els)) $ Terms.boolean False
+    graphAsLetTerm = TermLet $ Let (fmap (\e -> (Field (FieldName $ unName $ elementName e) $ elementData e)) els)
+      $ Terms.boolean False
 
 inferEliminationType :: Elimination -> Flow Graph Inferred
 inferEliminationType e = case e of
@@ -366,11 +368,12 @@ inferGraphTypes = getState >>= annotateGraph
         toPair el = (elementName el, el)
 
 inferLetType :: Let -> Flow Graph Inferred
-inferLetType lt@(Let bindingMap env) = do
-    let comps = topologicalSortBindings bindingMap
+inferLetType lt@(Let bindings env) = do
+    let comps = topologicalSortBindings bindings
     (Inferred envTerm envType constraints, pairs) <- forComponents comps
-    return $ yieldTerm (TermLet $ Let (M.fromList pairs) envTerm) envType constraints
+    return $ yieldTerm (TermLet $ Let (toField <$> pairs) envTerm) envType constraints
   where
+    toField (Name name, term) = Field (FieldName name) term
     forComponents comps = case comps of
       -- No remaining bindings; process the environment
       [] -> do
