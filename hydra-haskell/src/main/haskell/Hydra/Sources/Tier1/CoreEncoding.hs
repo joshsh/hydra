@@ -50,6 +50,7 @@ coreEncodingModule = Module (Namespace "hydra/coreEncoding") elements [hydraCore
      Base.el coreEncodeTermDef,
      Base.el coreEncodeTupleProjectionDef,
      Base.el coreEncodeTypeDef,
+     Base.el coreEncodeTypeAbstractionDef,
      Base.el coreEncodeTypedTermDef]
 
 coreEncodingDefinition :: String -> Term -> Definition x
@@ -385,7 +386,7 @@ coreEncodeTermDef = coreEncodingDefinition "Term" $
     ecase _Term_sum $ ref coreEncodeSumDef,
     -- TODO: determine whether streams have a sigma encoding
     -- _ Term_stream
-    ecase _Term_typeAbstraction $ ref coreEncodeLambdaDef,
+    ecase _Term_typeAbstraction $ ref coreEncodeTypeAbstractionDef,
     ecase _Term_typeApplication $ ref coreEncodeTypedTermDef,
     ecase _Term_typed $ ref coreEncodeTypedTermDef,
     ecase _Term_union $ ref coreEncodeInjectionDef,
@@ -428,6 +429,12 @@ coreEncodeTypeDef = coreEncodingDefinition "Type" $
   where
     cs fname term = Field fname $ lambda "v" $ encodedVariant _Type fname term
     csref fname fun = cs fname (ref fun @@ var "v")
+
+coreEncodeTypeAbstractionDef :: Definition (TypeAbstraction -> Term)
+coreEncodeTypeAbstractionDef = coreEncodingDefinition "TypeAbstraction" $
+  lambda "l" $ encodedRecord _TypeAbstraction [
+    (_TypeAbstraction_parameter, ref coreEncodeNameDef @@ (project _TypeAbstraction _TypeAbstraction_parameter @@ var "l")),
+    (_TypeAbstraction_body, ref coreEncodeTermDef @@ (project _TypeAbstraction _TypeAbstraction_body @@ var "l"))]
 
 coreEncodeTypedTermDef :: Definition (TypedTerm -> Term)
 coreEncodeTypedTermDef = coreEncodingDefinition "TypedTerm" $

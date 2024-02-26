@@ -552,7 +552,7 @@ coreEncodeTerm x = case x of
     Core.injectionTypeName = (Core.Name "hydra/core.Term"),
     Core.injectionField = Core.Field {
       Core.fieldName = (Core.FieldName "typeAbstraction"),
-      Core.fieldTerm = (coreEncodeLambda v)}}))
+      Core.fieldTerm = (coreEncodeTypeAbstraction v)}}))
   Core.TermTypeApplication v -> (Core.TermUnion (Core.Injection {
     Core.injectionTypeName = (Core.Name "hydra/core.Term"),
     Core.injectionField = Core.Field {
@@ -659,6 +659,17 @@ coreEncodeType x = case x of
     Core.injectionField = Core.Field {
       Core.fieldName = (Core.FieldName "wrap"),
       Core.fieldTerm = (coreEncodeNominalType v)}}))
+
+coreEncodeTypeAbstraction :: (Core.TypeAbstraction -> Core.Term)
+coreEncodeTypeAbstraction l = (Core.TermRecord (Core.Record {
+  Core.recordTypeName = (Core.Name "hydra/core.TypeAbstraction"),
+  Core.recordFields = [
+    Core.Field {
+      Core.fieldName = (Core.FieldName "parameter"),
+      Core.fieldTerm = (coreEncodeName (Core.typeAbstractionParameter l))},
+    Core.Field {
+      Core.fieldName = (Core.FieldName "body"),
+      Core.fieldTerm = (coreEncodeTerm (Core.typeAbstractionBody l))}]}))
 
 coreEncodeTypedTerm :: (Core.TypedTerm -> Core.Term)
 coreEncodeTypedTerm tt = (Core.TermRecord (Core.Record {

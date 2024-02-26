@@ -205,6 +205,12 @@ sumSize = project _Sum _Sum_size
 sumTerm :: Datum (Sum -> Term)
 sumTerm = project _Sum _Sum_term
 
+typeAbstractionBody :: Datum (TypeAbstraction -> Term)
+typeAbstractionBody = project _TypeAbstraction _TypeAbstraction_body
+
+typeAbstractionParameter :: Datum (TypeAbstraction -> Name)
+typeAbstractionParameter = project _TypeAbstraction _TypeAbstraction_parameter
+
 typedTermTerm :: Datum (TypedTerm -> Term)
 typedTermTerm = project _TypedTerm _TypedTerm_term
 

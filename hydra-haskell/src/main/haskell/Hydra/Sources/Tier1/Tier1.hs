@@ -193,7 +193,7 @@ subtermsDef = tier1Definition "subterms" $
     _Term_set>>: Sets.toList,
     _Term_stream>>: constant $ list [],
     _Term_sum>>: lambda "st" $ list [Core.sumTerm @@ var "st"],
-    _Term_typeAbstraction>>: lambda "ta" $ list [Core.lambdaBody @@ var "ta"],
+    _Term_typeAbstraction>>: lambda "ta" $ list [Core.typeAbstractionBody @@ var "ta"],
     _Term_typeApplication>>: lambda "ta" $ list [Core.typedTermTerm @@ var "ta"],
     _Term_typed>>: lambda "tt" $ list [Core.typedTermTerm @@ var "tt"],
     _Term_union>>: lambda "ut" $ list [Core.fieldTerm @@ (Core.injectionField @@ var "ut")],

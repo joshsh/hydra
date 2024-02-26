@@ -477,7 +477,7 @@ systemFExprToHydra expr = case expr of
     return $ Core.TermFunction $ Core.FunctionLambda (Core.Lambda (Core.Name v) term)
   FTyAbs params body -> do
     hbody <- systemFExprToHydra body
-    return $ L.foldl (\t v -> Core.TermTypeAbstraction $ Core.Lambda (Core.Name v) t) hbody $ L.reverse params
+    return $ L.foldl (\t v -> Core.TermTypeAbstraction $ Core.TypeAbstraction (Core.Name v) t) hbody $ L.reverse params
   FTyApp fun args -> do
     hfun <- systemFExprToHydra fun
     hargs <- CM.mapM systemFTypeToHydra args
