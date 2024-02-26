@@ -275,6 +275,8 @@ coreEncodeLambdaDef :: Definition (Lambda -> Term)
 coreEncodeLambdaDef = coreEncodingDefinition "Lambda" $
   lambda "l" $ encodedRecord _Lambda [
     (_Lambda_parameter, ref coreEncodeNameDef @@ (project _Lambda _Lambda_parameter @@ var "l")),
+    (_Lambda_domain, encodedOptional
+      (primitive _optionals_map @@ ref coreEncodeTypeDef @@ (project _Lambda _Lambda_domain @@ var "l"))),
     (_Lambda_body, ref coreEncodeTermDef @@ (project _Lambda _Lambda_body @@ var "l"))]
 
 coreEncodeLambdaTypeDef :: Definition (LambdaType -> Term)

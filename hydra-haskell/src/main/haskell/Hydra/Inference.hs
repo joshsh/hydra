@@ -347,12 +347,12 @@ inferFunctionType :: Function -> Flow Graph Inferred
 inferFunctionType f = case f of
   FunctionElimination e -> inferEliminationType e
 
-  FunctionLambda (Lambda v body) -> do
+  -- TODO: make use of a provided domain type
+  FunctionLambda (Lambda v _ body) -> do
     vdom <- freshName
     rbody <- withBinding v (TypeVariable vdom) $ infer body
-    -- TODO: consider omitting the universal type; just use the base function type
     let typ = TypeLambda $ LambdaType vdom $ Types.function (TypeVariable vdom) (inferredType rbody)
-    return $ yieldFunction (FunctionLambda $ Lambda v $ inferredTerm rbody) typ (inferredConstraints rbody)
+    return $ yieldFunction (FunctionLambda $ Lambda v Nothing $ inferredTerm rbody) typ (inferredConstraints rbody)
 
   FunctionPrimitive name -> do
       t <- requirePrimitiveType name

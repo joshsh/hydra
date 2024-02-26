@@ -185,6 +185,9 @@ hydraCoreModule = Module ns elements [] $
           "parameter">:
             doc "The term variable introduced by the lambda" $
             core "Name",
+          "domain">:
+            doc "An optional domain type for the lambda (required for System F lambdas)" $
+            optional $ core "Type",
           "body">:
             doc "The body of the lambda" $
             core "Term"],

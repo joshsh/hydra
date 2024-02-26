@@ -62,6 +62,7 @@ allTests = Testing.TestGroup {
                     (Core.TermLiteral (Core.LiteralInteger (Core.IntegerValueInt32 4)))])})),
                 Core.applicationArgument = (Core.TermFunction (Core.FunctionLambda (Core.Lambda {
                   Core.lambdaParameter = (Core.Name "x"),
+                  Core.lambdaDomain = Nothing,
                   Core.lambdaBody = (Core.TermApplication (Core.Application {
                     Core.applicationFunction = (Core.TermFunction (Core.FunctionPrimitive (Core.Name "hydra/lib/lists.pure"))),
                     Core.applicationArgument = (Core.TermApplication (Core.Application {

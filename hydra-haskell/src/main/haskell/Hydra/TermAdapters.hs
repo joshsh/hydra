@@ -205,7 +205,7 @@ passFunction t@(TypeFunction (FunctionType dom cod)) = do
                 -- Note: this causes unrecognized cases to simply be passed through;
                 --       it is not the job of this adapter to catch validation issues.
                 getCoder fname = Y.maybe idCoder adapterCoder $ M.lookup fname caseAds
-          FunctionLambda (Lambda var body) -> FunctionLambda <$> (Lambda var <$> encodeDecode dir (adapterCoder codAd) body)
+          FunctionLambda (Lambda var dom body) -> FunctionLambda <$> (Lambda var dom <$> encodeDecode dir (adapterCoder codAd) body)
           FunctionPrimitive name -> pure $ FunctionPrimitive name
         _ -> unexpected "function term" $ show term
 

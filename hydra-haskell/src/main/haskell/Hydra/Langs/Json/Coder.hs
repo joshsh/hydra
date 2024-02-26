@@ -146,10 +146,10 @@ jsonEncodeTerm term = case term of
                   ("rhs", rhsJson)]
       TermFunction f -> case f of
         FunctionElimination e -> pure $ Json.ValueString $ "[elimination]" -- TODO
-        FunctionLambda (Lambda v body) -> do
+        FunctionLambda (Lambda v dom body) -> do
           bodyJson <- jsonEncodeTerm body
           return $ Json.ValueObject $ M.fromList [
-                  ("variable", Json.ValueString $ unName v),
+                  ("parameter", Json.ValueString $ unName v),
                   ("body", bodyJson)]
         FunctionPrimitive name -> return $ Json.ValueString $ "!" ++ unName name
       TermLet (Let bindings env) -> do

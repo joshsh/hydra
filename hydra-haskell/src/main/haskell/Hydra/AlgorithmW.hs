@@ -449,7 +449,7 @@ hydraTermToStlc term = case term of
   Core.TermVariable (Core.Name v) -> Var v
   Core.TermApplication (Core.Application t1 t2) -> App (hydraTermToStlc t1) (hydraTermToStlc t2)
   Core.TermFunction f -> case f of
-    Core.FunctionLambda (Core.Lambda (Core.Name v) body) -> Abs v (hydraTermToStlc body)
+    Core.FunctionLambda (Core.Lambda (Core.Name v) _ body) -> Abs v (hydraTermToStlc body)
   Core.TermLet (Core.Let bindings env) -> Letrec (fieldToStlc <$> bindings) $ hydraTermToStlc env
     where
       fieldToStlc (Core.Field (Core.FieldName v) term) = (v, hydraTermToStlc term)
@@ -471,10 +471,10 @@ systemFExprToHydra expr = case expr of
           FConst Nil -> []
           FApp (FApp (FConst Cons) hd) tl -> hd:(gather tl)
     _ -> Core.TermApplication <$> (Core.Application <$> systemFExprToHydra e1 <*> systemFExprToHydra e2)
-  -- TODO: annotate with domain type
   FAbs v dom e -> do
     term <- systemFExprToHydra e
-    return $ Core.TermFunction $ Core.FunctionLambda (Core.Lambda (Core.Name v) term)
+    hdom <- systemFTypeToHydra dom
+    return $ Core.TermFunction $ Core.FunctionLambda (Core.Lambda (Core.Name v) (Just hdom) term)
   FTyAbs params body -> do
     hbody <- systemFExprToHydra body
     return $ L.foldl (\t v -> Core.TermTypeAbstraction $ Core.TypeAbstraction (Core.Name v) t) hbody $ L.reverse params

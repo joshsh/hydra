@@ -298,6 +298,8 @@ data Lambda =
   Lambda {
     -- | The term variable introduced by the lambda
     lambdaParameter :: Name,
+    -- | An optional domain type for the lambda (required for System F lambdas)
+    lambdaDomain :: (Maybe Type),
     -- | The body of the lambda
     lambdaBody :: Term}
   deriving (Eq, Ord, Read, Show)
@@ -305,6 +307,8 @@ data Lambda =
 _Lambda = (Name "hydra/core.Lambda")
 
 _Lambda_parameter = (FieldName "parameter")
+
+_Lambda_domain = (FieldName "domain")
 
 _Lambda_body = (FieldName "body")
 

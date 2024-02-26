@@ -107,7 +107,7 @@ just :: Term -> Term
 just = optional . Just
 
 lambda :: String -> Term -> Term
-lambda param body = TermFunction $ FunctionLambda $ Lambda (Name param) body
+lambda param body = TermFunction $ FunctionLambda $ Lambda (Name param) Nothing body
 
 -- Construct a 'let' term with a single binding
 letTerm :: Name -> Term -> Term -> Term

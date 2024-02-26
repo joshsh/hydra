@@ -114,7 +114,7 @@ coreDecodeType :: Term -> Flow Graph Type
 coreDecodeType dat = case dat of
   TermAnnotated (Annotated term ann) -> (\t -> TypeAnnotated $ Annotated t ann) <$> coreDecodeType term
   TermApplication app -> TypeApplication <$> coreDecodeApplicationType app
-  TermFunction (FunctionLambda (Lambda v body)) -> TypeLambda <$> (LambdaType <$> pure v <*> coreDecodeType body)
+  TermFunction (FunctionLambda (Lambda v _ body)) -> TypeLambda <$> (LambdaType <$> pure v <*> coreDecodeType body)
   TermVariable name -> pure $ TypeVariable name
   _ -> matchUnion _Type [
 --    (_Type_annotated, fmap TypeAnnotated . coreDecodeAnnotated),

@@ -130,7 +130,7 @@ encodeFunction namespaces fun = case fun of
             let lhs = applicationPattern hname args
             rhs <- H.CaseRhs <$> encodeTerm namespaces rhsTerm
             return $ H.Alternative lhs rhs Nothing
-    FunctionLambda (Lambda (Name v) body) -> hslambda v <$> encodeTerm namespaces body
+    FunctionLambda (Lambda (Name v) _ body) -> hslambda v <$> encodeTerm namespaces body
     FunctionPrimitive name -> pure $ H.ExpressionVariable $ hsPrimitiveReference name
 
 encodeLiteral :: Literal -> Flow Graph H.Expression

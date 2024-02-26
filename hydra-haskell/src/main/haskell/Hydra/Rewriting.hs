@@ -30,7 +30,7 @@ alphaConvertTerm :: Name -> Term -> Term -> Term
 alphaConvertTerm vold tnew = rewriteTerm rewrite
   where
     rewrite recurse term = case term of
-      TermFunction (FunctionLambda (Lambda v body)) -> if v == vold
+      TermFunction (FunctionLambda (Lambda v _ _)) -> if v == vold
         then term
         else recurse term
       TermVariable v -> if v == vold then tnew else TermVariable v
@@ -62,6 +62,7 @@ elementsWithDependencies original = CM.mapM requireElement allDepNames
 -- | Turn arbitrary terms like 'add 42' into terms like '\x.add 42 x',
 --   whose arity (in the absence of application terms) is equal to the depth of nested lambdas.
 --   This function leaves application terms intact, simply rewriting their left and right subterms.
+--   Note that domain types are currently dropped from lambdas in this process.
 expandLambdas :: Term -> Flow Graph Term
 expandLambdas term = do
     g <- getState
@@ -90,7 +91,7 @@ expandLambdas term = do
         variables = L.take (max 0 (arity - L.length args)) ((\i -> Name $ "v" ++ show i) <$> [1..])
         args' = args ++ (TermVariable <$> variables)
 
-        lam body v = TermFunction $ FunctionLambda $ Lambda v body
+        lam body v = TermFunction $ FunctionLambda $ Lambda v Nothing body
 
         app mtyp lhs args = case args of
           [] -> lhs
@@ -205,7 +206,7 @@ rewriteTerm = rewrite $ \recurse term -> case term of
         EliminationRecord p -> EliminationRecord p
         EliminationUnion (CaseStatement n def cases) -> EliminationUnion $ CaseStatement n (recurse <$> def) (forField recurse <$> cases)
         EliminationWrap name -> EliminationWrap name
-      FunctionLambda (Lambda v body) -> FunctionLambda $ Lambda v $ recurse body
+      FunctionLambda (Lambda v dom body) -> FunctionLambda $ Lambda v dom $ recurse body
       FunctionPrimitive name -> FunctionPrimitive name
     TermLet (Let bindings env) -> TermLet $ Let (mapBinding <$> bindings) (recurse env)
       where
@@ -241,7 +242,7 @@ rewriteTermM = rewrite $ \recurse term -> case term of
             Just t -> Just <$> recurse t
           EliminationUnion <$> (CaseStatement n rdef <$> (CM.mapM (forField recurse) cases))
         EliminationWrap name -> pure $ EliminationWrap name
-      FunctionLambda (Lambda v body) -> FunctionLambda <$> (Lambda v <$> recurse body)
+      FunctionLambda (Lambda v dom body) -> FunctionLambda <$> (Lambda v dom <$> recurse body)
       FunctionPrimitive name -> pure $ FunctionPrimitive name
     TermLet (Let bindings env) -> TermLet <$> (Let <$> (CM.mapM mapBinding bindings) <*> recurse env)
       where
@@ -343,7 +344,7 @@ simplifyTerm = rewriteTerm simplify
   where
     simplify recurse term = recurse $ case stripTerm term of
       TermApplication (Application lhs rhs) -> case stripTerm lhs of
-        TermFunction (FunctionLambda (Lambda var body)) ->
+        TermFunction (FunctionLambda (Lambda var _ body)) ->
           if S.member var (freeVariablesInTerm body)
             then case stripTerm rhs of
               TermVariable v -> simplifyTerm $ substituteVariable var v body
@@ -380,7 +381,7 @@ substituteVariable from to = rewriteTerm replace
   where
     replace recurse term = case term of
       TermVariable x -> recurse $ (TermVariable $ if x == from then to else x)
-      TermFunction (FunctionLambda (Lambda var _)) -> if var == from
+      TermFunction (FunctionLambda (Lambda var _ _)) -> if var == from
         then term
         else recurse term
       _ -> recurse term
@@ -434,17 +435,17 @@ unshadowVariables term = Y.fromJust $ flowStateValue $ unFlow (rewriteTermM rewr
       (reserved, subst) <- getState
       case term of
         TermVariable v -> pure $ TermVariable $ Y.fromMaybe v $ M.lookup v subst
-        TermFunction (FunctionLambda (Lambda v body)) -> if S.member v reserved
+        TermFunction (FunctionLambda (Lambda v dom body)) -> if S.member v reserved
           then do
             v' <- freshName
             putState (S.insert v' reserved, M.insert v v' subst)
             body' <- recurse body
             putState (reserved, subst)
-            pure $ TermFunction $ FunctionLambda $ Lambda v' body'
+            pure $ TermFunction $ FunctionLambda $ Lambda v' dom body'
           else do
             putState (S.insert v reserved, subst)
             body' <- recurse body
-            return $ TermFunction $ FunctionLambda $ Lambda v body'
+            return $ TermFunction $ FunctionLambda $ Lambda v dom body'
         _ -> recurse term
     freshName = (\n -> Name $ "s" ++ show n) <$> nextCount "unshadow"
 
@@ -475,11 +476,11 @@ wrapLambdas term = do
       else case term of
         TermAnnotated (Annotated term2 _) -> missingArity arity term2
         TermLet (Let _ env) -> missingArity arity env
-        TermFunction (FunctionLambda (Lambda _ body)) -> missingArity (arity - 1) body
+        TermFunction (FunctionLambda (Lambda _ _ body)) -> missingArity (arity - 1) body
         _ -> arity
     pad anns term doms cod = fst $ L.foldl newLambda (apps, cod) $ L.reverse variables
       where
-        newLambda (body, cod) (v, dom) = (annotationClassSetTermType anns (Just ft) $ TermFunction $ FunctionLambda $ Lambda v body, ft)
+        newLambda (body, cod) (v, dom) = (annotationClassSetTermType anns (Just ft) $ TermFunction $ FunctionLambda $ Lambda v Nothing body, ft)
           where
             ft = TypeFunction $ FunctionType dom cod
         apps = L.foldl (\lhs (v, _) -> TermApplication (Application lhs $ TermVariable v)) term variables

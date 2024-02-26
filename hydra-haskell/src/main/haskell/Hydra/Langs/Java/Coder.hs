@@ -161,7 +161,8 @@ constructModule mod coders pairs = do
 
         termToUnaryMethod coders el term = case stripType typ of
           TypeFunction (FunctionType dom cod) -> maybeLet aliases term $ \aliases2 term2 stmts2 -> case stripTerm term2 of
-            TermFunction (FunctionLambda (Lambda v body)) -> do
+            -- TODO: make use of a provided lambda domain
+            TermFunction (FunctionLambda (Lambda v _ body)) -> do
               jdom <- adaptTypeToJavaAndEncode aliases2 dom
               jcod <- adaptTypeToJavaAndEncode aliases2 cod
               let mods = [Java.InterfaceMethodModifierStatic]
@@ -558,7 +559,8 @@ encodeFunction :: Aliases -> Type -> Type -> Function -> Flow Graph Java.Express
 encodeFunction aliases dom cod fun = case fun of
   FunctionElimination elm -> do
     encodeElimination aliases Nothing dom cod elm
-  FunctionLambda (Lambda var body) -> do
+  -- TODO: make use of a provided lambda domain
+  FunctionLambda (Lambda var _ body) -> do
       lam <- toLambda var body
       if needsCast body
         then do
