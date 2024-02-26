@@ -8,6 +8,8 @@
 module Hydra.AlgorithmW where
 
 import qualified Hydra.Core as Core
+import qualified Hydra.Dsl.Terms as Terms
+import Hydra.Sources.Libraries
 
 import Control.Monad.Error
 import Control.Monad.State
@@ -22,7 +24,7 @@ import qualified Control.Monad as CM
 type Var = String
 
 data Prim = PrimStr String 
- | PrimNat Integer | Succ | Pred | If0 
+ | PrimNat Int | Succ | Pred | If0
  | Fst | Snd | Pair | TT
  | Nil | Cons | FoldList  
  | FF | Inl | Inr | Case 
@@ -54,17 +56,18 @@ data Expr = Const Prim
  | Letrec [(Var, Expr)] Expr
  | Letrec' Var Expr Expr --include separate impl of unary letrec 
  deriving (Eq)
+-- deriving (Eq, Show)
 
-instance Show Expr where 
+instance Show Expr where
   show (Const p) = show p
   show (Var v) = v
   show (App (App (App a' a) b) b') = "(" ++ show a' ++ " " ++ show a ++ " " ++ show b ++ " " ++ show b' ++ ")"
   show (App (App a b) b') = "(" ++ show a ++ " " ++ show b ++ " " ++ show b' ++ ")"
   show (App a b) = "(" ++ show a ++ " " ++ show b ++ ")"
   show (Abs a b) = "(\\" ++ a ++ ". " ++ show b ++ ")"
-  show (Let a b c) = "let " ++ a ++ " = " ++ show b ++ " in " ++ show c 
-  show (Letrec' a b c) = "letrec " ++ a ++ " = " ++ show b ++ " in " ++ show c 
-  show (Letrec ab c) = "letrecs " ++ d ++ show c 
+  show (Let a b c) = "let " ++ a ++ " = " ++ show b ++ " in " ++ show c
+  show (Letrec' a b c) = "letrec " ++ a ++ " = " ++ show b ++ " in " ++ show c
+  show (Letrec ab c) = "letrecs " ++ d ++ show c
     where d = foldr (\(p, q) r -> p ++ " = " ++ show q ++ " \n\t\t" ++ r) "in " ab
 
 data MTy = TyVar Var 
@@ -108,16 +111,17 @@ data FExpr = FConst Prim
  | FTyAbs [Var] FExpr 
  | FLetrec [(Var, FTy, FExpr)] FExpr
  deriving (Eq)
+-- deriving (Eq, Show)
 
-instance Show FExpr where 
+instance Show FExpr where
   show (FConst p) = show p
   show (FVar v) = v
-  show (FTyApp e t) = "(" ++ show e ++ " : " ++ show t ++ ")"
+  show (FTyApp e t) = "(" ++ show e ++ " " ++ show t ++ ")"
   show (FApp (FApp (FApp a' a) b) b') = "(" ++ show a' ++ " " ++ show a ++ " " ++ show b ++ " " ++ show b' ++ ")"
   show (FApp (FApp a b) b') = "(" ++ show a ++ " " ++ show b ++ " " ++ show b' ++ ")"
   show (FApp a b) = "(" ++ show a ++ " " ++ show b ++ ")"
   show (FAbs a t b) = "(\\" ++ a ++ ":" ++ show t ++ ". " ++ show b ++ ")"
-  show (FLetrec ab c) = "letrecs " ++ d ++ show c 
+  show (FLetrec ab c) = "letrecs " ++ d ++ show c
     where d = foldr (\(p, t, q) r -> p ++ ":" ++ show t ++ " = " ++ show q ++ " \n\t\t" ++ r) "in " ab
   show (FTyAbs ab c) = "(/\\" ++ d ++ show c ++ ")"
     where d = foldr (\p r -> p ++ " " ++ r) ". " ab
@@ -327,7 +331,7 @@ typeOf tvs g (FLetrec es e) = do { let g' = map (\(k,t,e)->(k,t)) es
 
 mgu :: MTy -> MTy -> E Subst
 mgu TyNat TyNat = return []
-mgu TyString TyString = return[]
+mgu TyString TyString = return []
 mgu (TyList a) (TyList b) = mgu a b
 mgu TyUnit TyUnit = return []
 mgu TyVoid TyVoid = return []
@@ -358,7 +362,7 @@ occurs v (TyVar v') | v == v' = throwError $ "occurs check failed"
 -----------------------------
 -- Algorithm W 
 
-type E = ErrorT String (State Integer)
+type E = ErrorT String (State Int)
 type M a = E (Subst, a)
 
 fresh :: E MTy
@@ -438,38 +442,72 @@ subst'' phi (FLetrec es e) = FLetrec (map (\(k,t,f)->(k,t,subst'' phi' f)) es) (
 ----------------------------------------
 -- Hydra Core support
 
--- Note: no support for @wisnesky's Prim constructors other than PrimStr and PrimNat
-hydraTermToStlc :: Core.Term -> Expr
+-- Placeholders for the primitives in @wisnesky's test cases; they are not necessarily the same functions,
+-- but they have the same types.
+primPred = Terms.primitive _math_neg
+primSucc = Terms.primitive _math_neg
+
+-- Note: no support for @wisnesky's Prim constructors other than PrimStr, PrimNat, Cons, and Nil
+hydraTermToStlc :: Core.Term -> Either String Expr
 hydraTermToStlc term = case term of
-  Core.TermLiteral lit -> case lit of
-    Core.LiteralString s -> Const $ PrimStr s
-    Core.LiteralInteger int -> case int of
-      Core.IntegerValueBigint n -> Const $ PrimNat n
-  Core.TermList els -> foldr (\el acc -> App (App (Const Cons) (hydraTermToStlc el)) acc) (Const Nil) els
-  Core.TermVariable (Core.Name v) -> Var v
-  Core.TermApplication (Core.Application t1 t2) -> App (hydraTermToStlc t1) (hydraTermToStlc t2)
-  Core.TermFunction f -> case f of
-    Core.FunctionLambda (Core.Lambda (Core.Name v) _ body) -> Abs v (hydraTermToStlc body)
-  Core.TermLet (Core.Let bindings env) -> Letrec (fieldToStlc <$> bindings) $ hydraTermToStlc env
-    where
-      fieldToStlc (Core.Field (Core.FieldName v) term) = (v, hydraTermToStlc term)
+    Core.TermApplication (Core.Application t1 t2) -> App <$> hydraTermToStlc t1 <*> hydraTermToStlc t2
+    Core.TermFunction f -> case f of
+      Core.FunctionLambda (Core.Lambda (Core.Name v) _ body) -> Abs <$> pure v <*> hydraTermToStlc body
+      Core.FunctionPrimitive p -> case p of
+        -- TODO: not the same function, but has the same type
+        _math_neg -> pure $ Const Pred
+        _ -> Left $ "Unsupported primitive: " ++ show p
+    Core.TermLet (Core.Let bindings env) -> Letrec <$> CM.mapM fieldToStlc bindings <*> hydraTermToStlc env
+      where
+        fieldToStlc (Core.Field (Core.FieldName v) term) = do
+          s <- hydraTermToStlc term
+          return (v, s)
+    Core.TermList els -> do
+      sels <- CM.mapM hydraTermToStlc els
+      return $ foldr (\el acc -> App (App (Const Cons) el) acc) (Const Nil) sels
+    Core.TermLiteral lit -> case lit of
+      Core.LiteralString s -> pure $ Const $ PrimStr s
+      Core.LiteralInteger int -> case int of
+        Core.IntegerValueInt32 n -> pure $ Const $ PrimNat n
+        _ -> Left $ "Unsupported integer: " ++ show int
+      _ -> Left $ "Unsupported literal: " ++ show lit
+    Core.TermProduct els -> do
+      sels <- CM.mapM hydraTermToStlc els
+      if L.length sels >= 2
+        then let rev = L.reverse sels
+             in return $ L.foldl (\a e -> pair e a) (pair (rev !! 1) (rev !! 0)) $ L.drop 2 rev
+        else Left $ "Unary and nullary products are not yet supported"
+    Core.TermVariable (Core.Name v) -> pure $ Var v
+    _ -> Left $ "Unsupported term: " ++ show term
+  where
+    pair a b = App (App (Const Pair) a) b
 
 systemFExprToHydra :: FExpr -> Either String Core.Term
 systemFExprToHydra expr = case expr of
   FConst prim -> case prim of
     PrimStr s -> pure $ Core.TermLiteral $ Core.LiteralString s
-    PrimNat n -> pure $ Core.TermLiteral $ Core.LiteralInteger $ Core.IntegerValueBigint n
-    _ -> Left $ "unsupported primitive: " ++ show prim
+    PrimNat n -> pure $ Core.TermLiteral $ Core.LiteralInteger $ Core.IntegerValueInt32 n
+    Pred -> pure primPred
+    Succ -> pure primSucc
+    _ -> Left $ "Unsupported primitive: " ++ show prim
     -- Note: other prims are unsupported
   FVar v -> pure $ Core.TermVariable $ Core.Name v
   FApp e1 e2 -> case e1 of
-    FApp (FConst Cons) hd -> do
+    FApp (FTyApp (FConst Cons) _) hd -> do
         els <- CM.mapM systemFExprToHydra (hd:(gather e2))
-        return $ Core.TermList els
+        return $ Core.TermList els -- TODO: include inferred type
       where
         gather e = case e of
-          FConst Nil -> []
-          FApp (FApp (FConst Cons) hd) tl -> hd:(gather tl)
+          FTyApp (FConst Nil) _ -> []
+          FApp (FApp (FTyApp (FConst Cons) _) hd) tl -> hd:(gather tl)
+    FTyApp (FConst Pair) _ -> do
+--        els <- CM.mapM systemFExprToHydra (gather expr)
+        els <- pure []
+        return $ Core.TermProduct els -- TODO: include inferred type
+      where
+        gather e = case e of
+          FApp (FApp (FTyApp (FConst Pair) _) el) arg -> el:(gather arg)
+          _ -> [e]
     _ -> Core.TermApplication <$> (Core.Application <$> systemFExprToHydra e1 <*> systemFExprToHydra e2)
   FAbs v dom e -> do
     term <- systemFExprToHydra e
@@ -494,7 +532,7 @@ systemFExprToHydra expr = case expr of
 systemFTypeToHydra :: FTy -> Either String Core.Type
 systemFTypeToHydra ty = case ty of
   FTyVar v -> pure $ Core.TypeVariable $ Core.Name v
-  FTyNat -> pure $ Core.TypeLiteral $ Core.LiteralTypeInteger Core.IntegerTypeBigint
+  FTyNat -> pure $ Core.TypeLiteral $ Core.LiteralTypeInteger Core.IntegerTypeInt32
   FTyString -> pure $ Core.TypeLiteral $ Core.LiteralTypeString
   FTyList lt -> Core.TypeList <$> systemFTypeToHydra lt
   FTyFn dom cod -> Core.TypeFunction <$> (Core.FunctionType <$> systemFTypeToHydra dom <*> systemFTypeToHydra cod)
@@ -517,8 +555,13 @@ systemFTypeToHydra ty = case ty of
 
 inferWithAlgorithmW :: Core.Term -> IO (Core.Term, Core.Type)
 inferWithAlgorithmW term = do
-    (fexpr, _) <- inferExpr $ hydraTermToStlc $ wrap term
+    stlc <- case hydraTermToStlc (wrap term) of
+       Left err -> fail err
+       Right t -> return t
+--    fail $ "STLC: " ++ show stlc
+    (fexpr, _) <- inferExpr stlc
     let (uexpr, uty) = unwrap fexpr
+    putStrLn $ "System F: " ++ show uexpr
     hydraTerm <- case systemFExprToHydra uexpr of
       Left err -> fail err
       Right t -> return t
@@ -598,24 +641,24 @@ test_5 = Let "sng" (Abs "x" (App (App (Const Cons) (Var "x")) (Const Nil))) body
  where sng0 = App (Var "sng") (Const $ PrimNat 0)
        sngAlice = App (Var "sng") (Const $ PrimStr "alice")
        body = App (App (Const Pair) sng0) sngAlice 
-       
+
 test_6 :: Expr
-test_6 = letrec' "+" (Abs "x" $ Abs "y" $ recCall) twoPlusOne 
+test_6 = letrec' "+" (Abs "x" $ Abs "y" $ recCall) twoPlusOne
  where
-   recCall = App (Const Succ) $ App (App (Var "+") (App (Const Pred) (Var "x"))) (Var "y") 
+   recCall = App (Const Succ) $ App (App (Var "+") (App (Const Pred) (Var "x"))) (Var "y")
    ifz x y z = App (App (App (Const If0) x) y) z
-   twoPlusOne = App (App (Var "+") two) one 
+   twoPlusOne = App (App (Var "+") two) one
    two = App (Const Succ) one
    one = App (Const Succ) (Const $ PrimNat 0)
 
 test_7 :: Expr
 test_7 = letrec' "+" (Abs "x" $ Abs "y" $ recCall) $ twoPlusOne 
  where
-   recCall = App (Const Succ) $ App (App (Var "+") (App (Const Pred) (Var "x"))) ( (Var "y"))
+   recCall = App (Const Pred) $ App (App (Var "+") (App (Const Pred) (Var "x"))) ( (Var "y"))
    ifz x y z = App (App (App (Const If0) x) y) z
    twoPlusOne = App (App (Var "+") two) one 
-   two = App (Const Succ) one
-   one = App (Const Succ) (Const $ PrimNat 0)  
+   two = App (Const Pred) one
+   one = App (Const Pred) (Const $ PrimNat 0)
 
 test_8 :: Expr
 test_8 = letrec' "f" f x 
