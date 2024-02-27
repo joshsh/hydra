@@ -8,12 +8,14 @@
 module Hydra.AlgorithmW where
 
 import qualified Hydra.Core as Core
+import qualified Hydra.Graph as Graph
 import qualified Hydra.Dsl.Literals as Literals
 import qualified Hydra.Dsl.LiteralTypes as LiteralTypes
 import qualified Hydra.Dsl.Terms as Terms
 import qualified Hydra.Dsl.Types as Types
 import Hydra.Sources.Libraries
 import Hydra.Basics
+import Hydra.Strip
 
 import Control.Monad.Error
 import Control.Monad.State
@@ -27,8 +29,13 @@ import qualified Control.Monad as CM
 
 type Var = String
 
-data Prim = Lit Core.Literal
- | Succ | Pred | If0
+-- A typed primitive corresponds to the Hydra primitive of the same name
+data TypedPrimitive = TypedPrimitive Core.Name TypSch deriving (Eq)
+
+data Prim
+ = Lit Core.Literal
+ | TypedPrim TypedPrimitive
+ | If0
  | Fst | Snd | Pair | TT
  | Nil | Cons | FoldList  
  | FF | Inl | Inr | Case 
@@ -36,8 +43,7 @@ data Prim = Lit Core.Literal
  
 instance Show Prim where
   show (Lit l) = show l
-  show Succ = "S"
-  show Pred = "P"
+  show (TypedPrim (TypedPrimitive name _)) = Core.unName name ++ "()"
   show FoldList = "fold"
   show Fst = "fst"
   show Snd = "snd"
@@ -192,6 +198,7 @@ instance Vars MTy where
 
 primTy :: Prim -> TypSch
 primTy (Lit l) = Forall [] $ TyLit $ literalType l
+primTy (TypedPrim (TypedPrimitive _ forall)) = forall
 primTy Fst = Forall ["x", "y"] $ (TyProd (TyVar "x") (TyVar "y")) `TyFn` (TyVar "x")
 primTy Snd = Forall ["x", "y"] $ (TyProd (TyVar "x") (TyVar "y")) `TyFn` (TyVar "y")
 primTy Nil = Forall ["t"] $ TyList (TyVar "t")
@@ -200,8 +207,6 @@ primTy TT = Forall [] TyUnit
 primTy FF = Forall ["t"] $ TyFn TyVoid (TyVar "t")
 primTy Inl = Forall ["x", "y"] $ (TyVar "x") `TyFn` (TyProd (TyVar "x") (TyVar "y"))  
 primTy Inr = Forall ["x", "y"] $ (TyVar "y") `TyFn` (TyProd (TyVar "x") (TyVar "y"))
-primTy Succ = Forall [] $ (TyLit LiteralTypes.int32) `TyFn` (TyLit LiteralTypes.int32)
-primTy Pred = Forall [] $ (TyLit LiteralTypes.int32) `TyFn` (TyLit LiteralTypes.int32)
 primTy Pair = Forall ["x", "y"] $ (TyFn (TyVar "x") (TyFn (TyVar "y") (TyProd (TyVar "x") (TyVar "y"))))
 primTy If0 = Forall [] $ (TyLit LiteralTypes.int32) `TyFn` ((TyLit LiteralTypes.int32) `TyFn` ((TyLit LiteralTypes.int32) `TyFn` (TyLit LiteralTypes.int32)))
 primTy FoldList = Forall ["a", "b"] $ p `TyFn` ((TyVar "b") `TyFn` ((TyList $ TyVar "a") `TyFn` (TyVar "b")))
@@ -428,32 +433,36 @@ subst'' phi (FLetrec es e) = FLetrec (map (\(k,t,f)->(k,t,subst'' phi' f)) es) (
 ----------------------------------------
 -- Hydra Core support
 
--- Placeholders for the primitives in @wisnesky's test cases; they are not necessarily the same functions,
--- but they have the same types.
-primPred = Terms.primitive _math_neg
-primSucc = Terms.primitive _math_neg
+-- A minimal Hydra graph container for use in these translation functions
+data HydraContext = HydraContext (M.Map Core.Name Graph.Primitive)
+
+natType = TyLit LiteralTypes.int32
+constPred = Const $ TypedPrim $ TypedPrimitive _math_neg $ Forall [] $ TyFn natType natType
+constSucc = Const $ TypedPrim $ TypedPrimitive _math_neg $ Forall [] $ TyFn natType natType
 
 -- Note: no support for @wisnesky's Prim constructors other than PrimStr, PrimNat, Cons, and Nil
-hydraTermToStlc :: Core.Term -> Either String Expr
-hydraTermToStlc term = case term of
-    Core.TermApplication (Core.Application t1 t2) -> App <$> hydraTermToStlc t1 <*> hydraTermToStlc t2
+hydraTermToStlc :: HydraContext -> Core.Term -> Either String Expr
+hydraTermToStlc context term = case term of
+    Core.TermApplication (Core.Application t1 t2) -> App <$> toStlc t1 <*> toStlc t2
     Core.TermFunction f -> case f of
-      Core.FunctionLambda (Core.Lambda (Core.Name v) _ body) -> Abs <$> pure v <*> hydraTermToStlc body
-      Core.FunctionPrimitive p -> case p of
-        -- TODO: not the same function, but has the same type
-        _math_neg -> pure $ Const Pred
-        _ -> Left $ "Unsupported primitive: " ++ show p
-    Core.TermLet (Core.Let bindings env) -> Letrec <$> CM.mapM fieldToStlc bindings <*> hydraTermToStlc env
+      Core.FunctionLambda (Core.Lambda (Core.Name v) _ body) -> Abs <$> pure v <*> toStlc body
+      Core.FunctionPrimitive name -> do
+        prim <- case M.lookup name prims of
+          Nothing -> Left $ "no such primitive: " ++ Core.unName name
+          Just p -> Right p
+        ts <- hydraTypeToTypeScheme $ Graph.primitiveType prim
+        return $ Const $ TypedPrim $ TypedPrimitive name ts
+    Core.TermLet (Core.Let bindings env) -> Letrec <$> CM.mapM fieldToStlc bindings <*> toStlc env
       where
         fieldToStlc (Core.Field (Core.FieldName v) term) = do
-          s <- hydraTermToStlc term
+          s <- toStlc term
           return (v, s)
     Core.TermList els -> do
-      sels <- CM.mapM hydraTermToStlc els
+      sels <- CM.mapM toStlc els
       return $ foldr (\el acc -> App (App (Const Cons) el) acc) (Const Nil) sels
     Core.TermLiteral lit -> pure $ Const $ Lit lit
     Core.TermProduct els -> do
-      sels <- CM.mapM hydraTermToStlc els
+      sels <- CM.mapM toStlc els
       if L.length sels >= 2
         then let rev = L.reverse sels
              in return $ L.foldl (\a e -> pair e a) (pair (rev !! 1) (rev !! 0)) $ L.drop 2 rev
@@ -461,14 +470,56 @@ hydraTermToStlc term = case term of
     Core.TermVariable (Core.Name v) -> pure $ Var v
     _ -> Left $ "Unsupported term: " ++ show term
   where
+    HydraContext prims = context
+    toStlc = hydraTermToStlc context
     pair a b = App (App (Const Pair) a) b
+
+hydraTypeToTypeScheme :: Core.Type -> Either String TypSch
+hydraTypeToTypeScheme typ = do
+    let (boundVars, baseType) = splitBoundVars [] typ
+    ty <- toStlc baseType
+    return $ Forall (Core.unName <$> boundVars) ty
+  where
+    toStlc typ = case stripType typ of
+      Core.TypeFunction (Core.FunctionType dom cod) -> TyFn <$> toStlc dom <*> toStlc cod
+      Core.TypeList et -> TyList <$> toStlc et
+      Core.TypeLiteral lt -> pure $ TyLit lt
+--      TypeMap MapType |
+--      TypeOptional Type |
+      Core.TypeProduct types -> if L.length types == 0
+        then pure TyUnit
+        else if L.length types == 1
+          then Left $ "unary products are not yet supported"
+          else do
+            stypes <- CM.mapM toStlc types
+            let rev = L.reverse stypes
+            return $ L.foldl (\a e -> TyProd e a) (TyProd (rev !! 1) (rev !! 0)) $ L.drop 2 rev
+--      TypeRecord RowType |
+--      TypeSet Type |
+--      TypeStream Type |
+      Core.TypeSum types -> if L.length types == 0
+        then pure TyVoid
+        else if L.length types == 1
+          then Left $ "unary sums are not yet supported"
+          else do
+            stypes <- CM.mapM toStlc types
+            let rev = L.reverse stypes
+            return $ L.foldl (\a e -> TySum e a) (TySum (rev !! 1) (rev !! 0)) $ L.drop 2 rev
+--      TypeUnion RowType |
+      Core.TypeVariable name -> pure $ TyVar $ Core.unName name
+--      TypeWrap (Nominal Type)
+      _ -> Left $ "unsupported type: " ++ show typ
+    splitBoundVars vars typ = case stripType typ of
+      Core.TypeLambda (Core.LambdaType v body) -> (v:vars', typ')
+        where
+          (vars', typ') = splitBoundVars vars body
+      _ -> (vars, typ)
 
 systemFExprToHydra :: FExpr -> Either String Core.Term
 systemFExprToHydra expr = case expr of
   FConst prim -> case prim of
     Lit lit -> pure $ Core.TermLiteral lit
-    Pred -> pure primPred
-    Succ -> pure primSucc
+    TypedPrim (TypedPrimitive name _) -> pure $ Core.TermFunction $ Core.FunctionPrimitive name
     _ -> Left $ "Unsupported primitive: " ++ show prim
     -- Note: other prims are unsupported
   FVar v -> pure $ Core.TermVariable $ Core.Name v
@@ -530,9 +581,9 @@ systemFTypeToHydra ty = case ty of
     body' <- systemFTypeToHydra body
     return $ L.foldl (\e v -> Core.TypeLambda $ Core.LambdaType (Core.Name v) e) body' $ L.reverse vars
 
-inferWithAlgorithmW :: Core.Term -> IO (Core.Term, Core.Type)
-inferWithAlgorithmW term = do
-    stlc <- case hydraTermToStlc (wrap term) of
+inferWithAlgorithmW :: HydraContext -> Core.Term -> IO (Core.Term, Core.Type)
+inferWithAlgorithmW context term = do
+    stlc <- case hydraTermToStlc context (wrap term) of
        Left err -> fail err
        Right t -> return t
 --    fail $ "STLC: " ++ show stlc
@@ -622,20 +673,20 @@ test_5 = Let "sng" (Abs "x" (App (App (Const Cons) (Var "x")) (Const Nil))) body
 test_6 :: Expr
 test_6 = letrec' "+" (Abs "x" $ Abs "y" $ recCall) twoPlusOne
  where
-   recCall = App (Const Succ) $ App (App (Var "+") (App (Const Pred) (Var "x"))) (Var "y")
+   recCall = App constSucc $ App (App (Var "+") (App constPred (Var "x"))) (Var "y")
    ifz x y z = App (App (App (Const If0) x) y) z
    twoPlusOne = App (App (Var "+") two) one
-   two = App (Const Succ) one
-   one = App (Const Succ) (Const $ Lit $ Literals.int32 0)
+   two = App constSucc one
+   one = App constSucc (Const $ Lit $ Literals.int32 0)
 
 test_7 :: Expr
 test_7 = letrec' "+" (Abs "x" $ Abs "y" $ recCall) $ twoPlusOne 
  where
-   recCall = App (Const Pred) $ App (App (Var "+") (App (Const Pred) (Var "x"))) ( (Var "y"))
+   recCall = App constPred $ App (App (Var "+") (App constPred (Var "x"))) ( (Var "y"))
    ifz x y z = App (App (App (Const If0) x) y) z
    twoPlusOne = App (App (Var "+") two) one 
-   two = App (Const Pred) one
-   one = App (Const Pred) (Const $ Lit $ Literals.int32 0)
+   two = App constPred one
+   one = App constPred (Const $ Lit $ Literals.int32 0)
 
 test_8 :: Expr
 test_8 = letrec' "f" f x 

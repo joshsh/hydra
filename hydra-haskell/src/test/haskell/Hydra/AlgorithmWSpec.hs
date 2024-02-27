@@ -4,7 +4,7 @@ module Hydra.AlgorithmWSpec where
 
 import Hydra.Kernel
 import Hydra.Sources.Libraries
-import Hydra.Inference
+--import Hydra.Inference
 import Hydra.TestUtils
 import Hydra.TestData
 import qualified Hydra.Dsl.Expect as Expect
@@ -22,14 +22,24 @@ import qualified Data.Set as S
 import Control.Monad
 
 
+testHydraContext = W.HydraContext $ graphPrimitives testGraph
+
+inferType :: Term -> IO (Term, Type)
+inferType = W.inferWithAlgorithmW testHydraContext
+
 expectType :: Term -> Type -> H.Expectation
-expectType term typ = H.shouldReturn (snd <$> W.inferWithAlgorithmW term) typ
+expectType term typ = H.shouldReturn (snd <$> inferType term) typ
 
 expectPolytype :: Term -> [String] -> Type -> H.Expectation
 expectPolytype term vars typ = expectType term (Types.lambdas vars typ)
 
 expectVariables :: Term -> [Name] -> H.Expectation
-expectVariables term vars = H.shouldReturn (boundTypeVariablesInTermOrdered . fst <$> W.inferWithAlgorithmW term) vars
+expectVariables term vars = H.shouldReturn (boundTypeVariablesInTermOrdered . fst <$> inferType term) vars
+
+-- Placeholders for the primitives in @wisnesky's test cases; they are not necessarily the same functions,
+-- but they have the same types.
+primPred = primitive _math_neg
+primSucc = primitive _math_neg
 
 -- @wisnesky's original Algorithm W test cases
 checkAlgorithmW :: H.SpecWith ()
@@ -94,8 +104,8 @@ checkAlgorithmW = H.describe "Check System F syntax" $ do
   --System F type:
   -- 	Nat
   H.it "#6" $ expectType
-    ((var "+" @@ (W.primSucc @@ (W.primSucc @@ int32 0)) @@ (W.primSucc @@ int32 0)) `with` [
-      "+" >: lambda "x" $ lambda "y" (W.primSucc @@ (var "+" @@ (W.primPred @@ var "x") @@ var "y"))])
+    ((var "+" @@ (primSucc @@ (primSucc @@ int32 0)) @@ (primSucc @@ int32 0)) `with` [
+      "+" >: lambda "x" $ lambda "y" (primSucc @@ (var "+" @@ (primPred @@ var "x") @@ var "y"))])
     Types.int32
 
   --Untyped input:
