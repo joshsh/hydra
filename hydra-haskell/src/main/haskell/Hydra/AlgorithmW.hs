@@ -8,8 +8,12 @@
 module Hydra.AlgorithmW where
 
 import qualified Hydra.Core as Core
+import qualified Hydra.Dsl.Literals as Literals
+import qualified Hydra.Dsl.LiteralTypes as LiteralTypes
 import qualified Hydra.Dsl.Terms as Terms
+import qualified Hydra.Dsl.Types as Types
 import Hydra.Sources.Libraries
+import Hydra.Basics
 
 import Control.Monad.Error
 import Control.Monad.State
@@ -23,17 +27,16 @@ import qualified Control.Monad as CM
 
 type Var = String
 
-data Prim = PrimStr String 
- | PrimNat Int | Succ | Pred | If0
+data Prim = Lit Core.Literal
+ | Succ | Pred | If0
  | Fst | Snd | Pair | TT
  | Nil | Cons | FoldList  
  | FF | Inl | Inr | Case 
  deriving Eq
  
 instance Show Prim where
-  show (PrimStr s) = s
-  show (PrimNat i) = show i
-  show Succ = "S" 
+  show (Lit l) = show l
+  show Succ = "S"
   show Pred = "P"
   show FoldList = "fold"
   show Fst = "fst"
@@ -70,9 +73,8 @@ instance Show Expr where
   show (Letrec ab c) = "letrecs " ++ d ++ show c
     where d = foldr (\(p, q) r -> p ++ " = " ++ show q ++ " \n\t\t" ++ r) "in " ab
 
-data MTy = TyVar Var 
-  | TyNat 
-  | TyString
+data MTy = TyVar Var
+  | TyLit Core.LiteralType
   | TyList MTy 
   | TyFn MTy MTy
   | TyProd MTy MTy
@@ -82,8 +84,10 @@ data MTy = TyVar Var
  deriving (Eq)
  
 instance Show MTy where
-  show TyNat = "Nat"
-  show TyString = "String"
+  show (TyLit lt) = case lt of
+    Core.LiteralTypeInteger it -> L.drop (L.length "IntegerType") $ show it
+    Core.LiteralTypeFloat ft -> L.drop (L.length "FloatType") $ show ft
+    _ -> L.drop (L.length "LiteralType") $ show lt
   show (TyVar v) = v
   show (TyList t) = "(List " ++ (show t) ++ ")"
   show (TyFn t1 t2) = "(" ++ show t1 ++ " -> " ++ show t2 ++ ")"
@@ -126,9 +130,8 @@ instance Show FExpr where
   show (FTyAbs ab c) = "(/\\" ++ d ++ show c ++ ")"
     where d = foldr (\p r -> p ++ " " ++ r) ". " ab
 
-data FTy = FTyVar Var 
-  | FTyNat 
-  | FTyString
+data FTy = FTyVar Var
+  | FTyLit Core.LiteralType
   | FTyList FTy 
   | FTyFn FTy FTy
   | FTyProd FTy FTy
@@ -139,8 +142,7 @@ data FTy = FTyVar Var
  deriving (Eq)
  
 instance Show FTy where
-  show FTyNat = "Nat"
-  show FTyString = "String"
+  show (FTyLit lt) = show $ TyLit lt
   show (FTyVar v) = v
   show (FTyList t) = "(List " ++ (show t) ++ ")"
   show (FTyFn t1 t2) = "(" ++ show t1 ++ " -> " ++ show t2 ++ ")"
@@ -152,9 +154,8 @@ instance Show FTy where
    where d = foldr (\p q -> p ++ " " ++ q) ", " x
 
 mTyToFTy :: MTy -> FTy 
-mTyToFTy (TyVar v) = FTyVar v 
-mTyToFTy TyNat = FTyNat
-mTyToFTy TyString = FTyString
+mTyToFTy (TyVar v) = FTyVar v
+mTyToFTy (TyLit lt) = FTyLit lt
 mTyToFTy TyUnit = FTyUnit
 mTyToFTy TyVoid = FTyVoid
 mTyToFTy (TyList x) = FTyList $ mTyToFTy x
@@ -182,19 +183,17 @@ instance Vars TypSch where
  vars (Forall vs t) = filter (\v -> not $ elem v vs) (vars t) 
 
 instance Vars MTy where
- vars (TyVar v) = [v] 
+ vars (TyVar v) = [v]
  vars (TyList t) = vars t 
  vars (TyFn t1 t2) = vars t1 ++ vars t2
  vars TyUnit = []
  vars TyVoid = []
  vars (TyProd t1 t2) = vars t1 ++ vars t2
  vars (TySum t1 t2) = vars t1 ++ vars t2
- vars TyNat = []
- vars TyString = []
+ vars (TyLit _) = []
 
 primTy :: Prim -> TypSch
-primTy (PrimStr s) = Forall [] TyString
-primTy (PrimNat i) = Forall [] TyNat
+primTy (Lit l) = Forall [] $ TyLit $ literalType l
 primTy Fst = Forall ["x", "y"] $ (TyProd (TyVar "x") (TyVar "y")) `TyFn` (TyVar "x")
 primTy Snd = Forall ["x", "y"] $ (TyProd (TyVar "x") (TyVar "y")) `TyFn` (TyVar "y")
 primTy Nil = Forall ["t"] $ TyList (TyVar "t")
@@ -203,10 +202,10 @@ primTy TT = Forall [] TyUnit
 primTy FF = Forall ["t"] $ TyFn TyVoid (TyVar "t")
 primTy Inl = Forall ["x", "y"] $ (TyVar "x") `TyFn` (TyProd (TyVar "x") (TyVar "y"))  
 primTy Inr = Forall ["x", "y"] $ (TyVar "y") `TyFn` (TyProd (TyVar "x") (TyVar "y"))
-primTy Succ = Forall [] $ TyNat `TyFn` TyNat
-primTy Pred = Forall [] $ TyNat `TyFn` TyNat
+primTy Succ = Forall [] $ (TyLit LiteralTypes.int32) `TyFn` (TyLit LiteralTypes.int32)
+primTy Pred = Forall [] $ (TyLit LiteralTypes.int32) `TyFn` (TyLit LiteralTypes.int32)
 primTy Pair = Forall ["x", "y"] $ (TyFn (TyVar "x") (TyFn (TyVar "y") (TyProd (TyVar "x") (TyVar "y"))))
-primTy If0 = Forall [] $ TyNat `TyFn` (TyNat `TyFn` (TyNat `TyFn` TyNat))
+primTy If0 = Forall [] $ (TyLit LiteralTypes.int32) `TyFn` ((TyLit LiteralTypes.int32) `TyFn` ((TyLit LiteralTypes.int32) `TyFn` (TyLit LiteralTypes.int32)))
 primTy FoldList = Forall ["a", "b"] $ p `TyFn` ((TyVar "b") `TyFn` ((TyList $ TyVar "a") `TyFn` (TyVar "b")))
  where p = TyVar "b" `TyFn` (TyVar "a" `TyFn` TyVar "b")
 primTy Case = Forall ["x", "y", "z"] $ (TySum (TyVar "x") (TyVar "y")) `TyFn` (l `TyFn` (r `TyFn` (TyVar "z"))) 
@@ -233,8 +232,7 @@ class Substable a where
   subst :: Subst -> a -> a
   
 instance Substable MTy where
- subst f TyNat = TyNat
- subst f TyString = TyString
+ subst f (TyLit lt) = TyLit lt
  subst f TyUnit = TyUnit 
  subst f TyVoid = TyVoid
  subst f (TyList t) = TyList $ subst f t 
@@ -246,8 +244,7 @@ instance Substable MTy where
                       Just y -> y
                       
 instance Substable FTy where
- subst f FTyNat = FTyNat
- subst f FTyString = FTyString
+ subst f (FTyLit lt) = FTyLit lt
  subst f FTyUnit = FTyUnit 
  subst f FTyVoid = FTyVoid
  subst f (FTyList t) = FTyList $ subst f t 
@@ -277,9 +274,8 @@ instance Substable FExpr where
   where phi' = filter (\(v,f')-> not (elem v vs)) phi
  subst phi (FLetrec vs p) = FLetrec (map (\(k,t,v)->(k,subst phi t, subst phi v)) vs) (subst phi p)
 
-subst' :: [(Var,FTy)] -> FTy -> FTy 
-subst' f FTyNat = FTyNat
-subst' f FTyString = FTyString
+subst' :: [(Var,FTy)] -> FTy -> FTy
+subst' f (FTyLit lt) = FTyLit lt
 subst' f FTyUnit = FTyUnit 
 subst' f FTyVoid = FTyVoid
 subst' f (FTyList t) = FTyList $ subst' f t 
@@ -330,8 +326,9 @@ typeOf tvs g (FLetrec es e) = do { let g' = map (\(k,t,e)->(k,t)) es
 -- Unification
 
 mgu :: MTy -> MTy -> E Subst
-mgu TyNat TyNat = return []
-mgu TyString TyString = return []
+mgu (TyLit lt1) (TyLit lt2) = if lt1 == lt2
+  then return []
+  else throwError $ "Cannot unify literal types " ++ show lt1 ++ " and " ++ show lt2
 mgu (TyList a) (TyList b) = mgu a b
 mgu TyUnit TyUnit = return []
 mgu TyVoid TyVoid = return []
@@ -348,8 +345,7 @@ mgu' [] [] = return idSubst
 mgu' (a:as) (b:bs) = do { f <- mgu a b; s <- mgu' (map (subst f) as) (map (subst f) bs); return $ s `o` f }
 
 occurs :: Var -> MTy -> E ()
-occurs v (TyNat) = return ()
-occurs v (TyString) = return ()
+occurs v (TyLit _) = return ()
 occurs v (TyList l) = occurs v l
 occurs v TyUnit = return ()
 occurs v TyVoid = return ()       
@@ -465,12 +461,7 @@ hydraTermToStlc term = case term of
     Core.TermList els -> do
       sels <- CM.mapM hydraTermToStlc els
       return $ foldr (\el acc -> App (App (Const Cons) el) acc) (Const Nil) sels
-    Core.TermLiteral lit -> case lit of
-      Core.LiteralString s -> pure $ Const $ PrimStr s
-      Core.LiteralInteger int -> case int of
-        Core.IntegerValueInt32 n -> pure $ Const $ PrimNat n
-        _ -> Left $ "Unsupported integer: " ++ show int
-      _ -> Left $ "Unsupported literal: " ++ show lit
+    Core.TermLiteral lit -> pure $ Const $ Lit lit
     Core.TermProduct els -> do
       sels <- CM.mapM hydraTermToStlc els
       if L.length sels >= 2
@@ -485,8 +476,7 @@ hydraTermToStlc term = case term of
 systemFExprToHydra :: FExpr -> Either String Core.Term
 systemFExprToHydra expr = case expr of
   FConst prim -> case prim of
-    PrimStr s -> pure $ Core.TermLiteral $ Core.LiteralString s
-    PrimNat n -> pure $ Core.TermLiteral $ Core.LiteralInteger $ Core.IntegerValueInt32 n
+    Lit lit -> pure $ Core.TermLiteral lit
     Pred -> pure primPred
     Succ -> pure primSucc
     _ -> Left $ "Unsupported primitive: " ++ show prim
@@ -527,13 +517,11 @@ systemFExprToHydra expr = case expr of
         hterm <- systemFExprToHydra term
         htyp <- systemFTypeToHydra ty
         return $ Core.Field (Core.FieldName v) $ Core.TermTyped $ Core.TypedTerm htyp hterm
-  _ -> Left $ "unsupported expression: " ++ show expr
 
 systemFTypeToHydra :: FTy -> Either String Core.Type
 systemFTypeToHydra ty = case ty of
   FTyVar v -> pure $ Core.TypeVariable $ Core.Name v
-  FTyNat -> pure $ Core.TypeLiteral $ Core.LiteralTypeInteger Core.IntegerTypeInt32
-  FTyString -> pure $ Core.TypeLiteral $ Core.LiteralTypeString
+  FTyLit lt -> pure $ Core.TypeLiteral lt
   FTyList lt -> Core.TypeList <$> systemFTypeToHydra lt
   FTyFn dom cod -> Core.TypeFunction <$> (Core.FunctionType <$> systemFTypeToHydra dom <*> systemFTypeToHydra cod)
   FTyProd t1 t2 -> Core.TypeProduct <$> CM.mapM systemFTypeToHydra (t1:(componentsTypesOf t2))
@@ -551,7 +539,6 @@ systemFTypeToHydra ty = case ty of
   FForall vars body -> do
     body' <- systemFTypeToHydra body
     return $ L.foldl (\e v -> Core.TypeLambda $ Core.LambdaType (Core.Name v) e) body' $ L.reverse vars
-  _ -> Left $ "unsupported type: " ++ show ty
 
 inferWithAlgorithmW :: Core.Term -> IO (Core.Term, Core.Type)
 inferWithAlgorithmW term = do
@@ -618,18 +605,18 @@ test_0 :: Expr
 test_0 = Abs "x" $ Var "x"
 
 test_1 :: Expr
-test_1 = Letrec [("foo", Abs "x" $ Var "x")] $ Const $ PrimNat 42
+test_1 = Letrec [("foo", Abs "x" $ Var "x")] $ Const $ Lit $ Literals.int32 42
 
 test_2 :: Expr
-test_2 =  Let "f" ( (Abs "x" (Var "x"))) $ App (Var "f")  (Const $ PrimNat 0)
- where sng0 = App (Var "sng") (Const $ PrimNat 0)
-       sngAlice = App (Var "sng") (Const $ PrimStr "alice")
+test_2 =  Let "f" ( (Abs "x" (Var "x"))) $ App (Var "f")  (Const $ Lit $ Literals.int32 0)
+ where sng0 = App (Var "sng") (Const $ Lit $ Literals.int32 0)
+       sngAlice = App (Var "sng") (Const $ Lit $ Literals.string "alice")
        body = (Var "sng")
        
 test_3 :: Expr
-test_3 =  Let "f" (App (Abs "x" (Var "x")) (Const $ PrimNat 0)) (Var "f")  
- where sng0 = App (Var "sng") (Const $ PrimNat 0)
-       sngAlice = App (Var "sng") (Const $ PrimStr "alice")
+test_3 =  Let "f" (App (Abs "x" (Var "x")) (Const $ Lit $ Literals.int32 0)) (Var "f")
+ where sng0 = App (Var "sng") (Const $ Lit $ Literals.int32 0)
+       sngAlice = App (Var "sng") (Const $ Lit $ Literals.string "alice")
 
 test_4 :: Expr
 test_4 = Let "sng" (Abs "x" (App (App (Const Cons) (Var "x")) (Const Nil))) body 
@@ -638,8 +625,8 @@ test_4 = Let "sng" (Abs "x" (App (App (Const Cons) (Var "x")) (Const Nil))) body
 
 test_5 :: Expr
 test_5 = Let "sng" (Abs "x" (App (App (Const Cons) (Var "x")) (Const Nil))) body 
- where sng0 = App (Var "sng") (Const $ PrimNat 0)
-       sngAlice = App (Var "sng") (Const $ PrimStr "alice")
+ where sng0 = App (Var "sng") (Const $ Lit $ Literals.int32 0)
+       sngAlice = App (Var "sng") (Const $ Lit $ Literals.string "alice")
        body = App (App (Const Pair) sng0) sngAlice 
 
 test_6 :: Expr
@@ -649,7 +636,7 @@ test_6 = letrec' "+" (Abs "x" $ Abs "y" $ recCall) twoPlusOne
    ifz x y z = App (App (App (Const If0) x) y) z
    twoPlusOne = App (App (Var "+") two) one
    two = App (Const Succ) one
-   one = App (Const Succ) (Const $ PrimNat 0)
+   one = App (Const Succ) (Const $ Lit $ Literals.int32 0)
 
 test_7 :: Expr
 test_7 = letrec' "+" (Abs "x" $ Abs "y" $ recCall) $ twoPlusOne 
@@ -658,33 +645,33 @@ test_7 = letrec' "+" (Abs "x" $ Abs "y" $ recCall) $ twoPlusOne
    ifz x y z = App (App (App (Const If0) x) y) z
    twoPlusOne = App (App (Var "+") two) one 
    two = App (Const Pred) one
-   one = App (Const Pred) (Const $ PrimNat 0)
+   one = App (Const Pred) (Const $ Lit $ Literals.int32 0)
 
 test_8 :: Expr
 test_8 = letrec' "f" f x 
  where x =  (Var "f")
-       f = Abs "x" $ Abs "y" $ App (App (Var "f") (Const $ PrimNat 0)) (Var "x") 
+       f = Abs "x" $ Abs "y" $ App (App (Var "f") (Const $ Lit $ Literals.int32 0)) (Var "x")
 
 test_9 :: Expr
 test_9 = Letrec [("f", f), ("g", g)] x 
  where x =  App (App (Const $ Pair) (Var "f")) (Var "g")
-       f = Abs "x" $ Abs "y" $ App (App (Var "f") (Const $ PrimNat 0)) (Var "x")        
-       g = Abs "xx" $ Abs "yy" $ App (App (Var "g") (Const $ PrimNat 0)) (Var "xx")   
+       f = Abs "x" $ Abs "y" $ App (App (Var "f") (Const $ Lit $ Literals.int32 0)) (Var "x")
+       g = Abs "xx" $ Abs "yy" $ App (App (Var "g") (Const $ Lit $ Literals.int32 0)) (Var "xx")
 
 test_10 :: Expr
 test_10 = Letrec [("f", f), ("g", g)] b
  where b = App (App (Const Pair) (Var "f")) (Var "g")
-       f = Abs "x" $ Abs "y" $ App (App (Var "g") (Const $ PrimNat 0)) (Var "x") 
-       g = Abs "u" $ Abs "v" $ App (App (Var "f") (Var "v")) (Const $ PrimNat 0) 
+       f = Abs "x" $ Abs "y" $ App (App (Var "g") (Const $ Lit $ Literals.int32 0)) (Var "x")
+       g = Abs "u" $ Abs "v" $ App (App (Var "f") (Var "v")) (Const $ Lit $ Literals.int32 0)
 
 test_11 :: Expr
 test_11 = Letrec [("f", f), ("g", g)] b
  where b = App (App (Const Pair) (Var "f")) (Var "g")
-       f = Abs "x" $ Abs "y" $ App (App (Var "g") (Const $ PrimNat 0)) (Const $ PrimNat 0)
-       g = Abs "u" $ Abs "v" $ App (App (Var "f") (Var "v")) (Const $ PrimNat 0) 
+       f = Abs "x" $ Abs "y" $ App (App (Var "g") (Const $ Lit $ Literals.int32 0)) (Const $ Lit $ Literals.int32 0)
+       g = Abs "u" $ Abs "v" $ App (App (Var "f") (Var "v")) (Const $ Lit $ Literals.int32 0)
 
 test_12 :: Expr
 test_12 = Letrec [("f", f), ("g", g)] b
  where b = App (App (Const Pair) (Var "f")) (Var "g")
-       f = Abs "x" $ Abs "y" $ App (App (Var "g") (Const $ PrimNat 0)) (Var "x") 
-       g = Abs "u" $ Abs "v" $ App (App (Var "f") (Const $ PrimNat 0)) (Const $ PrimNat 0) 
+       f = Abs "x" $ Abs "y" $ App (App (Var "g") (Const $ Lit $ Literals.int32 0)) (Var "x")
+       g = Abs "u" $ Abs "v" $ App (App (Var "f") (Const $ Lit $ Literals.int32 0)) (Const $ Lit $ Literals.int32 0)

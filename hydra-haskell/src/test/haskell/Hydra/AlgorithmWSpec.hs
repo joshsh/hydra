@@ -997,7 +997,7 @@ spec = do
 --  checkIndividualTerms
 --  checkLetTerms
 --  checkLists
---  checkLiterals
+  checkLiterals
 --  checkPathologicalTerms
 --  checkPolymorphism
 --  checkPrimitives
