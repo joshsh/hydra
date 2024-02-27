@@ -25,8 +25,8 @@ checkType :: Term -> Type -> H.Expectation
 checkType term typ = expectTypeAnnotation pure term typ
 
 -- TODO: move into the Terms DSL when practical
-typed :: Type -> Term -> Term
-typed typ = setTermType (Just typ)
+annotationTyped :: Type -> Term -> Term
+annotationTyped typ = setTermType (Just typ)
 
 expectFailure :: Term -> H.Expectation
 expectFailure term = do
@@ -844,19 +844,19 @@ checkUserProvidedTypes = H.describe "Check that user-provided type annotations a
     H.describe "Check that type variables in subterm annotations are also preserved" $ do
       H.it "test #1" $
         expectPolytype
-          (typed (Types.function (Types.var "a") (Types.var "a")) $ lambda "x" $ var "x")
+          (annotationTyped (Types.function (Types.var "a") (Types.var "a")) $ lambda "x" $ var "x")
           ["a"] (Types.function (Types.var "a") (Types.var "a"))
       H.it "test #2" $
         expectPolytype
-          (typed (Types.lambda "a" $ Types.function (Types.var "a") (Types.var "a")) $ lambda "x" $ var "x")
+          (annotationTyped (Types.lambda "a" $ Types.function (Types.var "a") (Types.var "a")) $ lambda "x" $ var "x")
           ["a"] (Types.function (Types.var "a") (Types.var "a"))
       H.it "test #3" $
         expectPolytype
-          (lambda "x" $ typed (Types.var "a") $ var "x")
+          (lambda "x" $ annotationTyped (Types.var "a") $ var "x")
           ["a"] (Types.function (Types.var "a") (Types.var "a"))
   where
-    pretypedEmptyList = typed (Types.list $ Types.var "p") $ list []
-    pretypedEmptyMap = typed (Types.map (Types.var "k") (Types.var "v")) $ TermMap M.empty
+    pretypedEmptyList = annotationTyped (Types.list $ Types.var "p") $ list []
+    pretypedEmptyMap = annotationTyped (Types.map (Types.var "k") (Types.var "v")) $ TermMap M.empty
 
 checkWrappedTerms :: H.SpecWith ()
 checkWrappedTerms = H.describe "Check nominal introductions and eliminations" $ do

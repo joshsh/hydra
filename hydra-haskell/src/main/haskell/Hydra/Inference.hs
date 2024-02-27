@@ -436,7 +436,7 @@ normalTypeAnnotationVariables term = L.nub <$> foldOverTermM TraversalOrderPre f
       mtyp <- getAnnotatedType term
       return $ case mtyp of
         Nothing -> vars
-        Just typ -> vars ++ variablesInTypeOrdered typ
+        Just typ -> vars ++ variablesInTypeOrdered False typ
 
 -- | Replace temporary type varables like "tv_42" with normalized variables like "t0" in a specific order
 -- Note: this affects both bound and free type variables

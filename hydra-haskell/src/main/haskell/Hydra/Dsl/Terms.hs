@@ -172,6 +172,9 @@ sum i s term = TermSum $ Sum i s term
 true :: Term
 true = boolean True
 
+typed :: Type -> Term -> Term
+typed typ term = TermTyped $ TypedTerm typ term
+
 uint16 :: Int -> Term
 uint16 = literal . Literals.uint16
 

@@ -46,8 +46,16 @@ alphaConvertType vold tnew = rewriteType rewrite
       TypeVariable v -> if v == vold then tnew else TypeVariable v
       _ -> recurse typ
 
+boundTypeVariablesInTermOrdered :: Term -> [Name]
+boundTypeVariablesInTermOrdered = L.nub . foldOverTerm TraversalOrderPre fld []
+  where
+    fld vars term = case term of
+      TermTyped (TypedTerm typ _) -> variablesInTypeOrdered False typ ++ vars
+      _ -> vars
+
 -- | Finds all of the universal type variables in a type expression, in the order in which they appear.
 -- Note: this function assumes that there are no shadowed type variables, as in (forall a. forall a. a)
+-- TODO: redundant with variablesInTypeOrdered
 boundVariablesInTypeOrdered :: Type -> [Name]
 boundVariablesInTypeOrdered typ = case typ of
   TypeLambda (LambdaType var body) -> var:(boundVariablesInTypeOrdered body)
@@ -450,12 +458,12 @@ unshadowVariables term = Y.fromJust $ flowStateValue $ unFlow (rewriteTermM rewr
     freshName = (\n -> Name $ "s" ++ show n) <$> nextCount "unshadow"
 
 -- | Find the variables (both bound and free) in a type expression, following a preorder traversal of the expression.
-variablesInTypeOrdered :: Type -> [Name]
-variablesInTypeOrdered = L.nub . vars -- Note: we rely on the fact that 'nub' keeps the first occurrence
+variablesInTypeOrdered :: Bool -> Type -> [Name]
+variablesInTypeOrdered onlyBound = L.nub . vars -- Note: we rely on the fact that 'nub' keeps the first occurrence
   where
     vars t = case t of
       TypeLambda (LambdaType v body) -> v:(vars body)
-      TypeVariable v -> [v]
+      TypeVariable v -> if onlyBound then [] else [v]
       _ -> L.concat (vars <$> subtypes t)
 
 -- | Where non-lambda terms with nonzero arity occur at the top level, turn them into lambdas,
