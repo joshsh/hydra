@@ -57,7 +57,6 @@ data Expr = Const Prim
  | Abs Var Expr
  | Let Var Expr Expr
  | Letrec [(Var, Expr)] Expr
- | Letrec' Var Expr Expr --include separate impl of unary letrec 
  deriving (Eq)
 -- deriving (Eq, Show)
 
@@ -69,7 +68,6 @@ instance Show Expr where
   show (App a b) = "(" ++ show a ++ " " ++ show b ++ ")"
   show (Abs a b) = "(\\" ++ a ++ ". " ++ show b ++ ")"
   show (Let a b c) = "let " ++ a ++ " = " ++ show b ++ " in " ++ show c
-  show (Letrec' a b c) = "letrec " ++ a ++ " = " ++ show b ++ " in " ++ show c
   show (Letrec ab c) = "letrecs " ++ d ++ show c
     where d = foldr (\(p, q) r -> p ++ " = " ++ show q ++ " \n\t\t" ++ r) "in " ab
 
@@ -395,14 +393,6 @@ w g (Let x e0 e1) = do { (s0, (t , a)) <- w g e0
                        ; let (tt,vs) = gen (subst s0 g) t
                        ; (s1, (t', b)) <- w ((x,tt):subst s0 g) e1                                                                
                        ; return (s1 `o` s0, (t', FApp (FAbs x (tyToFTy $ subst s1 tt) b) (fTyAbs vs a))) }
-w g (Letrec' x e0 e1) = do { t0 <- fresh 
-                           ; (s0, (t,e0X)) <- w ((x, Forall [] t0):g) e0
-                           ; s' <- mgu (subst s0 t0) t 
-                           ; let (ww,ww2) = gen (subst (s' `o` s0) g) (subst s' t)
-                           ; (s1, (t',e1X)) <- w ((x, ww):subst (s' `o` s0) g) e1
-                           ; let e0X' = subst'' [(x, fTyApp (FVar x) $ map FTyVar ww2)] e0X
-                           ; let e0X'' = fTyAbs ( ww2) e0X'  
-                           ; return (s1 `o` s' `o` s0, (t', FLetrec [(x, subst s1 $ tyToFTy ww, subst (s' `o` s1) e0X'')] e1X)) }
 w g (Letrec xe0 e1) = do { t0s <- mapM (\(k,v) -> do { f <- fresh; return (k, f) }) xe0
                          ; let g' = map (\(k,v) -> (k, Forall [] v)) t0s ++ g
                          ; (s0, (ts,e0Xs)) <- w' g' xe0
