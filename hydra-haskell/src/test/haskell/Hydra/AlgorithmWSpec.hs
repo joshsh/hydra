@@ -180,47 +180,6 @@ checkEliminations = H.describe "Check a few hand-picked elimination terms" $ do
         Field (FieldName "float") $ lambda "x" $ int32 42])
       (funT (TypeVariable simpleNumberName) Types.int32)
 
-checkFunctionTerms :: H.SpecWith ()
-checkFunctionTerms = H.describe "Check a few hand-picked function terms" $ do
-
-  H.describe "Lambdas" $ do
-    H.it "test #1" $
-      expectPolytype
-        (lambda "x" $ var "x")
-        ["t0"] (Types.function (Types.var "t0") (Types.var "t0"))
-    H.it "test #2" $
-      expectPolytype
-        (lambda "x" $ int16 137)
-        ["t0"] (Types.function (Types.var "t0") Types.int16)
-
-  H.describe "List eliminations (folds)" $ do
-    let fun = Terms.fold $ primitive _math_add
-    H.it "test #1" $
-      expectType
-        fun
-        (Types.functionN [Types.int32, Types.list Types.int32, Types.int32])
-    H.it "test #2" $
-      expectType
-        (fun @@ int32 0)
-        (Types.function (Types.list Types.int32) Types.int32)
-    H.it "test #3" $
-      expectType
-        (fun @@ int32 0 @@ (list (int32 <$> [1, 2, 3, 4, 5])))
-        Types.int32
-
-  H.it "Projections" $ do
-    expectType
-      (project testTypePersonName (FieldName "firstName"))
-      (Types.function (TypeVariable testTypePersonName) Types.string)
-
-  H.it "Union eliminations (case statements)" $ do
-    expectType
-      (match testTypeFoobarValueName Nothing [
-        Field (FieldName "bool") (lambda "x" (boolean True)),
-        Field (FieldName "string") (lambda "x" (boolean False)),
-        Field (FieldName "unit") (lambda "x" (boolean False))])
-      (Types.function (TypeVariable testTypeFoobarValueName) Types.boolean)
-
 checkIndividualTerms :: H.SpecWith ()
 checkIndividualTerms = H.describe "Check a few hand-picked terms" $ do
 
@@ -516,6 +475,47 @@ checkLiterals = H.describe "Check arbitrary literals" $ do
     QC.property $ \l -> expectType
       (TermLiteral l)
       (Types.literal $ literalType l)
+
+checkOtherFunctionTerms :: H.SpecWith ()
+checkOtherFunctionTerms = H.describe "Check a few hand-picked function terms" $ do
+
+  H.describe "Lambdas" $ do
+    H.it "test #1" $
+      expectPolytype
+        (lambda "x" $ var "x")
+        ["t0"] (Types.function (Types.var "t0") (Types.var "t0"))
+    H.it "test #2" $
+      expectPolytype
+        (lambda "x" $ int16 137)
+        ["t0"] (Types.function (Types.var "t0") Types.int16)
+
+  H.describe "List eliminations (folds)" $ do
+    let fun = Terms.fold $ primitive _math_add
+    H.it "test #1" $
+      expectType
+        fun
+        (Types.functionN [Types.int32, Types.list Types.int32, Types.int32])
+    H.it "test #2" $
+      expectType
+        (fun @@ int32 0)
+        (Types.function (Types.list Types.int32) Types.int32)
+    H.it "test #3" $
+      expectType
+        (fun @@ int32 0 @@ (list (int32 <$> [1, 2, 3, 4, 5])))
+        Types.int32
+
+  H.it "Projections" $ do
+    expectType
+      (project testTypePersonName (FieldName "firstName"))
+      (Types.function (TypeVariable testTypePersonName) Types.string)
+
+  H.it "Union eliminations (case statements)" $ do
+    expectType
+      (match testTypeFoobarValueName Nothing [
+        Field (FieldName "bool") (lambda "x" (boolean True)),
+        Field (FieldName "string") (lambda "x" (boolean False)),
+        Field (FieldName "unit") (lambda "x" (boolean False))])
+      (Types.function (TypeVariable testTypeFoobarValueName) Types.boolean)
 
 checkPathologicalTerms :: H.SpecWith ()
 checkPathologicalTerms = H.describe "Check pathological terms" $ do
@@ -993,11 +993,11 @@ spec = do
   checkOther
 
 --  checkEliminations
---  checkFunctionTerms
 --  checkIndividualTerms
 --  checkLetTerms
 --  checkLists
   checkLiterals
+--  checkOtherFunctionTerms
 --  checkPathologicalTerms
 --  checkPolymorphism
 --  checkPrimitives
