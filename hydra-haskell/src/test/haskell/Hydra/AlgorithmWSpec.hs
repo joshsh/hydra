@@ -590,26 +590,6 @@ checkPolymorphism = H.describe "Check polymorphism" $ do
         (list [lambda "x" $ lambda "y" $ pair (var "y") (var "x")])
         ["t0", "t1"] (Types.list $ Types.function (Types.var "t0") (Types.function (Types.var "t1") (Types.pair (Types.var "t1") (Types.var "t0"))))
 
-  H.describe "Primitives and application" $ do
-    H.it "test #1" $
-      expectType
-        (primitive _lists_concat @@ list [list [int32 42], list []])
-        (Types.list Types.int32)
-
-  H.describe "Lambdas and primitives" $ do
-    H.it "test #1" $
-      expectType
-        (primitive _math_add)
-        (Types.functionN [Types.int32, Types.int32, Types.int32])
-    H.it "test #2" $
-      expectType
-        (lambda "x" (primitive _math_add @@ var "x"))
-        (Types.functionN [Types.int32, Types.int32, Types.int32])
-    H.it "test #3" $
-      expectType
-        (lambda "x" (primitive _math_add @@ var "x" @@ var "x"))
-        (Types.function Types.int32 Types.int32)
-
   H.describe "Mixed expressions with lambdas, constants, and primitive functions" $ do
     H.it "test #1" $
       expectType
@@ -666,6 +646,26 @@ checkPrimitives = H.describe "Check a few hand-picked terms with primitive funct
         (lambda "lists" (primitive _lists_length @@ (primitive _lists_concat @@ var "lists")))
         ["t0"] (Types.function (Types.list $ Types.list $ Types.var "t0") Types.int32)
 
+  H.describe "Primitives and application" $ do
+    H.it "test #1" $
+      expectType
+        (primitive _lists_concat @@ list [list [int32 42], list []])
+        (Types.list Types.int32)
+
+  H.describe "Lambdas and primitives" $ do
+    H.it "test #1" $
+      expectType
+        (primitive _math_add)
+        (Types.functionN [Types.int32, Types.int32, Types.int32])
+    H.it "test #2" $
+      expectType
+        (lambda "x" (primitive _math_add @@ var "x"))
+        (Types.functionN [Types.int32, Types.int32, Types.int32])
+    H.it "test #3" $
+      expectType
+        (lambda "x" (primitive _math_add @@ var "x" @@ var "x"))
+        (Types.function Types.int32 Types.int32)
+        
 checkProducts :: H.SpecWith ()
 checkProducts = H.describe "Check a few hand-picked product terms" $ do
 
@@ -997,7 +997,7 @@ spec = do
 --  checkOtherFunctionTerms
 --  checkPathologicalTerms
 --  checkPolymorphism
---  checkPrimitives
+  checkPrimitives
 --  checkProducts
 --  checkSums
 --  checkWrappedTerms
