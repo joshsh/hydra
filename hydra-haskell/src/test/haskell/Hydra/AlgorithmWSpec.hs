@@ -401,11 +401,11 @@ checkLetTerms = H.describe "Check a few hand-picked let terms" $ do
 --        ["t0"] (Types.list $ Types.pair Types.int32 (Types.var "t0"))
 
   H.describe "Recursive and mutually recursive let (@wisnesky's test cases)" $ do
---    H.it "test #1" $
---      expectPolytype
---        ((var "f") `with` [
---          "f">: lambda "x" $ lambda "y" (var "f" @@ int32 0 @@ var "x")])
---        ["t0"] (Types.function Types.int32 (Types.function Types.int32 (Types.var "t0")))
+    H.it "test #1" $
+      expectPolytype
+        ((var "f") `with` [
+          "f">: lambda "x" $ lambda "y" (var "f" @@ int32 0 @@ var "x")])
+        ["t0"] (Types.function Types.int32 (Types.function Types.int32 (Types.var "t0")))
     H.it "test #2" $
       expectPolytype
         ((pair (var "f") (var "g")) `with` [
@@ -420,8 +420,8 @@ checkLetTerms = H.describe "Check a few hand-picked let terms" $ do
 --          "f">: lambda "x" $ lambda "y" (var "g" @@ int32 0 @@ var "x"),
 --          "g">: lambda "u" $ lambda "v" (var "f" @@ var "v" @@ int32 0)])
 --        ["t0", "t1"] (Types.pair
---          (Types.function (Types.var "v0") (Types.function Types.int32 (Types.var "t1")))
---          (Types.function Types.int32 (Types.function (Types.var "v0") (Types.var "t1"))))
+--          (Types.function (Types.var "t0") (Types.function Types.int32 (Types.var "t1")))
+--          (Types.function Types.int32 (Types.function (Types.var "t0") (Types.var "t1"))))
 
     -- letrec + = (\x . (\y . (S (+ (P x) y)))) in (+ (S (S 0)) (S 0))
 --    let s = primitive _math_neg
