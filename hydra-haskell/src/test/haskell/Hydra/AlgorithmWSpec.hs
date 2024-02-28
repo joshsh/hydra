@@ -432,7 +432,6 @@ checkLetTerms = H.describe "Check a few hand-picked let terms" $ do
 --          "plus">: lambda "x" $ lambda "y" (s @@ (var "plus" @@ (p @@ var "x") @@ var "y"))])
 --        ["t0"] (Types.function Types.int32 $ Types.function (Types.var "t0") Types.int32)
 
-
 checkLists :: H.SpecWith ()
 checkLists = H.describe "Check a few hand-picked list terms" $ do
 
@@ -465,6 +464,20 @@ checkLists = H.describe "Check a few hand-picked list terms" $ do
       (lambda "x" (list [var "x", string "foo", var "x"]))
       (Types.function Types.string (Types.list Types.string))
 
+  H.describe "Lists and lambdas" $ do
+    H.it "test #1" $
+      expectPolytype
+        (lambda "x" $ var "x")
+        ["t0"] (Types.function (Types.var "t0") (Types.var "t0"))
+    H.it "test #3" $
+      expectPolytype
+        (lambda "x" $ list [var "x"])
+        ["t0"] (Types.function (Types.var "t0") (Types.list $ Types.var "t0"))
+    H.it "test #4" $
+      expectPolytype
+        (list [lambda "x" $ var "x", lambda "y" $ var "y"])
+        ["t0"] (Types.list $ Types.function (Types.var "t0") (Types.var "t0"))
+
 checkLiterals :: H.SpecWith ()
 checkLiterals = H.describe "Check arbitrary literals" $ do
 
@@ -473,10 +486,10 @@ checkLiterals = H.describe "Check arbitrary literals" $ do
       (TermLiteral l)
       (Types.literal $ literalType l)
 
-checkOtherFunctionTerms :: H.SpecWith ()
-checkOtherFunctionTerms = H.describe "Check a few hand-picked function terms" $ do
+checkLambdas :: H.SpecWith()
+checkLambdas = H.describe "Check lambdas" $ do
 
-  H.describe "Lambdas" $ do
+  H.describe "Simple lambdas" $ do
     H.it "test #1" $
       expectPolytype
         (lambda "x" $ var "x")
@@ -485,6 +498,15 @@ checkOtherFunctionTerms = H.describe "Check a few hand-picked function terms" $ 
       expectPolytype
         (lambda "x" $ int16 137)
         ["t0"] (Types.function (Types.var "t0") Types.int16)
+
+  H.describe "Lambdas and application" $ do
+    H.it "test #1" $
+      expectType
+        (lambda "x" (var "x") @@ string "foo")
+        Types.string
+
+checkOtherFunctionTerms :: H.SpecWith ()
+checkOtherFunctionTerms = H.describe "Check a few hand-picked function terms" $ do
 
   H.describe "List eliminations (folds)" $ do
     let fun = Terms.fold $ primitive _math_add
@@ -548,11 +570,7 @@ checkPathologicalTerms = H.describe "Check pathological terms" $ do
 checkPolymorphism :: H.SpecWith ()
 checkPolymorphism = H.describe "Check polymorphism" $ do
 
-  H.describe "Simple lists and optionals" $ do
-    H.it "test #1" $
-      expectPolytype
-        (list [])
-        ["t0"] (Types.list (Types.var "t0"))
+  H.describe "Simple optionals" $ do
     H.it "test #2" $
       expectPolytype
         (optional Nothing)
@@ -563,32 +581,14 @@ checkPolymorphism = H.describe "Check polymorphism" $ do
         (Types.optional Types.int32)
 
   H.describe "Lambdas, lists, and products" $ do
-    H.it "test #1" $
-      expectPolytype
-        (lambda "x" $ var "x")
-        ["t0"] (Types.function (Types.var "t0") (Types.var "t0"))
     H.it "test #2" $
       expectPolytype
         (lambda "x" $ pair (var "x") (var "x"))
         ["t0"] (Types.function (Types.var "t0") (Types.pair (Types.var "t0") (Types.var "t0")))
-    H.it "test #3" $
-      expectPolytype
-        (lambda "x" $ list [var "x"])
-        ["t0"] (Types.function (Types.var "t0") (Types.list $ Types.var "t0"))
-    H.it "test #4" $
-      expectPolytype
-        (list [lambda "x" $ var "x", lambda "y" $ var "y"])
-        ["t0"] (Types.list $ Types.function (Types.var "t0") (Types.var "t0"))
     H.it "test #5" $
       expectPolytype
         (list [lambda "x" $ lambda "y" $ pair (var "y") (var "x")])
         ["t0", "t1"] (Types.list $ Types.function (Types.var "t0") (Types.function (Types.var "t1") (Types.pair (Types.var "t1") (Types.var "t0"))))
-
-  H.describe "Lambdas and application" $ do
-    H.it "test #1" $
-      expectType
-        (lambda "x" (var "x") @@ string "foo")
-        Types.string
 
   H.describe "Primitives and application" $ do
     H.it "test #1" $
@@ -984,13 +984,6 @@ checkOther = H.describe "All test cases" $ do
     (list [string "foo", string "bar"])
     (Types.list Types.string)
 
---  H.it "#vars" $ expectVariables
---    ((pair (var "f") (var "g")) `with` [
---      "f">: lambda "x" $ lambda "y" (var "g" @@ int32 0 @@ var "x"),
---      "g">: lambda "u" $ lambda "v" (var "f" @@ int32 0 @@ int32 0)])
---    ["t1", "t2"]
-
-
 spec :: H.Spec
 spec = do
   checkAlgorithmW
@@ -998,8 +991,8 @@ spec = do
 
 --  checkEliminations
 --  checkIndividualTerms
---  checkLetTerms
---  checkLists
+  checkLetTerms
+  checkLists
   checkLiterals
 --  checkOtherFunctionTerms
 --  checkPathologicalTerms

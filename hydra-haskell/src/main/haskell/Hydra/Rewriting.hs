@@ -54,7 +54,7 @@ boundTypeVariablesInSystemFTerm = L.nub . foldOverTerm TraversalOrderPost addTyp
   where
     addTypeVars vars term = typeVarsIn term ++ vars
     typeVarsIn term = case term of
-      TermFunction (FunctionLambda (Lambda _ (Just typ) body)) -> boundVariablesInTypeOrdered typ
+      TermFunction (FunctionLambda (Lambda _ (Just typ) _)) -> boundVariablesInTypeOrdered typ
       TermTypeAbstraction (TypeAbstraction v _) -> [v]
       TermTyped (TypedTerm typ term) -> boundVariablesInTypeOrdered typ
       _ -> []

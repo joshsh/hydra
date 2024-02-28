@@ -521,6 +521,7 @@ systemFExprToHydra expr = case expr of
   FConst prim -> case prim of
     Lit lit -> pure $ Core.TermLiteral lit
     TypedPrim (TypedPrimitive name _) -> pure $ Core.TermFunction $ Core.FunctionPrimitive name
+    Nil -> pure $ Core.TermList []
     _ -> Left $ "Unsupported primitive: " ++ show prim
     -- Note: other prims are unsupported
   FVar v -> pure $ Core.TermVariable $ Core.Name v
