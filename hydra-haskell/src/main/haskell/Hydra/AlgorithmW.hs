@@ -16,6 +16,7 @@ import qualified Hydra.Dsl.Types as Types
 import Hydra.Sources.Libraries
 import Hydra.Basics
 import Hydra.Strip
+import Hydra.Substitution (normalizeBoundTypeVariablesInSystemFTerm)
 
 import Control.Monad.Error
 import Control.Monad.State
@@ -589,7 +590,7 @@ inferWithAlgorithmW context term = do
     (fexpr, _) <- inferExpr stlc
     case systemFExprToHydra fexpr of
       Left err -> fail err
-      Right t -> unwrap t
+      Right t -> normalizeBoundTypeVariablesInSystemFTerm <$> unwrap t
   where
     sFieldName = Core.FieldName "tempVar"
     wrap term = Core.TermLet $ Core.Let ([Core.Field sFieldName term]) $

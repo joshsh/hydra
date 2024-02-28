@@ -54,6 +54,16 @@ normalVariables = normalVariable <$> [0..]
 normalVariable :: Int -> Name
 normalVariable i = Name $ "t" ++ show i
 
+-- | Replace arbitrary bound type variables like v, a, v_12 with the systematic type variables t0, t1, t2, ...
+--   following a canonical ordering in the term.
+--   This function assumes that the bound variables do not also appear free in the type expressions of the term,
+--   which in Hydra is made less likely by using the unusual naming convention tv_0, tv_1, etc. for temporary variables.
+normalizeBoundTypeVariablesInSystemFTerm :: Term -> Term
+normalizeBoundTypeVariablesInSystemFTerm term = replaceTypeVariablesInSystemFTerm subst term
+  where
+    actualVars = boundTypeVariablesInSystemFTerm term
+    subst = M.fromList $ L.zip actualVars normalVariables
+
 replaceTypeVariables :: M.Map Name Name -> Type -> Type
 replaceTypeVariables subst = rewriteType $ \recurse t -> case recurse t of
     TypeVariable v -> TypeVariable $ replace v
@@ -72,6 +82,19 @@ substituteTypeVariables bindings = rewriteType f
     f recurse original = case original of
       TypeVariable v -> M.findWithDefault original v bindings
       _ -> recurse original
+
+-- Note: this will replace all occurrences, regardless of boundness or shadowing
+replaceTypeVariablesInSystemFTerm :: M.Map Name Name -> Term -> Term
+replaceTypeVariablesInSystemFTerm subst = rewriteTerm $ \recurse term ->
+  case recurse term of
+    TermFunction (FunctionLambda (Lambda v (Just mt) body)) -> TermFunction $ FunctionLambda $ Lambda v (Just mt2) body
+      where
+        mt2 = replaceTypeVariables subst mt
+    TermTypeAbstraction (TypeAbstraction v body) -> TermTypeAbstraction $ TypeAbstraction v2 body
+      where
+        v2 = M.findWithDefault v v subst
+    TermTyped (TypedTerm typ term) -> TermTyped $ TypedTerm (replaceTypeVariables subst typ) term
+    t -> t
 
 temporaryVariables :: [Name]
 temporaryVariables = temporaryVariable <$> [0..]

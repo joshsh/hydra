@@ -48,7 +48,7 @@ expectVariables term vars = H.shouldReturn (boundTypeVariablesInTermOrdered <$> 
 primPred = primitive _math_neg
 primSucc = primitive _math_neg
 
--- @wisnesky's original Algorithm W test cases
+-- @wisnesky's original Algorithm W test cases, modified so as to normalize type variables
 checkAlgorithmW :: H.SpecWith ()
 checkAlgorithmW = H.describe "Check System F syntax" $ do
   --Untyped input:
@@ -57,7 +57,7 @@ checkAlgorithmW = H.describe "Check System F syntax" $ do
   -- 	(v0 -> v0)
   H.it "#0" $ expectType
     (lambda "x" $ var "x")
-    (Types.lambda "v1" $ Types.function (Types.var "v1") (Types.var "v1"))
+    (Types.lambda "t0" $ Types.function (Types.var "t0") (Types.var "t0"))
 
   --Untyped input:
   --	letrecs foo = (\x. x)
@@ -94,7 +94,7 @@ checkAlgorithmW = H.describe "Check System F syntax" $ do
   H.it "#4" $ expectType
     (var "sng" `with` [
       "sng">: lambda "x" $ list [var "x"]])
-    (Types.lambda "v7" $ Types.function (Types.var "v7") (Types.list (Types.var "v7")))
+    (Types.lambda "t0" $ Types.function (Types.var "t0") (Types.list (Types.var "t0")))
 
   --Untyped input:
   --	let sng = (\x. (cons x nil)) in (pair (sng 0) (sng alice))
@@ -123,7 +123,7 @@ checkAlgorithmW = H.describe "Check System F syntax" $ do
   H.it "#7" $ expectType
     (var "f" `with` [
       "f">: lambda "x" $ lambda "y" (var "f" @@ int32 0 @@ var "x")])
-    (Types.lambda "v6" $ Types.function Types.int32 (Types.function Types.int32 (Types.var "v6")))
+    (Types.lambda "t0" $ Types.function Types.int32 (Types.function Types.int32 (Types.var "t0")))
 
   --Untyped input:
   --	letrecs f = (\x. (\y. (g 0 x)))
@@ -135,9 +135,9 @@ checkAlgorithmW = H.describe "Check System F syntax" $ do
     ((pair (var "f") (var "g")) `with` [
       "f">: lambda "x" $ lambda "y" (var "g" @@ int32 0 @@ var "x"),
       "g">: lambda "u" $ lambda "v" (var "f" @@ var "v" @@ int32 0)])
-    (Types.lambdas ["v13", "v14", "v16", "v17"] $ Types.pair
-      (Types.function (Types.var "v13") (Types.function Types.int32 (Types.var "v14")))
-      (Types.function Types.int32 (Types.function (Types.var "v16") (Types.var "v17"))))
+    (Types.lambdas ["t0", "t1", "t2", "t3"] $ Types.pair
+      (Types.function (Types.var "t0") (Types.function Types.int32 (Types.var "t1")))
+      (Types.function Types.int32 (Types.function (Types.var "t2") (Types.var "t3"))))
 
   --Untyped input:
   --	letrecs f = (\x. (\y. (g 0 0)))
@@ -149,9 +149,9 @@ checkAlgorithmW = H.describe "Check System F syntax" $ do
     ((pair (var "f") (var "g")) `with` [
       "f">: lambda "x" $ lambda "y" (var "g" @@ int32 0 @@ int32 0),
       "g">: lambda "u" $ lambda "v" (var "f" @@ var "v" @@ int32 0)])
-    (Types.lambdas ["v13", "v15"] $ Types.pair
-      (Types.function Types.int32 (Types.function Types.int32 (Types.var "v13")))
-      (Types.function Types.int32 (Types.function Types.int32 (Types.var "v15"))))
+    (Types.lambdas ["t0", "t1"] $ Types.pair
+      (Types.function Types.int32 (Types.function Types.int32 (Types.var "t0")))
+      (Types.function Types.int32 (Types.function Types.int32 (Types.var "t1"))))
 
   --Untyped input:
   --	letrecs f = (\x. (\y. (g 0 x)))
@@ -163,29 +163,9 @@ checkAlgorithmW = H.describe "Check System F syntax" $ do
     ((pair (var "f") (var "g")) `with` [
       "f">: lambda "x" $ lambda "y" (var "g" @@ int32 0 @@ var "x"),
       "g">: lambda "u" $ lambda "v" (var "f" @@ int32 0 @@ int32 0)])
-    (Types.lambdas ["v13", "v15"] $ Types.pair
-      (Types.function Types.int32 (Types.function Types.int32 (Types.var "v13")))
-      (Types.function Types.int32 (Types.function Types.int32 (Types.var "v15"))))
-
---  H.it "#vars" $ expectVariables
---    ((pair (var "f") (var "g")) `with` [
---      "f">: lambda "x" $ lambda "y" (var "g" @@ int32 0 @@ var "x"),
---      "g">: lambda "u" $ lambda "v" (var "f" @@ int32 0 @@ int32 0)])
---    []
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    (Types.lambdas ["t0", "t1"] $ Types.pair
+      (Types.function Types.int32 (Types.function Types.int32 (Types.var "t0")))
+      (Types.function Types.int32 (Types.function Types.int32 (Types.var "t1"))))
 
 checkEliminations :: H.SpecWith ()
 checkEliminations = H.describe "Check a few hand-picked elimination terms" $ do
@@ -1003,6 +983,13 @@ checkOther = H.describe "All test cases" $ do
   H.it "#1" $ expectType
     (list [string "foo", string "bar"])
     (Types.list Types.string)
+
+--  H.it "#vars" $ expectVariables
+--    ((pair (var "f") (var "g")) `with` [
+--      "f">: lambda "x" $ lambda "y" (var "g" @@ int32 0 @@ var "x"),
+--      "g">: lambda "u" $ lambda "v" (var "f" @@ int32 0 @@ int32 0)])
+--    ["t1", "t2"]
+
 
 spec :: H.Spec
 spec = do

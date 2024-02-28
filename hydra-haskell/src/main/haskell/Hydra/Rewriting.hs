@@ -46,6 +46,19 @@ alphaConvertType vold tnew = rewriteType rewrite
       TypeVariable v -> if v == vold then tnew else TypeVariable v
       _ -> recurse typ
 
+-- | Find all of the bound variables in the type annotations within a System F term.
+--   This function considers the types in "typed terms" (term:type), domain types on lambdas (\v:type.term),
+--   and also type abstractions (/\v.term) to provide bound type variables.
+boundTypeVariablesInSystemFTerm :: Term -> [Name]
+boundTypeVariablesInSystemFTerm = L.nub . foldOverTerm TraversalOrderPost addTypeVars []
+  where
+    addTypeVars vars term = typeVarsIn term ++ vars
+    typeVarsIn term = case term of
+      TermFunction (FunctionLambda (Lambda _ (Just typ) body)) -> boundVariablesInTypeOrdered typ
+      TermTypeAbstraction (TypeAbstraction v _) -> [v]
+      TermTyped (TypedTerm typ term) -> boundVariablesInTypeOrdered typ
+      _ -> []
+
 boundTypeVariablesInTermOrdered :: Term -> [Name]
 boundTypeVariablesInTermOrdered = L.nub . foldOverTerm TraversalOrderPre fld []
   where
@@ -195,7 +208,7 @@ replaceFreeName v rep = rewriteType mapExpr
         else TypeLambda $ LambdaType v' $ recurse body
       TypeVariable v' -> if v == v' then rep else t
       _ -> recurse t
-
+    
 rewrite :: ((x -> y) -> x -> y) -> ((x -> y) -> x -> y) -> x -> y
 rewrite fsub f = recurse
   where
@@ -228,6 +241,9 @@ rewriteTerm = rewrite $ \recurse term -> case term of
     TermRecord (Record n fields) -> TermRecord $ Record n $ forField recurse <$> fields
     TermSet s -> TermSet $ S.fromList $ recurse <$> S.toList s
     TermSum (Sum i s trm) -> TermSum $ Sum i s $ recurse trm
+    TermTypeAbstraction (TypeAbstraction v body) -> TermTypeAbstraction $ TypeAbstraction v $ recurse body
+    TermTypeApplication (TypedTerm typ trm) -> TermTypeApplication $ TypedTerm typ $ recurse term
+    TermTyped (TypedTerm typ trm) -> TermTyped $ TypedTerm typ $ recurse trm
     TermUnion (Injection n field) -> TermUnion $ Injection n $ forField recurse field
     TermVariable v -> TermVariable v
   where
@@ -270,6 +286,9 @@ rewriteTermM = rewrite $ \recurse term -> case term of
     TermRecord (Record n fields) -> TermRecord <$> (Record n <$> (CM.mapM (forField recurse) fields))
     TermSet s -> TermSet <$> (S.fromList <$> (CM.mapM recurse $ S.toList s))
     TermSum (Sum i s trm) -> TermSum <$> (Sum i s <$> recurse trm)
+    TermTypeAbstraction (TypeAbstraction v body) -> TermTypeAbstraction <$> (TypeAbstraction v <$> recurse body)
+    TermTypeApplication (TypedTerm typ trm) -> TermTypeApplication <$> (TypedTerm typ <$> recurse trm)
+    TermTyped (TypedTerm typ trm) -> TermTyped <$> (TypedTerm typ <$> recurse trm)
     TermUnion (Injection n field) -> TermUnion <$> (Injection n <$> forField recurse field)
     TermVariable v -> pure $ TermVariable v
     TermWrap (Nominal name t) -> TermWrap <$> (Nominal name <$> recurse t)
