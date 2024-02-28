@@ -24,17 +24,24 @@ import Control.Monad
 
 testHydraContext = W.HydraContext $ graphPrimitives testGraph
 
-inferType :: Term -> IO (Term, Type)
-inferType = W.inferWithAlgorithmW testHydraContext
+inferTypedTerm :: Term -> IO Term
+inferTypedTerm = W.inferWithAlgorithmW testHydraContext
+
+inferType :: Term -> IO Type
+inferType term = do
+  fterm <- inferTypedTerm term
+  case fterm of
+    TermTyped (TypedTerm typ _) -> pure typ
+    _ -> fail "expected a typed term"
 
 expectType :: Term -> Type -> H.Expectation
-expectType term typ = H.shouldReturn (snd <$> inferType term) typ
+expectType term typ = H.shouldReturn (inferType term) typ
 
 expectPolytype :: Term -> [String] -> Type -> H.Expectation
 expectPolytype term vars typ = expectType term (Types.lambdas vars typ)
 
 expectVariables :: Term -> [Name] -> H.Expectation
-expectVariables term vars = H.shouldReturn (boundTypeVariablesInTermOrdered . fst <$> inferType term) vars
+expectVariables term vars = H.shouldReturn (boundTypeVariablesInTermOrdered <$> inferTypedTerm term) vars
 
 -- Placeholders for the primitives in @wisnesky's test cases; they are not necessarily the same functions,
 -- but they have the same types.

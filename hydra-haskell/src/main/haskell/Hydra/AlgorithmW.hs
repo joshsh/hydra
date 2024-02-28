@@ -581,33 +581,30 @@ systemFTypeToHydra ty = case ty of
     body' <- systemFTypeToHydra body
     return $ L.foldl (\e v -> Core.TypeLambda $ Core.LambdaType (Core.Name v) e) body' $ L.reverse vars
 
-inferWithAlgorithmW :: HydraContext -> Core.Term -> IO (Core.Term, Core.Type)
+inferWithAlgorithmW :: HydraContext -> Core.Term -> IO Core.Term
 inferWithAlgorithmW context term = do
     stlc <- case hydraTermToStlc context (wrap term) of
        Left err -> fail err
        Right t -> return t
---    fail $ "STLC: " ++ show stlc
     (fexpr, _) <- inferExpr stlc
-    let (uexpr, uty) = unwrap fexpr
-    putStrLn $ "System F: " ++ show uexpr
-    hydraTerm <- case systemFExprToHydra uexpr of
+    case systemFExprToHydra fexpr of
       Left err -> fail err
-      Right t -> return t
-    hydraType <- case systemFTypeToHydra uty of
-      Left err -> fail err
-      Right t -> return t
-    return (hydraTerm, hydraType)
+      Right t -> unwrap t
   where
-    wrap term = Core.TermLet $ Core.Let ([Core.Field (Core.FieldName "x") term]) $
-      Core.TermLiteral $ Core.LiteralString "placeholder"
-    unwrap expr = case expr of
-      FLetrec bindings env -> case bindings of
-        [(_, ty, e)] -> (e, ty)
+    sFieldName = Core.FieldName "tempVar"
+    wrap term = Core.TermLet $ Core.Let ([Core.Field sFieldName term]) $
+      Core.TermLiteral $ Core.LiteralString "tempEnvironment"
+    unwrap term = case term of
+      Core.TermLet (Core.Let bindings _) -> case bindings of
+        [(Core.Field fname t)] -> if fname == sFieldName
+          then pure t
+          else fail "expected let binding matching input"
+        _ -> fail "expected let bindings"
 
 inferExpr :: Expr -> IO (FExpr, FTy)
 inferExpr t = case (fst $ runState (runErrorT (w [] t)) 0) of
   Left e -> fail $ "inference error: " ++ e
-  Right (s, (ty, f)) -> case (typeOf [] [] f) of
+  Right (_, (ty, f)) -> case (typeOf [] [] f) of
     Left err -> fail $ "type error: " ++ err
     Right tt -> if tt == mTyToFTy ty
       then return (f, tt)
