@@ -519,12 +519,6 @@ hydraTermToStlc context term = case term of
       return $ foldr (\el acc -> App (App (Const Cons) el) acc) (Const Nil) sels
     Core.TermLiteral lit -> pure $ Const $ Lit lit
     Core.TermProduct els -> Prod <$> (CM.mapM toStlc els)
---    Core.TermProduct els -> do
---      sels <- CM.mapM toStlc els
---      if L.length sels >= 2
---        then let rev = L.reverse sels
---             in return $ L.foldl (\a e -> pair e a) (pair (rev !! 1) (rev !! 0)) $ L.drop 2 rev
---        else Left $ "Unary and nullary products are not yet supported"
     Core.TermVariable (Core.Name v) -> pure $ Var v
     _ -> Left $ "Unsupported term: " ++ show term
   where
@@ -544,14 +538,7 @@ hydraTypeToTypeScheme typ = do
       Core.TypeLiteral lt -> pure $ TyLit lt
 --      TypeMap MapType |
 --      TypeOptional Type |
-      Core.TypeProduct types -> if L.length types == 0
-        then pure TyUnit
-        else if L.length types == 1
-          then Left $ "unary products are not yet supported"
-          else do
-            stypes <- CM.mapM toStlc types
-            let rev = L.reverse stypes
-            return $ L.foldl (\a e -> TyProd e a) (TyProd (rev !! 1) (rev !! 0)) $ L.drop 2 rev
+      Core.TypeProduct types -> TyProdN <$> (CM.mapM toStlc types)
 --      TypeRecord RowType |
 --      TypeSet Type |
 --      TypeStream Type |
