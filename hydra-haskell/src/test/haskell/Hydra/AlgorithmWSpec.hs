@@ -718,6 +718,22 @@ checkProducts = H.describe "Check a few hand-picked product terms" $ do
         (pair (list []) (list []))
         ["t0", "t1"] (Types.pair (Types.list $ Types.var "t0") (Types.list $ Types.var "t1"))
 
+  H.describe "Products with polymorphic components" $ do
+    H.it "test #1" $
+      expectPolytype
+        (pair (int32 42) (lambda "x" $ var "x"))
+        ["t0"] (Types.pair Types.int32 (Types.function (Types.var "t0") (Types.var "t0")))
+    H.it "test #2" $
+      expectPolytype
+        (pair (lambda "x" $ var "x") (lambda "x" $ var "x"))
+        ["t0", "t1"] (Types.pair
+          (Types.function (Types.var "t0") (Types.var "t0"))
+          (Types.function (Types.var "t1") (Types.var "t1")))
+    H.it "test #3" $
+      expectPolytype
+        (lambda "x" $ pair (var "x") (list [var "x"]))
+        ["t0"] (Types.function (Types.var "t0") $ Types.pair (Types.var "t0") (Types.list $ Types.var "t0"))
+
 checkSums :: H.SpecWith ()
 checkSums = H.describe "Check a few hand-picked sum terms" $ do
 

@@ -452,11 +452,13 @@ w g (Letrec xe0 e1) = do { t0s <- mapM (\(k,v) -> do { f <- fresh; return (k, f)
                              ; (r,(r', h)) <- w' (subst u g ) tl
                              ; return (r `o` u, ((subst r u'):r', (subst r j):h)) }
 w g (Prod els) = do
-  ws <- CM.mapM (w g) els
-  let tys = fst . snd <$> ws
-  let es = snd . snd <$> ws
-  return (oMany (fst <$> ws), (TyProdN tys, FProd es))
-
+    (s, tys, es) <- CM.foldM next ([], [], []) $ L.reverse els
+    return (s, (TyProdN tys, FProd es))
+  where
+    next (s, tys, es) e = do
+      (s1, (t, fe)) <- w (subst s g) e
+      let s2 = s `o` s1
+      return (s2, (subst s2 t):tys, fe:es)
 
 -- Save the following for n-ary lists:
 --w g (List els) = do
