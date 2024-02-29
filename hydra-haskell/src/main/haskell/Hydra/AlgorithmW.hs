@@ -65,7 +65,7 @@ data Expr = Const Prim
  | Let Var Expr Expr
  | Letrec [(Var, Expr)] Expr
  | Prod [Expr]
- | Sum [Expr]
+ | Sum Int Int Expr
  deriving (Eq)
 -- deriving (Eq, Show)
 
@@ -79,8 +79,8 @@ instance Show Expr where
   show (Let a b c) = "let " ++ a ++ " = " ++ show b ++ " in " ++ show c
   show (Letrec ab c) = "letrecs " ++ d ++ show c
     where d = foldr (\(p, q) r -> p ++ " = " ++ show q ++ " \n\t\t" ++ r) "in " ab
-  show (Prod els) = "*[" ++ L.intercalate ", " (show <$> els) ++ "]"
-  show (Sum els) = "+[" ++ L.intercalate ", " (show <$> els) ++ "]"
+  show (Prod els) = "(" ++ L.intercalate ", " (show <$> els) ++ ")"
+  show (Sum i n e) = "in[" ++ show i ++ "/" ++ show n ++ "](" ++ show e ++ ")"
 
 data MTy = TyVar Var
   | TyLit Core.LiteralType
@@ -128,7 +128,7 @@ data FExpr = FConst Prim
  | FTyAbs [Var] FExpr 
  | FLetrec [(Var, FTy, FExpr)] FExpr
  | FProd [FExpr]
- | FSum [FExpr]
+ | FSum Int Int FExpr
  deriving (Eq)
 -- deriving (Eq, Show)
 
@@ -145,7 +145,7 @@ instance Show FExpr where
   show (FTyAbs ab c) = "(/\\" ++ d ++ show c ++ ")"
     where d = foldr (\p r -> p ++ " " ++ r) ". " ab
   show (FProd els) = "*[" ++ L.intercalate ", " (show <$> els) ++ "]"
-  show (FSum els) = "+[" ++ L.intercalate ", " (show <$> els) ++ "]"
+  show (FSum i n e) = "in[" ++ show i ++ "/" ++ show n ++ "](" ++ show e ++ ")"
 
 data FTy = FTyVar Var
   | FTyLit Core.LiteralType
@@ -251,7 +251,9 @@ o f g = addExtra ++ map h g
        addExtra = filter (\(v,f')-> case lookup v g of 
                                       Just y  -> False 
                                       Nothing -> True) f
-       
+oMany :: [Subst] -> Subst
+oMany = L.foldl o []
+
 class Substable a where
   subst :: Subst -> a -> a
   
@@ -302,7 +304,7 @@ instance Substable FExpr where
   where phi' = filter (\(v,f')-> not (elem v vs)) phi
  subst phi (FLetrec vs p) = FLetrec (map (\(k,t,v)->(k,subst phi t, subst phi v)) vs) (subst phi p)
  subst phi (FProd els) = FProd (subst phi <$> els)
- subst phi (FSum els) = FSum (subst phi <$> els)
+ subst phi (FSum i n e) = FSum i n $ subst phi e
 
 subst' :: [(Var,FTy)] -> FTy -> FTy
 subst' f (FTyLit lt) = FTyLit lt
@@ -352,11 +354,12 @@ typeOf tvs g (FLetrec es e) = do { let g' = map (\(k,t,e)->(k,t)) es
                                  ; if est == (snd $ unzip g') 
                                    then typeOf tvs g' e 
                                    else throwError $ "Disagree: " ++ show est ++ " and " ++ (show $ snd $ unzip g') }                                     
-                                
+typeOf tvs g (FProd els) = FTyProdN <$> CM.mapM (typeOf tvs g) els
 
 -----------------------------
 -- Unification
 
+-- mgu = most general unifier
 mgu :: MTy -> MTy -> E Subst
 mgu (TyLit lt1) (TyLit lt2) = if lt1 == lt2
   then return []
@@ -366,15 +369,17 @@ mgu TyUnit TyUnit = return []
 mgu TyVoid TyVoid = return []
 mgu (TyProd a b) (TyProd a' b') = do { s <- mgu a a' ; s' <- mgu (subst s b) (subst s b'); return $ s' `o` s }
 mgu (TySum  a b) (TySum  a' b') = do { s <- mgu a a' ; s' <- mgu (subst s b) (subst s b'); return $ s' `o` s }
-mgu (TyFn   a b) (TyFn   a' b') = do { s <- mgu a a' ; s' <- mgu (subst s b) (subst s b'); return $ s' `o` s }
+mgu (TyProdN tys) (TyProdN tys') = mguMany tys tys'
+mgu (TySumN tys) (TySumN tys') = mguMany tys tys'
+mgu (TyFn a b) (TyFn a' b') = do { s <- mgu a a' ; s' <- mgu (subst s b) (subst s b'); return $ s' `o` s }
 mgu (TyVar a) (TyVar b) | a == b = return []
 mgu (TyVar a) b = do { occurs a b; return [(a, b)] }
 mgu a (TyVar b) = mgu (TyVar b) a
 mgu a b = throwError $ "cannot unify " ++ show a ++ " with " ++ show b 
 
-mgu' :: [MTy] -> [MTy] -> E Subst
-mgu' [] [] = return idSubst
-mgu' (a:as) (b:bs) = do { f <- mgu a b; s <- mgu' (map (subst f) as) (map (subst f) bs); return $ s `o` f }
+mguMany :: [MTy] -> [MTy] -> E Subst
+mguMany [] [] = return idSubst
+mguMany (a:as) (b:bs) = do { f <- mgu a b; s <- mguMany (map (subst f) as) (map (subst f) bs); return $ s `o` f }
 
 occurs :: Var -> MTy -> E ()
 occurs v (TyLit _) = return ()
@@ -384,6 +389,8 @@ occurs v TyVoid = return ()
 occurs v (TyFn   a b) = do { occurs v a; occurs v b }
 occurs v (TyProd a b) = do { occurs v a; occurs v b }
 occurs v (TySum  a b) = do { occurs v a; occurs v b }
+occurs v (TyProdN tys) = do { CM.mapM (occurs v) tys; return () }
+occurs v (TySumN tys) = do { CM.mapM (occurs v) tys; return() }
 occurs v (TyVar v') | v == v' = throwError $ "occurs check failed"
                     | otherwise = return ()
 
@@ -398,7 +405,7 @@ fresh = do { s <- get; put (s + 1); return $ TyVar $ "v" ++ show s }
 
 inst :: TypSch -> E (MTy,[MTy])
 inst (Forall vs ty) = do { vs' <- mapM (\_->fresh) vs; return $ (subst (zip vs vs') ty,  vs') } 
-                        
+
 gen :: Ctx -> MTy -> (TypSch, [Var])
 gen g t = (Forall vs t , vs)
  where vs = L.nub $ filter (\v -> not $ elem v (vars g)) (vars t)
@@ -423,14 +430,14 @@ w g (App e0 e1) = do { (s0, (t0, a)) <- w g e0
 w g (Abs x e) = do { t  <- fresh
                    ; (s, (t', a)) <- w ((x, (Forall [] t)):g) e                      
                    ; return (s, (TyFn (subst s t) t', FAbs x (mTyToFTy $ subst s t) a)) }
-w g (Let x e0 e1) = do { (s0, (t , a)) <- w g e0
+w g (Let x e0 e1) = do { (s0, (t, a)) <- w g e0
                        ; let (tt,vs) = gen (subst s0 g) t
-                       ; (s1, (t', b)) <- w ((x,tt):subst s0 g) e1                                                                
+                       ; (s1, (t', b)) <- w ((x,tt):subst s0 g) e1
                        ; return (s1 `o` s0, (t', FApp (FAbs x (tyToFTy $ subst s1 tt) b) (fTyAbs vs a))) }
 w g (Letrec xe0 e1) = do { t0s <- mapM (\(k,v) -> do { f <- fresh; return (k, f) }) xe0
                          ; let g' = map (\(k,v) -> (k, Forall [] v)) t0s ++ g
                          ; (s0, (ts,e0Xs)) <- w' g' xe0
-                         ; s' <- mgu' (map (\(_,v) -> subst s0 v) t0s) ts
+                         ; s' <- mguMany (map (\(_,v) -> subst s0 v) t0s) ts
                          ; let g''' = subst (s' `o` s0) g'
                                g''  = map (\(k,t) -> (k, fst $ gen g''' (subst s' t))) $ zip (fst $ unzip xe0) ts
                                g''X = map (\(k,t) -> (k, gen g''' (subst s' t))) $ zip (fst $ unzip xe0) ts
@@ -443,7 +450,26 @@ w g (Letrec xe0 e1) = do { t0s <- mapM (\(k,v) -> do { f <- fresh; return (k, f)
  where w' g [] = return (idSubst, ([], [])) 
        w' g  ((k,v):tl) = do { (u,(u', j)) <- w g v
                              ; (r,(r', h)) <- w' (subst u g ) tl
-                             ; return (r `o` u, ((subst r u'):r', (subst r j):h)) }  
+                             ; return (r `o` u, ((subst r u'):r', (subst r j):h)) }
+w g (Prod els) = do
+  ws <- CM.mapM (w g) els
+  let tys = fst . snd <$> ws
+  let es = snd . snd <$> ws
+  return (oMany (fst <$> ws), (TyProdN tys, FProd es))
+
+
+-- Save the following for n-ary lists:
+--w g (List els) = do
+--    v <- fresh
+--    (g1, s1, tys, es) <- CM.foldM wnext (g, [], [v], []) $ L.reverse els
+--    s2 <- mguMany (L.init tys) (L.tail tys)
+--    return (s1 `o` s2, (TyList tys, FList es))
+--  where
+--    wnext (g0, s0, tys, es) e0 = do
+--      (s1, (t, e1)) <- w g0 e0
+--      let s2 = s0 `o` s1
+--      let g1 = subst s2 g0
+--      return (g1, s2, t:tys, e1:es)
 
 subst'' :: [(Var, FExpr)] -> FExpr -> FExpr
 subst'' phi (FConst c) = FConst c
@@ -458,6 +484,8 @@ subst'' phi (FTyAbs vs a) = FTyAbs vs $ subst'' phi a
 subst'' phi (FLetrec es e) = FLetrec (map (\(k,t,f)->(k,t,subst'' phi' f)) es) (subst'' phi' e)
  where phi' = filter (\(k,v) -> not (elem k ns)) phi
        (ns,ts,es') = unzip3 es 
+subst'' phi (FProd els) = FProd (subst'' phi <$> els)
+subst'' phi (FSum i n e) = FSum i n $ subst'' phi e
 
 ----------------------------------------
 -- Hydra Core support
@@ -490,12 +518,13 @@ hydraTermToStlc context term = case term of
       sels <- CM.mapM toStlc els
       return $ foldr (\el acc -> App (App (Const Cons) el) acc) (Const Nil) sels
     Core.TermLiteral lit -> pure $ Const $ Lit lit
-    Core.TermProduct els -> do
-      sels <- CM.mapM toStlc els
-      if L.length sels >= 2
-        then let rev = L.reverse sels
-             in return $ L.foldl (\a e -> pair e a) (pair (rev !! 1) (rev !! 0)) $ L.drop 2 rev
-        else Left $ "Unary and nullary products are not yet supported"
+    Core.TermProduct els -> Prod <$> (CM.mapM toStlc els)
+--    Core.TermProduct els -> do
+--      sels <- CM.mapM toStlc els
+--      if L.length sels >= 2
+--        then let rev = L.reverse sels
+--             in return $ L.foldl (\a e -> pair e a) (pair (rev !! 1) (rev !! 0)) $ L.drop 2 rev
+--        else Left $ "Unary and nullary products are not yet supported"
     Core.TermVariable (Core.Name v) -> pure $ Var v
     _ -> Left $ "Unsupported term: " ++ show term
   where
@@ -588,6 +617,8 @@ systemFExprToHydra expr = case expr of
         hterm <- systemFExprToHydra term
         htyp <- systemFTypeToHydra ty
         return $ Core.Field (Core.FieldName v) $ Core.TermTyped $ Core.TypedTerm htyp hterm
+  FProd els -> Core.TermProduct <$> (CM.mapM systemFExprToHydra els)
+  FSum i n e -> Core.TermSum <$> (Core.Sum i n <$> systemFExprToHydra e)
 
 systemFTypeToHydra :: FTy -> Either String Core.Type
 systemFTypeToHydra ty = case ty of
@@ -610,6 +641,8 @@ systemFTypeToHydra ty = case ty of
   FForall vars body -> do
     body' <- systemFTypeToHydra body
     return $ L.foldl (\e v -> Core.TypeLambda $ Core.LambdaType (Core.Name v) e) body' $ L.reverse vars
+  FTyProdN tys -> Core.TypeProduct <$> (CM.mapM systemFTypeToHydra tys)
+  FTySumN tys -> Core.TypeSum <$> (CM.mapM systemFTypeToHydra tys)
 
 inferWithAlgorithmW :: HydraContext -> Core.Term -> IO Core.Term
 inferWithAlgorithmW context term = do
