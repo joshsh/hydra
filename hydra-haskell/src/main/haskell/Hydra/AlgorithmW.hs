@@ -64,6 +64,8 @@ data Expr = Const Prim
  | Abs Var Expr
  | Let Var Expr Expr
  | Letrec [(Var, Expr)] Expr
+ | Prod [Expr]
+ | Sum [Expr]
  deriving (Eq)
 -- deriving (Eq, Show)
 
@@ -77,6 +79,8 @@ instance Show Expr where
   show (Let a b c) = "let " ++ a ++ " = " ++ show b ++ " in " ++ show c
   show (Letrec ab c) = "letrecs " ++ d ++ show c
     where d = foldr (\(p, q) r -> p ++ " = " ++ show q ++ " \n\t\t" ++ r) "in " ab
+  show (Prod els) = "*[" ++ L.intercalate ", " (show <$> els) ++ "]"
+  show (Sum els) = "+[" ++ L.intercalate ", " (show <$> els) ++ "]"
 
 data MTy = TyVar Var
   | TyLit Core.LiteralType
@@ -86,6 +90,8 @@ data MTy = TyVar Var
   | TySum MTy MTy
   | TyUnit 
   | TyVoid
+  | TyProdN [MTy]
+  | TySumN [MTy]
  deriving (Eq)
  
 instance Show MTy where
@@ -96,11 +102,13 @@ instance Show MTy where
   show (TyVar v) = v
   show (TyList t) = "(List " ++ (show t) ++ ")"
   show (TyFn t1 t2) = "(" ++ show t1 ++ " -> " ++ show t2 ++ ")"
-  show (TyProd t1 t2) = "(" ++ show t1 ++ " * " ++ show t2 ++  ")"
+  show (TyProd t1 t2) = "(" ++ show t1 ++ " * " ++ show t2 ++ ")"
   show (TySum t1 t2) = "(" ++ show t1 ++ " + " ++ show t2 ++  ")"
   show TyUnit = "Unit"
   show TyVoid = "Void"
-  
+  show (TyProdN tys) = "*[" ++ L.intercalate ", " (show <$> tys) ++ "]"
+  show (TySumN tys) = "*[" ++ L.intercalate ", " (show <$> tys) ++ "]"
+
 instance Show TypSch where
   show (Forall [] t) = show t
   show (Forall x t) = "forall " ++ d ++ show t
@@ -119,6 +127,8 @@ data FExpr = FConst Prim
  | FTyApp FExpr [FTy]
  | FTyAbs [Var] FExpr 
  | FLetrec [(Var, FTy, FExpr)] FExpr
+ | FProd [FExpr]
+ | FSum [FExpr]
  deriving (Eq)
 -- deriving (Eq, Show)
 
@@ -134,6 +144,8 @@ instance Show FExpr where
     where d = foldr (\(p, t, q) r -> p ++ ":" ++ show t ++ " = " ++ show q ++ " \n\t\t" ++ r) "in " ab
   show (FTyAbs ab c) = "(/\\" ++ d ++ show c ++ ")"
     where d = foldr (\p r -> p ++ " " ++ r) ". " ab
+  show (FProd els) = "*[" ++ L.intercalate ", " (show <$> els) ++ "]"
+  show (FSum els) = "+[" ++ L.intercalate ", " (show <$> els) ++ "]"
 
 data FTy = FTyVar Var
   | FTyLit Core.LiteralType
@@ -144,6 +156,8 @@ data FTy = FTyVar Var
   | FTyUnit 
   | FTyVoid
   | FForall [Var] FTy
+  | FTyProdN [FTy]
+  | FTySumN [FTy]
  deriving (Eq)
  
 instance Show FTy where
@@ -157,6 +171,8 @@ instance Show FTy where
   show FTyVoid = "Void"
   show (FForall x t) = "(forall " ++ d ++ show t ++ ")"
    where d = foldr (\p q -> p ++ " " ++ q) ", " x
+  show (FTyProdN tys) = "*[" ++ L.intercalate ", " (show <$> tys) ++ "]"
+  show (FTySumN tys) = "+[" ++ L.intercalate ", " (show <$> tys) ++ "]"
 
 mTyToFTy :: MTy -> FTy 
 mTyToFTy (TyVar v) = FTyVar v
@@ -167,6 +183,8 @@ mTyToFTy (TyList x) = FTyList $ mTyToFTy x
 mTyToFTy (TyFn x y) = FTyFn (mTyToFTy x) (mTyToFTy y)
 mTyToFTy (TyProd x y) = FTyProd (mTyToFTy x) (mTyToFTy y)
 mTyToFTy (TySum x y) = FTySum (mTyToFTy x) (mTyToFTy y)
+mTyToFTy (TyProdN tys) = FTyProdN (mTyToFTy <$> tys)
+mTyToFTy (TySumN tys) = FTySumN (mTyToFTy <$> tys)
 
 tyToFTy :: TypSch -> FTy 
 tyToFTy (Forall [] t) = mTyToFTy t
@@ -196,6 +214,8 @@ instance Vars MTy where
  vars (TyProd t1 t2) = vars t1 ++ vars t2
  vars (TySum t1 t2) = vars t1 ++ vars t2
  vars (TyLit _) = []
+ vars (TyProdN tys) = L.concat (vars <$> tys)
+ vars (TySumN tys) = L.concat (vars <$> tys)
 
 primTy :: Prim -> TypSch
 primTy (Lit l) = Forall [] $ TyLit $ literalType l
@@ -246,7 +266,9 @@ instance Substable MTy where
  subst f (TyVar v) = case lookup v f of
                       Nothing -> TyVar v
                       Just y -> y
-                      
+ subst f (TyProdN tys) = TyProdN (subst f <$> tys)
+ subst f (TySumN tys) = TySumN (subst f <$> tys)
+
 instance Substable FTy where
  subst f (FTyLit lt) = FTyLit lt
  subst f FTyUnit = FTyUnit 
@@ -260,6 +282,8 @@ instance Substable FTy where
                         Just y -> mTyToFTy y
  subst f (FForall vs t) = FForall vs $ subst phi' t                        
   where phi' = filter (\(v,f')-> not (elem v vs)) f
+ subst f (FTyProdN tys) = FTyProdN (subst f <$> tys)
+ subst f (FTySumN tys) = FTySumN (subst f <$> tys)
 
 instance Substable TypSch where
  subst f (Forall vs t) = Forall vs $ subst f' t 
@@ -277,6 +301,8 @@ instance Substable FExpr where
  subst phi (FTyAbs vs p) = FTyAbs vs (subst phi' p)
   where phi' = filter (\(v,f')-> not (elem v vs)) phi
  subst phi (FLetrec vs p) = FLetrec (map (\(k,t,v)->(k,subst phi t, subst phi v)) vs) (subst phi p)
+ subst phi (FProd els) = FProd (subst phi <$> els)
+ subst phi (FSum els) = FSum (subst phi <$> els)
 
 subst' :: [(Var,FTy)] -> FTy -> FTy
 subst' f (FTyLit lt) = FTyLit lt
@@ -291,7 +317,9 @@ subst' f (FTyVar v) = case lookup v f of
                         Just y -> y
 subst' f (FForall vs t) = FForall vs $ subst' f' t                         
  where f' = filter (\(v,f')-> not (elem v vs)) f
- 
+subst' f (FTyProdN tys) = FTyProdN (subst' f <$> tys)
+subst' f (FTySumN tys) = FTySumN (subst' f <$> tys)
+
 ------------------------------------
 -- Type checking for F
 
