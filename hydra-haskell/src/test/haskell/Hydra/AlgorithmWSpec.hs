@@ -665,14 +665,20 @@ checkPrimitives = H.describe "Check a few hand-picked terms with primitive funct
       expectType
         (lambda "x" (primitive _math_add @@ var "x" @@ var "x"))
         (Types.function Types.int32 Types.int32)
-        
+
+-- TODO: restore nullary and unary product test cases
 checkProducts :: H.SpecWith ()
 checkProducts = H.describe "Check a few hand-picked product terms" $ do
 
-  H.it "Empty product" $ do
-    expectType
-      (Terms.product [])
-      (Types.product [])
+--  H.it "Empty product" $ do
+--    expectType
+--      (Terms.product [])
+--      (Types.product [])
+--
+--  H.it "Unary product" $
+--    expectType
+--      (Terms.product [int32 42])
+--      (Types.product [Types.int32])
 
   H.describe "Non-empty, monotyped products" $ do
     H.it "test #1" $
@@ -689,10 +695,10 @@ checkProducts = H.describe "Check a few hand-picked product terms" $ do
         (Types.product [Types.string, Types.int32, Types.list Types.float32])
 
   H.describe "Polytyped products" $ do
-    H.it "test #1" $
-      expectPolytype
-        (Terms.product [list [], string "foo"])
-        ["t0"] (Types.product [Types.list $ Types.var "t0", Types.string])
+--    H.it "test #1" $
+--      expectPolytype
+--        (Terms.product [list [], string "foo"])
+--        ["t0"] (Types.product [Types.list $ Types.var "t0", Types.string])
     H.it "test #2" $
       expectPolytype
         (Terms.product [int32 42, "foo", list []])
@@ -998,7 +1004,7 @@ spec = do
 --  checkPathologicalTerms
 --  checkPolymorphism
   checkPrimitives
---  checkProducts
+  checkProducts
 --  checkSums
 --  checkWrappedTerms
 
