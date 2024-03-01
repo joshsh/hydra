@@ -660,7 +660,8 @@ inferExpr t = case (fst $ runState (runErrorT (w [] [] t)) 0) of
 ----------------------------------------
 -- Main
 
-tests = [test_0, test_1, test_2, test_3, test_4, test_5, test_6, test_7, test_8, test_10, test_11, test_12]
+tests = [test_0, test_1, test_2, test_3, test_4, test_5, test_6, test_7, test_8, test_10, test_11, test_12,
+  test_j_0]
 
 testOne :: Expr -> IO ()
 testOne t = do { putStrLn $ "Untyped input: "
@@ -693,14 +694,14 @@ test_1 :: Expr
 test_1 = Letrec [("foo", Abs "x" $ Var "x")] $ Const $ Lit $ Literals.int32 42
 
 test_2 :: Expr
-test_2 =  Let "f" ( (Abs "x" (Var "x"))) $ App (Var "f")  (Const $ Lit $ Literals.int32 0)
- where sng0 = App (Var "sng") (Const $ Lit $ Literals.int32 0)
+test_2 =  Let "f" ( (Abs "x" (Var "x"))) $ App (Var "f")  zero
+ where sng0 = App (Var "sng") zero
        sngAlice = App (Var "sng") (Const $ Lit $ Literals.string "alice")
        body = (Var "sng")
        
 test_3 :: Expr
-test_3 =  Let "f" (App (Abs "x" (Var "x")) (Const $ Lit $ Literals.int32 0)) (Var "f")
- where sng0 = App (Var "sng") (Const $ Lit $ Literals.int32 0)
+test_3 =  Let "f" (App (Abs "x" (Var "x")) zero) (Var "f")
+ where sng0 = App (Var "sng") zero
        sngAlice = App (Var "sng") (Const $ Lit $ Literals.string "alice")
 
 test_4 :: Expr
@@ -710,7 +711,7 @@ test_4 = Let "sng" (Abs "x" (App (App (Const Cons) (Var "x")) (Const Nil))) body
 
 test_5 :: Expr
 test_5 = Let "sng" (Abs "x" (App (App (Const Cons) (Var "x")) (Const Nil))) body 
- where sng0 = App (Var "sng") (Const $ Lit $ Literals.int32 0)
+ where sng0 = App (Var "sng") zero
        sngAlice = App (Var "sng") (Const $ Lit $ Literals.string "alice")
        body = App (App (Const Pair) sng0) sngAlice 
 
@@ -721,7 +722,7 @@ test_6 = letrec' "+" (Abs "x" $ Abs "y" $ recCall) twoPlusOne
    ifz x y z = App (App (App (Const If0) x) y) z
    twoPlusOne = App (App (Var "+") two) one
    two = App constSucc one
-   one = App constSucc (Const $ Lit $ Literals.int32 0)
+   one = App constSucc zero
 
 test_7 :: Expr
 test_7 = letrec' "+" (Abs "x" $ Abs "y" $ recCall) $ twoPlusOne 
@@ -730,33 +731,65 @@ test_7 = letrec' "+" (Abs "x" $ Abs "y" $ recCall) $ twoPlusOne
    ifz x y z = App (App (App (Const If0) x) y) z
    twoPlusOne = App (App (Var "+") two) one 
    two = App constPred one
-   one = App constPred (Const $ Lit $ Literals.int32 0)
+   one = App constPred zero
 
 test_8 :: Expr
 test_8 = letrec' "f" f x 
  where x =  (Var "f")
-       f = Abs "x" $ Abs "y" $ App (App (Var "f") (Const $ Lit $ Literals.int32 0)) (Var "x")
+       f = Abs "x" $ Abs "y" $ App (App (Var "f") zero) (Var "x")
 
 test_9 :: Expr
 test_9 = Letrec [("f", f), ("g", g)] x 
  where x =  App (App (Const $ Pair) (Var "f")) (Var "g")
-       f = Abs "x" $ Abs "y" $ App (App (Var "f") (Const $ Lit $ Literals.int32 0)) (Var "x")
-       g = Abs "xx" $ Abs "yy" $ App (App (Var "g") (Const $ Lit $ Literals.int32 0)) (Var "xx")
+       f = Abs "x" $ Abs "y" $ App (App (Var "f") zero) (Var "x")
+       g = Abs "xx" $ Abs "yy" $ App (App (Var "g") zero) (Var "xx")
 
 test_10 :: Expr
 test_10 = Letrec [("f", f), ("g", g)] b
  where b = App (App (Const Pair) (Var "f")) (Var "g")
-       f = Abs "x" $ Abs "y" $ App (App (Var "g") (Const $ Lit $ Literals.int32 0)) (Var "x")
-       g = Abs "u" $ Abs "v" $ App (App (Var "f") (Var "v")) (Const $ Lit $ Literals.int32 0)
+       f = Abs "x" $ Abs "y" $ App (App (Var "g") zero) (Var "x")
+       g = Abs "u" $ Abs "v" $ App (App (Var "f") (Var "v")) zero
 
 test_11 :: Expr
 test_11 = Letrec [("f", f), ("g", g)] b
  where b = App (App (Const Pair) (Var "f")) (Var "g")
-       f = Abs "x" $ Abs "y" $ App (App (Var "g") (Const $ Lit $ Literals.int32 0)) (Const $ Lit $ Literals.int32 0)
-       g = Abs "u" $ Abs "v" $ App (App (Var "f") (Var "v")) (Const $ Lit $ Literals.int32 0)
+       f = Abs "x" $ Abs "y" $ App (App (Var "g") zero) zero
+       g = Abs "u" $ Abs "v" $ App (App (Var "f") (Var "v")) zero
 
 test_12 :: Expr
 test_12 = Letrec [("f", f), ("g", g)] b
  where b = App (App (Const Pair) (Var "f")) (Var "g")
-       f = Abs "x" $ Abs "y" $ App (App (Var "g") (Const $ Lit $ Literals.int32 0)) (Var "x")
-       g = Abs "u" $ Abs "v" $ App (App (Var "f") (Const $ Lit $ Literals.int32 0)) (Const $ Lit $ Literals.int32 0)
+       f = Abs "x" $ Abs "y" $ App (App (Var "g") zero) (Var "x")
+       g = Abs "u" $ Abs "v" $ App (App (Var "f") zero) zero
+
+
+x @@ y = App x y
+zero = Const $ Lit $ Literals.int32 0
+
+-- @joshsh's additional test cases
+test_j_0 :: Expr
+test_j_0 = Letrec [("singleton", singleton), ("f", f), ("g", g)] $ Var "f"
+  where
+    singleton = Abs "x" $ Const Cons @@ Var "x" @@ Const Nil
+    f = Abs "x" $ Abs "y" $ Const Cons
+      @@ (Const Pair
+        @@ (Var "singleton" @@ Var "x")
+        @@ (Var "singleton" @@ Var "y"))
+      @@ (Var "g" @@ Var "x" @@ Var "y")
+    g = Abs "x" $ Abs "y" $ Var "f" @@ zero @@ Var "y"
+
+test_j_0_haskell = f
+  where
+    sng = \x -> [x]
+    f = \x y -> (sng x, sng y):(g x y)
+    g = \x y -> f 0 y
+
+--    H.it "test #6" $
+--      expectPolytype
+--        ((var "f") `with` [
+--          "singleton">: lambda "x" $ list [var "x"],
+--          "f">: lambda "x" $ lambda "y" $ Terms.primitive _lists_cons
+--            @@ (pair (var "singleton" @@ var "x") (var "singleton" @@ var "y"))
+--            @@ (var "g" @@ var "x" @@ var "y"),
+--          "g">: lambda "x" $ lambda "y" $ var "f" @@ int32 42 @@ var "y"])
+--        ["t0"] (Types.list $ Types.pair Types.int32 (Types.var "t0"))

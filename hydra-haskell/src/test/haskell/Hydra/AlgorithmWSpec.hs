@@ -40,8 +40,8 @@ expectType term typ = H.shouldReturn (inferType term) typ
 expectPolytype :: Term -> [String] -> Type -> H.Expectation
 expectPolytype term vars typ = expectType term (Types.lambdas vars typ)
 
-expectVariables :: Term -> [Name] -> H.Expectation
-expectVariables term vars = H.shouldReturn (boundTypeVariablesInTermOrdered <$> inferTypedTerm term) vars
+expectFailure :: Term -> H.Expectation
+expectFailure term = H.shouldThrow (inferTypedTerm term) H.anyException
 
 -- Placeholders for the primitives in @wisnesky's test cases; they are not necessarily the same functions,
 -- but they have the same types.
@@ -393,9 +393,9 @@ checkLetTerms = H.describe "Check a few hand-picked let terms" $ do
 --    H.it "test #6" $
 --      expectPolytype
 --        ((var "f") `with` [
---          "singleton">: lambda "x" $ list [var "x"],
+--          "sng">: lambda "x" $ list [var "x"],
 --          "f">: lambda "x" $ lambda "y" $ Terms.primitive _lists_cons
---            @@ (pair (var "singleton" @@ var "x") (var "singleton" @@ var "y"))
+--            @@ (pair (var "sng" @@ var "x") (var "sng" @@ var "y"))
 --            @@ (var "g" @@ var "x" @@ var "y"),
 --          "g">: lambda "x" $ lambda "y" $ var "f" @@ int32 42 @@ var "y"])
 --        ["t0"] (Types.list $ Types.pair Types.int32 (Types.var "t0"))
@@ -562,10 +562,9 @@ checkPathologicalTerms = H.describe "Check pathological terms" $ do
             (primitive _math_add @@ var "x" @@ int32 1))])
         (Types.list Types.int32)
 
-  -- TODO: this term *should* fail inference, but doesn't
---    H.it "Check self-application" $ do
---      expectFailure
---        (lambda "x" $ var "x" @@ var "x")
+    H.it "Check self-application" $ do
+      expectFailure
+        (lambda "x" $ var "x" @@ var "x")
 
 checkPolymorphism :: H.SpecWith ()
 checkPolymorphism = H.describe "Check polymorphism" $ do
@@ -978,38 +977,9 @@ checkWrappedTerms = H.describe "Check nominal introductions and eliminations" $ 
       (unwrap stringAliasTypeName @@ (wrap stringAliasTypeName $ string "foo"))
       Types.string
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-checkOther :: H.SpecWith ()
-checkOther = H.describe "All test cases" $ do
-  H.it "#0" $ expectType
-    (string "foo")
-    Types.string
-  H.it "#1" $ expectType
-    (list [string "foo", string "bar"])
-    (Types.list Types.string)
-
 spec :: H.Spec
 spec = do
   checkAlgorithmW
-  checkOther
 
 --  checkEliminations
 --  checkIndividualTerms
@@ -1017,7 +987,7 @@ spec = do
   checkLists
   checkLiterals
 --  checkOtherFunctionTerms
---  checkPathologicalTerms
+  checkPathologicalTerms
 --  checkPolymorphism
   checkPrimitives
   checkProducts
