@@ -7,23 +7,17 @@
 
 module Hydra.AlgorithmW where
 
-import qualified Hydra.Core as Core
-import qualified Hydra.Graph as Graph
-import qualified Hydra.Dsl.Literals as Literals
-import qualified Hydra.Dsl.LiteralTypes as LiteralTypes
-import qualified Hydra.Dsl.Terms as Terms
-import qualified Hydra.Dsl.Types as Types
-import Hydra.Sources.Libraries
-import Hydra.Basics
-import Hydra.Strip
-import Hydra.Substitution (normalizeBoundTypeVariablesInSystemFTerm)
+import Hydra.Minimal
 
 import Control.Monad.Error
 import Control.Monad.State
+import Data.List
 
-import qualified Data.List as L
-import qualified Data.Map as M
-import qualified Control.Monad as CM
+natType = TyLit $ LiteralTypeInteger IntegerTypeInt32
+constNeg = Const $ TypedPrim $ TypedPrimitive (Name "hydra/lib/math.neg") $ Forall [] $ TyFn natType natType
+-- Note: Hydra has no built-in pred or succ functions, but neg has the expected type
+constPred = constNeg
+constSucc = constNeg
 
 ------------------------
 -- STLC
@@ -31,10 +25,10 @@ import qualified Control.Monad as CM
 type Var = String
 
 -- A typed primitive corresponds to the Hydra primitive of the same name
-data TypedPrimitive = TypedPrimitive Core.Name TypSch deriving (Eq)
+data TypedPrimitive = TypedPrimitive Name TypSch deriving (Eq)
 
 data Prim
- = Lit Core.Literal
+ = Lit Literal
  | TypedPrim TypedPrimitive
  | If0
  | Fst | Snd | Pair | TT
@@ -44,7 +38,7 @@ data Prim
  
 instance Show Prim where
   show (Lit l) = show l
-  show (TypedPrim (TypedPrimitive name _)) = Core.unName name ++ "()"
+  show (TypedPrim (TypedPrimitive name _)) = unName name ++ "()"
   show FoldList = "fold"
   show Fst = "fst"
   show Snd = "snd"
@@ -79,11 +73,11 @@ instance Show Expr where
   show (Let a b c) = "let " ++ a ++ " = " ++ show b ++ " in " ++ show c
   show (Letrec ab c) = "letrecs " ++ d ++ show c
     where d = foldr (\(p, q) r -> p ++ " = " ++ show q ++ " \n\t\t" ++ r) "in " ab
-  show (Tuple els) = "(" ++ L.intercalate ", " (show <$> els) ++ ")"
+  show (Tuple els) = "(" ++ intercalate ", " (show <$> els) ++ ")"
   show (Sum i n e) = "in[" ++ show i ++ "/" ++ show n ++ "](" ++ show e ++ ")"
 
 data MTy = TyVar Var
-  | TyLit Core.LiteralType
+  | TyLit LiteralType
   | TyList MTy
   | TyFn MTy MTy
   | TyProd MTy MTy
@@ -97,9 +91,9 @@ data MTy = TyVar Var
 
 instance Show MTy where
   show (TyLit lt) = case lt of
-    Core.LiteralTypeInteger it -> L.drop (L.length "IntegerType") $ show it
-    Core.LiteralTypeFloat ft -> L.drop (L.length "FloatType") $ show ft
-    _ -> L.drop (L.length "LiteralType") $ show lt
+    LiteralTypeInteger it -> drop (length "IntegerType") $ show it
+    LiteralTypeFloat ft -> drop (length "FloatType") $ show ft
+    _ -> drop (length "LiteralType") $ show lt
   show (TyVar v) = v
   show (TyList t) = "(List " ++ (show t) ++ ")"
   show (TyFn t1 t2) = "(" ++ show t1 ++ " -> " ++ show t2 ++ ")"
@@ -107,8 +101,8 @@ instance Show MTy where
   show (TySum t1 t2) = "(" ++ show t1 ++ " + " ++ show t2 ++  ")"
   show TyUnit = "Unit"
   show TyVoid = "Void"
-  show (TyTuple tys) = "*[" ++ L.intercalate ", " (show <$> tys) ++ "]"
-  show (TySumN tys) = "*[" ++ L.intercalate ", " (show <$> tys) ++ "]"
+  show (TyTuple tys) = "*[" ++ intercalate ", " (show <$> tys) ++ "]"
+  show (TySumN tys) = "*[" ++ intercalate ", " (show <$> tys) ++ "]"
 
 instance Show TypSch where
   show (Forall [] t) = show t
@@ -149,11 +143,11 @@ instance Show FExpr where
     where d = foldr (\(p, t, q) r -> p ++ ":" ++ show t ++ " = " ++ show q ++ " \n\t\t" ++ r) "in " ab
   show (FTyAbs ab c) = "(/\\" ++ d ++ show c ++ ")"
     where d = foldr (\p r -> p ++ " " ++ r) ". " ab
-  show (FTuple els) = "*[" ++ L.intercalate ", " (show <$> els) ++ "]"
+  show (FTuple els) = "*[" ++ intercalate ", " (show <$> els) ++ "]"
   show (FSum i n e) = "in[" ++ show i ++ "/" ++ show n ++ "](" ++ show e ++ ")"
 
 data FTy = FTyVar Var
-  | FTyLit Core.LiteralType
+  | FTyLit LiteralType
   | FTyList FTy
   | FTyFn FTy FTy
   | FTyProd FTy FTy
@@ -176,8 +170,8 @@ instance Show FTy where
   show FTyVoid = "Void"
   show (FForall x t) = "(forall " ++ d ++ show t ++ ")"
    where d = foldr (\p q -> p ++ " " ++ q) ", " x
-  show (FTyTuple tys) = "*[" ++ L.intercalate ", " (show <$> tys) ++ "]"
-  show (FTySumN tys) = "+[" ++ L.intercalate ", " (show <$> tys) ++ "]"
+  show (FTyTuple tys) = "*[" ++ intercalate ", " (show <$> tys) ++ "]"
+  show (FTySumN tys) = "+[" ++ intercalate ", " (show <$> tys) ++ "]"
 
 mTyToFTy :: MTy -> FTy
 mTyToFTy (TyVar v) = FTyVar v
@@ -219,8 +213,8 @@ instance Vars MTy where
  vars (TyProd t1 t2) = vars t1 ++ vars t2
  vars (TySum t1 t2) = vars t1 ++ vars t2
  vars (TyLit _) = []
- vars (TyTuple tys) = L.concat (vars <$> tys)
- vars (TySumN tys) = L.concat (vars <$> tys)
+ vars (TyTuple tys) = concat (vars <$> tys)
+ vars (TySumN tys) = concat (vars <$> tys)
 
 primTy :: ADTs -> Prim -> TypSch
 primTy [] (Con _) = undefined
@@ -235,7 +229,7 @@ primTy _ FF = Forall ["t"] $ TyFn TyVoid (TyVar "t")
 primTy _ Inl = Forall ["x", "y"] $ (TyVar "x") `TyFn` (TyProd (TyVar "x") (TyVar "y"))
 primTy _ Inr = Forall ["x", "y"] $ (TyVar "y") `TyFn` (TyProd (TyVar "x") (TyVar "y"))
 primTy _ Pair = Forall ["x", "y"] $ (TyFn (TyVar "x") (TyFn (TyVar "y") (TyProd (TyVar "x") (TyVar "y"))))
-primTy _ If0 = Forall [] $ (TyLit LiteralTypes.int32) `TyFn` ((TyLit LiteralTypes.int32) `TyFn` ((TyLit LiteralTypes.int32) `TyFn` (TyLit LiteralTypes.int32)))
+primTy _ If0 = Forall [] $ natType `TyFn` (natType `TyFn` (natType `TyFn` natType))
 primTy _ FoldList = Forall ["a", "b"] $ p `TyFn` ((TyVar "b") `TyFn` ((TyList $ TyVar "a") `TyFn` (TyVar "b")))
  where p = TyVar "b" `TyFn` (TyVar "a" `TyFn` TyVar "b")
 primTy _ Case = Forall ["x", "y", "z"] $ (TySum (TyVar "x") (TyVar "y")) `TyFn` (l `TyFn` (r `TyFn` (TyVar "z")))
@@ -258,7 +252,7 @@ o f g = addExtra ++ map h g
                                       Just y  -> False
                                       Nothing -> True) f
 oMany :: [Subst] -> Subst
-oMany = L.foldl o []
+oMany = foldl o []
 
 class Substable a where
   subst :: Subst -> a -> a
@@ -376,7 +370,7 @@ mgu TyUnit TyUnit = return []
 mgu TyVoid TyVoid = return []
 mgu (TyProd a b) (TyProd a' b') = do { s <- mgu a a' ; s' <- mgu (subst s b) (subst s b'); return $ s' `o` s }
 mgu (TySum  a b) (TySum  a' b') = do { s <- mgu a a' ; s' <- mgu (subst s b) (subst s b'); return $ s' `o` s }
-mgu (TyTuple tys) (TyTuple tys') = if L.length tys == L.length tys'
+mgu (TyTuple tys) (TyTuple tys') = if length tys == length tys'
   then mguMany tys tys' else fail $ "cannot unify tuples of different lengths"
 mgu (TySumN tys) (TySumN tys') = mguMany tys tys'
 mgu (TyFn a b) (TyFn a' b') = do { s <- mgu a a' ; s' <- mgu (subst s b) (subst s b'); return $ s' `o` s }
@@ -397,8 +391,8 @@ occurs v TyVoid = return ()
 occurs v (TyFn   a b) = do { occurs v a; occurs v b }
 occurs v (TyProd a b) = do { occurs v a; occurs v b }
 occurs v (TySum  a b) = do { occurs v a; occurs v b }
-occurs v (TyTuple tys) = do { CM.mapM (occurs v) tys; return () }
-occurs v (TySumN tys) = do { CM.mapM (occurs v) tys; return() }
+occurs v (TyTuple tys) = do { mapM (occurs v) tys; return () }
+occurs v (TySumN tys) = do { mapM (occurs v) tys; return() }
 occurs v (TyVar v') | v == v' = throwError $ "occurs check failed"
                     | otherwise = return ()
 
@@ -416,7 +410,7 @@ inst (Forall vs ty) = do { vs' <- mapM (\_->fresh) vs; return $ (subst (zip vs v
 
 gen :: Ctx -> MTy -> (TypSch, [Var])
 gen g t = (Forall vs t , vs)
- where vs = L.nub $ L.filter (\v -> not $ L.elem v (vars g)) (vars t)
+ where vs = nub $ filter (\v -> not $ elem v (vars g)) (vars t)
 
 fTyApp x [] = x
 fTyApp x y = FTyApp x y
@@ -485,179 +479,6 @@ subst'' phi (FTuple els) = FTuple (subst'' phi <$> els)
 subst'' phi (FSum i n e) = FSum i n $ subst'' phi e
 
 ----------------------------------------
--- Hydra Core support
-
--- A minimal Hydra graph container for use in these translation functions
-data HydraContext = HydraContext (M.Map Core.Name Graph.Primitive)
-
-natType = TyLit LiteralTypes.int32
-constPred = Const $ TypedPrim $ TypedPrimitive _math_neg $ Forall [] $ TyFn natType natType
-constSucc = Const $ TypedPrim $ TypedPrimitive _math_neg $ Forall [] $ TyFn natType natType
-
--- Note: no support for @wisnesky's Prim constructors other than PrimStr, PrimNat, Cons, and Nil
-hydraTermToStlc :: HydraContext -> Core.Term -> Either String Expr
-hydraTermToStlc context term = case term of
-    Core.TermApplication (Core.Application t1 t2) -> App <$> toStlc t1 <*> toStlc t2
-    Core.TermFunction f -> case f of
-      Core.FunctionLambda (Core.Lambda (Core.Name v) _ body) -> Abs <$> pure v <*> toStlc body
-      Core.FunctionPrimitive name -> do
-        prim <- case M.lookup name prims of
-          Nothing -> Left $ "no such primitive: " ++ Core.unName name
-          Just p -> Right p
-        ts <- hydraTypeToTypeScheme $ Graph.primitiveType prim
-        return $ Const $ TypedPrim $ TypedPrimitive name ts
-    Core.TermLet (Core.Let bindings env) -> Letrec <$> CM.mapM fieldToStlc bindings <*> toStlc env
-      where
-        fieldToStlc (Core.Field (Core.FieldName v) term) = do
-          s <- toStlc term
-          return (v, s)
-    Core.TermList els -> do
-      sels <- CM.mapM toStlc els
-      return $ foldr (\el acc -> App (App (Const Cons) el) acc) (Const Nil) sels
-    Core.TermLiteral lit -> pure $ Const $ Lit lit
-    Core.TermProduct els -> Tuple <$> (CM.mapM toStlc els)
-    Core.TermVariable (Core.Name v) -> pure $ Var v
-    _ -> Left $ "Unsupported term: " ++ show term
-  where
-    HydraContext prims = context
-    toStlc = hydraTermToStlc context
-    pair a b = App (App (Const Pair) a) b
-
-hydraTypeToTypeScheme :: Core.Type -> Either String TypSch
-hydraTypeToTypeScheme typ = do
-    let (boundVars, baseType) = splitBoundVars [] typ
-    ty <- toStlc baseType
-    return $ Forall (Core.unName <$> boundVars) ty
-  where
-    toStlc typ = case stripType typ of
-      Core.TypeFunction (Core.FunctionType dom cod) -> TyFn <$> toStlc dom <*> toStlc cod
-      Core.TypeList et -> TyList <$> toStlc et
-      Core.TypeLiteral lt -> pure $ TyLit lt
---      TypeMap MapType |
---      TypeOptional Type |
-      Core.TypeProduct types -> TyTuple <$> (CM.mapM toStlc types)
---      TypeRecord RowType |
---      TypeSet Type |
---      TypeStream Type |
-      Core.TypeSum types -> if L.length types == 0
-        then pure TyVoid
-        else if L.length types == 1
-          then Left $ "unary sums are not yet supported"
-          else do
-            stypes <- CM.mapM toStlc types
-            let rev = L.reverse stypes
-            return $ L.foldl (\a e -> TySum e a) (TySum (rev !! 1) (rev !! 0)) $ L.drop 2 rev
---      TypeUnion RowType |
-      Core.TypeVariable name -> pure $ TyVar $ Core.unName name
---      TypeWrap (Nominal Type)
-      _ -> Left $ "unsupported type: " ++ show typ
-    splitBoundVars vars typ = case stripType typ of
-      Core.TypeLambda (Core.LambdaType v body) -> (v:vars', typ')
-        where
-          (vars', typ') = splitBoundVars vars body
-      _ -> (vars, typ)
-
-systemFExprToHydra :: FExpr -> Either String Core.Term
-systemFExprToHydra expr = case expr of
-  FConst prim -> case prim of
-    Lit lit -> pure $ Core.TermLiteral lit
-    TypedPrim (TypedPrimitive name _) -> pure $ Core.TermFunction $ Core.FunctionPrimitive name
-    Nil -> pure $ Core.TermList []
-    _ -> Left $ "Unsupported primitive: " ++ show prim
-    -- Note: other prims are unsupported
-  FVar v -> pure $ Core.TermVariable $ Core.Name v
-  FApp e1 e2 -> case e1 of
-    FApp (FTyApp (FConst Cons) _) hd -> do
-        els <- CM.mapM systemFExprToHydra (hd:(gather e2))
-        return $ Core.TermList els -- TODO: include inferred type
-      where
-        gather e = case e of
-          FTyApp (FConst Nil) _ -> []
-          FApp (FApp (FTyApp (FConst Cons) _) hd) tl -> hd:(gather tl)
-    FTyApp (FConst Pair) _ -> do
---        els <- CM.mapM systemFExprToHydra (gather expr)
-        els <- pure []
-        return $ Core.TermProduct els -- TODO: include inferred type
-      where
-        gather e = case e of
-          FApp (FApp (FTyApp (FConst Pair) _) el) arg -> el:(gather arg)
-          _ -> [e]
-    _ -> Core.TermApplication <$> (Core.Application <$> systemFExprToHydra e1 <*> systemFExprToHydra e2)
-  FAbs v dom e -> do
-    term <- systemFExprToHydra e
-    hdom <- systemFTypeToHydra dom
-    return $ Core.TermFunction $ Core.FunctionLambda (Core.Lambda (Core.Name v) (Just hdom) term)
-  FTyAbs params body -> do
-    hbody <- systemFExprToHydra body
-    return $ L.foldl (\t v -> Core.TermTypeAbstraction $ Core.TypeAbstraction (Core.Name v) t) hbody $ L.reverse params
-  FTyApp fun args -> do
-    hfun <- systemFExprToHydra fun
-    hargs <- CM.mapM systemFTypeToHydra args
-    return $ L.foldl (\t a -> Core.TermTypeApplication $ Core.TypedTerm a t) hfun $ L.reverse hargs
-  FLetrec bindings env -> Core.TermLet <$>
-      (Core.Let <$> CM.mapM bindingToHydra bindings <*> systemFExprToHydra env)
-    where
-      bindingToHydra (v, ty, term) = do
-        hterm <- systemFExprToHydra term
-        htyp <- systemFTypeToHydra ty
-        return $ Core.Field (Core.FieldName v) $ Core.TermTyped $ Core.TypedTerm htyp hterm
-  FTuple els -> Core.TermProduct <$> (CM.mapM systemFExprToHydra els)
-  FSum i n e -> Core.TermSum <$> (Core.Sum i n <$> systemFExprToHydra e)
-
-systemFTypeToHydra :: FTy -> Either String Core.Type
-systemFTypeToHydra ty = case ty of
-  FTyVar v -> pure $ Core.TypeVariable $ Core.Name v
-  FTyLit lt -> pure $ Core.TypeLiteral lt
-  FTyList lt -> Core.TypeList <$> systemFTypeToHydra lt
-  FTyFn dom cod -> Core.TypeFunction <$> (Core.FunctionType <$> systemFTypeToHydra dom <*> systemFTypeToHydra cod)
-  FTyProd t1 t2 -> Core.TypeProduct <$> CM.mapM systemFTypeToHydra (t1:(componentsTypesOf t2))
-    where
-      componentsTypesOf t = case t of
-        FTyProd t1 t2 -> t1:(componentsTypesOf t2)
-        _ -> [t]
-  FTySum t1 t2 -> Core.TypeSum <$> CM.mapM systemFTypeToHydra (t1:(componentsTypesOf t2))
-    where
-      componentsTypesOf t = case t of
-        FTySum t1 t2 -> t1:(componentsTypesOf t2)
-        _ -> [t]
-  FTyUnit -> pure $ Core.TypeProduct []
-  FTyVoid -> pure $ Core.TypeSum []
-  FForall vars body -> do
-    body' <- systemFTypeToHydra body
-    return $ L.foldl (\e v -> Core.TypeLambda $ Core.LambdaType (Core.Name v) e) body' $ L.reverse vars
-  FTyTuple tys -> Core.TypeProduct <$> (CM.mapM systemFTypeToHydra tys)
-  FTySumN tys -> Core.TypeSum <$> (CM.mapM systemFTypeToHydra tys)
-
-inferWithAlgorithmW :: HydraContext -> Core.Term -> IO Core.Term
-inferWithAlgorithmW context term = do
-    stlc <- case hydraTermToStlc context (wrap term) of
-       Left err -> fail err
-       Right t -> return t
-    (fexpr, _) <- inferExpr stlc
-    case systemFExprToHydra fexpr of
-      Left err -> fail err
-      Right t -> normalizeBoundTypeVariablesInSystemFTerm <$> unwrap t
-  where
-    sFieldName = Core.FieldName "tempVar"
-    wrap term = Core.TermLet $ Core.Let ([Core.Field sFieldName term]) $
-      Core.TermLiteral $ Core.LiteralString "tempEnvironment"
-    unwrap term = case term of
-      Core.TermLet (Core.Let bindings _) -> case bindings of
-        [(Core.Field fname t)] -> if fname == sFieldName
-          then pure t
-          else fail "expected let binding matching input"
-        _ -> fail "expected let bindings"
-
-inferExpr :: Expr -> IO (FExpr, FTy)
-inferExpr t = case (fst $ runState (runErrorT (w [] [] t)) 0) of
-  Left e -> fail $ "inference error: " ++ e
-  Right (_, (ty, f)) -> case (typeOf [] [] [] f) of
-    Left err -> fail $ "type error: " ++ err
-    Right tt -> if tt == mTyToFTy ty
-      then return (f, tt)
-      else fail "no match"
-
-----------------------------------------
 -- Main
 
 tests = [test_0, test_1, test_2, test_3, test_4, test_5, test_6, test_7, test_8, test_10, test_11, test_12,
@@ -691,18 +512,18 @@ test_0 :: Expr
 test_0 = Abs "x" $ Var "x"
 
 test_1 :: Expr
-test_1 = Letrec [("foo", Abs "x" $ Var "x")] $ Const $ Lit $ Literals.int32 42
+test_1 = Letrec [("foo", Abs "x" $ Var "x")] $ Const $ Lit $ int32 42
 
 test_2 :: Expr
 test_2 =  Let "f" ( (Abs "x" (Var "x"))) $ App (Var "f")  zero
  where sng0 = App (Var "sng") zero
-       sngAlice = App (Var "sng") (Const $ Lit $ Literals.string "alice")
+       sngAlice = App (Var "sng") (Const $ Lit $ string "alice")
        body = (Var "sng")
        
 test_3 :: Expr
 test_3 =  Let "f" (App (Abs "x" (Var "x")) zero) (Var "f")
  where sng0 = App (Var "sng") zero
-       sngAlice = App (Var "sng") (Const $ Lit $ Literals.string "alice")
+       sngAlice = App (Var "sng") (Const $ Lit $ string "alice")
 
 test_4 :: Expr
 test_4 = Let "sng" (Abs "x" (App (App (Const Cons) (Var "x")) (Const Nil))) body 
@@ -712,7 +533,7 @@ test_4 = Let "sng" (Abs "x" (App (App (Const Cons) (Var "x")) (Const Nil))) body
 test_5 :: Expr
 test_5 = Let "sng" (Abs "x" (App (App (Const Cons) (Var "x")) (Const Nil))) body 
  where sng0 = App (Var "sng") zero
-       sngAlice = App (Var "sng") (Const $ Lit $ Literals.string "alice")
+       sngAlice = App (Var "sng") (Const $ Lit $ string "alice")
        body = App (App (Const Pair) sng0) sngAlice 
 
 test_6 :: Expr
@@ -764,7 +585,7 @@ test_12 = Letrec [("f", f), ("g", g)] b
 
 
 x @@ y = App x y
-zero = Const $ Lit $ Literals.int32 0
+zero = Const $ Lit $ int32 0
 
 -- Additional test cases
 test_j_0 :: Expr

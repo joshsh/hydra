@@ -12,7 +12,7 @@ import Hydra.Dsl.Terms as Terms
 import qualified Hydra.Dsl.Annotations as Ann
 import qualified Hydra.Dsl.Types as Types
 import Hydra.Dsl.ShorthandTypes
-import qualified Hydra.AlgorithmW as W
+import qualified Hydra.AlgorithmWBridge as W
 
 import qualified Test.Hspec as H
 import qualified Test.QuickCheck as QC
