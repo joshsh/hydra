@@ -313,6 +313,17 @@ rewriteTermAnnotationsM f = rewriteTermM mapExpr
         TermAnnotated (Annotated subj ann) -> TermAnnotated <$> (Annotated <$> pure subj <*> f ann)
         _ -> pure rec
 
+rewriteTermTypes :: (Type -> Type) -> Term -> Term
+rewriteTermTypes f = rewriteTerm mapExpr
+  where
+    mapExpr recurse term = case recurse term of
+      TermTyped (TypedTerm typ t) -> TermTyped $ TypedTerm (f typ) t
+      TermFunction (FunctionLambda (Lambda var (Just typ) body)) -> TermFunction $ FunctionLambda $
+        Lambda var (Just $ f typ) body
+      -- TODO: support for type abstraction?
+      TermTypeApplication (TypedTerm typ t) -> TermTypeApplication $ TypedTerm (f typ) t
+      t -> t
+
 rewriteType :: ((Type -> Type) -> Type -> Type) -> Type -> Type
 rewriteType = rewrite $ \recurse typ -> case typ of
     TypeAnnotated (Annotated t ann) -> TypeAnnotated $ Annotated (recurse t) ann
@@ -475,6 +486,11 @@ unshadowVariables term = Y.fromJust $ flowStateValue $ unFlow (rewriteTermM rewr
             return $ TermFunction $ FunctionLambda $ Lambda v dom body'
         _ -> recurse term
     freshName = (\n -> Name $ "s" ++ show n) <$> nextCount "unshadow"
+
+untype :: Term -> Term
+untype term = case term of
+  TermTyped (TypedTerm _ t) -> untype t
+  _ -> term
 
 -- | Find the variables (both bound and free) in a type expression, following a preorder traversal of the expression.
 variablesInTypeOrdered :: Bool -> Type -> [Name]

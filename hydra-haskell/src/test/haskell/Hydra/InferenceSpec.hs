@@ -56,10 +56,7 @@ expectTypeAnnotation path term etyp = shouldSucceedWith atyp etyp
    atyp = do
      iterm <- inferTermType term
      selected <- path iterm
-     mtyp <- getType (termAnnotation selected)
-     case mtyp of
-       Nothing -> fail $ "no type annotation"
-       Just t -> pure t
+     requireTyped selected
 
 checkEliminations :: H.SpecWith ()
 checkEliminations = H.describe "Check a few hand-picked elimination terms" $ do
@@ -367,6 +364,15 @@ checkLetTerms = H.describe "Check a few hand-picked let terms" $ do
 --          "plus">: lambda "x" $ lambda "y" (s @@ (var "plus" @@ (p @@ var "x") @@ var "y"))])
 --        ["t0"] (Types.function Types.int32 $ Types.function (Types.var "t0") Types.int32)
 
+    H.it "test #3" $
+      expectType
+        (int32 0 `with` [
+          "id">: lambda "z" $ var "z",
+          "f">: lambda "p0" $ pair (var "id" @@ var "p0") (var "id" @@ var "p0")])
+        Types.int32
+--    letrecs id = (\z. z)
+--        f = (\p0. (pair (id p0) (id p0)))
+--        in 0
 
 checkLists :: H.SpecWith ()
 checkLists = H.describe "Check a few hand-picked list terms" $ do
@@ -668,7 +674,7 @@ checkTypeAnnotations = H.describe "Check that type annotations are added to term
       let term = TermList [TermLiteral l]
       let term1 = executeFlow (inferTermType term)
       checkType term1 (Types.list $ Types.literal $ literalType l)
-      let (TermAnnotated (Annotated (TermList [term2]) _)) = term1
+      let (TermTyped (TypedTerm _ (TermList [term2]))) = term1
       checkType term2 (Types.literal $ literalType l)
 
 checkSubtermAnnotations :: H.SpecWith ()

@@ -432,6 +432,16 @@ checkLetTerms = H.describe "Check a few hand-picked let terms" $ do
 --          "plus">: lambda "x" $ lambda "y" (s @@ (var "plus" @@ (p @@ var "x") @@ var "y"))])
 --        ["t0"] (Types.function Types.int32 $ Types.function (Types.var "t0") Types.int32)
 
+--    H.it "test #3" $
+--      expectType
+--        (int32 0 `with` [
+--          "id">: lambda "z" $ var "z",
+--          "f">: lambda "p0" $ pair (var "id" @@ var "p0") (var "id" @@ var "p0")])
+--        Types.int32
+--    letrecs id = (\z. z)
+--        f = (\p0. (pair (id p0) (id p0)))
+--        in 0
+
 checkLists :: H.SpecWith ()
 checkLists = H.describe "Check a few hand-picked list terms" $ do
 

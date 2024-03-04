@@ -69,29 +69,8 @@ infer :: Term -> Flow Graph Inferred
 infer term = case term of
 
     TermAnnotated (Annotated subj ann) -> do
-      mtyp <- getType ann
-      if mtyp == Just (TypeVariable _Type)
-        then do
-          -- If the term is annotated as being a type, then just trust that it is a type.
-          -- The actual inferred type of an encoded type is a kind, which is either Type in the nullary case,
-          -- Type -> Type in the unary case, Type -> Type -> Type in the binary case, etc.
-          -- Note: annotations on subterms will not be inspected or removed.
-          return $ Inferred term (TypeVariable _Type) []
-        else do
-          rsubj <- infer subj
-          annConstraints <- case mtyp of
-            Nothing -> pure []
-            Just typ -> do
-              b <- isGoodAnnotatedType typ
-              if b
-                then do
-                  typ1 <- instantiate typ
-                  return [(inferredType rsubj, typ1)]
-                else return []
-          return $ Inferred
-            (compressTermAnnotations $ TermAnnotated $ Annotated (inferredTerm rsubj) (removeType ann))
-            (inferredType rsubj)
-            (inferredConstraints rsubj ++ annConstraints)
+      Inferred iterm ityp iconstraints <- infer subj
+      return $ Inferred (TermAnnotated $ Annotated iterm ann) ityp iconstraints
 
     TermApplication (Application fun arg) -> do
       rfun <- infer fun
@@ -205,6 +184,10 @@ infer term = case term of
         let typ = toApplicationType tname refType
         return $ yieldTerm term typ constraints
 
+    TermTyped (TypedTerm typ term) -> do
+      Inferred iterm ityp iconstraints <- infer term
+      return $ Inferred (TermTyped $ TypedTerm typ iterm) typ ((typ, ityp):iconstraints)
+
     TermVariable v -> do
       t <- requireBoundType v
       return $ yieldTerm (TermVariable v) t []
@@ -224,14 +207,13 @@ inferAndUnify :: Term -> Flow Graph Term
 inferAndUnify term = do
   inf <- infer term
   subst <- solveConstraints $ inferredConstraints inf
-  rewriteTermAnnotationsM (rewriteAnnotation subst) $ inferredTerm inf
+  return $ rewriteTermTypes (substituteTypeVariables subst) $ inferredTerm inf
 
 inferElementTypes :: Graph -> [Element] -> Flow Graph [Element]
 inferElementTypes g els = withState g $ do
     g <- getState
-    term2 <- inferAndUnify graphAsLetTerm
-      >>= rewriteTermTypeAnnotations (generalizeType g) -- TODO: consider moving this step up into inferAndUnify
-      >>= replaceTemporaryTypeVariables
+    term2 <- normalizeBoundTypeVariablesInSystemFTerm . rewriteTermTypes (generalizeType g)
+      <$> inferAndUnify graphAsLetTerm
 
     case stripTerm term2 of
       TermLet (Let bindings _) -> CM.mapM toElement (elementName <$> els)
@@ -386,7 +368,7 @@ inferLetType lt@(Let bindings env) = do
         withBindings (M.fromList typeBindings) $ do
           -- Perform inference on the bound terms
           inferred <- CM.mapM inferBinding bindings
-          inferredTypes <- CM.mapM requireTermType inferred
+          inferredTypes <- CM.mapM requireTyped inferred
           -- After inference, update the typing environment before processing downstream terms.
           -- This is necessary when a let-bound term is polymorphic and is referenced multiple times downstream,
           -- i.e. when we have let-polymorphism, so that we have a universal type expression
@@ -398,8 +380,7 @@ inferLetType lt@(Let bindings env) = do
             let pairs = L.zip (fst <$> bindings) inferred
             return (Inferred envTerm envType constraints, pairs ++ restPairs)
     toTypeBinding (name, term) = do
-      mtyp <- getAnnotatedType term
-      typ <- case mtyp of
+      typ <- case getTyped term of
         Nothing -> TypeVariable <$> freshName
         Just t -> instantiate t
       return (name, typ)
@@ -418,37 +399,7 @@ inferredToFieldType (fname, inferred) = FieldType fname $ inferredType inferred
 
 -- | Find the inferred type of a single term, considered as a standalone graph. Mainly useful in tests.
 inferredTypeOf :: Term -> Flow Graph Type
-inferredTypeOf term = inferTermType term >>= requireTermType
-
--- | A "good" annotated type is either monomorphic, or is a proper "forall" type with no free type variables
-isGoodAnnotatedType :: Type -> Flow Graph Bool
-isGoodAnnotatedType typ = do
-  els <- graphElements <$> getState
-  let badVars = L.filter (\v -> not $ M.member v els) $ S.toList $ freeVariablesInType typ
-  return $ L.null badVars
-
--- | Get the free type variables of a term in order of occurrence in the annotations of the term and its subterms
---   (following a pre-order traversal in subterms, and in each type expression)
-normalTypeAnnotationVariables :: Term -> Flow Graph [Name]
-normalTypeAnnotationVariables term = L.nub <$> foldOverTermM TraversalOrderPre fld [] term
-  where
-    fld vars term = do
-      mtyp <- getAnnotatedType term
-      return $ case mtyp of
-        Nothing -> vars
-        Just typ -> vars ++ variablesInTypeOrdered False typ
-
--- | Replace temporary type varables like "tv_42" with normalized variables like "t0" in a specific order
--- Note: this affects both bound and free type variables
-replaceTemporaryTypeVariables :: Term -> Flow Graph Term
-replaceTemporaryTypeVariables term = do
-    tempVars <- (L.filter isTemporaryVariable) <$> normalTypeAnnotationVariables term
-    let subst = M.fromList $ L.zip tempVars normalVariables
-    rewriteTermAnnotationsM (replace subst) term
-  where
-    replace subst ann = do
-      mtyp <- getType ann
-      return $ setType (replaceTypeVariables subst <$> mtyp) ann
+inferredTypeOf term = inferTermType term >>= requireTyped
 
 requireBoundType :: Name -> Flow Graph Type
 requireBoundType v = do
@@ -457,22 +408,6 @@ requireBoundType v = do
     Nothing -> fail $ "name is not bound to a type: " ++ unName v ++ ". Environment: "
       ++ L.intercalate ", " (unName <$> M.keys env)
     Just t -> instantiate t
-
-rewriteAnnotation :: Subst -> Kv -> Flow Graph Kv
-rewriteAnnotation subst ann = do
-  mtyp <- getType ann
-  return $ setType (substituteTypeVariables subst <$> mtyp) ann
-
-rewriteTermTypeAnnotations :: (Type -> Type) -> Term -> Flow Graph Term
-rewriteTermTypeAnnotations f = rewriteTermM mapExpr
-  where
-    mapExpr recurse term = case term of
-      TermAnnotated (Annotated term1 ann) -> do
-        mtyp <- getType ann
-        case mtyp of
-          Nothing -> TermAnnotated <$> (Annotated <$> recurse term1 <*> pure ann)
-          Just typ -> TermAnnotated <$> (Annotated <$> recurse term1 <*> pure (setType (Just $ f typ) ann))
-      _ -> recurse term
 
 -- | Expands a type reference like "Pair" to an application type like (Pair a b) using fresh type variables,
 --   depending on whether "Pair" resolves to a forall type like forall a b. record_Pair{fst: a, snd: b}
@@ -505,11 +440,7 @@ yieldElimination = yieldTerm . TermFunction . FunctionElimination
 yieldFunction :: Function -> Type -> [Constraint] -> Inferred
 yieldFunction = yieldTerm . TermFunction
 
+-- For now, we simply annotate each and every subterm, except annotation terms.
+-- In the future, we might choose only to annotate certain subterms as needed, e.g. function terms
 yieldTerm :: Term -> Type -> [Constraint] -> Inferred
-yieldTerm term typ = Inferred annTerm typ
-  where
-    -- For now, we simply annotate each and every subterm, except annotation terms.
-    -- In the future, we might choose only to annotate certain subterms as needed, e.g. function terms
-    annTerm = case term of
-      TermAnnotated _ -> term
-      _ -> setTermType (Just typ) term
+yieldTerm term typ = Inferred (TermTyped $ TypedTerm typ term) typ

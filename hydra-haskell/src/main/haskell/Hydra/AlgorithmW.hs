@@ -766,7 +766,7 @@ test_12 = Letrec [("f", f), ("g", g)] b
 x @@ y = App x y
 zero = Const $ Lit $ Literals.int32 0
 
--- @joshsh's additional test cases
+-- Additional test cases
 test_j_0 :: Expr
 test_j_0 = Letrec [("singleton", singleton), ("f", f), ("g", g)] $ Var "f"
   where
@@ -784,12 +784,7 @@ test_j_0_haskell = f
     f = \x y -> (sng x, sng y):(g x y)
     g = \x y -> f 0 y
 
---    H.it "test #6" $
---      expectPolytype
---        ((var "f") `with` [
---          "singleton">: lambda "x" $ list [var "x"],
---          "f">: lambda "x" $ lambda "y" $ Terms.primitive _lists_cons
---            @@ (pair (var "singleton" @@ var "x") (var "singleton" @@ var "y"))
---            @@ (var "g" @@ var "x" @@ var "y"),
---          "g">: lambda "x" $ lambda "y" $ var "f" @@ int32 42 @@ var "y"])
---        ["t0"] (Types.list $ Types.pair Types.int32 (Types.var "t0"))
+test_r_0_haskell = 0
+  where
+    idd = \z -> z
+    f = \p0 -> (idd p0, idd p0)

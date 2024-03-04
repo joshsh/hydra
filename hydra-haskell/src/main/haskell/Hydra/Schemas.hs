@@ -3,6 +3,7 @@
 module Hydra.Schemas (
   elementAsTypedTerm,
   fieldTypes,
+  getTyped,
   isSerializable,
   moduleDependencyNamespaces,
   requirePrimitiveType,
@@ -10,6 +11,7 @@ module Hydra.Schemas (
   requireType,
   toUnionType,
   toWrappedType,
+  requireTyped,
   resolveType,
   typeDependencies,
   typeDependencyNames,
@@ -65,6 +67,12 @@ fieldTypes t = withTrace "field types" $ case stripType t of
     toMap fields = M.fromList (toPair <$> fields)
     toPair (FieldType fname ftype) = (fname, ftype)
 
+getTyped :: Term -> Maybe Type
+getTyped term = case term of
+  TermAnnotated (Annotated t _) -> getTyped t
+  TermTyped (TypedTerm typ _) -> Just typ
+  _ -> Nothing
+
 isSerializable :: Element -> Flow Graph Bool
 isSerializable el = do
     deps <- typeDependencies (elementName el)
@@ -99,6 +107,11 @@ requirePrimitiveType name = (primitiveType <$> requirePrimitive name) >>= instan
 requireType :: Name -> Flow Graph Type
 requireType name = withTrace ("require type " ++ unName name) $
   requireElement name >>= (coreDecodeType . elementData) >>= instantiate
+
+requireTyped :: Term -> Flow Graph Type
+requireTyped term = case getTyped term of
+  Just t -> return t
+  Nothing -> fail $ "expected typed term, found " ++ show term
 
 -- TODO: remove this function once TermAdapters no longer needs it
 resolveType :: Type -> Flow Graph (Maybe Type)
