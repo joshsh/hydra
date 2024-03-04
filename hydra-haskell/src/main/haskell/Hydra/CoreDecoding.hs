@@ -115,6 +115,7 @@ coreDecodeType dat = case dat of
   TermAnnotated (Annotated term ann) -> (\t -> TypeAnnotated $ Annotated t ann) <$> coreDecodeType term
   TermApplication app -> TypeApplication <$> coreDecodeApplicationType app
   TermFunction (FunctionLambda (Lambda v _ body)) -> TypeLambda <$> (LambdaType <$> pure v <*> coreDecodeType body)
+  TermTyped (TypedTerm _ term) -> coreDecodeType term
   TermVariable name -> pure $ TypeVariable name
   _ -> matchUnion _Type [
 --    (_Type_annotated, fmap TypeAnnotated . coreDecodeAnnotated),
@@ -159,7 +160,8 @@ matchUnion tname pairs term = case stripTerm term of
         Nothing -> fail $ "no matching case for field " ++ show fname
         Just f -> f val
       else unexpected ("injection for type " ++ show tname) $ show term
-    _ -> unexpected ("union of type " ++ unName tname ++ " with one of {" ++ L.intercalate ", " (unFieldName . fst <$> pairs) ++ "}") $ show term
+    t -> unexpected ("union of type " ++ unName tname
+      ++ " with one of {" ++ L.intercalate ", " (unFieldName . fst <$> pairs) ++ "}") $ show t
   where
     mapping = M.fromList pairs
 
