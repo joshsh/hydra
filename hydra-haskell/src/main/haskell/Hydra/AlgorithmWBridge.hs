@@ -134,7 +134,7 @@ systemFExprToHydra expr = case expr of
         htyp <- systemFTypeToHydra ty
         return $ Core.Field (Core.FieldName v) $ Core.TermTyped $ Core.TypedTerm htyp hterm
   FTuple els -> Core.TermProduct <$> (CM.mapM systemFExprToHydra els)
-  FSum i n e -> Core.TermSum <$> (Core.Sum i n <$> systemFExprToHydra e)
+  FInj i types e -> Core.TermSum <$> (Core.Sum i (L.length types) <$> systemFExprToHydra e)
 
 systemFTypeToHydra :: FTy -> Either String Core.Type
 systemFTypeToHydra ty = case ty of
@@ -158,7 +158,7 @@ systemFTypeToHydra ty = case ty of
     body' <- systemFTypeToHydra body
     return $ L.foldl (\e v -> Core.TypeLambda $ Core.LambdaType (Core.Name v) e) body' $ L.reverse vars
   FTyTuple tys -> Core.TypeProduct <$> (CM.mapM systemFTypeToHydra tys)
-  FTySumN tys -> Core.TypeSum <$> (CM.mapM systemFTypeToHydra tys)
+  FTyVariant tys -> Core.TypeSum <$> (CM.mapM systemFTypeToHydra tys)
 
 inferWithAlgorithmW :: HydraContext -> Core.Term -> IO Core.Term
 inferWithAlgorithmW context term = do
@@ -181,7 +181,7 @@ inferWithAlgorithmW context term = do
         _ -> fail "expected let bindings"
 
 inferExpr :: Expr -> IO (FExpr, FTy)
-inferExpr t = case (fst $ runState (runErrorT (w [] [] t)) 0) of
+inferExpr t = case (fst $ runState (runErrorT (w 0 [] [] t)) ([],0)) of
   Left e -> fail $ "inference error: " ++ e
   Right (_, (ty, f)) -> case (typeOf [] [] [] f) of
     Left err -> fail $ "type error: " ++ err

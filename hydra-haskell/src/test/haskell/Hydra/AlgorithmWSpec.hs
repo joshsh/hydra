@@ -411,9 +411,10 @@ checkLetTerms = H.describe "Check a few hand-picked let terms" $ do
         ((pair (var "f") (var "g")) `with` [
           "f">: var "g",
           "g">: var "f"])
-        -- Note: GHC finds (a, b) rather than (a, a)
+        -- Note: Hydra's original type inference algorithm finds (a, a) rather than (a, b)
+        --       GHC finds (a, b), as is the case here
         -- Try: :t (let (f, g) = (g, f) in (f, g))
-        ["t0"] (Types.pair (Types.var "t0") (Types.var "t0"))
+        ["t0", "t1"] (Types.pair (Types.var "t0") (Types.var "t1"))
 --    H.it "test #3" $
 --      expectPolytype
 --        ((pair (var "f") (var "g")) `with` [
