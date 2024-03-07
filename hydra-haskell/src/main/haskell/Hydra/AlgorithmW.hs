@@ -3,7 +3,7 @@
 {-# LANGUAGE OverlappingInstances #-}
 
 -- Implementation of Hindley Milner algorithm W
--- to system F translation by Ryan Wisnesky.
+-- to system F translation by Ryan Wisnesky, with extensions for Hydra by Joshua Shinavier
 -- License: Apache 2.0 https://www.apache.org/licenses/LICENSE-2.0
 
 module Hydra.AlgorithmW where
@@ -13,7 +13,7 @@ import Hydra.Minimal
 import Prelude
 import Control.Monad.Error
 import Control.Monad.State
-import Data.List (nub, intercalate)
+import Data.List (nub)
 import Debug.Trace
 
 
@@ -22,9 +22,12 @@ constNeg = Const $ TypedPrim $ TypedPrimitive (Name "hydra/lib/math.neg") $ Fora
 -- Note: Hydra has no built-in pred or succ functions, but neg has the expected type
 constPred = constNeg
 constSucc = constNeg
+nat = Const . Lit . int32
+str = Const . Lit . string
 
 -- A typed primitive corresponds to the Hydra primitive of the same name
 data TypedPrimitive = TypedPrimitive Name TypSch deriving (Eq)
+
 
 ------------------------
 -- STLC
@@ -36,10 +39,10 @@ data Prim
  | TypedPrim TypedPrimitive
  | If0
  | Fst | Snd | Pair | TT
- | Nil | Cons | FoldList  
- | FF | Inl | Inr | Case | Con Var
+ | Nil | Cons | FoldList
+ | FF | Inl | Inr | Case | Con Var | Fold Var
  deriving Eq
- 
+
 instance Show Prim where
   show (Lit l) = show l
   show (TypedPrim (TypedPrimitive name _)) = unName name ++ "()"
@@ -53,8 +56,10 @@ instance Show Prim where
   show Inl = "inl"
   show Inr = "inr"
   show Case = "case"
-  show If0 = "if0" 
+  show If0 = "if0"
   show Pair = "pair"
+  show (Con  n) = n
+  show (Fold n) = "fold_" ++ n
 
 data Expr = Const Prim
  | Var Var
@@ -109,8 +114,8 @@ instance Show MTy where
   show (TySum t1 t2) = "(" ++ show t1 ++ " + " ++ show t2 ++  ")"
   show TyUnit = "Unit"
   show TyVoid = "Void"
-  --show (TyCon c ts) = c ++ ts'
-  -- where ts' = foldr (\(p, q) r -> p ++ " " ++ q ++ " " ++ r) " " ts
+  show (TyCon c ts) = c ++ " " ++ ts'
+   where ts' = foldr (\p r -> show p ++ "" ++ r) "" ts
 
 instance Show TypSch where
   show (Forall [] t) = show t
@@ -120,9 +125,10 @@ instance Show TypSch where
 data TypSch = Forall [Var] MTy
  deriving Eq
 
+
 type ADTs = [(Var, [Var], [(Var, [MTy])])]
 
-listADT = [("List", ["t"], [("Nil", []), ("Cons", [TyVar "t", TyCon "List" [TyVar "t"]])])]
+
 
 
 ------------------------
@@ -169,13 +175,14 @@ data FTy = FTyVar Var
   | FTyVoid
   | FTyTuple [FTy]
   | FTyVariant [FTy]
+  | FTyCon Var [FTy]
   | FForall [Var] FTy
  deriving (Eq)
 
 instance Show FTy where
+  show (FTyLit lt) = show $ TyLit lt
   show (FTyVariant ts) = "(Variant " ++ show (map show ts) ++ ")"
   show (FTyTuple ts) = "(Tuple " ++ show (map show ts) ++ ")"
-  show (FTyLit lt) = show $ TyLit lt
   show (FTyVar v) = v
   show (FTyList t) = "(List " ++ (show t) ++ ")"
   show (FTyFn t1 t2) = "(" ++ show t1 ++ " -> " ++ show t2 ++ ")"
@@ -185,6 +192,8 @@ instance Show FTy where
   show FTyVoid = "Void"
   show (FForall x t) = "(forall " ++ d ++ show t ++ ")"
    where d = foldr (\p q -> p ++ " " ++ q) ", " x
+  show (FTyCon c ts) = c ++ " " ++ ts'
+   where ts' = foldr (\p r -> show p ++ "" ++ r) " " ts
 
 mTyToFTy :: MTy -> FTy
 mTyToFTy (TyVar v) = FTyVar v
@@ -197,11 +206,11 @@ mTyToFTy (TyProd x y) = FTyProd (mTyToFTy x) (mTyToFTy y)
 mTyToFTy (TySum x y) = FTySum (mTyToFTy x) (mTyToFTy y)
 mTyToFTy (TyTuple ts) = FTyTuple (map mTyToFTy ts)
 mTyToFTy (TyVariant ts) = FTyVariant (map mTyToFTy ts)
+mTyToFTy (TyCon c ts) = FTyCon c $ map mTyToFTy ts
 
 tyToFTy :: TypSch -> FTy
 tyToFTy (Forall [] t) = mTyToFTy t
 tyToFTy (Forall vs t) = FForall vs (mTyToFTy t)
-
 
 --------------------
 -- Contexts
@@ -220,35 +229,65 @@ instance Vars TypSch where
 
 instance Vars MTy where
  vars (TyVar v) = [v]
+ vars (TyLit _) = []
  vars (TyList t) = vars t
  vars (TyFn t1 t2) = vars t1 ++ vars t2
  vars TyUnit = []
  vars TyVoid = []
  vars (TyProd t1 t2) = vars t1 ++ vars t2
  vars (TySum t1 t2) = vars t1 ++ vars t2
- vars (TyLit _) = []
  vars (TyTuple []) = []
  vars (TyTuple (a:b)) = vars a ++ vars (TyTuple b)
  vars (TyVariant []) = []
  vars (TyVariant (a:b)) = vars a ++ vars (TyVariant b)
+ vars (TyCon _ x) = vars $ TyVariant x --cheat
 
-primTy :: ADTs -> Prim -> TypSch
-primTy [] (Con _) = undefined
-primTy _ (Lit l) = Forall [] $ TyLit $ literalType l
-primTy _ (TypedPrim (TypedPrimitive _ forall)) = forall
-primTy _ Fst = Forall ["x", "y"] $ (TyProd (TyVar "x") (TyVar "y")) `TyFn` (TyVar "x")
-primTy _ Snd = Forall ["x", "y"] $ (TyProd (TyVar "x") (TyVar "y")) `TyFn` (TyVar "y")
-primTy _ Nil = Forall ["t"] $ TyList (TyVar "t")
-primTy _ Cons = Forall ["t"] $ TyFn (TyVar "t") (TyFn (TyList (TyVar "t")) (TyList (TyVar "t")))
-primTy _ TT = Forall [] TyUnit
-primTy _ FF = Forall ["t"] $ TyFn TyVoid (TyVar "t")
-primTy _ Inl = Forall ["x", "y"] $ (TyVar "x") `TyFn` (TyProd (TyVar "x") (TyVar "y"))
-primTy _ Inr = Forall ["x", "y"] $ (TyVar "y") `TyFn` (TyProd (TyVar "x") (TyVar "y"))
-primTy _ Pair = Forall ["xx", "yy"] $ (TyFn (TyVar "xx") (TyFn (TyVar "yy") (TyProd (TyVar "xx") (TyVar "yy"))))
-primTy _ If0 = Forall [] $ natType `TyFn` (natType `TyFn` (natType `TyFn` natType))
-primTy _ FoldList = Forall ["a", "b"] $ p `TyFn` ((TyVar "b") `TyFn` ((TyList $ TyVar "a") `TyFn` (TyVar "b")))
+replaceTCon :: MTy -> MTy -> MTy -> MTy
+replaceTCon u s (TyVar x) = TyVar x
+replaceTCon u s (TyLit l) = TyLit l
+replaceTCon u s (TyList t)  = TyList $ replaceTCon u s t
+replaceTCon u s (TyFn t1 t2)  = TyFn (replaceTCon u s t1) (replaceTCon u s t2)
+replaceTCon u s TyUnit  = TyUnit
+replaceTCon u s TyVoid  = TyVoid
+replaceTCon u s (TyProd t1 t2)  = TyProd (replaceTCon u s t1) (replaceTCon u s t2)
+replaceTCon u s (TySum t1 t2)  = TySum (replaceTCon u s t1) (replaceTCon u s t2)
+replaceTCon u s (TyTuple [])  = TyTuple []
+replaceTCon u s (TyTuple (a:b)) = TyTuple $ (replaceTCon u s a):(map (replaceTCon u s) b)
+replaceTCon u s (TyVariant [])  = TyVariant []
+replaceTCon u s (TyVariant (a:b)) = TyVariant $ (replaceTCon u s a):(map (replaceTCon u s) b)
+replaceTCon u s (TyCon t' ts)  | TyCon t' ts == u = s
+                               | otherwise = TyCon t' $ map (replaceTCon u s) ts
+
+primTy :: ADTs -> Prim -> Either String TypSch
+primTy _ (Lit l) = Right $ Forall [] $ TyLit $ literalType l
+primTy _ (TypedPrim (TypedPrimitive _ forall)) = Right forall
+primTy [] (Con n) = throwError $ n ++ " not found "
+primTy ((a,t,[]):tl) (Con n) = primTy tl $ Con n
+primTy ((a,t,(c,ts):cs):tl) (Con n) | c == n = return $ Forall t (ts' ts $ TyCon a $ map TyVar t)
+                                    | otherwise = primTy ((a,t,cs):tl) $ Con n
+ where ts' [] x = x
+       ts' (p:q) x = TyFn p $ ts' q x
+primTy [] (Fold n) = throwError $ n ++ " not found "
+primTy ((a,t,cs):tl) (Fold n) | a == n = return $ Forall ("r":t) $ elimTy
+                              | otherwise = primTy tl $ Fold n
+ where elimTy = TyFn (TyCon a $ map TyVar t) $ replaceTCon (TyCon a $ map TyVar t) (TyVar "r") (ts' cs)
+       ts' [] = TyVar "r"
+       ts' ((_,ts):q)  = TyFn (ts'' ts) $ ts' q
+       ts'' [] = TyCon a $ map TyVar t
+       ts'' (a:b) = TyFn a $ ts'' b
+primTy _ Fst = return $  Forall ["x", "y"] $ (TyProd (TyVar "x") (TyVar "y")) `TyFn` (TyVar "x")
+primTy _ Snd = return $  Forall ["x", "y"] $ (TyProd (TyVar "x") (TyVar "y")) `TyFn` (TyVar "y")
+primTy _ Nil = return $  Forall ["t"] $ TyList (TyVar "t")
+primTy _ Cons = return $ Forall ["t"] $ TyFn (TyVar "t") (TyFn (TyList (TyVar "t")) (TyList (TyVar "t")))
+primTy _ TT = return $ Forall [] TyUnit
+primTy _ FF = return $ Forall ["t"] $ TyFn TyVoid (TyVar "t")
+primTy _ Inl = return $ Forall ["x", "y"] $ (TyVar "x") `TyFn` (TyProd (TyVar "x") (TyVar "y"))
+primTy _ Inr = return $ Forall ["x", "y"] $ (TyVar "y") `TyFn` (TyProd (TyVar "x") (TyVar "y"))
+primTy _ Pair = return $ Forall ["xx", "yy"] $ (TyFn (TyVar "xx") (TyFn (TyVar "yy") (TyProd (TyVar "xx") (TyVar "yy"))))
+primTy _ If0 = return $ Forall [] $ natType `TyFn` (natType `TyFn` (natType `TyFn` natType))
+primTy _ FoldList = return $ Forall ["a", "b"] $ p `TyFn` ((TyVar "b") `TyFn` ((TyList $ TyVar "a") `TyFn` (TyVar "b")))
  where p = TyVar "b" `TyFn` (TyVar "a" `TyFn` TyVar "b")
-primTy _ Case = Forall ["x", "y", "z"] $ (TySum (TyVar "x") (TyVar "y")) `TyFn` (l `TyFn` (r `TyFn` (TyVar "z")))
+primTy _ Case = return $ Forall ["x", "y", "z"] $ (TySum (TyVar "x") (TyVar "y")) `TyFn` (l `TyFn` (r `TyFn` (TyVar "z")))
  where l = (TyVar "x") `TyFn` (TyVar "z")
        r = (TyVar "y") `TyFn` (TyVar "z")
 
@@ -272,9 +311,9 @@ class Substable a where
   subst :: Subst -> a -> a
 
 instance Substable MTy where
+ subst f (TyLit lt) = TyLit lt
  subst f (TyVariant ts) = TyVariant $ map (subst f) ts
  subst f (TyTuple ts) = TyTuple $ map (subst f) ts
- subst f (TyLit lt) = TyLit lt
  subst f TyUnit = TyUnit
  subst f TyVoid = TyVoid
  subst f (TyList t) = TyList $ subst f t
@@ -284,11 +323,12 @@ instance Substable MTy where
  subst f (TyVar v) = case lookup v f of
                       Nothing -> TyVar v
                       Just y -> y
+ subst f (TyCon v ts) = TyCon v $ map (subst f) ts
 
 instance Substable FTy where
+ subst f (FTyLit lt) = FTyLit lt
  subst f (FTyVariant ts) = FTyVariant $ map (subst f) ts
  subst f (FTyTuple ts) = FTyTuple $ map (subst f) ts
- subst f (FTyLit lt) = FTyLit lt
  subst f FTyUnit = FTyUnit
  subst f FTyVoid = FTyVoid
  subst f (FTyList t) = FTyList $ subst f t
@@ -300,6 +340,7 @@ instance Substable FTy where
                         Just y -> mTyToFTy y
  subst f (FForall vs t) = FForall vs $ subst phi' t
   where phi' = filter (\(v,f')-> not (elem v vs)) f
+ subst f (FTyCon v ts) = FTyCon v $ map (subst f) ts
 
 instance Substable TypSch where
  subst f (Forall vs t) = Forall vs $ subst f' t
@@ -323,9 +364,9 @@ instance Substable FExpr where
  subst phi (FLetrec vs p) = FLetrec (map (\(k,t,v)->(k,subst phi t, subst phi v)) vs) (subst phi p)
 
 subst' :: [(Var,FTy)] -> FTy -> FTy
+subst' f (FTyLit lt) = FTyLit lt
 subst' f (FTyTuple ts) = FTyTuple $ (map $ subst' f) ts
 subst' f (FTyVariant ts) = FTyVariant $ (map $ subst' f) ts
-subst' f (FTyLit lt) = FTyLit lt
 subst' f FTyUnit = FTyUnit
 subst' f FTyVoid = FTyVoid
 subst' f (FTyList t) = FTyList $ subst' f t
@@ -337,11 +378,11 @@ subst' f (FTyVar v) = case lookup v f of
                         Just y -> y
 subst' f (FForall vs t) = FForall vs $ subst' f' t
  where f' = filter (\(v,f')-> not (elem v vs)) f
+subst' f (FTyCon v ts) = FTyCon v $ map (subst' f) ts
 
 instance Show Ctx where
   show [] = ""
   show ((k,v):t) = k ++ ":" ++ show v ++ " " ++ show t
-
 
 ------------------------------------
 -- Type checking for F
@@ -377,7 +418,7 @@ typeOf adts tvs g (FTuple es) = do { ts <- mapM (typeOf adts tvs g) es
 typeOf adts tvs g (FVar x) = case lookup x g of
   Nothing -> throwError $ "unbound var: " ++ x
   Just y -> return y
-typeOf adts tvs g (FConst p) = return $ tyToFTy $ primTy adts p
+typeOf adts tvs g (FConst p) = do { t <- primTy adts p ; return $ tyToFTy t }
 typeOf adts tvs g (FApp a b) = do { t1 <- typeOf adts tvs g a
                                   ; t2 <- typeOf adts tvs g b
                                   ; case t1 of
@@ -403,15 +444,14 @@ typeOf adts tvs g (FLetrec es e) = do { let g' = map (\(k,t,e)->(k,t)) es
 -----------------------------
 -- Unification
 
--- mgu = most general unifier
 mgu :: MTy -> MTy -> E Subst
+mgu (TyLit lt1) (TyLit lt2) = if lt1 == lt2
+  then return []
+  else throwError $ "Cannot unify literal types " ++ show lt1 ++ " and " ++ show lt2
 mgu (TyVariant ts1) (TyVariant ts2) | length ts1 == length ts2 = mgu' ts1 ts2
                                     | otherwise = throwError $ "cannot unify " ++ show ts1 ++ " with " ++ show ts2
 mgu (TyTuple ts1) (TyTuple ts2) | length ts1 == length ts2 = mgu' ts1 ts2
                                 | otherwise = throwError $ "cannot unify " ++ show ts1 ++ " with " ++ show ts2
-mgu (TyLit lt1) (TyLit lt2) = if lt1 == lt2
-  then return []
-  else throwError $ "Cannot unify literal types " ++ show lt1 ++ " and " ++ show lt2
 mgu (TyList a) (TyList b) = mgu a b
 mgu TyUnit TyUnit = return []
 mgu TyVoid TyVoid = return []
@@ -430,9 +470,10 @@ mgu' [] [] = return idSubst
 mgu' (a:as) (b:bs) = do { f <- mgu a b; s <- mgu' (map (subst f) as) (map (subst f) bs); return $ s `o` f }
 
 occurs :: Var -> MTy -> E ()
+occurs v (TyLit _) = return ()
+occurs v (TyCon _ ts) = mapM_ (occurs v) ts
 occurs v (TyTuple ts) = mapM_ (occurs v) ts
 occurs v (TyVariant ts) = mapM_ (occurs v) ts
-occurs v (TyLit _) = return ()
 occurs v (TyList l) = occurs v l
 occurs v TyUnit = return ()
 occurs v TyVoid = return ()
@@ -441,7 +482,6 @@ occurs v (TyProd a b) = do { occurs v a; occurs v b }
 occurs v (TySum  a b) = do { occurs v a; occurs v b }
 occurs v (TyVar v') | v == v' = throwError $ "occurs check failed"
                     | otherwise = return ()
-
 
 -----------------------------
 -- Algorithm W
@@ -477,7 +517,7 @@ replace (x:xs) (n,a) =
     else x: replace xs (n-1,a)
 
 checkAgainstF :: ADTs -> Ctx -> MTy -> FExpr -> E ()
-checkAgainstF adts g t e = case (typeOf [] [] g' e) of
+checkAgainstF adts g t e = case (typeOf adts [] g' e) of
                               Left err -> throwError  $ "\t" ++  "err: " ++ err
                               Right tt -> if tt == mTyToFTy t
                                           then return ()
@@ -532,11 +572,13 @@ w l adts g (Tuple es') = do { (phi, (ts, es)) <- w' (l+1) g es'
        w' l g (e:tl) = do { (u,(u', j)) <- w l adts g e
                         ; (r,(r', h)) <- w' l (subst u g ) tl
                         ; return (r `o` u, ((subst r u'):r', (subst r j):h)) }
-w l adts g (Const p) = do { (ret_t, vs) <- inst $ primTy adts p
+w l adts g (Const p) = do { case primTy adts p of
+                              Left er -> throwError er
+                              Right t -> do { (ret_t, vs) <- inst t
                         ; let ret = fTyApp (FConst p) $ map mTyToFTy vs
                           ; log0 l $ "CONST " ++ show g ++ "|- " ++  show ret ++ " : " ++ show ret_t
                         ; checkAgainstF adts g ret_t ret
-                        ; return (idSubst, (ret_t, ret)) }
+                        ; return (idSubst, (ret_t, ret)) } }
 w l adts g (Var x) = case lookup x g of
                 Nothing -> throwError $ "Unknown var: " ++ (show x)
                 Just s -> do { (ret_t, vs) <- inst s
@@ -588,6 +630,7 @@ w l adts g (Letrec xe0 e1) = do {
                              ; (r,(r', h)) <- w' l (subst u g ) tl
                              ; return (r `o` u, ((subst r u'):r', (subst r j):h)) }
 
+
 subst'' :: [(Var, FExpr)] -> FExpr -> FExpr
 subst'' phi (FTuple es) = FTuple $ map (subst'' phi) es
 subst'' phi (FConst c) = FConst c
@@ -605,23 +648,37 @@ subst'' phi (FLetrec es e) = FLetrec (map (\(k,t,f)->(k,t,subst'' phi' f)) es) (
 
 ----------------------------------------
 -- Main
-----------------------------------------
--- Main
 
-tests = [testVariant2, testTuple2, testVariant, testTuple, test_j_0, test_j_0' , testJ,  test4, testk, testC, testA, test0, test1, testB, test2, test3a, test5, test6]
+theAdts = theAdtsJosh ++ [("List", ["t"], [("Nil", []), ("Cons", [TyVar "t", TyCon "List" [TyVar "t"]])])]
+
+theAdtsJosh = [("LatLon1", [], [("MkLatLon1", [natType, natType])]),
+               ("LatLon2", [], [("MkLatLon2", [natType, natType])])]
+{--  data LatLon1 = MkLatOn1 Nat Nat where lat1 (MkLatLon1 a) = a and lon1 (MkLatLon1 b) = b and also data LatLon2 = MkLatOn2 Nat Nat where lat2 (MkLatLon2 a ) = a and lon2 (MkLatLon2  b) = --}
+
+testJoshAdt = Letrec [("lat1", lat1)] body
+ where body = App (App (Const $ Con "MkLatLon1") (nat 0)) (nat 1)
+       lat1 = Abs "z" $ App (App (Const $ Fold "LatLon1") (Var "z")) $ Abs "p" $ Abs "q" $ (Var "p")
+
+testJoshAdt' = Letrec [("lat1", lat1)] $ App (Var "lat1") body
+ where body = App (App (Const $ Con "MkLatLon1") (nat 0)) (nat 1)
+       lat1 = Abs "z" $ App (App (Const $ Fold "LatLon1") (Var "z")) $ Abs "p" $ Abs "q" $ (Var "p")
+
+tests = [testJoshAdt, testJoshAdt'] -- testVariant2, testTuple2, testVariant, testTuple, test_j_0, test_j_0' , testJ,  test4, testk, testC, testA, test0, test1, testB, test2, test3a, test5, test6]
 
 testk = Letrec [("f", f), ("g", g)] b
  where b = Tuple [(Var "f"), (Var "g")]
-       f = Abs "x" $ Abs "y" $ App (App (Var "g") (Const $ Lit $ int32 0)) (Var "x")
-       g = Abs "u" $ Abs "v" $ App (App (Var "f") (Var "v")) (Const $ Lit $ int32 0)
+       f = Abs "x" $ Abs "y" $ App (App (Var "g") (nat 0)) (Var "x")
+       g = Abs "u" $ Abs "v" $ App (App (Var "f") (Var "v")) (nat 0)
 
 testJ = letrec' "f" i b
  where i = Abs "x" (Var "x")
        b = Var "f"
 
+testAdt = Abs "z" $ App (App (App (Const $ Fold "List") $ Var "z") (Const $ Con "Nil")) (Const $ Con "Cons")
+
 testOne t = do { putStrLn $ "Untyped input: "
                ; putStrLn $ "\t" ++  show t
-               ; let out = runState (runErrorT (w 0 [] [] t)) ([],0)
+               ; let out = runState (runErrorT (w 0 theAdts [] t)) ([],0)
                ; case fst out of
                    Left  e -> do { putStrLn $ "\t" ++ "err: " ++ e
                                  ; putStrLn $ "\nLog:"
@@ -658,21 +715,21 @@ testTuple2 = Abs "z" $ Tuple [(Proj 0 2 $ Var "z"), (Proj 1 2 $ Var "z")]
 
 testTuple :: Expr
 testTuple = Letrec [("t", t)] $ Tuple [Proj 1 2 $ Var "t", Proj 0 2 $ Var "t"]
- where f = Const $ Lit $ string "alice"
-       g = Const $ Lit $ int32 0
+ where f = str "alice"
+       g = nat 0
        t = Tuple [f, g]
 
 
 testA :: Expr
-testA =  letrec' "f" ( (Abs "x" (Var "x"))) $ App (Var "f")  (Const $ Lit $ int32 0)
- where sng0 = App (Var "sng") (Const $ Lit $ int32 0)
-       sngAlice = App (Var "sng") (Const $ Lit $ string "alice")
+testA =  letrec' "f" ( (Abs "x" (Var "x"))) $ App (Var "f")  (nat 0)
+ where sng0 = App (Var "sng") (nat 0)
+       sngAlice = App (Var "sng") (str "alice")
        body = (Var "sng")
 
 test0 :: Expr
-test0 =  letrec' "f" (App (Abs "x" (Var "x")) (Const $ Lit $ int32 0)) (Var "f")
- where sng0 = App (Var "sng") (Const $ Lit $ int32 0)
-       sngAlice = App (Var "sng") (Const $ Lit $ string "alice")
+test0 =  letrec' "f" (App (Abs "x" (Var "x")) (nat 0)) (Var "f")
+ where sng0 = App (Var "sng") (nat 0)
+       sngAlice = App (Var "sng") (str "alice")
 
 
 testB :: Expr
@@ -682,8 +739,8 @@ testB = letrec' "sng" (Abs "x" (App (App (Const Cons) (Var "x")) (Const Nil))) b
 
 test1 :: Expr
 test1 = letrec' "sng" (Abs "x" (App (App (Const Cons) (Var "x")) (Const Nil))) body
- where sng0 = App (Var "sng") (Const $ Lit $ int32 0)
-       sngAlice = App (Var "sng") (Const $ Lit $ string "alice")
+ where sng0 = App (Var "sng") (nat 0)
+       sngAlice = App (Var "sng") (str "alice")
        body = App (App (Const Pair) sng0) sngAlice
 
 test2 :: Expr
@@ -693,7 +750,7 @@ test2 = letrec' "+" (Abs "x" $ Abs "y" $ recCall) twoPlusOne
    ifz x y z = App (App (App (Const If0) x) y) z
    twoPlusOne = App (App (Var "+") two) one
    two = App constSucc one
-   one = App constSucc (Const $ Lit $ int32 0)
+   one = App constSucc (nat 0)
 
 testC :: Expr
 testC = letrec' "+" (Abs "x" $ Abs "y" $ recCall) $ twoPlusOne
@@ -702,41 +759,41 @@ testC = letrec' "+" (Abs "x" $ Abs "y" $ recCall) $ twoPlusOne
    ifz x y z = App (App (App (Const If0) x) y) z
    twoPlusOne = App (App (Var "+") two) one
    two = App constSucc one
-   one = App constSucc (Const $ Lit $ int32 0)
+   one = App constSucc (nat 0)
 
 test3 :: Expr
 test3 = letrec' "f" f x
  where x =  (Var "f")
-       f = Abs "x" $ Abs "y" $ App (App (Var "f") (Const $ Lit $ int32 0)) (Var "x")
+       f = Abs "x" $ Abs "y" $ App (App (Var "f") (nat 0)) (Var "x")
 
 test3a :: Expr
 test3a = Letrec [("f", f), ("g", g)] x
  where x =  App (App (Const $ Pair) (Var "f")) (Var "g")
-       f = Abs "x" $ Abs "y" $ App (App (Var "f") (Const $ Lit $ int32 0)) (Var "x")
-       g = Abs "xx" $ Abs "yy" $ App (App (Var "g") (Const $ Lit $ int32 0)) (Var "xx")
+       f = Abs "x" $ Abs "y" $ App (App (Var "f") (nat 0)) (Var "x")
+       g = Abs "xx" $ Abs "yy" $ App (App (Var "g") (nat 0)) (Var "xx")
 
 test4 :: Expr
 test4 = Letrec [("f", f), ("g", g)] b
  where b = App (App (Const Pair) (Var "f")) (Var "g")
-       f = Abs "x" $ Abs "y" $ App (App (Var "g") (Const $ Lit $ int32 0)) (Var "x")
-       g = Abs "u" $ Abs "v" $ App (App (Var "f") (Var "v")) (Const $ Lit $ int32 0)
+       f = Abs "x" $ Abs "y" $ App (App (Var "g") (nat 0)) (Var "x")
+       g = Abs "u" $ Abs "v" $ App (App (Var "f") (Var "v")) (nat 0)
 
 test5 :: Expr
 test5 = Letrec [("f", f), ("g", g)] b
  where b = App (App (Const Pair) (Var "f")) (Var "g")
-       f = Abs "x" $ Abs "y" $ App (App (Var "g") (Const $ Lit $ int32 0)) (Const $ Lit $ int32 0)
-       g = Abs "u" $ Abs "v" $ App (App (Var "f") (Var "v")) (Const $ Lit $ int32 0)
+       f = Abs "x" $ Abs "y" $ App (App (Var "g") (nat 0)) (nat 0)
+       g = Abs "u" $ Abs "v" $ App (App (Var "f") (Var "v")) (nat 0)
 
 
 test6 :: Expr
 test6 = Letrec [("f", f), ("g", g)] b
  where b = App (App (Const Pair) (Var "f")) (Var "g")
-       f = Abs "x" $ Abs "y" $ App (App (Var "g") (Const $ Lit $ int32 0)) (Var "x")
-       g = Abs "u" $ Abs "v" $ App (App (Var "f") (Const $ Lit $ int32 0)) (Const $ Lit $ int32 0)
+       f = Abs "x" $ Abs "y" $ App (App (Var "g") (nat 0)) (Var "x")
+       g = Abs "u" $ Abs "v" $ App (App (Var "f") (nat 0)) (nat 0)
 
 
 x @@ y = App x y
-zero = Const $ Lit $ int32 0
+zero = nat 0
 
 test_j_o_haskell = f
   where
