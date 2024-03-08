@@ -91,13 +91,14 @@ requireElementTypeDef = tier2Definition "requireElementType" $
 
 requireTermTypeDef :: Definition (Term -> Flow Graph Type)
 requireTermTypeDef = tier2Definition "requireTermType" $
-  function termT (flowT graphT typeT) $
-  doc "Get the annotated type of a given term, or fail if it is missing" $
-  lambda "term" ((Flows.bind @@ (ref getTermTypeDef @@ var "term") @@ var "withType")
-    `with` [
-      "withType">: matchOpt
-       (Flows.fail @@ "missing type annotation")
-       Flows.pure])
+    function termT (flowT graphT typeT) $
+    doc "Get the annotated type of a given term, or fail if it is missing" $
+    lambda "term" $ m @@ var "term"
+  where
+    failByDefault = Flows.fail @@ "missing type annotation"
+    m = match _Term (Just failByDefault) [
+      Case _Term_annotated --> lambda "ta" (ref requireTermTypeDef @@ (Core.annotatedSubject @@ var "ta")),
+      Case _Term_typed     --> lambda "tt" (Core.typedTermType @@ var "tt")]
 
 unexpectedDef :: Definition (String -> String -> Flow s a)
 unexpectedDef = tier2Definition "unexpected" $

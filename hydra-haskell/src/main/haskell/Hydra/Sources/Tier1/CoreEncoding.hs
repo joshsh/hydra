@@ -284,6 +284,7 @@ coreEncodeLambdaTypeDef = coreEncodingDefinition "LambdaType" $
   lambda "lt" $ variant _Term _Term_function $ variant _Function _Function_lambda $
     TermRecord $ Record _Lambda [
       Field _Lambda_parameter (project _LambdaType _LambdaType_parameter @@ var "lt"),
+      Field _Lambda_domain (encodedOptional $ TermOptional Nothing),
       Field _Lambda_body (ref coreEncodeTypeDef @@ (project _LambdaType _LambdaType_body @@ var "lt"))]
 
 coreEncodeLetDef :: Definition (Let -> Term)
@@ -410,10 +411,8 @@ coreEncodeTypeDef = coreEncodingDefinition "Type" $
     Field _Type_annotated $ lambda "v" $ variant _Term _Term_annotated $ record _Annotated [
       Field _Annotated_subject $ ref coreEncodeTypeDef @@ (project _Annotated _Annotated_subject @@ var "v"),
       Field _Annotated_annotation $ project _Annotated _Annotated_annotation @@ var "v"],
---    csref _Type_application coreEncodeApplicationTypeDef,
     Field _Type_application $ ref coreEncodeApplicationTypeDef,
     csref _Type_function coreEncodeFunctionTypeDef,
---    csref _Type_lambda coreEncodeLambdaTypeDef,
     Field _Type_lambda $ ref coreEncodeLambdaTypeDef,
     csref _Type_list coreEncodeTypeDef,
     csref _Type_literal coreEncodeLiteralTypeDef,

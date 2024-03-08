@@ -7,6 +7,7 @@ import qualified Hydra.Core as Core
 import qualified Hydra.Graph as Graph
 import qualified Hydra.Lib.Flows as Flows
 import qualified Hydra.Lib.Strings as Strings
+import qualified Hydra.Strip as Strip
 import Data.Int
 import Data.List as L
 import Data.Map as M
@@ -53,11 +54,10 @@ requireElementType el =
 
 -- | Get the annotated type of a given term, or fail if it is missing
 requireTermType :: (Core.Term -> Compute.Flow (Graph.Graph) (Core.Type))
-requireTermType term =  
-  let withType = (\x -> case x of
-          Nothing -> (Flows.fail "missing type annotation")
-          Just v -> (Flows.pure v))
-  in (Flows.bind (getTermType term) withType)
+requireTermType term = case Strip.stripTerm term of
+  (Core.TermAnnotated (Core.Annotated term _)) -> (requireTermType term)
+  (Core.TermTyped (Core.TypedTerm typ _)) -> (Flows.pure typ)
+  _ -> (Flows.fail "missing type annotation")
 
 -- | Fail if an actual value does not match an expected value
 unexpected :: (String -> String -> Compute.Flow s x)
