@@ -107,9 +107,9 @@ data TermVariant =
   TermVariantSet  |
   TermVariantStream  |
   TermVariantSum  |
-  TermVariantTypeAbstraction |
-  TermVariantTypeApplication |
-  TermVariantTyped |
+  TermVariantTypeAbstraction  |
+  TermVariantTypeApplication  |
+  TermVariantTyped  |
   TermVariantUnion  |
   TermVariantVariable  |
   TermVariantWrap 
