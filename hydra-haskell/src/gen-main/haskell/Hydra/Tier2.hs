@@ -28,10 +28,11 @@ getState = (Compute.Flow (\s0 -> \t0 ->
       Compute.flowStateTrace = t}) v) (Compute.flowStateValue fs1) (Compute.flowStateState fs1) (Compute.flowStateTrace fs1))))
 
 -- | Get the annotated type of a given term, if any
-getTermType :: (Core.Term -> Compute.Flow (Graph.Graph) (Maybe (Core.Type)))
-getTermType term =  
-  let annsToType = (\anns -> Graph.annotationClassTermType anns term)
-  in (Flows.bind (Flows.map Graph.graphAnnotations getState) annsToType)
+getTermType :: (Core.Term -> (Maybe (Core.Type)))
+getTermType term = case term of
+  (Core.TermAnnotated (Core.Annotated term _)) -> (getTermType term)
+  (Core.TermTyped (Core.TypedTerm typ _)) -> Just typ
+  _ -> Nothing
 
 -- | Set the state of a flow
 putState :: (s -> Compute.Flow s ())
@@ -42,22 +43,11 @@ putState cx = (Compute.Flow (\s0 -> \t0 ->
     Compute.flowStateState = cx,
     Compute.flowStateTrace = (Compute.flowStateTrace f1)}))
 
--- | Get the annotated type of a given element, or fail if it is missing
-requireElementType :: (Graph.Element -> Compute.Flow (Graph.Graph) (Core.Type))
-requireElementType el =  
-  let withType = (\x -> case x of
-          Nothing -> (Flows.fail (Strings.cat [
-            "missing type annotation for element ",
-            (Core.unName (Graph.elementName el))]))
-          Just v -> (Flows.pure v))
-  in (Flows.bind (getTermType (Graph.elementData el)) withType)
-
 -- | Get the annotated type of a given term, or fail if it is missing
 requireTermType :: (Core.Term -> Compute.Flow (Graph.Graph) (Core.Type))
-requireTermType term = case Strip.stripTerm term of
-  (Core.TermAnnotated (Core.Annotated term _)) -> (requireTermType term)
-  (Core.TermTyped (Core.TypedTerm typ _)) -> (Flows.pure typ)
-  _ -> (Flows.fail "missing type annotation")
+requireTermType term = case getTermType term of
+  Just t -> Flows.pure t
+  Nothing -> (Flows.fail $ "missing type annotation in " ++ show term)
 
 -- | Fail if an actual value does not match an expected value
 unexpected :: (String -> String -> Compute.Flow s x)

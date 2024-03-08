@@ -28,9 +28,10 @@ moduleToGraphqlSchemas mod = transformModule graphqlLanguage encodeTerm construc
 
 constructModule :: Module
   -> M.Map Type (Coder Graph Graph Term ())
-  -> [(Element, TypedTerm)]
+  -> [Element]
   -> Flow Graph (M.Map FilePath G.Document)
-constructModule mod coders pairs = do
+constructModule mod coders els = do
+    pairs <- CM.mapM toLegacyPair els
     -- Gather all dependencies because GraphQL does not support imports (in a standard way)
     withDeps <- elementsWithDependencies $ fst <$> pairs
     -- Qualify the names of dependencies with prefixes, so as to avoid name collisions
@@ -40,6 +41,10 @@ constructModule mod coders pairs = do
     let doc = G.Document $ (G.DefinitionTypeSystem . G.TypeSystemDefinitionOrExtensionDefinition . G.TypeSystemDefinitionType) <$> tdefs
     return $ M.fromList [(filePath, doc)]
   where
+    toLegacyPair el = do
+      let term = elementData el
+      typ <- requireTermType term
+      return (el, TypedTerm typ term)
     filePath = namespaceToFilePath False (FileExtension "graphql") (moduleNamespace mod)
     findPrefixes els = M.fromList $ toPair <$> namespaces
       where

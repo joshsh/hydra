@@ -368,7 +368,7 @@ inferLetType lt@(Let bindings env) = do
         withBindings (M.fromList typeBindings) $ do
           -- Perform inference on the bound terms
           inferred <- CM.mapM inferBinding bindings
-          inferredTypes <- CM.mapM requireTyped inferred
+          inferredTypes <- CM.mapM requireTermType inferred
           -- After inference, update the typing environment before processing downstream terms.
           -- This is necessary when a let-bound term is polymorphic and is referenced multiple times downstream,
           -- i.e. when we have let-polymorphism, so that we have a universal type expression
@@ -399,7 +399,7 @@ inferredToFieldType (fname, inferred) = FieldType fname $ inferredType inferred
 
 -- | Find the inferred type of a single term, considered as a standalone graph. Mainly useful in tests.
 inferredTypeOf :: Term -> Flow Graph Type
-inferredTypeOf term = inferTermType term >>= requireTyped
+inferredTypeOf term = inferTermType term >>= requireTermType
 
 requireBoundType :: Name -> Flow Graph Type
 requireBoundType v = do

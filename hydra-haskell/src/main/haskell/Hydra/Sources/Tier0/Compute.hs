@@ -29,7 +29,7 @@ hydraComputeModule = Module ns elements [hydraCoreModule] $
 
       def "Adapter" $
         doc "A two-level bidirectional encoder which adapts types to types and terms to terms" $
-        lambda "s1" $ lambda "s2" $ lambda "t1" $ lambda "t2" $ lambda "v1" $ lambda "v2" $ record [
+        lambdas ["s1", "s2", "t1", "t2", "v1", "v2"] $ record [
           "isLossy">: boolean,
           "source">: var "t1",
           "target">: var "t2",
@@ -37,24 +37,24 @@ hydraComputeModule = Module ns elements [hydraCoreModule] $
 
       def "Bicoder" $
         doc "A two-level encoder and decoder, operating both at a type level and an instance (data) level" $
-        lambda "s1" $ lambda "s2" $ lambda "t1" $ lambda "t2" $ lambda "v1" $ lambda "v2" $ record [
+        lambdas ["s1", "s2", "t1", "t2", "v1", "v2"] $ record [
           "encode">: "t1" --> compute "Adapter" @@ "s1" @@ "s2" @@ "t1" @@ "t2" @@ "v1" @@ "v2",
           "decode">: "t2" --> compute "Adapter" @@ "s2" @@ "s1" @@ "t2" @@ "t1" @@ "v2" @@ "v1"],
           
       def "Coder" $
         doc "An encoder and decoder; a bidirectional flow between two types" $
-        lambda "s1" $ lambda "s2" $ lambda "v1" $ lambda "v2" $ record [
+        lambdas ["s1", "s2", "v1", "v2"] $ record [
           "encode">: ("v1" --> compute "Flow" @@ "s1" @@ "v2"),
           "decode">: ("v2" --> compute "Flow" @@ "s2" @@ "v1")],
 
       def "Flow" $
         doc "A variant of the State monad with built-in logging and error handling" $
-        lambda "s" $ lambda "a" $
+        lambdas ["s", "a"] $
         function "s" (compute "Trace" --> compute "FlowState" @@ "s" @@ "a"),
 
       def "FlowState" $
         doc "The result of evaluating a Flow" $
-        lambda "s" $ lambda "a" $ record [
+        lambdas ["s", "a"] $ record [
           "value">: optional "a",
           "state">: "s",
           "trace">: compute "Trace"],

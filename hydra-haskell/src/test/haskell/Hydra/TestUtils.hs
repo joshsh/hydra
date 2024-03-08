@@ -8,7 +8,11 @@ module Hydra.TestUtils (
   checkSerialization,
   eval,
   shouldFail,
+  shouldFailIn,
+  shouldSucceed,
+  shouldSucceedIn,
   shouldSucceedWith,
+  shouldSucceedInWith,
   strip,
   termTestContext,
   module Hydra.TestGraph,
@@ -116,23 +120,32 @@ eval :: Term -> Flow Graph Term
 eval = reduceTerm True M.empty
 
 shouldFail :: Show a => Flow Graph a -> H.Expectation
-shouldFail f = case (flowStateValue $ unFlow f testGraph emptyTrace) of
+shouldFail = shouldFailIn testGraph
+
+shouldFailIn :: Show a => Graph -> Flow Graph a -> H.Expectation
+shouldFailIn g f = case (flowStateValue $ unFlow f g emptyTrace) of
    Nothing -> pure ()
    Just v -> HL.assertFailure $ "Flow should have failed, but suceeeded with " ++ show v
 
 shouldSucceed :: Flow Graph a -> H.Expectation
-shouldSucceed f = case my of
+shouldSucceed = shouldSucceedIn testGraph
+
+shouldSucceedIn :: Graph -> Flow Graph a -> H.Expectation
+shouldSucceedIn g f = case my of
     Nothing -> HL.assertFailure (traceSummary trace)
     Just y -> pure ()
   where
-    FlowState my _ trace = unFlow f testGraph emptyTrace
+    FlowState my _ trace = unFlow f g emptyTrace
 
 shouldSucceedWith :: (Eq a, Show a) => Flow Graph a -> a -> H.Expectation
-shouldSucceedWith f x = case my of
+shouldSucceedWith = shouldSucceedInWith testGraph
+
+shouldSucceedInWith :: (Eq a, Show a) => Graph -> Flow Graph a -> a -> H.Expectation
+shouldSucceedInWith g f x = case my of
     Nothing -> HL.assertFailure (traceSummary trace)
     Just y -> y `H.shouldBe` x
   where
-    FlowState my _ trace = unFlow f testGraph emptyTrace
+    FlowState my _ trace = unFlow f g emptyTrace
 
 strip :: Term -> Term
 strip = stripTerm

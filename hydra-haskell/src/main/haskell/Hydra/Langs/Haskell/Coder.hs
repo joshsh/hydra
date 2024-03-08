@@ -48,20 +48,26 @@ constantDecls g namespaces name@(Name nm) typ = if useCoreImport
 constructModule :: Namespaces
   -> Module
   -> M.Map Type (Coder Graph Graph Term H.Expression)
-  -> [(Element, TypedTerm)] -> Flow Graph H.Module
-constructModule namespaces mod coders pairs = do
+  -> [Element] -> Flow Graph H.Module
+constructModule namespaces mod coders els = do
+    pairs <- CM.mapM toLegacyPair els
     g <- getState
     decls <- L.concat <$> CM.mapM (createDeclarations g) pairs
     let mc = moduleDescription mod
     return $ H.Module (Just $ H.ModuleHead mc (importName $ h $ moduleNamespace mod) []) imports decls
   where
+    toLegacyPair el = do
+      let term = elementData el
+      typ <- requireTermType term
+      return (el, TypedTerm typ term)
     h (Namespace name) = name
 
     createDeclarations g pair@(el, TypedTerm typ term) = if isType typ
       then toTypeDeclarations namespaces el term
-      else do
-        d <- toDataDeclaration coders namespaces pair
-        return [d]
+      else fail $ "name: " ++ unName (elementName el)
+--      else do
+--        d <- toDataDeclaration coders namespaces pair
+--        return [d]
 
     importName name = H.ModuleName $ L.intercalate "." (capitalize <$> Strings.splitOn "/" name)
     imports = domainImports ++ standardImports

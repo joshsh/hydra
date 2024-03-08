@@ -175,8 +175,14 @@ setTermAnnotation key val term = if kv == Kv M.empty
 setTermDescription :: Y.Maybe String -> Term -> Term
 setTermDescription d = setTermAnnotation kvDescription (TermLiteral . LiteralString <$> d)
 
+-- TODO: move me; types are no longer attached using Annotated
 setTermType :: Y.Maybe Type -> Term -> Term
-setTermType d = setTermAnnotation kvType (coreEncodeType <$> d)
+setTermType mt term = case term of
+ TermAnnotated (Annotated t ann) -> TermAnnotated $ Annotated (setTermType mt t) ann
+ TermTyped (TypedTerm _ t) -> setTermType mt t
+ _ -> case mt of
+   Nothing -> term
+   Just t -> TermTyped $ TypedTerm t term
 
 setType :: Y.Maybe Type -> Kv -> Kv
 setType mt = setAnnotation kvType (coreEncodeType <$> mt)

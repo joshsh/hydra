@@ -63,7 +63,7 @@ supportedTypesPassThrough = H.describe "Verify that supported types are mapped d
       (optional $ string <$> ms) (YM.NodeScalar $ Y.maybe YM.ScalarNull YM.ScalarStr ms)
 
   H.it "Records become YAML mappings" $
-    QC.property $ \lat lon -> checkYamlCoder latLonType
+    QC.property $ \lat lon -> checkYamlCoder testTypeLatLon
       (latlonRecord lat lon) (yamlMap [
         (yamlStr "lat", yamlFloat $ realToFrac lat),
         (yamlStr "lon", yamlFloat $ realToFrac lon)])
@@ -78,8 +78,8 @@ unsupportedTypesAreTransformed = H.describe "Verify that unsupported types are t
       (stringSet strings) (YM.NodeSequence $ yamlStr <$> S.toList strings)
 
   H.it "Nominal types are dereferenced" $
-    QC.property $ \s -> checkYamlCoder stringAliasType
-      (wrap stringAliasTypeName $ string s) (yamlStr s)
+    QC.property $ \s -> checkYamlCoder testTypeStringAlias
+      (wrap testTypeStringAliasName $ string s) (yamlStr s)
 
   H.it "Unions become YAML mappings (as records)" $
     QC.property $ \int -> checkYamlCoder stringOrIntType

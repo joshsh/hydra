@@ -172,10 +172,10 @@ checkEliminations = H.describe "Check a few hand-picked elimination terms" $ do
 
   H.it "Match statements" $ do
     expectType
-      (match simpleNumberName Nothing [
+      (match testTypeSimpleNumberName Nothing [
         Field (FieldName "int") $ lambda "x" $ var "x",
         Field (FieldName "float") $ lambda "x" $ int32 42])
-      (funT (TypeVariable simpleNumberName) Types.int32)
+      (funT (TypeVariable testTypeSimpleNumberName) Types.int32)
 
 checkIndividualTerms :: H.SpecWith ()
 checkIndividualTerms = H.describe "Check a few hand-picked terms" $ do
@@ -216,28 +216,28 @@ checkIndividualTerms = H.describe "Check a few hand-picked terms" $ do
   H.describe "Records" $ do
     H.it "test #1" $
       expectType
-        (record latLonName [
+        (record testTypeLatLonName [
           Field (FieldName "lat") $ float32 37.7749,
           Field (FieldName "lon") $ float32 $ negate 122.4194])
-        (TypeVariable latLonName)
+        (TypeVariable testTypeLatLonName)
     H.it "test #2" $
       expectType
-        (record latLonPolyName [
+        (record testTypeLatLonPolyName [
           Field (FieldName "lat") $ float32 37.7749,
           Field (FieldName "lon") $ float32 $ negate 122.4194])
-        (Types.apply (TypeVariable latLonPolyName) Types.float32)
+        (Types.apply (TypeVariable testTypeLatLonPolyName) Types.float32)
     H.it "test #3" $
       expectType
-        (lambda "lon" (record latLonPolyName [
+        (lambda "lon" (record testTypeLatLonPolyName [
           Field (FieldName "lat") $ float32 37.7749,
           Field (FieldName "lon") $ var "lon"]))
-        (Types.function (Types.float32) (Types.apply (TypeVariable latLonPolyName) Types.float32))
+        (Types.function (Types.float32) (Types.apply (TypeVariable testTypeLatLonPolyName) Types.float32))
     H.it "test #4" $
       expectPolytype
-        (lambda "latlon" (record latLonPolyName [
+        (lambda "latlon" (record testTypeLatLonPolyName [
           Field (FieldName "lat") $ var "latlon",
           Field (FieldName "lon") $ var "latlon"]))
-        ["t0"] (Types.function (Types.var "t0") (Types.apply (TypeVariable latLonPolyName) (Types.var "t0")))
+        ["t0"] (Types.function (Types.var "t0") (Types.apply (TypeVariable testTypeLatLonPolyName) (Types.var "t0")))
 
   H.describe "Record instances of simply recursive record types" $ do
     H.it "test #1" $
@@ -541,11 +541,11 @@ checkOtherFunctionTerms = H.describe "Check a few hand-picked function terms" $ 
 
   H.it "Union eliminations (case statements)" $ do
     expectType
-      (match testTypeFoobarValueName Nothing [
+      (match testTypeUnionMonomorphicName Nothing [
         Field (FieldName "bool") (lambda "x" (boolean True)),
         Field (FieldName "string") (lambda "x" (boolean False)),
         Field (FieldName "unit") (lambda "x" (boolean False))])
-      (Types.function (TypeVariable testTypeFoobarValueName) Types.boolean)
+      (Types.function (TypeVariable testTypeUnionMonomorphicName) Types.boolean)
 
 checkPathologicalTerms :: H.SpecWith ()
 checkPathologicalTerms = H.describe "Check pathological terms" $ do
@@ -973,19 +973,19 @@ checkWrappedTerms = H.describe "Check nominal introductions and eliminations" $ 
   H.describe "Nominal introductions" $ do
     H.it "test #1" $
       expectType
-        (wrap stringAliasTypeName $ string "foo")
-        (TypeVariable stringAliasTypeName)
+        (wrap testTypeStringAliasName $ string "foo")
+        (TypeVariable testTypeStringAliasName)
     H.it "test #2" $
       expectType
-        (lambda "v" $ wrap stringAliasTypeName $ var "v")
-        (Types.function Types.string (TypeVariable stringAliasTypeName))
+        (lambda "v" $ wrap testTypeStringAliasName $ var "v")
+        (Types.function Types.string (TypeVariable testTypeStringAliasName))
 
   H.it "Nominal eliminations" $ do
 --    expectType
---      (unwrap stringAliasTypeName)
---      (Types.function stringAliasType (Ann.doc "An alias for the string type" Types.string))
+--      (unwrap testTypeStringAliasName)
+--      (Types.function testTypeStringAlias (Ann.doc "An alias for the string type" Types.string))
     expectType
-      (unwrap stringAliasTypeName @@ (wrap stringAliasTypeName $ string "foo"))
+      (unwrap testTypeStringAliasName @@ (wrap testTypeStringAliasName $ string "foo"))
       Types.string
 
 spec :: H.Spec

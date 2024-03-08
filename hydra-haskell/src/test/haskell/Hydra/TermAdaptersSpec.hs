@@ -29,7 +29,7 @@ constraintsAreAsExpected = H.describe "Verify that the language constraints incl
       typeIsSupported (context [TypeVariantLiteral]) Types.bigint `H.shouldBe` False
 
     H.it "Records are supported, but unions are not" $ do
-      typeIsSupported (context [TypeVariantLiteral, TypeVariantRecord]) latLonType `H.shouldBe` True
+      typeIsSupported (context [TypeVariantLiteral, TypeVariantRecord]) testTypeLatLon `H.shouldBe` True
       typeIsSupported (context [TypeVariantLiteral, TypeVariantRecord]) stringOrIntType `H.shouldBe` False
 
     H.it "Records are supported if and only if each of their fields are supported" $ do
@@ -175,7 +175,7 @@ unsupportedConstructorsAreModified = H.describe "Verify that unsupported term co
 --  H.it "Nominal types (when unsupported) are dereferenced" $
 --    QC.property $ \s -> checkDataAdapter
 --      [TypeVariantLiteral, TypeVariantAnnotated]
---      stringAliasType
+--      testTypeStringAlias
 --      (TypeAnnotated $ Annotated Types.string $ Kv $
 --        M.fromList [(kvDescription, Terms.string "An alias for the string type")])
 --      False
@@ -235,7 +235,7 @@ roundTripsPreserveSelectedTypes = H.describe "Verify that the adapter is informa
     QC.property $ \fname -> roundTripIsNoop exampleProjectionType (project testTypePersonName fname)
 
   H.it "Check nominally typed terms (which pass through as instances of the aliased type)" $
-    QC.property $ \s -> roundTripIsNoop stringAliasType (wrap stringAliasTypeName $ string s)
+    QC.property $ \s -> roundTripIsNoop testTypeStringAlias (wrap testTypeStringAliasName $ string s)
 
 --roundTripsPreserveArbitraryTypes :: H.SpecWith ()
 --roundTripsPreserveArbitraryTypes = H.describe "Verify that the adapter is information preserving for arbitrary typed terms" $ do

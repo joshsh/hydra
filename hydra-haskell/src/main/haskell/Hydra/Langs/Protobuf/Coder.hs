@@ -37,11 +37,11 @@ checkIsStringType typ = case simplifyType typ of
 constructModule ::
   Module
   -> M.Map Type (Coder Graph Graph Term ())
-  -> [(Element, TypedTerm)]
+  -> [Element]
   -> Flow Graph (M.Map FilePath P3.ProtoFile)
-constructModule mod@(Module ns els _ desc) _ pairs = do
+constructModule mod@(Module ns _ _ desc) _ els = do
     schemaImports <- (fmap namespaceToFileReference . S.toList) <$> moduleDependencyNamespaces True False False False mod
-    types <- CM.mapM toType pairs
+    types <- CM.mapM toType els
     definitions <- CM.mapM toDef types
     let pfile = P3.ProtoFile {
       P3.protoFilePackage = namespaceToPackageName ns,
@@ -51,7 +51,9 @@ constructModule mod@(Module ns els _ desc) _ pairs = do
     return $ M.singleton path pfile
   where
     path = P3.unFileReference $ namespaceToFileReference ns
-    toType (el, (TypedTerm typ term)) = do
+    toType el = do
+      let term = elementData el
+      typ <- requireTermType term
       if isType typ
         then do
           t <- coreDecodeType term

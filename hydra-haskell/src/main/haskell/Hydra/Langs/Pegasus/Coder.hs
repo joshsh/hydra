@@ -27,15 +27,21 @@ constructModule ::
   M.Map Namespace String
   -> Module
   -> M.Map Type (Coder Graph Graph Term ())
-  -> [(Element, TypedTerm)]
+  -> [Element]
   -> Flow Graph (M.Map FilePath PDL.SchemaFile)
-constructModule aliases mod coders pairs = do
-    sortedPairs <- case (topologicalSortElements $ fst <$> pairs) of
+constructModule aliases mod coders els = do
+    pairs <- CM.mapM toLegacyPair els
+    let pairByName = L.foldl (\m p -> M.insert (elementName $ fst p) p m) M.empty pairs
+    sortedPairs <- case (topologicalSortElements els) of
       Left comps -> fail $ "types form a cycle (unsupported in PDL): " ++ show (L.head comps)
       Right sorted -> pure $ Y.catMaybes $ fmap (\n -> M.lookup n pairByName) sorted
     schemas <- CM.mapM toSchema sortedPairs
     return $ M.fromList (toPair <$> schemas)
   where
+    toLegacyPair el = do
+      let term = elementData el
+      typ <- requireTermType term
+      return (el, TypedTerm typ term)
     ns = pdlNameForModule mod
     pkg = Nothing
     toPair (schema, imports) = (path, PDL.SchemaFile ns pkg imports [schema])
@@ -43,7 +49,6 @@ constructModule aliases mod coders pairs = do
         path = namespaceToFilePath False (FileExtension "pdl") (Namespace $ (unNamespace $ moduleNamespace mod) ++ "/" ++ local)
         local = PDL.unName $ PDL.qualifiedNameName $ PDL.namedSchemaQualifiedName schema
 
-    pairByName = L.foldl (\m p -> M.insert (elementName $ fst p) p m) M.empty pairs
     toSchema (el, TypedTerm typ term) = do
       if isType typ
         then coreDecodeType term >>= typeToSchema el

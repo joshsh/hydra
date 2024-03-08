@@ -27,10 +27,10 @@ moduleToScala mod = do
 moduleToScalaPackage :: Module -> Flow Graph Scala.Pkg
 moduleToScalaPackage = transformModule scalaLanguage encodeUntypedTerm constructModule
 
-constructModule :: Module -> M.Map Type (Coder Graph Graph Term Scala.Data) -> [(Element, TypedTerm)]
+constructModule :: Module -> M.Map Type (Coder Graph Graph Term Scala.Data) -> [Element]
   -> Flow Graph Scala.Pkg
-constructModule mod coders pairs = do
-    defs <- CM.mapM toDef pairs
+constructModule mod coders els = do
+    defs <- CM.mapM toDef els
     let pname = toScalaName $ h $ moduleNamespace mod
     let pref = Scala.Data_RefName pname
     imports <- findImports
@@ -47,13 +47,15 @@ constructModule mod coders pairs = do
         toPrimImport (Namespace ns) = Scala.StatImportExport $ Scala.ImportExportStatImport $ Scala.Import [
           Scala.Importer (Scala.Data_RefName $ toScalaName ns) []]
     toScalaName name = Scala.Data_Name $ Scala.PredefString $ L.intercalate "." $ Strings.splitOn "/" name
-    toDef (el, TypedTerm typ term) = withTrace ("element " ++ unName (elementName el)) $ do
+    toDef el = withTrace ("element " ++ unName (elementName el)) $ do
+        let term = elementData el
+        typ <- requireTermType term
         let coder = Y.fromJust $ M.lookup typ coders
         rhs <- coderEncode coder term
         Scala.StatDefn <$> case rhs of
           Scala.DataApply _ -> toVal rhs
           Scala.DataFunctionData fun -> case stripType typ of
-            TypeFunction (FunctionType _ cod) -> toDefn fun cod
+            TypeFunction (FunctionType _ cod) -> toDefn typ fun cod
             _ -> fail $ "expected function type, but found " ++ show typ
           Scala.DataLit _ -> toVal rhs
           Scala.DataRef _ -> toVal rhs -- TODO
@@ -61,10 +63,10 @@ constructModule mod coders pairs = do
       where
         lname = localNameOfEager $ elementName el
 
-        freeTypeVars = S.toList $ freeVariablesInType typ
+        freeTypeVars typ = S.toList $ freeVariablesInType typ
 
-        toDefn (Scala.Data_FunctionDataFunction (Scala.Data_Function params body)) cod = do
-          let tparams = stparam <$> freeTypeVars
+        toDefn typ (Scala.Data_FunctionDataFunction (Scala.Data_Function params body)) cod = do
+          let tparams = stparam <$> freeTypeVars typ
           scod <- encodeType cod
           return $ Scala.DefnDef $ Scala.Defn_Def []
             (Scala.Data_Name $ Scala.PredefString lname) tparams [params] (Just scod) body

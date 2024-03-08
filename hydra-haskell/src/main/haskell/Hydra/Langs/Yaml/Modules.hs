@@ -15,13 +15,15 @@ import qualified Data.Map as M
 constructModule ::
   Module
   -> M.Map Type (Coder Graph Graph Term YM.Node)
-  -> [(Element, TypedTerm)]
+  -> [Element]
   -> Flow Graph YM.Node
-constructModule mod coders pairs = do
-    keyvals <- withTrace "encoding terms" (CM.mapM toYaml pairs)
+constructModule mod coders els = do
+    keyvals <- withTrace "encoding terms" (CM.mapM toYaml els)
     return $ YM.NodeMapping $ M.fromList keyvals
   where
-    toYaml (el, (TypedTerm typ term)) = withTrace ("element " ++ unName (elementName el)) $ do
+    toYaml el = withTrace ("element " ++ unName (elementName el)) $ do
+      let term = elementData el
+      typ <- requireTermType term
       encode <- case M.lookup typ coders of
         Nothing -> fail $ "no coder found for type " ++ show typ
         Just coder -> pure $ coderEncode coder

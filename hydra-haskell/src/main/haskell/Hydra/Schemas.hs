@@ -1,7 +1,6 @@
 -- | Various functions for dereferencing and decoding schema types
 
 module Hydra.Schemas (
-  elementAsTypedTerm,
   fieldTypes,
   getTyped,
   isSerializable,
@@ -11,7 +10,6 @@ module Hydra.Schemas (
   requireType,
   toUnionType,
   toWrappedType,
-  requireTyped,
   resolveType,
   typeDependencies,
   typeDependencyNames,
@@ -48,11 +46,6 @@ dereferenceType name = withTrace ("dereference" ++ unName name) $ do
     Nothing -> return Nothing
     Just el -> Just <$> coreDecodeType (elementData el)
 
-elementAsTypedTerm :: Element -> Flow Graph TypedTerm
-elementAsTypedTerm el = do
-  typ <- requireTermType (elementData el)
-  return $ TypedTerm typ (elementData el)
-
 fieldTypes :: Type -> Flow Graph (M.Map FieldName Type)
 fieldTypes t = withTrace "field types" $ case stripType t of
     TypeLambda (LambdaType _ body) -> fieldTypes body
@@ -88,7 +81,7 @@ moduleDependencyNamespaces withVars withPrims withNoms withSchema mod = withTrac
     let namespaces = S.fromList $ Y.catMaybes (namespaceOfEager <$> S.toList allNames)
     return $ S.delete (moduleNamespace mod) namespaces
   where
-    elNames el = do
+    elNames el = withTrace ("for element " ++ unName (elementName el)) $ do
       let term = elementData el
       let dataNames = termDependencyNames withVars withPrims withNoms term
       schemaNames <- if withSchema
@@ -107,11 +100,6 @@ requirePrimitiveType name = (primitiveType <$> requirePrimitive name) >>= instan
 requireType :: Name -> Flow Graph Type
 requireType name = withTrace ("require type " ++ unName name) $
   requireElement name >>= (coreDecodeType . elementData) >>= instantiate
-
-requireTyped :: Term -> Flow Graph Type
-requireTyped term = case getTyped term of
-  Just t -> return t
-  Nothing -> fail $ "expected typed term, found " ++ show term
 
 -- TODO: remove this function once TermAdapters no longer needs it
 resolveType :: Type -> Flow Graph (Maybe Type)

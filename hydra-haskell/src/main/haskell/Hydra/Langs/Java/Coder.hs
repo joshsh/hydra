@@ -68,7 +68,7 @@ classifyDataReference name = do
   case mel of
     Nothing -> return JavaSymbolLocalVariable
     Just el -> do
-      typ <- requireElementType el
+      typ <- requireTermType $ elementData el
       return $ classifyDataTerm typ $ elementData el
 
 classifyDataTerm :: Type -> Term -> JavaSymbolClass
@@ -104,9 +104,10 @@ constructElementsInterface mod members = (elName, cu)
 
 constructModule :: Module
   -> M.Map Type (Coder Graph Graph Term Java.Expression)
-  -> [(Element, TypedTerm)]
+  -> [Element]
   -> Flow Graph (M.Map Name Java.CompilationUnit)
-constructModule mod coders pairs = do
+constructModule mod coders els = do
+    pairs <- CM.mapM toLegacyPair els
     let isTypePair = isType . typedTermType . snd
     let typePairs = L.filter isTypePair pairs
     let dataPairs = L.filter (not . isTypePair) pairs
@@ -114,6 +115,10 @@ constructModule mod coders pairs = do
     dataMembers <- CM.mapM (termToInterfaceMember coders) dataPairs
     return $ M.fromList $ typeUnits ++ ([constructElementsInterface mod dataMembers | not (L.null dataMembers)])
   where
+    toLegacyPair el = do
+      let term = elementData el
+      typ <- requireTermType term
+      return (el, TypedTerm typ term)
     pkg = javaPackageDeclaration $ moduleNamespace mod
     aliases = importAliasesForModule mod
 

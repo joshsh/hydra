@@ -122,8 +122,8 @@ testBetaReduceTypeRecursively = do
         (reduce Types.unit)
         Types.unit
       H.shouldBe
-        (reduce latLonType)
-        latLonType
+        (reduce testTypeLatLon)
+        testTypeLatLon
 
     H.it "Try simple application types" $ do
       H.shouldBe
@@ -131,7 +131,7 @@ testBetaReduceTypeRecursively = do
         (Types.function Types.string Types.string)
       H.shouldBe
         (reduce app2)
-        latLonType
+        testTypeLatLon
       H.shouldBe
         (reduce app3)
         (TypeRecord $ RowType (Name "Example") Nothing [Types.field "foo" Types.unit])
@@ -150,7 +150,7 @@ testBetaReduceTypeRecursively = do
 --        (TypeRecord $ RowType (Name "Example") Nothing [Types.field "foo" $ Types.function Types.string Types.string])
   where
     app1 = Types.apply (Types.lambda "t" $ Types.function (Types.var "t") (Types.var "t")) Types.string :: Type
-    app2 = Types.apply (Types.lambda "x" latLonType) Types.int32 :: Type
+    app2 = Types.apply (Types.lambda "x" testTypeLatLon) Types.int32 :: Type
     app3 = Types.apply (Types.lambda "a" $ TypeRecord $ RowType (Name "Example") Nothing [Types.field "foo" $ Types.var "a"]) Types.unit :: Type
     app4 = Types.apply (Types.apply (Types.lambda "x" $ Types.lambda "y" $ TypeRecord $ RowType (Name "Example") Nothing [
       Types.field "f1" $ Types.var "x",

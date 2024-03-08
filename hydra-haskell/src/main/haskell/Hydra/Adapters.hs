@@ -73,13 +73,12 @@ languageAdapter lang typ0 = do
 --   transform a given module into a target representation
 transformModule :: Language
   -> (Term -> Flow Graph e)
-  -> (Module -> M.Map Type (Coder Graph Graph Term e) -> [(Element, TypedTerm)] -> Flow Graph d)
+  -> (Module -> M.Map Type (Coder Graph Graph Term e) -> [Element] -> Flow Graph d)
   -> Module -> Flow Graph d
 transformModule lang encodeTerm createModule mod = withTrace ("transform module " ++ unNamespace (moduleNamespace mod)) $ do
-    pairs <- withSchemaContext $ CM.mapM elementAsTypedTerm els
-    let types = L.nub (typedTermType <$> pairs)
+    types <- L.nub <$> (withSchemaContext $ CM.mapM (requireTermType . elementData) els)
     coders <- codersFor types
-    createModule mod coders $ L.zip els pairs
+    createModule mod coders els
   where
     els = moduleElements mod
 

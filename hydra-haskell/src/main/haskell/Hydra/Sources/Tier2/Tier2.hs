@@ -39,7 +39,6 @@ hydraTier2Module = Module (Namespace "hydra/tier2") elements [hydraGraphModule, 
      el getStateDef,
      el getTermTypeDef,
      el putStateDef,
-     el requireElementTypeDef,
      el requireTermTypeDef,
      el unexpectedDef]
 
@@ -59,13 +58,15 @@ getStateDef = tier2Definition "getState" $
       typed (Types.apply (Types.apply (TypeVariable _FlowState) sT) unitT) $
       Flows.unFlow @@ (Flows.pure @@ unit) @@ var "s0" @@ var "t0"])
 
-getTermTypeDef :: Definition (Term -> Flow Graph (Maybe Type))
-getTermTypeDef = tier2Definition "getTermType" $
-  function termT (flowT graphT (optionalT typeT)) $
-  doc "Get the annotated type of a given term, if any" $
-  lambda "term" ((Flows.bind @@ (Flows.map @@ (project _Graph _Graph_annotations) @@ ref getStateDef) @@ var "annsToType")
-  `with` [
-    "annsToType">: lambda "anns" $ (project _AnnotationClass _AnnotationClass_termType @@ var "anns" @@ var "term")])
+getTermTypeDef :: Definition (Term -> Maybe Type)
+getTermTypeDef = tier2Definition "getTermTypeDef" $
+    function termT (optionalT typeT) $
+    doc "Get the annotated type of a given term, if any" $
+    lambda "term" $ m @@ var "term"
+  where
+    m = match _Term (Just nothing) [
+      Case _Term_annotated --> lambda "ta" (ref getTermTypeDef @@ (Core.annotatedSubject @@ var "ta")),
+      Case _Term_typed     --> lambda "tt" (just (Core.typedTermType @@ var "tt"))]
 
 putStateDef :: Definition (s -> Flow s ())
 putStateDef = tier2Definition "putState" $
@@ -79,26 +80,16 @@ putStateDef = tier2Definition "putState" $
     `with` [
       "f1">: Flows.unFlow @@ (Flows.pure @@ unit) @@ var "s0" @@ var "t0"])
 
-requireElementTypeDef :: Definition (Element -> Flow Graph Type)
-requireElementTypeDef = tier2Definition "requireElementType" $
-  function elementT (flowT graphT typeT) $
-  doc "Get the annotated type of a given element, or fail if it is missing" $
-  lambda "el" ((Flows.bind @@ (ref getTermTypeDef @@ (project _Element _Element_data @@ var "el")) @@ var "withType")
-    `with` [
-      "withType">: matchOpt
-       (Flows.fail @@ ("missing type annotation for element " ++ (unwrap _Name @@ (project _Element _Element_name @@ var "el"))))
-       Flows.pure])
-
 requireTermTypeDef :: Definition (Term -> Flow Graph Type)
 requireTermTypeDef = tier2Definition "requireTermType" $
     function termT (flowT graphT typeT) $
     doc "Get the annotated type of a given term, or fail if it is missing" $
-    lambda "term" $ m @@ var "term"
+    lambda "term" $ m @@ (ref getTermTypeDef @@ var "term")
   where
     failByDefault = Flows.fail @@ "missing type annotation"
-    m = match _Term (Just failByDefault) [
-      Case _Term_annotated --> lambda "ta" (ref requireTermTypeDef @@ (Core.annotatedSubject @@ var "ta")),
-      Case _Term_typed     --> lambda "tt" (Core.typedTermType @@ var "tt")]
+    m = matchOpt
+      (Flows.fail @@ "missing type annotation")
+      (lambda "t" $ Flows.pure @@ var "t")
 
 unexpectedDef :: Definition (String -> String -> Flow s a)
 unexpectedDef = tier2Definition "unexpected" $
