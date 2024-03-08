@@ -186,7 +186,7 @@ infer term = case term of
 
     TermTyped (TypedTerm typ term) -> do
       Inferred iterm ityp iconstraints <- infer term
-      return $ Inferred (TermTyped $ TypedTerm typ iterm) typ ((typ, ityp):iconstraints)
+      return $ yieldTerm iterm ityp ((ityp, typ):iconstraints)
 
     TermVariable v -> do
       t <- requireBoundType v

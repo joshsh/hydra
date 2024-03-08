@@ -57,7 +57,7 @@ checkAdapter normalize mkAdapter mkContext variants source target lossy vs vt = 
     adapterIsLossy adapter `H.shouldBe` lossy
     fromFlow vt g (normalize <$> coderEncode step vs) `H.shouldBe` (normalize vt)
     if lossy
-      then True `H.shouldBe` True
+      then pure ()
       else fromFlow vs g (coderEncode step vs >>= coderDecode step) `H.shouldBe` vs
 
 checkLiteralAdapter :: [LiteralVariant] -> LiteralType -> LiteralType -> Bool -> Literal -> Literal -> H.Expectation
@@ -115,13 +115,15 @@ checkSerialization mkSerdeStr (TypedTerm typ term) expected = do
 eval :: Term -> Flow Graph Term
 eval = reduceTerm True M.empty
 
-shouldFail :: Flow Graph a -> H.Expectation
-shouldFail f = H.shouldBe True (Y.isNothing $ flowStateValue $ unFlow f testGraph emptyTrace)
+shouldFail :: Show a => Flow Graph a -> H.Expectation
+shouldFail f = case (flowStateValue $ unFlow f testGraph emptyTrace) of
+   Nothing -> pure ()
+   Just v -> HL.assertFailure $ "Flow should have failed, but suceeeded with " ++ show v
 
 shouldSucceed :: Flow Graph a -> H.Expectation
 shouldSucceed f = case my of
     Nothing -> HL.assertFailure (traceSummary trace)
-    Just y -> True `H.shouldBe` True
+    Just y -> pure ()
   where
     FlowState my _ trace = unFlow f testGraph emptyTrace
 

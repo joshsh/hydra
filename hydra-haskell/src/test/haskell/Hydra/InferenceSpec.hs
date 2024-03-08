@@ -812,6 +812,67 @@ checkSubtermAnnotations = H.describe "Check additional subterm annotations" $ do
           iterm <- inferTermType term
           fail $ "iterm: " ++ show iterm
 
+checkTyped :: H.SpecWith ()
+checkTyped = H.describe "Check type-annotated terms" $ do
+
+  H.describe "Monomorphic typed terms" $ do
+    H.it "test #1" $
+      expectType
+        (typed Types.string $ string "foo")
+        Types.string
+    H.it "test #2" $
+      expectType
+        (pair (typed Types.string $ string "foo") (int32 42))
+        (Types.pair Types.string Types.int32)
+
+  H.describe "Polymorphic typed terms" $ do
+     H.it "test #1" $
+        expectType
+          (typed (Types.lambda "t0" $ Types.function (Types.var "t0") (Types.var "t0")) $ lambda "x" $ var "x")
+          (Types.lambda "t0" $ Types.function (Types.var "t0") (Types.var "t0"))
+     H.it "test #2" $
+        expectType
+          (typed (Types.lambda "a" $ Types.function (Types.var "a") (Types.var "a")) $ lambda "x" $ var "x")
+          (Types.lambda "t0" $ Types.function (Types.var "t0") (Types.var "t0"))
+
+  H.describe "Check that incorrectly typed terms fail" $ do
+    H.it "test #1" $
+      expectFailure $ typed
+        (Types.int32)
+        (string "foo")
+    H.it "test #2" $
+      expectFailure $ typed
+        (Types.pair Types.string Types.int32)
+        (string "foo")
+    H.it "test #3" $
+      expectFailure $ typed
+        (Types.pair Types.string Types.int32)
+        (pair (string "foo") (string "bar"))
+    H.it "test #4" $
+      expectFailure $ typed
+        (Types.lambda "a" $ Types.function (Types.var "a") (Types.var "a"))
+        (var "x")
+
+  H.describe "Borderline cases for which type inference arguably should fail, but does not" $ do
+    H.it "test #5" $
+      expectType
+        (typed
+          (Types.lambda "a" $ Types.function (Types.var "a") (Types.var "a"))
+          (lambda "x" $ int32 42))
+        (Types.function Types.int32 Types.int32)
+    H.it "test #6" $
+      expectType
+        (typed
+          (Types.lambda "a" $ Types.var "a")
+          (lambda "x" $ var "x"))
+        (Types.lambda "t0" $ Types.function (Types.var "t0") (Types.var "t0"))
+    H.it "test #7" $
+      expectType
+        (typed
+          (Types.lambda "a" $ Types.function (Types.var "a") (Types.var "b"))
+          (lambda "x" $ var "x"))
+        (Types.lambda "t0" $ Types.function (Types.var "t0") (Types.var "t0"))
+
 --checkTypedTerms :: H.SpecWith ()
 --checkTypedTerms = H.describe "Check that term/type pairs are consistent with type inference" $ do
 --
@@ -902,6 +963,7 @@ spec = do
   checkSubtermAnnotations
   checkSums
   checkTypeAnnotations
+  checkTyped
   checkWrappedTerms
 
   checkRawInference
