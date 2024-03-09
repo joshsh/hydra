@@ -91,7 +91,7 @@ expandLambdas term = do
   where
     expand g mtyp args recurse term = case term of
         TermAnnotated (Annotated term' ann) -> do
-          mt <- getAnnotatedType term
+          let mt = getTermType term
           expanded <- expand g (Y.maybe mtyp Just mt) args recurse term'
           return $ TermAnnotated $ Annotated expanded ann
         TermApplication (Application lhs rhs) -> do

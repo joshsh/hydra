@@ -789,18 +789,6 @@ functionCall aliases isPrim name args = do
         let header = Java.MethodInvocation_HeaderSimple $ Java.MethodName $ elementJavaIdentifier isPrim False aliases name
         return $ javaMethodInvocationToJavaExpression $ Java.MethodInvocation header jargs
 
-getCodomain :: M.Map String Term -> Flow Graph Type
-getCodomain ann = functionTypeCodomain <$> getFunctionType ann
-
-getFunctionType :: M.Map String Term -> Flow Graph (FunctionType)
-getFunctionType ann = do
-  mt <- getType ann
-  case mt of
-    Nothing -> fail "type annotation is required for function and elimination terms in Java"
-    Just t -> case t of
-      TypeFunction ft -> return ft
-      _ -> unexpected "function type (3)" $ show t
-
 innerClassRef :: Aliases -> Name -> String -> Java.Identifier
 innerClassRef aliases name local = Java.Identifier $ id ++ "." ++ local
   where
@@ -863,7 +851,7 @@ maybeLet aliases term cons = helper [] term
             then do
               -- TODO: repeated
               let value = lookupBinding name
-              typ <- requireAnnotatedType value
+              typ <- requireTermType value
               jtype <- adaptTypeToJavaAndEncode aliasesWithRecursive typ
               let id = variableToJavaIdentifier name
 
@@ -881,7 +869,7 @@ maybeLet aliases term cons = helper [] term
           toDeclStatement name = do
             -- TODO: repeated
             let value = lookupBinding name
-            typ <- requireAnnotatedType value
+            typ <- requireTermType value
             jtype <- adaptTypeToJavaAndEncode aliasesWithRecursive typ
             let id = variableToJavaIdentifier name
             rhs <- encodeTerm aliasesWithRecursive value
@@ -919,14 +907,6 @@ noComment decl = Java.ClassBodyDeclarationWithComments decl Nothing
 reannotate anns term = case anns of
   [] -> term
   (h:r) -> reannotate r $ TermAnnotated (Annotated term h)
-
-requireAnnotatedType :: Term -> Flow Graph Type
-requireAnnotatedType term = case term of
-  TermAnnotated (Annotated _ ann) -> do
-    mt <- getType ann
-    case mt of
-      Nothing -> fail $ "expected a type annotation for term: " ++ show term
-      Just t -> pure t
 
 toClassDecl :: Bool -> Bool -> Aliases -> [Java.TypeParameter]
   -> Name -> Type -> Flow Graph Java.ClassDeclaration

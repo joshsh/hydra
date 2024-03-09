@@ -64,10 +64,9 @@ constructModule namespaces mod coders els = do
 
     createDeclarations g pair@(el, TypedTerm typ term) = if isType typ
       then toTypeDeclarations namespaces el term
-      else fail $ "name: " ++ unName (elementName el)
---      else do
---        d <- toDataDeclaration coders namespaces pair
---        return [d]
+      else do
+        d <- toDataDeclaration coders namespaces pair
+        return [d]
 
     importName name = H.ModuleName $ L.intercalate "." (capitalize <$> Strings.splitOn "/" name)
     imports = domainImports ++ standardImports

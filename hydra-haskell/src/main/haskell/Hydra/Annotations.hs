@@ -58,9 +58,6 @@ failOnFlag flag msg = do
     then fail msg
     else pure ()
 
-getAnnotatedType :: Term -> Flow Graph (Y.Maybe Type)
-getAnnotatedType = getType . termAnnotation
-
 getAttr :: String -> Flow s (Maybe Term)
 getAttr key = Flow q
   where
@@ -82,8 +79,8 @@ getTermAnnotation key = M.lookup key . termAnnotation
 getTermDescription :: Term -> Flow Graph (Y.Maybe String)
 getTermDescription = getDescription . termAnnotation
 
-getType :: M.Map String Term -> Flow Graph (Y.Maybe Type)
-getType anns = case M.lookup annotationKey_type anns of
+getTypeAsAnnotation :: M.Map String Term -> Flow Graph (Y.Maybe Type)
+getTypeAsAnnotation anns = case M.lookup annotationKey_type anns of
   Nothing -> pure Nothing
   Just dat -> Just <$> coreDecodeType dat
 
@@ -170,8 +167,8 @@ setTermType mt term = case term of
    Nothing -> term
    Just t -> TermTyped $ TypedTerm t term
 
-setType :: Y.Maybe Type -> M.Map String Term -> M.Map String Term
-setType mt = setAnnotation annotationKey_type (coreEncodeType <$> mt)
+setTypeAsAnnotation :: Y.Maybe Type -> M.Map String Term -> M.Map String Term
+setTypeAsAnnotation mt = setAnnotation annotationKey_type (coreEncodeType <$> mt)
 
 setTypeAnnotation :: String -> Y.Maybe Term -> Type -> Type
 setTypeAnnotation key val typ = if anns == M.empty
