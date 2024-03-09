@@ -168,7 +168,6 @@ checkIndividualTerms = H.describe "Check a few hand-picked terms" $ do
           [(var "x", float64 0.1), (var "y", float64 0.2)])))
         ["t0"] (Types.function (Types.var "t0") (Types.function (Types.var "t0") (Types.map (Types.var "t0") Types.float64)))
 
-
 checkNominalTerms :: H.SpecWith ()
 checkNominalTerms = H.describe "Check nominal types" $ do
 
@@ -290,6 +289,30 @@ checkNominalTerms = H.describe "Check nominal types" $ do
           "other">: variant testTypeUnionPolymorphicRecursiveName (FieldName "value") $ int32 42])
         (Types.apply (TypeVariable testTypeUnionPolymorphicRecursiveName) Types.int32)
 
+
+  unit <- pure $ string "ignored"
+  H.describe "Approximation of Hydra type definitions" $ do
+    H.it "test #1.a" $
+      expectType
+        (variant testTypeHydraTypeName (FieldName "literal")
+          $ variant testTypeHydraLiteralTypeName (FieldName "boolean") unit)
+        (TypeVariable testTypeHydraTypeName)
+    H.it "test #1.b" $
+      expectFailure
+        (variant testTypeHydraTypeName (FieldName "literal")
+          $ variant testTypeHydraLiteralTypeName (FieldName "boolean") $ int32 42)
+    H.it "test #2.a" $
+      expectType
+        ((variant testTypeHydraTypeName (FieldName "list") $ var "otherType") `with` [
+          "otherType">: variant testTypeHydraTypeName (FieldName "literal")
+            $ variant testTypeHydraLiteralTypeName (FieldName "boolean") unit])
+        (TypeVariable testTypeHydraTypeName)
+    H.it "test #2.b" $
+      expectFailure
+        ((variant testTypeHydraTypeName (FieldName "list") $ var "otherType") `with` [
+          "otherType">: variant testTypeHydraTypeName (FieldName "literal")
+            $ variant testTypeHydraLiteralTypeName (FieldName "boolean") $ int32 42])
+
   H.describe "Wrapper introductions" $ do
     H.it "test #1" $
       expectType
@@ -300,14 +323,15 @@ checkNominalTerms = H.describe "Check nominal types" $ do
         (lambda "v" $ wrap testTypeStringAliasName $ var "v")
         (Types.function Types.string (TypeVariable testTypeStringAliasName))
 
-  H.it "Wrapper eliminations" $ do
---    expectType
---      (unwrap testTypeStringAliasName)
---      (Types.function testTypeStringAlias (Ann.doc "An alias for the string type" Types.string))
-    expectType
-      (unwrap testTypeStringAliasName @@ (wrap testTypeStringAliasName $ string "foo"))
-      Types.string
-
+  H.describe "Wrapper eliminations" $ do
+    H.it "test #1" $
+      expectType
+        (unwrap testTypeStringAliasName)
+        (Types.function (TypeVariable testTypeStringAliasName) Types.string)
+    H.it "test #2" $
+      expectType
+        (unwrap testTypeStringAliasName @@ (wrap testTypeStringAliasName $ string "foo"))
+        Types.string
 
 checkLetTerms :: H.SpecWith ()
 checkLetTerms = H.describe "Check a few hand-picked let terms" $ do

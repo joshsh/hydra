@@ -75,6 +75,8 @@ testSchemaGraph = elementsToGraph hydraCore (Just hydraCore) [
     def testTypeBuddyListBName testTypeBuddyListB,
     def testTypeComparisonName testTypeComparison,
     def testTypeIntListName testTypeIntList,
+    def testTypeHydraLiteralTypeName testTypeHydraLiteralType,
+    def testTypeHydraTypeName testTypeHydraType,
     def testTypeLatLonName testTypeLatLon,
     def testTypeLatLonPolyName testTypeLatLonPolyType,
     def testTypeListName testTypeList,
@@ -130,6 +132,26 @@ testTypeIntList = TypeRecord $ RowType testTypeIntListName Nothing [
 
 testTypeIntListName :: Name
 testTypeIntListName = Name "IntList"
+
+testTypeHydraLiteralType :: Type
+testTypeHydraLiteralType = Ann.doc "An approximation of Hydra's LiteralType type" $
+  TypeUnion $ RowType testTypeHydraLiteralTypeName Nothing [
+--    Types.field "boolean" Types.unit,
+--    Types.field "string" Types.unit]
+    Types.field "boolean" Types.string,
+    Types.field "string" Types.string]
+
+testTypeHydraLiteralTypeName :: Name
+testTypeHydraLiteralTypeName = Name "HydraLiteralType"
+
+testTypeHydraType :: Type
+testTypeHydraType = Ann.doc "An approximation of Hydra's Type type" $
+  TypeUnion $ RowType testTypeHydraTypeName Nothing [
+    Types.field "literal" $ TypeVariable testTypeHydraLiteralTypeName,
+    Types.field "list" $ TypeVariable testTypeHydraTypeName]
+
+testTypeHydraTypeName :: Name
+testTypeHydraTypeName = Name "HydraType"
 
 testTypeList :: Type
 testTypeList = Types.lambda "a" $ TypeRecord $ RowType testTypeListName Nothing [
