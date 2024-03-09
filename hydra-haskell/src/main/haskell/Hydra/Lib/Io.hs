@@ -30,7 +30,6 @@ noGraph = Graph {
   graphTypes = M.empty,
   graphBody = Terms.list [],
   graphPrimitives = M.empty,
-  graphAnnotations = kvAnnotationClass,
   graphSchema = Nothing}
 
 

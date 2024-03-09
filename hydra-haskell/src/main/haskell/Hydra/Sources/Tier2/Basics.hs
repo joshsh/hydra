@@ -52,7 +52,6 @@ hydraBasicsModule = Module (Namespace "hydra/basics") elements [hydraTier1Module
      el literalTypeVariantDef,
      el literalVariantDef,
      el literalVariantsDef,
-     el termMetaDef,
      el termVariantDef,
      el termVariantsDef,
      el typeVariantDef,
@@ -237,11 +236,6 @@ literalVariantsDef = basicsDefinition "literalVariants" $
     _LiteralVariant_integer,
     _LiteralVariant_string]
 
-termMetaDef :: Definition (Graph -> Term -> a)
-termMetaDef = basicsDefinition "termMeta" $
-  functionN [graphT, termT, aT] $
-  (project _AnnotationClass _AnnotationClass_termAnnotation) <.> Graph.graphAnnotations
-
 termVariantDef :: Definition (Term -> TermVariant)
 termVariantDef = basicsDefinition "termVariant" $
   doc "Find the term variant (constructor) for a given term" $
@@ -403,7 +397,6 @@ elementsToGraphDef = basicsDefinition "elementsToGraph" $
       (Graph.graphTypes @@ var "parent")
       (Graph.graphBody @@ var "parent")
       (Graph.graphPrimitives @@ var "parent")
-      (Graph.graphAnnotations @@ var "parent")
       (var "schema")
   `with` [
     "toPair" >: lambda "el" $ pair (project _Element _Element_name @@ var "el") (var "el")]

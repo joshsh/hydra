@@ -27,7 +27,6 @@ bootstrapGraph = Graph {
   graphTypes = M.empty,
   graphBody = Terms.list [], -- Note: the bootstrap body is arbitrary
   graphPrimitives = M.fromList $ fmap (\p -> (primitiveName p, p)) standardPrimitives,
-  graphAnnotations = kvAnnotationClass,
   graphSchema = Nothing}
 
 datatype :: Namespace -> String -> Type -> Element

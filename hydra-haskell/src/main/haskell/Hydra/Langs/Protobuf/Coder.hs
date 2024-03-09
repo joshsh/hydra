@@ -236,7 +236,7 @@ flattenType = rewriteType f
 
 findOptions :: Type -> Flow Graph [P3.Option]
 findOptions typ = do
-  mdesc <- annotationClassTypeDescription kvAnnotationClass typ
+  mdesc <- getTypeDescription typ
   return $ case mdesc of
     Nothing -> []
     Just desc -> [P3.Option descriptionOptionName desc]

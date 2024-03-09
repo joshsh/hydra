@@ -105,20 +105,6 @@ getTypeDescription = getDescription . typeAnnotation
 hasFlag :: String -> Flow s Bool
 hasFlag flag = getAttrWithDefault flag (TermLiteral $ LiteralBoolean False) >>= Expect.boolean
 
-kvAnnotationClass :: AnnotationClass
-kvAnnotationClass = AnnotationClass {
-    annotationClassTermAnnotation = termAnnotation,
-    annotationClassTypeAnnotation = typeAnnotation,
-    annotationClassTermDescription = getTermDescription,
-    annotationClassTypeDescription = getTypeDescription,
-    annotationClassTypeClasses = getTypeClasses,
-    annotationClassTermType = getAnnotatedType,
-    annotationClassSetTermDescription = setTermDescription,
-    annotationClassSetTermType = setTermType,
-    annotationClassSetTypeClasses = setTypeClasses,
-    annotationClassTypeOf = getType,
-    annotationClassSetTypeOf = setType}
-
 -- | Return a zero-indexed counter for the given key: 0, 1, 2, ...
 nextCount :: String -> Flow s Int
 nextCount attrName = do

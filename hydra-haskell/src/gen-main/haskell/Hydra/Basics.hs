@@ -159,9 +159,6 @@ literalVariants = [
   Mantle.LiteralVariantInteger,
   Mantle.LiteralVariantString]
 
-termMeta :: (Graph.Graph -> Core.Term -> Core.Kv)
-termMeta x = (Graph.annotationClassTermAnnotation (Graph.graphAnnotations x))
-
 -- | Find the term variant (constructor) for a given term
 termVariant :: (Core.Term -> Mantle.TermVariant)
 termVariant x = case x of
@@ -303,7 +300,6 @@ elementsToGraph parent schema elements =
     Graph.graphTypes = (Graph.graphTypes parent),
     Graph.graphBody = (Graph.graphBody parent),
     Graph.graphPrimitives = (Graph.graphPrimitives parent),
-    Graph.graphAnnotations = (Graph.graphAnnotations parent),
     Graph.graphSchema = schema}
 
 localNameOfEager :: (Core.Name -> String)

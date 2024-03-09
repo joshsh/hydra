@@ -58,7 +58,7 @@ constructModule aliases mod coders els = do
         let ptype = case res of
               Left schema -> PDL.NamedSchema_TypeTyperef schema
               Right t -> t
-        r <- annotationClassTermDescription kvAnnotationClass $ elementData el
+        r <- getTermDescription $ elementData el
         let anns = doc r
         return (PDL.NamedSchema qname ptype anns, imports)
       where
@@ -160,7 +160,7 @@ encodeType aliases typ = case typ of
         t <- encode typ
         return (t, False)
     getAnns typ = do
-      r <- annotationClassTypeDescription kvAnnotationClass typ
+      r <- getTypeDescription typ
       return $ doc r
 
 importAliasesForModule mod = do

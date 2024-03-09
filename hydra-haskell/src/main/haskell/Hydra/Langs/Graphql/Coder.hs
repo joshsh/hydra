@@ -58,7 +58,7 @@ constructModule mod coders els = do
 
 descriptionFromType :: Type -> Flow Graph (Maybe G.Description)
 descriptionFromType typ = do
-  mval <- annotationClassTypeDescription kvAnnotationClass typ
+  mval <- getTypeDescription typ
   return $ G.Description . G.StringValue <$> mval
 
 encodeEnumFieldType :: FieldType -> Flow Graph G.EnumValueDefinition

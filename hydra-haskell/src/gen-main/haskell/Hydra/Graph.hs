@@ -9,45 +9,6 @@ import Data.List as L
 import Data.Map as M
 import Data.Set as S
 
--- | A typeclass-like construct providing common functions for working with annotations
-data AnnotationClass = 
-  AnnotationClass {
-    annotationClassTermAnnotation :: (Core.Term -> Core.Kv),
-    annotationClassTypeAnnotation :: (Core.Type -> Core.Kv),
-    annotationClassTermDescription :: (Core.Term -> Compute.Flow Graph (Maybe String)),
-    annotationClassTypeDescription :: (Core.Type -> Compute.Flow Graph (Maybe String)),
-    annotationClassTypeClasses :: (Core.Type -> Compute.Flow Graph (Map Core.Name (Set TypeClass))),
-    annotationClassTermType :: (Core.Term -> Compute.Flow Graph (Maybe Core.Type)),
-    annotationClassSetTermDescription :: (Maybe String -> Core.Term -> Core.Term),
-    annotationClassSetTermType :: (Maybe Core.Type -> Core.Term -> Core.Term),
-    annotationClassSetTypeClasses :: (Map Core.Name (Set TypeClass) -> Core.Type -> Core.Type),
-    annotationClassTypeOf :: (Core.Kv -> Compute.Flow Graph (Maybe Core.Type)),
-    annotationClassSetTypeOf :: (Maybe Core.Type -> Core.Kv -> Core.Kv)}
-
-_AnnotationClass = (Core.Name "hydra/graph.AnnotationClass")
-
-_AnnotationClass_termAnnotation = (Core.FieldName "termAnnotation")
-
-_AnnotationClass_typeAnnotation = (Core.FieldName "typeAnnotation")
-
-_AnnotationClass_termDescription = (Core.FieldName "termDescription")
-
-_AnnotationClass_typeDescription = (Core.FieldName "typeDescription")
-
-_AnnotationClass_typeClasses = (Core.FieldName "typeClasses")
-
-_AnnotationClass_termType = (Core.FieldName "termType")
-
-_AnnotationClass_setTermDescription = (Core.FieldName "setTermDescription")
-
-_AnnotationClass_setTermType = (Core.FieldName "setTermType")
-
-_AnnotationClass_setTypeClasses = (Core.FieldName "setTypeClasses")
-
-_AnnotationClass_typeOf = (Core.FieldName "typeOf")
-
-_AnnotationClass_setTypeOf = (Core.FieldName "setTypeOf")
-
 -- | An equality judgement: less than, equal to, or greater than
 data Comparison = 
   ComparisonLessThan  |
@@ -76,8 +37,6 @@ data Graph =
     graphBody :: Core.Term,
     -- | All supported primitive constants and functions, by name
     graphPrimitives :: (Map Core.Name Primitive),
-    -- | The annotation class which is supported in this context
-    graphAnnotations :: AnnotationClass,
     -- | The schema of this graph. If this parameter is omitted (nothing), the graph is its own schema graph.
     graphSchema :: (Maybe Graph)}
 

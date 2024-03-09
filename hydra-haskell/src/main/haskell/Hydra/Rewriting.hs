@@ -118,7 +118,7 @@ expandLambdas term = do
           [] -> lhs
           (a:rest) -> app mtyp' (TermApplication $ Application lhs' a) rest
             where
-              lhs' = annotationClassSetTermType kvAnnotationClass mtyp lhs
+              lhs' = setTermType mtyp lhs
               mtyp' = case mtyp of
                 Just t -> case stripTypeParameters $ stripType t of
                   TypeFunction (FunctionType _ cod) -> Just cod
@@ -509,7 +509,7 @@ wrapLambdas term = do
     let types = uncurryType typ
     let argTypes = L.init types
     let missing = missingArity (L.length argTypes) term
-    return $ pad kvAnnotationClass term (L.take missing argTypes) (toFunType $ L.drop missing types)
+    return $ pad term (L.take missing argTypes) (toFunType $ L.drop missing types)
   where
     toFunType types = case types of
       [t] -> t
@@ -521,9 +521,9 @@ wrapLambdas term = do
         TermLet (Let _ env) -> missingArity arity env
         TermFunction (FunctionLambda (Lambda _ _ body)) -> missingArity (arity - 1) body
         _ -> arity
-    pad anns term doms cod = fst $ L.foldl newLambda (apps, cod) $ L.reverse variables
+    pad term doms cod = fst $ L.foldl newLambda (apps, cod) $ L.reverse variables
       where
-        newLambda (body, cod) (v, dom) = (annotationClassSetTermType anns (Just ft) $ TermFunction $ FunctionLambda $ Lambda v Nothing body, ft)
+        newLambda (body, cod) (v, dom) = (setTermType (Just ft) $ TermFunction $ FunctionLambda $ Lambda v Nothing body, ft)
           where
             ft = TypeFunction $ FunctionType dom cod
         apps = L.foldl (\lhs (v, _) -> TermApplication (Application lhs $ TermVariable v)) term variables

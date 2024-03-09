@@ -84,10 +84,10 @@ classifyDataTerm typ term = if isLambda term
       _ -> False
 
 commentsFromElement :: Element -> Flow Graph (Maybe String)
-commentsFromElement el = annotationClassTermDescription kvAnnotationClass (elementData el)
+commentsFromElement el = getTermDescription (elementData el)
 
 commentsFromFieldType :: FieldType -> Flow Graph (Maybe String)
-commentsFromFieldType (FieldType _ t) = annotationClassTypeDescription kvAnnotationClass t
+commentsFromFieldType (FieldType _ t) = getTypeDescription t
 
 constructElementsInterface :: Module -> [Java.InterfaceMemberDeclaration] -> (Name, Java.CompilationUnit)
 constructElementsInterface mod members = (elName, cu)
@@ -500,7 +500,7 @@ encodeElimination aliases marg dom cod elm = case elm of
   EliminationUnion (CaseStatement tname def fields) -> do
      case marg of
       Nothing -> do
-        let lhs = annotationClassSetTermType kvAnnotationClass (Just $ Types.function (TypeVariable tname) cod) $ Terms.elimination elm
+        let lhs = setTermType (Just $ Types.function (TypeVariable tname) cod) $ Terms.elimination elm
         let var = "u"
         encodeTerm aliases $ Terms.lambda var $ Terms.apply lhs (Terms.var var)
         -- TODO: default value
@@ -794,7 +794,7 @@ getCodomain ann = functionTypeCodomain <$> getFunctionType ann
 
 getFunctionType :: Kv -> Flow Graph (FunctionType)
 getFunctionType ann = do
-  mt <- annotationClassTypeOf kvAnnotationClass ann
+  mt <- getType ann
   case mt of
     Nothing -> fail "type annotation is required for function and elimination terms in Java"
     Just t -> case t of
@@ -923,7 +923,7 @@ reannotate anns term = case anns of
 requireAnnotatedType :: Term -> Flow Graph Type
 requireAnnotatedType term = case term of
   TermAnnotated (Annotated _ ann) -> do
-    mt <- annotationClassTypeOf kvAnnotationClass ann
+    mt <- getType ann
     case mt of
       Nothing -> fail $ "expected a type annotation for term: " ++ show term
       Just t -> pure t

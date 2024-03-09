@@ -313,25 +313,6 @@ testSimplifyTerm = do
           (apply (lambda "a" (list [string "foo", var "a"])) (var "x"))) (var "y")))
         (list [string "foo", var "y"])
 
---testStripKv :: H.SpecWith ()
---testStripKv = do
---  H.describe "Test stripping metadata from terms" $ do
---
---    H.it "Strip type annotations" $ do
---      QC.property $ \(TypedTerm typ term) -> do
---        shouldSucceedWith
---          (typeOf term)
---          Nothing
---        shouldSucceedWith
---          (typeOf $ withType typ term)
---          (Just typ)
---        shouldSucceedWith
---          (typeOf $ strip $ withType typ term)
---          Nothing
---  where
---    typeOf term = annotationClassTermType kvAnnotationClass term
---    withType typ = annotationClassSetTermType kvAnnotationClass (Just typ)
-
 testTopologicalSortBindings :: H.SpecWith ()
 testTopologicalSortBindings = do
     H.describe "Test topological sort of bindings" $ do
