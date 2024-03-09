@@ -1008,3 +1008,4 @@ spec = do
 
 --  checkTypedTerms -- (excluded for now)
 --  checkUserProvidedTypes -- disabled for now; user-provided type variables are replaced with fresh variables
+  return ()

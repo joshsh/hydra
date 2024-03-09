@@ -325,6 +325,7 @@ coreEncodeLambda l = (Core.TermRecord (Core.Record {
 coreEncodeLambdaType :: (Core.LambdaType -> Core.Term)
 coreEncodeLambdaType lt = (Core.TermFunction (Core.FunctionLambda (Core.Lambda {
   Core.lambdaParameter = (Core.lambdaTypeParameter lt),
+  Core.lambdaDomain = Nothing,
   Core.lambdaBody = (coreEncodeType (Core.lambdaTypeBody lt))})))
 
 coreEncodeLet :: (Core.Let -> Core.Term)
