@@ -13,7 +13,7 @@ import Hydra.Dsl.Annotations
 import Hydra.Langs.Json.Serde
 import Hydra.CoreEncoding
 --import Hydra.Rewriting
-import Hydra.Kv
+import Hydra.Annotations
 import Hydra.Tier1
 import qualified Hydra.Json as Json
 import qualified Hydra.Dsl.Terms as Terms

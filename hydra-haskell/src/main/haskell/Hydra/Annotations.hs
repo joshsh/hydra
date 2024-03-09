@@ -1,6 +1,6 @@
 -- | Functions for working with Kv, the default annotation type in Hydra
 
-module Hydra.Kv where
+module Hydra.Annotations where
 
 import Hydra.Basics
 import Hydra.Strip

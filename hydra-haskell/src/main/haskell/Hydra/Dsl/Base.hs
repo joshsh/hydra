@@ -11,7 +11,7 @@ import Hydra.Coders
 import Hydra.Core
 import Hydra.Compute
 import Hydra.Graph
-import Hydra.Kv
+import Hydra.Annotations
 import Hydra.Phantoms
 import Hydra.Module
 import qualified Hydra.Tier1 as Tier1

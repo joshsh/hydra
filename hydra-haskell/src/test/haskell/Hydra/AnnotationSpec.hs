@@ -1,4 +1,4 @@
-module Hydra.KvSpec where
+module Hydra.AnnotationsSpec where
 
 import Hydra.Kernel
 import qualified Hydra.Dsl.Terms as Terms

@@ -7,7 +7,7 @@ import Hydra.Constants
 import Hydra.Core
 import Hydra.CoreEncoding
 import Hydra.Graph
-import Hydra.Kv
+import Hydra.Annotations
 import Hydra.Module
 import Hydra.Rewriting
 import Hydra.Sources.Libraries

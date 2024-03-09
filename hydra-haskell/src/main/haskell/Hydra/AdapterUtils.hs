@@ -12,7 +12,7 @@ import Hydra.Basics
 import Hydra.Module
 import Hydra.Printing
 import Hydra.Mantle
-import Hydra.Kv
+import Hydra.Annotations
 import qualified Hydra.Lib.Strings as Strings
 import qualified Hydra.Dsl.Expect as Expect
 import qualified Hydra.Dsl.Terms as Terms

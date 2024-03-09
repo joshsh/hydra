@@ -10,7 +10,7 @@ import Hydra.Core
 import Hydra.CoreEncoding
 import Hydra.Extras
 import Hydra.Graph
-import Hydra.Kv
+import Hydra.Annotations
 import Hydra.Module
 import Hydra.Lexical
 import Hydra.Mantle

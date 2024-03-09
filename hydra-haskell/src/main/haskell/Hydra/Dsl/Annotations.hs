@@ -4,7 +4,7 @@ module Hydra.Dsl.Annotations where
 
 import Hydra.Core
 import Hydra.Compute
-import Hydra.Kv
+import Hydra.Annotations
 import Hydra.Dsl.Terms as Terms
 import qualified Hydra.Dsl.Types as Types
 

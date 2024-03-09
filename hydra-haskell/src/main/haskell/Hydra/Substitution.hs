@@ -4,7 +4,7 @@ module Hydra.Substitution where
 import Hydra.Core
 import Hydra.Compute
 import Hydra.Graph
-import Hydra.Kv
+import Hydra.Annotations
 import Hydra.Mantle
 import Hydra.Rewriting
 import Hydra.Tier1

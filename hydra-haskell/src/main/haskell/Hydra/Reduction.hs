@@ -9,7 +9,7 @@ import Hydra.Core
 import Hydra.Schemas
 import Hydra.Extras
 import Hydra.Graph
-import Hydra.Kv
+import Hydra.Annotations
 import Hydra.Lexical
 import Hydra.Rewriting
 import Hydra.Tier1
