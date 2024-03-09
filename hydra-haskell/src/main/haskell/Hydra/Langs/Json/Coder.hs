@@ -129,7 +129,7 @@ jsonEncodeTerm :: Term -> Flow s Json.Value
 jsonEncodeTerm term = case term of
       TermAnnotated (Annotated subj ann) -> do
           subjJson <- jsonEncodeTerm subj
-          pairs <- CM.mapM encodePair (M.toList (kvAnnotations ann))
+          pairs <- CM.mapM encodePair (M.toList ann)
           let annJson = Json.ValueObject $ M.fromList pairs
           return $ Json.ValueObject $ M.fromList [
                     ("subject", subjJson),

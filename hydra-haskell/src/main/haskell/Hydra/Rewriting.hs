@@ -297,14 +297,14 @@ rewriteTermM = rewrite $ \recurse term -> case term of
       t <- recurse (fieldTerm f)
       return f {fieldTerm = t}
 
-rewriteTermAnnotations :: (Kv -> Kv) -> Term -> Term
+rewriteTermAnnotations :: (M.Map String Term -> M.Map String Term) -> Term -> Term
 rewriteTermAnnotations f = rewriteTerm mapExpr
   where
     mapExpr recurse term = case term of
       TermAnnotated (Annotated term1 ann) -> TermAnnotated $ Annotated (recurse term1) (f ann)
       _ -> recurse term
 
-rewriteTermAnnotationsM :: (Kv -> Flow s Kv) -> Term -> Flow s Term
+rewriteTermAnnotationsM :: (M.Map String Term -> Flow s (M.Map String Term)) -> Term -> Flow s Term
 rewriteTermAnnotationsM f = rewriteTermM mapExpr
   where
     mapExpr recurse term = do
@@ -370,7 +370,7 @@ rewriteTypeM = rewrite $ \recurse typ -> case typ of
       t <- recurse $ fieldTypeType f
       return f {fieldTypeType = t}
 
-rewriteTypeAnnotations :: (Kv -> Kv) -> Type -> Type
+rewriteTypeAnnotations :: (M.Map String Term -> M.Map String Term) -> Type -> Type
 rewriteTypeAnnotations f = rewriteType mapExpr
   where
     mapExpr recurse typ = case typ of

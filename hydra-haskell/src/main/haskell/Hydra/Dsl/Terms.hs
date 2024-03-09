@@ -31,7 +31,7 @@ infixr 0 >:
 (>:) :: String -> Term -> Field
 n >: t = field n t
 
-annot :: Kv -> Term -> Term
+annot :: M.Map String Term -> Term -> Term
 annot ann t = TermAnnotated $ Annotated t ann
 
 apply :: Term -> Term -> Term

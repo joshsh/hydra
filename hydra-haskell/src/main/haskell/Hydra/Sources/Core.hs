@@ -28,7 +28,7 @@ hydraCoreModule = Module ns elements [] $
         doc "An object, such as a type or term, together with an annotation" $
         lambda "a" $ record [
           "subject">: "a",
-          "annotation">: core "Kv"],
+          "annotation">: Types.map string (core "Term")],
 
       def "Application" $
         doc "A term which applies a function to an argument" $
@@ -171,13 +171,6 @@ hydraCoreModule = Module ns elements [] $
             doc "A 32-bit unsigned integer value (unsigned int)" uint32,
           "uint64">:
             doc "A 64-bit unsigned integer value (unsigned long)" uint64],
-
-      def "Kv" $
-        doc "A key/value map which serves as a built-in metadata container for terms" $
-        record [
-          "annotations">:
-            doc "A map of annotation names to annotation values" $
-            Types.map string (core "Term")],
 
       def "Lambda" $
         doc "A function abstraction (lambda)" $

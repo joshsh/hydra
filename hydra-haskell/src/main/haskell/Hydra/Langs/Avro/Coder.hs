@@ -27,7 +27,7 @@ data AvroEnvironment = AvroEnvironment {
   avroEnvironmentNamedAdapters :: M.Map AvroQualifiedName AvroHydraAdapter,
   avroEnvironmentNamespace :: Maybe String,
   avroEnvironmentElements :: M.Map Name (Element), -- note: only used in the term coders
-  avroEnvironmentCreateAnnotation :: M.Map String Term -> Kv}
+  avroEnvironmentCreateAnnotation :: M.Map String Term -> M.Map String Term}
 type AvroHydraAdapter = Adapter AvroEnvironment AvroEnvironment Avro.Schema Type Json.Value Term
 
 data AvroQualifiedName = AvroQualifiedName (Maybe String) String deriving (Eq, Ord, Show)

@@ -19,7 +19,7 @@ import qualified Data.Maybe as Y
 
 type PgAdapter s a v = Adapter s s Type [PG.Label] Term [PG.Element v]
 
-termToElementsAdapter :: Schema s t v -> Type -> Flow s (PgAdapter s Kv v)
+termToElementsAdapter :: Schema s t v -> Type -> Flow s (PgAdapter s (M.Map String Term) v)
 termToElementsAdapter schema typ = do
     case getTypeAnnotation "elements" typ of
       Nothing -> pure trivialAdapter

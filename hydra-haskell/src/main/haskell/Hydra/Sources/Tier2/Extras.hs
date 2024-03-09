@@ -40,10 +40,7 @@ hydraExtrasModule = Module (Namespace "hydra/extras") elements [hydraGraphModule
       el qnameDef,
       el termArityDef,
       el typeArityDef,
-      el uncurryTypeDef,
-      el emptyKvDef,
-      el getAnnotationDef
---      el getAttrDef
+      el uncurryTypeDef
       ]
 
 functionArityDef :: Definition (Function -> Int)
@@ -102,24 +99,3 @@ uncurryTypeDef = hydraExtrasDefinition "uncurryType" $
     _Type_function>>: lambda "ft" $ Lists.cons
       @@ (Core.functionTypeDomain @@ var "ft")
       @@ (ref uncurryTypeDef @@ (Core.functionTypeCodomain @@ var "ft"))]) @@ var "t")
-
--- hydra/kv
-
-emptyKvDef :: Definition Kv
-emptyKvDef = hydraExtrasDefinition "emptyKv" $
-  record _Kv [
-    _Kv_annotations>>: Maps.empty]
-
-getAnnotationDef :: Definition (String -> Kv -> Maybe Term)
-getAnnotationDef = hydraExtrasDefinition "getAnnotation" $
-  lambda "key" $ lambda "ann" $
-    Maps.lookup @@ var "key" @@ (project _Kv _Kv_annotations @@ var "ann")
-
-
---getAttrDef :: Definition (String -> Flow s (Maybe Term))
---getAttrDef = hydraExtrasDefinition "getAttr" $
---  lambda "key" $ wrap _Flow $
---    lambda "s0" $ lambda "t0" $ record _FlowState [
---      fld _FlowState_value (just (Maps.lookup @@ var "key" @@ (project _Trace _Trace_other @@ var "t0"))),
---      fld _FlowState_state $ var "s0",
---      fld _FlowState_trace $ var "t0"]

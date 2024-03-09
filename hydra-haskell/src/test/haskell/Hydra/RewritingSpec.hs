@@ -174,20 +174,20 @@ testNormalization = do
 
     H.it "Check annotations" $ do
       checkNormed
-        (TypeAnnotated $ Annotated (Types.list $ Types.lambda "a" $ Types.var "a") emptyKv)
-        (TypeAnnotated $ Annotated (Types.lambda "a" $ Types.list $ Types.var "a") emptyKv)
+        (TypeAnnotated $ Annotated (Types.list $ Types.lambda "a" $ Types.var "a") M.empty)
+        (TypeAnnotated $ Annotated (Types.lambda "a" $ Types.list $ Types.var "a") M.empty)
       checkNormed
-        (TypeAnnotated $ Annotated (Types.lambda "a" $ Types.list $ Types.var "a") emptyKv)
-        (TypeAnnotated $ Annotated (Types.lambda "a" $ Types.list $ Types.var "a") emptyKv)
+        (TypeAnnotated $ Annotated (Types.lambda "a" $ Types.list $ Types.var "a") M.empty)
+        (TypeAnnotated $ Annotated (Types.lambda "a" $ Types.list $ Types.var "a") M.empty)
       checkNormed
-        (Types.list $ TypeAnnotated $ Annotated (Types.lambda "a" $ Types.var "a") emptyKv)
-        (Types.lambda "a" $ Types.list $ TypeAnnotated $ Annotated (Types.var "a") emptyKv)
+        (Types.list $ TypeAnnotated $ Annotated (Types.lambda "a" $ Types.var "a") M.empty)
+        (Types.lambda "a" $ Types.list $ TypeAnnotated $ Annotated (Types.var "a") M.empty)
       checkNormed
         (TypeRecord $ RowType (Name "SomeRecord") Nothing [
-          FieldType (FieldName "one") $ TypeAnnotated $ Annotated (Types.lambda "a" $ Types.var "a") emptyKv,
+          FieldType (FieldName "one") $ TypeAnnotated $ Annotated (Types.lambda "a" $ Types.var "a") M.empty,
           FieldType (FieldName "two") Types.string])
         (Types.lambda "a" $ TypeRecord $ RowType (Name "SomeRecord") Nothing [
-          FieldType (FieldName "one") $ TypeAnnotated $ Annotated (Types.var "a") emptyKv,
+          FieldType (FieldName "one") $ TypeAnnotated $ Annotated (Types.var "a") M.empty,
           FieldType (FieldName "two") Types.string])
 
     H.it "Check universal types" $ do
@@ -259,7 +259,7 @@ testReplaceTerm = do
 
 --      H.it "Check that metadata is replace recursively" $ do
 --        H.shouldBe
---          (rewriteTerm keepTerm replaceKv (list [annot 42 (string "foo")] Int))
+--          (rewriteTerm keepTerm replaceAnn (list [annot 42 (string "foo")] Int))
 --          (list [annot "42" (string "foo")])
   where
     keepTerm recurse term = recurse term
@@ -280,7 +280,7 @@ testReplaceTerm = do
 
     replaceListsPost recurse = replaceLists . recurse
 
-    replaceKv i = show i
+    replaceAnn i = show i
 
 testRewriteExampleType :: H.SpecWith ()
 testRewriteExampleType = do
@@ -357,5 +357,4 @@ spec = do
   testReplaceTerm
   testRewriteExampleType
   testSimplifyTerm
---  testStripKv -- TODO: restore me
   testTopologicalSortBindings

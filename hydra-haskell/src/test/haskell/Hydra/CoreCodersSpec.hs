@@ -23,9 +23,9 @@ checkAnnotationsArePreserved = do
         annotatedStringType
   where
     annotatedStringType :: Type
-    annotatedStringType = TypeAnnotated $ Annotated Types.string $ Kv $ M.fromList [
-      (kvDescription, Terms.string "The string literal type"),
-      (kvType, coreEncodeType $ TypeVariable _Type)]
+    annotatedStringType = TypeAnnotated $ Annotated Types.string $ M.fromList [
+      (annotationKey_description, Terms.string "The string literal type"),
+      (annotationKey_type, coreEncodeType $ TypeVariable _Type)]
 
 checkDecodingIndividualTypes :: H.SpecWith ()
 checkDecodingIndividualTypes = do

@@ -172,16 +172,6 @@ unsupportedConstructorsAreModified = H.describe "Verify that unsupported term co
       (inject functionProxyName $ field "record" $ string $
         show (project testTypePersonName fname :: Term)) -- Note: the field name is not dereferenced
 
---  H.it "Nominal types (when unsupported) are dereferenced" $
---    QC.property $ \s -> checkDataAdapter
---      [TypeVariantLiteral, TypeVariantAnnotated]
---      testTypeStringAlias
---      (TypeAnnotated $ Annotated Types.string $ Kv $
---        M.fromList [(kvDescription, Terms.string "An alias for the string type")])
---      False
---      (string s)
---      (string s)
-
   H.it "Unions (when unsupported) become records" $
     QC.property $ \i -> checkDataAdapter
       [TypeVariantLiteral, TypeVariantOptional, TypeVariantRecord]

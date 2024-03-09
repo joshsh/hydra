@@ -1,4 +1,4 @@
--- | Functions for working with Kv, the default annotation type in Hydra
+-- | Functions for working with annotations
 
 module Hydra.Annotations where
 
@@ -23,25 +23,25 @@ import qualified Data.Set as S
 import qualified Data.Maybe as Y
 
 
-kvClasses = "classes" :: String
-kvDescription = "description" :: String
-kvType = "type" :: String
+annotationKey_classes = "classes" :: String
+annotationKey_description = "description" :: String
+annotationKey_type = "type" :: String
 
-aggregateAnnotations :: (x -> Maybe (Annotated x)) -> x -> Kv
-aggregateAnnotations getAnn t = Kv $ M.fromList $ L.concat $ toPairs [] t
+aggregateAnnotations :: (x -> Maybe (Annotated x)) -> x -> M.Map String Term
+aggregateAnnotations getAnn t = M.fromList $ L.concat $ toPairs [] t
   where
     toPairs rest t = case getAnn t of
       Nothing -> rest
-      Just (Annotated t' (Kv other)) -> toPairs ((M.toList other):rest) t'
+      Just (Annotated t' other) -> toPairs ((M.toList other):rest) t'
 
 compressTermAnnotations :: Term -> Term
 compressTermAnnotations term = if M.null ann1
     then term1
-    else TermAnnotated (Annotated term1 $ Kv ann1)
+    else TermAnnotated (Annotated term1 ann1)
   where
     (term1, ann1) = compress term
     compress term = case term of
-      TermAnnotated (Annotated subj ann) -> (term2, M.union (kvAnnotations ann) ann2)
+      TermAnnotated (Annotated subj ann) -> (term2, M.union ann ann2)
         where
           (term2, ann2) = compress subj
       _ -> (term, M.empty)
@@ -69,29 +69,29 @@ getAttr key = Flow q
 getAttrWithDefault :: String -> Term -> Flow s Term
 getAttrWithDefault key def = Y.fromMaybe def <$> getAttr key
 
-getDescription :: Kv -> Flow Graph (Y.Maybe String)
-getDescription kv = case getAnnotation kvDescription kv of
+getDescription :: M.Map String Term -> Flow Graph (Y.Maybe String)
+getDescription anns = case M.lookup annotationKey_description anns of
   Nothing -> pure Nothing
   Just term -> case term of
     TermLiteral (LiteralString s) -> pure $ Just s
-    _ -> fail $ "unexpected value for " ++ show kvDescription ++ ": " ++ show term
+    _ -> fail $ "unexpected value for " ++ show annotationKey_description ++ ": " ++ show term
 
 getTermAnnotation :: String -> Term -> Y.Maybe Term
-getTermAnnotation key = getAnnotation key . termAnnotation
+getTermAnnotation key = M.lookup key . termAnnotation
 
 getTermDescription :: Term -> Flow Graph (Y.Maybe String)
 getTermDescription = getDescription . termAnnotation
 
-getType :: Kv -> Flow Graph (Y.Maybe Type)
-getType kv = case getAnnotation kvType kv of
+getType :: M.Map String Term -> Flow Graph (Y.Maybe Type)
+getType anns = case M.lookup annotationKey_type anns of
   Nothing -> pure Nothing
   Just dat -> Just <$> coreDecodeType dat
 
 getTypeAnnotation :: String -> Type -> Y.Maybe Term
-getTypeAnnotation key = getAnnotation key . typeAnnotation
+getTypeAnnotation key = M.lookup key . typeAnnotation
 
 getTypeClasses :: Type -> Flow Graph (M.Map Name (S.Set TypeClass))
-getTypeClasses typ = case getTypeAnnotation kvClasses typ of
+getTypeClasses typ = case getTypeAnnotation annotationKey_classes typ of
     Nothing -> pure M.empty
     Just term -> Expect.map coreDecodeName (Expect.set decodeClass) term
   where
@@ -118,19 +118,19 @@ resetCount attrName = do
   return ()
 
 normalizeTermAnnotations :: Term -> Term
-normalizeTermAnnotations term = if M.null (kvAnnotations kv)
+normalizeTermAnnotations term = if M.null anns
     then stripped
-    else TermAnnotated $ Annotated stripped kv
+    else TermAnnotated $ Annotated stripped anns
   where
-    kv = termAnnotation term
+    anns = termAnnotation term
     stripped = stripTerm term
 
 normalizeTypeAnnotations :: Type -> Type
-normalizeTypeAnnotations typ = if M.null (kvAnnotations kv)
+normalizeTypeAnnotations typ = if M.null anns
     then stripped
-    else TypeAnnotated $ Annotated stripped kv
+    else TypeAnnotated $ Annotated stripped anns
   where
-    kv = typeAnnotation typ
+    anns = typeAnnotation typ
     stripped = stripType typ
 
 putAttr :: String -> Term -> Flow s ()
@@ -138,28 +138,28 @@ putAttr key val = Flow q
   where
     q s0 t0 = FlowState (Just ()) s0 (t0 {traceOther = M.insert key val $ traceOther t0})
 
-removeAnnotation :: String -> Kv -> Kv
+removeAnnotation :: String -> M.Map String Term -> M.Map String Term
 removeAnnotation key = setAnnotation key Nothing
 
-removeType :: Kv -> Kv
-removeType = removeAnnotation kvType
+removeType :: M.Map String Term -> M.Map String Term
+removeType = removeAnnotation annotationKey_type
 
-setAnnotation :: String -> Y.Maybe Term -> Kv -> Kv
-setAnnotation key val (Kv m) = Kv $ M.alter (const val) key m
+setAnnotation :: String -> Y.Maybe Term -> M.Map String Term -> M.Map String Term
+setAnnotation key val m = M.alter (const val) key m
 
-setDescription :: Y.Maybe String -> Kv -> Kv
-setDescription d = setAnnotation kvDescription (TermLiteral . LiteralString <$> d)
+setDescription :: Y.Maybe String -> M.Map String Term -> M.Map String Term
+setDescription d = setAnnotation annotationKey_description (TermLiteral . LiteralString <$> d)
 
 setTermAnnotation :: String -> Y.Maybe Term -> Term -> Term
-setTermAnnotation key val term = if kv == Kv M.empty
+setTermAnnotation key val term = if anns == M.empty
     then term'
-    else TermAnnotated $ Annotated term' kv
+    else TermAnnotated $ Annotated term' anns
   where
     term' = stripTerm term
-    kv = setAnnotation key val $ termAnnotation term
+    anns = setAnnotation key val $ termAnnotation term
 
 setTermDescription :: Y.Maybe String -> Term -> Term
-setTermDescription d = setTermAnnotation kvDescription (TermLiteral . LiteralString <$> d)
+setTermDescription d = setTermAnnotation annotationKey_description (TermLiteral . LiteralString <$> d)
 
 -- TODO: move me; types are no longer attached using Annotated
 setTermType :: Y.Maybe Type -> Term -> Term
@@ -170,19 +170,19 @@ setTermType mt term = case term of
    Nothing -> term
    Just t -> TermTyped $ TypedTerm t term
 
-setType :: Y.Maybe Type -> Kv -> Kv
-setType mt = setAnnotation kvType (coreEncodeType <$> mt)
+setType :: Y.Maybe Type -> M.Map String Term -> M.Map String Term
+setType mt = setAnnotation annotationKey_type (coreEncodeType <$> mt)
 
 setTypeAnnotation :: String -> Y.Maybe Term -> Type -> Type
-setTypeAnnotation key val typ = if kv == Kv M.empty
+setTypeAnnotation key val typ = if anns == M.empty
     then typ'
-    else TypeAnnotated $ Annotated typ' kv
+    else TypeAnnotated $ Annotated typ' anns
   where
     typ' = stripType typ
-    kv = setAnnotation key val $ typeAnnotation typ
+    anns = setAnnotation key val $ typeAnnotation typ
 
 setTypeClasses :: M.Map Name (S.Set TypeClass) -> Type -> Type
-setTypeClasses m = setTypeAnnotation kvClasses encoded
+setTypeClasses m = setTypeAnnotation annotationKey_classes encoded
   where
     encoded = if M.null m
       then Nothing
@@ -195,20 +195,20 @@ setTypeClasses m = setTypeAnnotation kvClasses encoded
           TypeClassOrdering -> _TypeClass_ordering
 
 setTypeDescription :: Y.Maybe String -> Type -> Type
-setTypeDescription d = setTypeAnnotation kvDescription (TermLiteral . LiteralString <$> d)
+setTypeDescription d = setTypeAnnotation annotationKey_description (TermLiteral . LiteralString <$> d)
 
-termAnnotation :: Term -> Kv
+termAnnotation :: Term -> M.Map String Term
 termAnnotation = aggregateAnnotations $ \t -> case t of
   TermAnnotated a -> Just a
   _ -> Nothing
 
-typeAnnotation :: Type -> Kv
+typeAnnotation :: Type -> M.Map String Term
 typeAnnotation = aggregateAnnotations $ \t -> case t of
   TypeAnnotated a -> Just a
   _ -> Nothing
 
 hasTypeAnnotation :: Term -> Bool
-hasTypeAnnotation = M.member kvType . kvAnnotations . termAnnotation
+hasTypeAnnotation = M.member annotationKey_type . termAnnotation
 
 whenFlag :: String -> Flow s a -> Flow s a -> Flow s a
 whenFlag flag fthen felse = do
