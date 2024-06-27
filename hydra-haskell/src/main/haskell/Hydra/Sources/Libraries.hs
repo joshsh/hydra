@@ -57,6 +57,7 @@ _flows_bind = qname _hydra_lib_flows "bind" :: Name
 _flows_fail = qname _hydra_lib_flows "fail" :: Name
 _flows_map = qname _hydra_lib_flows "map" :: Name
 _flows_pure = qname _hydra_lib_flows "pure" :: Name
+_flows_sequence = qname _hydra_lib_flows "sequence" :: Name
 
 _hydra_lib_io :: Namespace
 _hydra_lib_io = Namespace "hydra/lib/io"
@@ -220,7 +221,8 @@ hydraLibFlowsPrimitives = [
     prim2Poly ["s", "x", "y"] _flows_bind  (flow s x) (function x (flow s y)) (flow s y) Flows.bind,
     prim1Poly ["s", "x"]      _flows_fail  string (flow s x) Flows.fail,
     prim2Poly ["s", "x", "y"] _flows_map   (function x y) (flow s x) (flow s y) Flows.map,
-    prim1Poly ["s", "x"]      _flows_pure  x (flow s x) Flows.pure]
+    prim1Poly ["s", "x"]      _flows_pure  x (flow s x) Flows.pure,
+    prim1Poly ["s", "x"]      _flows_sequence (list (flow s x)) (flow s (list x)) Flows.sequence]
   where
     s = variable "s"
     x = variable "x"

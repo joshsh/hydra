@@ -44,3 +44,6 @@ map = fmap
 
 pure :: x -> Flow s x
 pure = return
+
+sequence :: [Flow s x] -> Flow s [x]
+sequence = CM.sequence

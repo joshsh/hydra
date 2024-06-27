@@ -28,6 +28,9 @@ map = Datum $ Terms.primitive _flows_map
 pure :: Datum (a -> Flow s a)
 pure = Datum $ Terms.primitive _flows_pure
 
+sequence :: Datum ([Flow s a] -> Flow s [a])
+sequence = Datum $ Terms.primitive _flows_sequence
+
 -- Accessors
 
 flowState :: Datum (Maybe a) -> Datum s -> Datum Trace -> Datum (FlowState s a)
