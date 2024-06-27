@@ -159,7 +159,8 @@ _TermVariant_wrap = (Core.FieldName "wrap")
 data TypeConstraint =
   TypeConstraint {
     typeConstraintLeft :: Core.Type,
-    typeConstraintRight :: Core.Type}
+    typeConstraintRight :: Core.Type,
+    typeConstraintContext :: Maybe String}
   deriving (Eq, Ord, Read, Show)
 
 _TypeConstraint = (Core.Name "hydra/mantle.TypeConstraint")
@@ -167,6 +168,8 @@ _TypeConstraint = (Core.Name "hydra/mantle.TypeConstraint")
 _TypeConstraint_left = (Core.FieldName "left")
 
 _TypeConstraint_right = (Core.FieldName "right")
+
+_TypeConstraint_context = (Core.FieldName "context")
 
 -- | A type expression together with free type variables occurring in the expression
 data TypeScheme = 

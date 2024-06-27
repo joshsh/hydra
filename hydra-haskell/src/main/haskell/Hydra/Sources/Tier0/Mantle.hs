@@ -91,7 +91,8 @@ hydraMantleModule = Module ns elements [hydraCoreModule] $
         doc "An assertion that two types can be unified into a single type" $
         record [
           "left">: core "Type",
-          "right">: core "Type"],
+          "right">: core "Type",
+          "context">: optional string],
 
       def "TypeScheme" $
         doc "A type expression together with free type variables occurring in the expression" $
