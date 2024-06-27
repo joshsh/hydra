@@ -155,6 +155,19 @@ _TermVariant_variable = (Core.FieldName "variable")
 
 _TermVariant_wrap = (Core.FieldName "wrap")
 
+-- | An assertion that two types can be unified into a single type
+data TypeConstraint =
+  TypeConstraint {
+    typeConstraintLeft :: Core.Type,
+    typeConstraintRight :: Core.Type}
+  deriving (Eq, Ord, Read, Show)
+
+_TypeConstraint = (Core.Name "hydra/mantle.TypeConstraint")
+
+_TypeConstraint_left = (Core.FieldName "left")
+
+_TypeConstraint_right = (Core.FieldName "right")
+
 -- | A type expression together with free type variables occurring in the expression
 data TypeScheme = 
   TypeScheme {
