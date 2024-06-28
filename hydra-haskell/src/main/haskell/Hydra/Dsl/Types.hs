@@ -5,6 +5,7 @@ module Hydra.Dsl.Types where
 
 import Hydra.Constants
 import Hydra.Core
+import Hydra.Mantle
 import qualified Hydra.Dsl.LiteralTypes as LiteralTypes
 
 import qualified Data.List as L
@@ -102,11 +103,17 @@ literal = TypeLiteral
 map :: Type -> Type -> Type
 map kt vt = TypeMap $ MapType kt vt
 
+mono :: Type -> TypeScheme
+mono = TypeScheme []
+
 optional :: Type -> Type
 optional = TypeOptional
 
 pair :: Type -> Type -> Type
 pair a b = TypeProduct [a, b]
+
+poly :: [String] -> Type -> TypeScheme
+poly vars = TypeScheme (Name <$> vars)
 
 product :: [Type] -> Type
 product = TypeProduct

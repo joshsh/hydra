@@ -6,6 +6,7 @@ import Hydra.Compute
 import Hydra.Mantle
 import qualified Hydra.Tier1 as Tier1
 import qualified Hydra.Lib.Flows as Flows
+import qualified Hydra.Dsl.Types as Types
 
 import qualified Data.List as L
 import qualified Data.Map as M
@@ -13,8 +14,6 @@ import qualified Data.Map as M
 
 --------------------------------------------------------------------------------
 -- Graphs
-
-type SLexicon = M.Map Name TypeScheme
 
 showType :: Type -> String
 showType (TypeFunction (FunctionType dom cod)) = "(" ++ showType dom ++ "→" ++ showType cod ++ ")"
@@ -29,26 +28,6 @@ showTypeScheme (TypeScheme vars body) = "∀[" ++ (L.intercalate "," (fmap (\(Na
 
 showConstraint :: TypeConstraint -> String
 showConstraint (TypeConstraint ltyp rtyp _) = showType ltyp ++ "≡" ++ showType rtyp
-
-data SApplicationTerm = SApplicationTerm STerm STerm deriving (Eq, Ord, Show)
-data SLambda = SLambda Name STerm deriving (Eq, Ord, Show)
--- TODO: modify to use multiple bindings
-data SLet = SLet SField STerm deriving (Eq, Ord, Show)
-data SField = SField Name STerm deriving (Eq, Ord, Show)
-
-data STerm
-  = STermApplication SApplicationTerm
-  | STermLambda SLambda
-  | STermMap (M.Map STerm STerm)
-  | STermLet SLet
-  | STermList [STerm]
-  | STermLiteral Literal
-  | STermPrimitive Name
-  | STermTuple [STerm]
---  | STermTyped STerm TypeScheme
-  | STermVariable Name
-  deriving (Eq, Ord, Show)
-
 
 --------------------------------------------------------------------------------
 -- Unification
@@ -165,15 +144,12 @@ fromEither x = case x of
   Left e -> Flows.fail $ show e
   Right a -> Flows.pure a
 
-pam :: Flow s a -> (a -> b) -> Flow s b
-pam m f = fmap f m
-
 --------------------------------------------------------------------------------
 -- Inference
 
 data SInferenceContext
   = SInferenceContext {
-    sInferenceContextLexicon :: SLexicon,
+    sInferenceContextLexicon :: M.Map Name TypeScheme,
     sInferenceContextVariableCount :: Int,
     sInferenceContextTypingEnvironment :: M.Map Name TypeScheme}
   deriving (Eq, Ord, Show)
@@ -192,7 +168,7 @@ data TypeInferenceError
   | TypeInferenceErrorVariableNotBoundToType Name
   deriving (Eq, Ord, Show)
 
-sInferType :: STerm -> Flow SInferenceContext TypeScheme
+sInferType :: Term -> Flow SInferenceContext TypeScheme
 sInferType term = Flows.bind (sInferTypeInternal term) unifyAndSubst
   where
     unifyAndSubst :: SInferenceResult -> Flow SInferenceContext TypeScheme
@@ -201,10 +177,10 @@ sInferType term = Flows.bind (sInferTypeInternal term) unifyAndSubst
         doSubst :: SSubst -> Flow SInferenceContext TypeScheme
         doSubst subst = sInstantiateAndNormalize $ sSubstituteTypeVariablesInScheme subst $ sInferenceResultScheme result
 
-sInferTypeInternal :: STerm -> Flow SInferenceContext SInferenceResult
+sInferTypeInternal :: Term -> Flow SInferenceContext SInferenceResult
 sInferTypeInternal term = case term of
 
-    STermApplication (SApplicationTerm lterm rterm) -> Flows.bind sNewVar withVar1
+    TermApplication (Application lterm rterm) -> Flows.bind sNewVar withVar1
       where
         withVar1 dom = Flows.bind sNewVar withVar2
           where
@@ -213,7 +189,7 @@ sInferTypeInternal term = case term of
                 withLeft lresult = Flows.bind (sInferTypeInternal rterm) withRight
                   where
                     withRight rresult = Flows.pure $ SInferenceResult (TypeScheme tvars $ TypeVariable cod) $ [
-                        TypeConstraint (tyfun (TypeVariable dom) (TypeVariable cod)) ltyp ctx,
+                        TypeConstraint (Types.function (TypeVariable dom) (TypeVariable cod)) ltyp ctx,
                         TypeConstraint (TypeVariable dom) rtyp ctx]
                         ++ sInferenceResultConstraints lresult ++ sInferenceResultConstraints rresult
                       where
@@ -222,46 +198,51 @@ sInferTypeInternal term = case term of
                         rtyp = typeSchemeType $ sInferenceResultScheme rresult
                         tvars = typeSchemeVariables (sInferenceResultScheme lresult) ++ typeSchemeVariables (sInferenceResultScheme rresult)
 
-    STermLambda (SLambda var body) -> Flows.bind sNewVar withVar
+    TermFunction (FunctionLambda (Lambda var _ body)) -> Flows.bind sNewVar withVar
      where
-        withVar tvar = sWithTypeBinding var (tymono $ TypeVariable tvar) $ Flows.map withBodyType (sInferTypeInternal body)
+        withVar tvar = sWithTypeBinding var (Types.mono $ TypeVariable tvar) $ Flows.map withBodyType (sInferTypeInternal body)
           where
             -- TODO: prove that tvar will never appear in vars
             withBodyType (SInferenceResult (TypeScheme vars t) constraints)
-              = SInferenceResult (TypeScheme (tvar:vars) $ tyfun (TypeVariable tvar) t) constraints
+              = SInferenceResult (TypeScheme (tvar:vars) $ Types.function (TypeVariable tvar) t) constraints
 
     -- TODO: propagate rawValueVars and envVars into the final result, possibly after substitution
     -- TODO: recursive and mutually recursive let
-    STermLet (SLet (SField key value) env) -> Flows.bind sNewVar withVar
+    TermLet (Let fields env) -> if L.length fields > 2
+        then sInferTypeInternal $ TermLet (Let [L.head fields] $ TermLet $ Let (L.tail fields) env)
+        else forSingleBinding $ L.head fields
       where
-        -- Create a temporary type variable for the binding
-        withVar var = sWithTypeBinding key (tymono $ TypeVariable var) $
-            Flows.bind (sInferTypeInternal value) withValueType
+        forSingleBinding (Field (FieldName key') value) = Flows.bind sNewVar withVar
           where
-            -- Unify and substitute over the value constraints
-            -- TODO: save the substitution and pass it along, instead of the original set of constraints
-            withValueType (SInferenceResult rawValueScheme valueConstraints) = Flows.bind (fromEither $ uUnify kvConstraints) afterUnification
+            key = Name key'
+            -- Create a temporary type variable for the binding
+            withVar var = sWithTypeBinding key (Types.mono $ TypeVariable var) $
+                Flows.bind (sInferTypeInternal value) withValueType
               where
-                rawValueVars = typeSchemeVariables rawValueScheme
-                kvConstraints = bindingConstraint:valueConstraints
-                bindingConstraint = TypeConstraint (TypeVariable var) (typeSchemeType rawValueScheme) $ Just "let binding"
-                -- Now update the type binding to use the inferred type
-                afterUnification subst = sWithTypeBinding key valueScheme
-                    $ Flows.map withEnvType (sInferTypeInternal env)
+                -- Unify and substitute over the value constraints
+                -- TODO: save the substitution and pass it along, instead of the original set of constraints
+                withValueType (SInferenceResult rawValueScheme valueConstraints) = Flows.bind (fromEither $ uUnify kvConstraints) afterUnification
                   where
-                    valueScheme = sSubstituteTypeVariablesInScheme subst rawValueScheme
-                    withEnvType (SInferenceResult envScheme envConstraints) = SInferenceResult envScheme constraints
+                    rawValueVars = typeSchemeVariables rawValueScheme
+                    kvConstraints = keyConstraint:valueConstraints
+                    keyConstraint = TypeConstraint (TypeVariable var) (typeSchemeType rawValueScheme) $ Just "let binding"
+                    -- Now update the type binding to use the inferred type
+                    afterUnification subst = sWithTypeBinding key valueScheme
+                        $ Flows.map withEnvType (sInferTypeInternal env)
                       where
-                        constraints = kvConstraints ++ envConstraints
-                        envVars = typeSchemeVariables envScheme
+                        valueScheme = sSubstituteTypeVariablesInScheme subst rawValueScheme
+                        withEnvType (SInferenceResult envScheme envConstraints) = SInferenceResult envScheme constraints
+                          where
+                            constraints = kvConstraints ++ envConstraints
+                            envVars = typeSchemeVariables envScheme
 
-    STermList els -> Flows.bind sNewVar withVar
+    TermList els -> Flows.bind sNewVar withVar
       where
         withVar tvar = if L.null els
-            then Flows.pure $ yield (TypeScheme [tvar] $ tylist $ TypeVariable tvar) []
-            else pam (Flows.sequence (sInferTypeInternal <$> els)) fromResults
+            then Flows.pure $ yield (TypeScheme [tvar] $ Types.list $ TypeVariable tvar) []
+            else Flows.map fromResults (Flows.sequence (sInferTypeInternal <$> els))
           where
-            fromResults results = yield (TypeScheme vars $ tylist $ TypeVariable tvar) constraints
+            fromResults results = yield (TypeScheme vars $ Types.list $ TypeVariable tvar) constraints
               where
                 uctx = Just "list element"
                 constraints = cinner ++ couter
@@ -270,15 +251,15 @@ sInferTypeInternal term = case term of
                 types = typeSchemeType . sInferenceResultScheme <$> results
                 vars = L.concat (typeSchemeVariables . sInferenceResultScheme <$> results)
 
-    STermLiteral lit -> Flows.pure $ yieldWithoutConstraints $ tymono $ TypeLiteral $ literalType lit
+    TermLiteral lit -> Flows.pure $ yieldWithoutConstraints $ Types.mono $ TypeLiteral $ literalType lit
 
-    STermMap m -> Flows.bind sNewVar withKeyVar
+    TermMap m -> Flows.bind sNewVar withKeyVar
       where
         withKeyVar kvar = Flows.bind sNewVar withValueVar
           where
             withValueVar vvar = if M.null m
-               then Flows.pure $ yield (TypeScheme [kvar, vvar] $ tymap (TypeVariable kvar) (TypeVariable vvar)) []
-               else pam (Flows.sequence $ fmap fromPair $ M.toList m) withResults
+               then Flows.pure $ yield (TypeScheme [kvar, vvar] $ Types.map (TypeVariable kvar) (TypeVariable vvar)) []
+               else Flows.map withResults (Flows.sequence $ fmap fromPair $ M.toList m)
               where
                 fromPair (k, v) = Flows.bind (sInferTypeInternal k) withKeyType
                   where
@@ -289,16 +270,16 @@ sInferTypeInternal term = case term of
                              [TypeConstraint (TypeVariable kvar) kt $ Just "map key",
                               TypeConstraint (TypeVariable vvar) vt $ Just "map value"]
                               ++ kconstraints ++ vconstraints)
-                withResults pairs = yield (TypeScheme (L.concat (fst <$> pairs)) $ tymap (TypeVariable kvar) (TypeVariable vvar)) $
+                withResults pairs = yield (TypeScheme (L.concat (fst <$> pairs)) $ Types.map (TypeVariable kvar) (TypeVariable vvar)) $
                   L.concat (snd <$> pairs)
 
-    STermPrimitive name -> Flow $ \ctx t -> case M.lookup name (sInferenceContextLexicon ctx) of
+    TermFunction (FunctionPrimitive name) -> Flow $ \ctx t -> case M.lookup name (sInferenceContextLexicon ctx) of
       Just scheme -> unFlow (Flows.map withoutConstraints $ sInstantiate scheme) ctx t
       Nothing -> unFlow (Flows.fail $ show $ TypeInferenceErrorNoSuchPrimitive name) ctx t
 
-    STermTuple els -> if L.null els
-      then Flows.pure $ yield (tymono $ typrod []) []
-      else pam (Flows.sequence (sInferTypeInternal <$> els)) fromResults
+    TermProduct els -> if L.null els
+      then Flows.pure $ yield (Types.mono $ Types.product []) []
+      else Flows.map fromResults (Flows.sequence (sInferTypeInternal <$> els))
       where
         fromResults results = yield (TypeScheme tvars $ TypeProduct tbodies) constraints
           where
@@ -306,7 +287,7 @@ sInferTypeInternal term = case term of
             tbodies = typeSchemeType . sInferenceResultScheme <$> results
             constraints = L.concat $ sInferenceResultConstraints <$> results
 
-    STermVariable var -> Flow $ \ctx t -> case M.lookup var (sInferenceContextTypingEnvironment ctx) of
+    TermVariable var -> Flow $ \ctx t -> case M.lookup var (sInferenceContextTypingEnvironment ctx) of
       Just scheme -> unFlow (Flows.map withoutConstraints $ sInstantiate scheme) ctx t
       Nothing -> unFlow (Flows.fail $ show $ TypeInferenceErrorVariableNotBoundToType var) ctx t
 
@@ -373,45 +354,30 @@ sWithTypeBinding name scheme f = Flow helper
 --------------------------------------------------------------------------------
 -- Testing
 
-tyfun d c = TypeFunction $ FunctionType d c
-tyint = TypeLiteral $ LiteralTypeInteger $ IntegerTypeInt32
-tylist = TypeList
-tymap k v = TypeMap $ MapType k v
-typair l r = TypeProduct [l, r]
-typrod = TypeProduct
-tymono = TypeScheme []
-typoly vars = TypeScheme (Name <$> vars)
-tystr = TypeLiteral LiteralTypeString
-tyvar = TypeVariable . Name
+_app l r = TermApplication $ Application l r
+_int = TermLiteral . LiteralInteger . IntegerValueInt32
+_lambda v b = TermFunction $ FunctionLambda $ Lambda (Name v) Nothing b
+_list = TermList
+_map = TermMap
+_pair l r = TermProduct [l, r]
+_str = TermLiteral . LiteralString
+_var = TermVariable . Name
 
-_app l r = STermApplication $ SApplicationTerm l r
-_int = STermLiteral . LiteralInteger . IntegerValueInt32
-_lambda v b = STermLambda $ SLambda (Name v) b
-_list = STermList
-_map = STermMap
-_pair l r = STermTuple [l, r]
-_str = STermLiteral . LiteralString
-_var = STermVariable . Name
-
-
-
-
-
-(@@) :: STerm -> STerm -> STerm
-f @@ x = STermApplication $ SApplicationTerm f x
+(@@) :: Term -> Term -> Term
+f @@ x = TermApplication $ Application f x
 
 infixr 0 >:
-(>:) :: String -> STerm -> (Name, STerm)
-n >: t = (Name n, t)
+(>:) :: String -> Term -> (FieldName, Term)
+n >: t = (FieldName n, t)
 
-int32 = STermLiteral . LiteralInteger . IntegerValueInt32
-lambda v b = STermLambda $ SLambda (Name v) b
-list = STermList
-map = STermMap
-pair l r = STermTuple [l, r]
-string = STermLiteral . LiteralString
-var = STermVariable . Name
-with env bindings = L.foldl (\e (k, v) -> STermLet $ SLet (SField k v) e) env bindings
+int32 = TermLiteral . LiteralInteger . IntegerValueInt32
+lambda v b = TermFunction $ FunctionLambda $ Lambda (Name v) Nothing b
+list = TermList
+map = TermMap
+pair l r = TermProduct [l, r]
+string = TermLiteral . LiteralString
+var = TermVariable . Name
+with env bindings = L.foldl (\e (k, v) -> TermLet $ Let [Field k v] e) env bindings
 
 
 
@@ -421,16 +387,16 @@ infixr 0 ===
 t1 === t2 = TypeConstraint t1 t2 $ Just "some context"
 
 
-_add = STermPrimitive $ Name "add"
-primPred = STermPrimitive $ Name "primPred"
-primSucc = STermPrimitive $ Name "primSucc"
+_add = TermFunction $ FunctionPrimitive $ Name "add"
+primPred = TermFunction $ FunctionPrimitive $ Name "primPred"
+primSucc = TermFunction $ FunctionPrimitive $ Name "primSucc"
 
 _unify t1 t2 = uUnify [TypeConstraint t1 t2 $ Just "ctx"]
 
 sTestLexicon = M.fromList [
-  (Name "add", tymono $ tyfun tyint tyint),
-  (Name "primPred", tymono $ tyfun tyint tyint),
-  (Name "primSucc", tymono $ tyfun tyint tyint)]
+  (Name "add", Types.mono $ Types.function Types.int32 Types.int32),
+  (Name "primPred", Types.mono $ Types.function Types.int32 Types.int32),
+  (Name "primSucc", Types.mono $ Types.function Types.int32 Types.int32)]
 
 sInitialContext = SInferenceContext sTestLexicon 0 M.empty
 
@@ -449,25 +415,25 @@ _con t1 t2 = TypeConstraint t1 t2 $ Just "ctx"
 ----------------------------------------
 -- Unification
 
-_unify (tyvar "a") (tyvar "b")
-_unify (tyvar "a") (tylist $ tyvar "b")
+_unify (Types.var "a") (Types.var "b")
+_unify (Types.var "a") (Types.list $ Types.var "b")
 
-_unify (tyvar "a") tyint
+_unify (Types.var "a") Types.int32
 
-_unify (tylist tystr) (tylist $ tyvar "a")
+_unify (Types.list Types.string) (Types.list $ Types.var "a")
 
-_unify (tymap (tyvar "a") tyint) (tymap tystr (tyvar "b"))
+_unify (Types.map (Types.var "a") Types.int32) (Types.map Types.string (Types.var "b"))
 
-sUnifyAll [tyvar "t1" === tyvar "t0", tyvar "t1" === tyint]
+sUnifyAll [Types.var "t1" === Types.var "t0", Types.var "t1" === Types.int32]
 
 -- Failure cases
 
-_unify tystr tyint
+_unify Types.string Types.int32
 
-_unify (tyvar "a") (tylist $ tyvar "a")
+_unify (Types.var "a") (Types.list $ Types.var "a")
 
 ctx = Just "ctx"
-uUnify [(TypeConstraint (tyvar "t1") (tyvar "t0") ctx), (TypeConstraint (tyvar "t1") tyint ctx)]
+uUnify [(TypeConstraint (Types.var "t1") (Types.var "t0") ctx), (TypeConstraint (Types.var "t1") Types.int32 ctx)]
 
 
 ----------------------------------------
@@ -494,29 +460,29 @@ _inferRaw (_list [_int 42])
 import Hydra.NewInference
 
 -- System F cases
-_inferRaw (lambda "x" $ var "x")                                                           -- (typoly ["t0"] $ tyfun (tyvar "t0") (tyvar "t0"))
-_inferRaw (int32 32 `with` ["foo">: lambda "x" $ var "x"])                                 -- (tymono tyint)
-_inferRaw ((var "f" @@ int32 0) `with` ["f">: lambda "x" $ var "x"])                       -- (tymono tyint)
-_inferRaw (var "f" `with` ["f">: (lambda "x" $ var "x") @@ int32 0])                       -- (tymono tyint)
-_inferRaw (lambda "x" $ list [var "x"])                                                    -- (typoly ["t0"] $ tyfun (tyvar "t0") (tylist (tyvar "t0")))
-_inferRaw (var "sng" `with` ["sng">: lambda "x" $ list [var "x"]])                         -- (typoly ["t0"] $ tyfun (tyvar "t0") (tylist (tyvar "t0")))
-_inferRaw ((var "+" @@ (primSucc @@ (primSucc @@ int32 0)) @@ (primSucc @@ int32 0)) `with` ["+">: lambda "x" $ lambda "y" (primSucc @@ (var "+" @@ (primPred @@ var "x") @@ var "y"))]) -- (tymono tyint)
-_inferRaw (var "f" `with` ["f">: lambda "x" $ lambda "y" (var "f" @@ int32 0 @@ var "x")]) -- (typoly ["t0"] $ tyfun tyint (tyfun tyint (tyvar "t0")))
+_inferRaw (lambda "x" $ var "x")                                                           -- (Types.poly ["t0"] $ Types.function (Types.var "t0") (Types.var "t0"))
+_inferRaw (int32 32 `with` ["foo">: lambda "x" $ var "x"])                                 -- (Types.mono Types.int32)
+_inferRaw ((var "f" @@ int32 0) `with` ["f">: lambda "x" $ var "x"])                       -- (Types.mono Types.int32)
+_inferRaw (var "f" `with` ["f">: (lambda "x" $ var "x") @@ int32 0])                       -- (Types.mono Types.int32)
+_inferRaw (lambda "x" $ list [var "x"])                                                    -- (Types.poly ["t0"] $ Types.function (Types.var "t0") (Types.list (Types.var "t0")))
+_inferRaw (var "sng" `with` ["sng">: lambda "x" $ list [var "x"]])                         -- (Types.poly ["t0"] $ Types.function (Types.var "t0") (Types.list (Types.var "t0")))
+_inferRaw ((var "+" @@ (primSucc @@ (primSucc @@ int32 0)) @@ (primSucc @@ int32 0)) `with` ["+">: lambda "x" $ lambda "y" (primSucc @@ (var "+" @@ (primPred @@ var "x") @@ var "y"))]) -- (Types.mono Types.int32)
+_inferRaw (var "f" `with` ["f">: lambda "x" $ lambda "y" (var "f" @@ int32 0 @@ var "x")]) -- (Types.poly ["t0"] $ Types.function Types.int32 (Types.function Types.int32 (Types.var "t0")))
 
 
 
-_inferRaw (var "f" `with` ["f">: lambda "x" $ lambda "y" (var "f" @@ int32 0 @@ var "x")]) -- (typoly ["t0"] $ tyfun tyint (tyfun tyint (tyvar "t0")))
+_inferRaw (var "f" `with` ["f">: lambda "x" $ lambda "y" (var "f" @@ int32 0 @@ var "x")]) -- (Types.poly ["t0"] $ Types.function Types.int32 (Types.function Types.int32 (Types.var "t0")))
 
 
 
 :set +m
 
 constraints = [
-  _con (tyfun (tyvar "t5") (tyvar "t6")) (tyvar "t0"),
-  _con (tyvar "t5") tyint,
-  _con (tyfun (tyvar "t3") (tyvar "t4")) (tyvar "t6"),
-  _con (tyvar "t3") (tyvar "t1"),
-  _con (tyvar "t0") (tyfun (tyvar "t1") (tyfun (tyvar "t2") (tyvar "t4")))]
+  _con (Types.function (Types.var "t5") (Types.var "t6")) (Types.var "t0"),
+  _con (Types.var "t5") Types.int32,
+  _con (Types.function (Types.var "t3") (Types.var "t4")) (Types.var "t6"),
+  _con (Types.var "t3") (Types.var "t1"),
+  _con (Types.var "t0") (Types.function (Types.var "t1") (Types.function (Types.var "t2") (Types.var "t4")))]
 
 uUnify constraints
 
@@ -536,7 +502,7 @@ _inferRaw (var "sng" `with` ["sng">: lambda "x" $ list [var "x"]])
 ----------------------------------------
 -- Instantiation
 
-sInstantiate (typoly ["t0", "t1"] $ tyfun (tyvar "t1") (tyvar "t1")) sInitialContext
+sInstantiate (Types.poly ["t0", "t1"] $ Types.function (Types.var "t1") (Types.var "t1")) sInitialContext
 
 
 
