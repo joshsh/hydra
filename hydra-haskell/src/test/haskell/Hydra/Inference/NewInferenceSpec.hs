@@ -1,4 +1,4 @@
-module Hydra.NewInferenceSpec where
+module Hydra.Inference.NewInferenceSpec where
 
 import Hydra.NewInference
 import Hydra.Compute

@@ -1,4 +1,5 @@
 module Hydra.TestUtils (
+  check,
   checkLiteralAdapter,
   checkFieldAdapter,
   checkFloatAdapter,
@@ -40,6 +41,9 @@ baseLanguage = hydraCoreLanguage
 
 baseContext :: AdapterContext
 baseContext = AdapterContext testGraph baseLanguage M.empty
+
+check :: String -> H.SpecWith a -> H.SpecWith a
+check desc = H.describe $ "Check type inference for " <> desc
 
 checkAdapter :: (Eq t, Eq v, Show t, Show v)
   => (v -> v)
