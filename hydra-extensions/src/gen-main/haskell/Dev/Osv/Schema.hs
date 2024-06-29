@@ -15,9 +15,9 @@ data Credited =
 
 _Credited = (Core.Name "dev/osv/schema.Credited")
 
-_Credited_name = (Core.FieldName "name")
+_Credited_name = (Core.Name "name")
 
-_Credited_contact = (Core.FieldName "contact")
+_Credited_contact = (Core.Name "contact")
 
 -- | One of a limited set of defined ecosystems, currently Go, npm, OSS-Fuzz, PyPI, RubyGems, crates.io, Packagist, Maven, NuGet, Linux, Debian, Hex, Android, GitHub Actions, or Pub
 newtype Ecosystem = 
@@ -48,31 +48,31 @@ data Entry =
 
 _Entry = (Core.Name "dev/osv/schema.Entry")
 
-_Entry_schemaVersion = (Core.FieldName "schemaVersion")
+_Entry_schemaVersion = (Core.Name "schemaVersion")
 
-_Entry_id = (Core.FieldName "id")
+_Entry_id = (Core.Name "id")
 
-_Entry_modified = (Core.FieldName "modified")
+_Entry_modified = (Core.Name "modified")
 
-_Entry_published = (Core.FieldName "published")
+_Entry_published = (Core.Name "published")
 
-_Entry_withdrawn = (Core.FieldName "withdrawn")
+_Entry_withdrawn = (Core.Name "withdrawn")
 
-_Entry_aliases = (Core.FieldName "aliases")
+_Entry_aliases = (Core.Name "aliases")
 
-_Entry_related = (Core.FieldName "related")
+_Entry_related = (Core.Name "related")
 
-_Entry_summary = (Core.FieldName "summary")
+_Entry_summary = (Core.Name "summary")
 
-_Entry_details = (Core.FieldName "details")
+_Entry_details = (Core.Name "details")
 
-_Entry_severity = (Core.FieldName "severity")
+_Entry_severity = (Core.Name "severity")
 
-_Entry_affected = (Core.FieldName "affected")
+_Entry_affected = (Core.Name "affected")
 
-_Entry_references = (Core.FieldName "references")
+_Entry_references = (Core.Name "references")
 
-_Entry_credits = (Core.FieldName "credits")
+_Entry_credits = (Core.Name "credits")
 
 data Event = 
   EventIntroduced VersionOrZero |
@@ -83,13 +83,13 @@ data Event =
 
 _Event = (Core.Name "dev/osv/schema.Event")
 
-_Event_introduced = (Core.FieldName "introduced")
+_Event_introduced = (Core.Name "introduced")
 
-_Event_fixed = (Core.FieldName "fixed")
+_Event_fixed = (Core.Name "fixed")
 
-_Event_lastAffected = (Core.FieldName "lastAffected")
+_Event_lastAffected = (Core.Name "lastAffected")
 
-_Event_limit = (Core.FieldName "limit")
+_Event_limit = (Core.Name "limit")
 
 -- | A string of the format <DB>-<ENTRYID>, where DB names the database and ENTRYID is in the format used by the database. For example: OSV-2020-111, CVE-2021-3114, or GHSA-vp9c-fpxx-744v
 newtype Id = 
@@ -127,11 +127,11 @@ data Package =
 
 _Package = (Core.Name "dev/osv/schema.Package")
 
-_Package_ecosystem = (Core.FieldName "ecosystem")
+_Package_ecosystem = (Core.Name "ecosystem")
 
-_Package_name = (Core.FieldName "name")
+_Package_name = (Core.Name "name")
 
-_Package_purl = (Core.FieldName "purl")
+_Package_purl = (Core.Name "purl")
 
 data PackageVersions = 
   PackageVersions {
@@ -142,11 +142,11 @@ data PackageVersions =
 
 _PackageVersions = (Core.Name "dev/osv/schema.PackageVersions")
 
-_PackageVersions_package = (Core.FieldName "package")
+_PackageVersions_package = (Core.Name "package")
 
-_PackageVersions_ranges = (Core.FieldName "ranges")
+_PackageVersions_ranges = (Core.Name "ranges")
 
-_PackageVersions_versions = (Core.FieldName "versions")
+_PackageVersions_versions = (Core.Name "versions")
 
 data Reference = 
   Reference {
@@ -156,9 +156,9 @@ data Reference =
 
 _Reference = (Core.Name "dev/osv/schema.Reference")
 
-_Reference_type = (Core.FieldName "type")
+_Reference_type = (Core.Name "type")
 
-_Reference_url = (Core.FieldName "url")
+_Reference_url = (Core.Name "url")
 
 -- | One of ADVISORY, ARTICLE, REPORT, FIX, GIT, PACKAGE, EVIDENCE, or WEB
 newtype ReferenceType = 
@@ -177,9 +177,9 @@ data Severity =
 
 _Severity = (Core.Name "dev/osv/schema.Severity")
 
-_Severity_type = (Core.FieldName "type")
+_Severity_type = (Core.Name "type")
 
-_Severity_score = (Core.FieldName "score")
+_Severity_score = (Core.Name "score")
 
 newtype SeverityScore = 
   SeverityScore {
@@ -249,11 +249,11 @@ data VersionRange =
 
 _VersionRange = (Core.Name "dev/osv/schema.VersionRange")
 
-_VersionRange_type = (Core.FieldName "type")
+_VersionRange_type = (Core.Name "type")
 
-_VersionRange_repo = (Core.FieldName "repo")
+_VersionRange_repo = (Core.Name "repo")
 
-_VersionRange_events = (Core.FieldName "events")
+_VersionRange_events = (Core.Name "events")
 
 -- | One of the values 'SEMVER', 'ECOSYSTEM', or 'GIT
 newtype VersionType = 

@@ -21,11 +21,11 @@ data Node =
 
 _Node = (Core.Name "hydra/langs/yaml/model.Node")
 
-_Node_mapping = (Core.FieldName "mapping")
+_Node_mapping = (Core.Name "mapping")
 
-_Node_scalar = (Core.FieldName "scalar")
+_Node_scalar = (Core.Name "scalar")
 
-_Node_sequence = (Core.FieldName "sequence")
+_Node_sequence = (Core.Name "sequence")
 
 -- | A union of scalars supported in the YAML failsafe and JSON schemas. Other scalars are not supported here
 data Scalar = 
@@ -43,12 +43,12 @@ data Scalar =
 
 _Scalar = (Core.Name "hydra/langs/yaml/model.Scalar")
 
-_Scalar_bool = (Core.FieldName "bool")
+_Scalar_bool = (Core.Name "bool")
 
-_Scalar_float = (Core.FieldName "float")
+_Scalar_float = (Core.Name "float")
 
-_Scalar_int = (Core.FieldName "int")
+_Scalar_int = (Core.Name "int")
 
-_Scalar_null = (Core.FieldName "null")
+_Scalar_null = (Core.Name "null")
 
-_Scalar_str = (Core.FieldName "str")
+_Scalar_str = (Core.Name "str")

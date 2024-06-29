@@ -146,7 +146,7 @@ encodeTerm term = case stripTerm term of
           FunctionElimination e -> case e of
             EliminationWrap name -> fallback
             EliminationOptional c -> fallback
-            EliminationRecord (Projection _ (FieldName fname)) -> do
+            EliminationRecord (Projection _ (Name fname)) -> do
               sarg <- encodeTerm arg
               return $ Scala.DataRef $ Scala.Data_RefSelect $ Scala.Data_Select sarg
                 (Scala.Data_Name $ Scala.PredefString fname)

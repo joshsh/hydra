@@ -40,7 +40,7 @@ hydraTermToStlc context term = case term of
         return $ Const $ TypedPrim $ TypedPrimitive name ts
     Core.TermLet (Core.Let bindings env) -> Letrec <$> CM.mapM fieldToStlc bindings <*> toStlc env
       where
-        fieldToStlc (Core.Field (Core.FieldName v) term) = do
+        fieldToStlc (Core.Field (Core.Name v) term) = do
           s <- toStlc term
           return (v, s)
     Core.TermList els -> do
@@ -132,7 +132,7 @@ systemFExprToHydra expr = case expr of
       bindingToHydra (v, ty, term) = do
         hterm <- systemFExprToHydra term
         htyp <- systemFTypeToHydra ty
-        return $ Core.Field (Core.FieldName v) $ Core.TermTyped $ Core.TypedTerm htyp hterm
+        return $ Core.Field (Core.Name v) $ Core.TermTyped $ Core.TypedTerm htyp hterm
   FTuple els -> Core.TermProduct <$> (CM.mapM systemFExprToHydra els)
   FInj i types e -> Core.TermSum <$> (Core.Sum i (L.length types) <$> systemFExprToHydra e)
 
@@ -170,7 +170,7 @@ inferWithAlgorithmW context term = do
       Left err -> fail err
       Right t -> normalizeBoundTypeVariablesInSystemFTerm <$> unwrap t
   where
-    sFieldName = Core.FieldName "tempVar"
+    sFieldName = Core.Name "tempVar"
     wrap term = Core.TermLet $ Core.Let ([Core.Field sFieldName term]) $
       Core.TermLiteral $ Core.LiteralString "tempEnvironment"
     unwrap term = case term of

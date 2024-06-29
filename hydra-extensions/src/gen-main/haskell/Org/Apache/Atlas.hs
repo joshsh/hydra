@@ -33,37 +33,37 @@ data AtlasAttributeDef =
 
 _AtlasAttributeDef = (Core.Name "org/apache/atlas.AtlasAttributeDef")
 
-_AtlasAttributeDef_name = (Core.FieldName "name")
+_AtlasAttributeDef_name = (Core.Name "name")
 
-_AtlasAttributeDef_typeName = (Core.FieldName "typeName")
+_AtlasAttributeDef_typeName = (Core.Name "typeName")
 
-_AtlasAttributeDef_isOptional = (Core.FieldName "isOptional")
+_AtlasAttributeDef_isOptional = (Core.Name "isOptional")
 
-_AtlasAttributeDef_cardinality = (Core.FieldName "cardinality")
+_AtlasAttributeDef_cardinality = (Core.Name "cardinality")
 
-_AtlasAttributeDef_valuesMinCount = (Core.FieldName "valuesMinCount")
+_AtlasAttributeDef_valuesMinCount = (Core.Name "valuesMinCount")
 
-_AtlasAttributeDef_valuesMaxCount = (Core.FieldName "valuesMaxCount")
+_AtlasAttributeDef_valuesMaxCount = (Core.Name "valuesMaxCount")
 
-_AtlasAttributeDef_isUnique = (Core.FieldName "isUnique")
+_AtlasAttributeDef_isUnique = (Core.Name "isUnique")
 
-_AtlasAttributeDef_isIndexable = (Core.FieldName "isIndexable")
+_AtlasAttributeDef_isIndexable = (Core.Name "isIndexable")
 
-_AtlasAttributeDef_includeInNotification = (Core.FieldName "includeInNotification")
+_AtlasAttributeDef_includeInNotification = (Core.Name "includeInNotification")
 
-_AtlasAttributeDef_defaultValue = (Core.FieldName "defaultValue")
+_AtlasAttributeDef_defaultValue = (Core.Name "defaultValue")
 
-_AtlasAttributeDef_description = (Core.FieldName "description")
+_AtlasAttributeDef_description = (Core.Name "description")
 
-_AtlasAttributeDef_searchWeight = (Core.FieldName "searchWeight")
+_AtlasAttributeDef_searchWeight = (Core.Name "searchWeight")
 
-_AtlasAttributeDef_indexType = (Core.FieldName "indexType")
+_AtlasAttributeDef_indexType = (Core.Name "indexType")
 
-_AtlasAttributeDef_constraints = (Core.FieldName "constraints")
+_AtlasAttributeDef_constraints = (Core.Name "constraints")
 
-_AtlasAttributeDef_options = (Core.FieldName "options")
+_AtlasAttributeDef_options = (Core.Name "options")
 
-_AtlasAttributeDef_displayName = (Core.FieldName "displayName")
+_AtlasAttributeDef_displayName = (Core.Name "displayName")
 
 data AtlasAttributeDef_Cardinality = 
   AtlasAttributeDef_CardinalitySingle  |
@@ -73,11 +73,11 @@ data AtlasAttributeDef_Cardinality =
 
 _AtlasAttributeDef_Cardinality = (Core.Name "org/apache/atlas.AtlasAttributeDef.Cardinality")
 
-_AtlasAttributeDef_Cardinality_single = (Core.FieldName "single")
+_AtlasAttributeDef_Cardinality_single = (Core.Name "single")
 
-_AtlasAttributeDef_Cardinality_list = (Core.FieldName "list")
+_AtlasAttributeDef_Cardinality_list = (Core.Name "list")
 
-_AtlasAttributeDef_Cardinality_set = (Core.FieldName "set")
+_AtlasAttributeDef_Cardinality_set = (Core.Name "set")
 
 data AtlasAttributeDef_IndexType = 
   AtlasAttributeDef_IndexTypeDefault  |
@@ -86,9 +86,9 @@ data AtlasAttributeDef_IndexType =
 
 _AtlasAttributeDef_IndexType = (Core.Name "org/apache/atlas.AtlasAttributeDef.IndexType")
 
-_AtlasAttributeDef_IndexType_default = (Core.FieldName "default")
+_AtlasAttributeDef_IndexType_default = (Core.Name "default")
 
-_AtlasAttributeDef_IndexType_string = (Core.FieldName "string")
+_AtlasAttributeDef_IndexType_string = (Core.Name "string")
 
 -- | Base class that captures common-attributes for all Atlas types.
 data AtlasBaseTypeDef = 
@@ -109,29 +109,29 @@ data AtlasBaseTypeDef =
 
 _AtlasBaseTypeDef = (Core.Name "org/apache/atlas.AtlasBaseTypeDef")
 
-_AtlasBaseTypeDef_category = (Core.FieldName "category")
+_AtlasBaseTypeDef_category = (Core.Name "category")
 
-_AtlasBaseTypeDef_guid = (Core.FieldName "guid")
+_AtlasBaseTypeDef_guid = (Core.Name "guid")
 
-_AtlasBaseTypeDef_createdBy = (Core.FieldName "createdBy")
+_AtlasBaseTypeDef_createdBy = (Core.Name "createdBy")
 
-_AtlasBaseTypeDef_updatedBy = (Core.FieldName "updatedBy")
+_AtlasBaseTypeDef_updatedBy = (Core.Name "updatedBy")
 
-_AtlasBaseTypeDef_createTime = (Core.FieldName "createTime")
+_AtlasBaseTypeDef_createTime = (Core.Name "createTime")
 
-_AtlasBaseTypeDef_updateTime = (Core.FieldName "updateTime")
+_AtlasBaseTypeDef_updateTime = (Core.Name "updateTime")
 
-_AtlasBaseTypeDef_version = (Core.FieldName "version")
+_AtlasBaseTypeDef_version = (Core.Name "version")
 
-_AtlasBaseTypeDef_name = (Core.FieldName "name")
+_AtlasBaseTypeDef_name = (Core.Name "name")
 
-_AtlasBaseTypeDef_description = (Core.FieldName "description")
+_AtlasBaseTypeDef_description = (Core.Name "description")
 
-_AtlasBaseTypeDef_typeVersion = (Core.FieldName "typeVersion")
+_AtlasBaseTypeDef_typeVersion = (Core.Name "typeVersion")
 
-_AtlasBaseTypeDef_serviceType = (Core.FieldName "serviceType")
+_AtlasBaseTypeDef_serviceType = (Core.Name "serviceType")
 
-_AtlasBaseTypeDef_options = (Core.FieldName "options")
+_AtlasBaseTypeDef_options = (Core.Name "options")
 
 -- | class that captures details of a constraint.
 data AtlasConstraintDef = 
@@ -142,9 +142,9 @@ data AtlasConstraintDef =
 
 _AtlasConstraintDef = (Core.Name "org/apache/atlas.AtlasConstraintDef")
 
-_AtlasConstraintDef_type = (Core.FieldName "type")
+_AtlasConstraintDef_type = (Core.Name "type")
 
-_AtlasConstraintDef_params = (Core.FieldName "params")
+_AtlasConstraintDef_params = (Core.Name "params")
 
 -- | class that captures details of a entity-type.
 data AtlasEntityDef = 
@@ -161,15 +161,15 @@ data AtlasEntityDef =
 
 _AtlasEntityDef = (Core.Name "org/apache/atlas.AtlasEntityDef")
 
-_AtlasEntityDef_asAtlasStructDef = (Core.FieldName "asAtlasStructDef")
+_AtlasEntityDef_asAtlasStructDef = (Core.Name "asAtlasStructDef")
 
-_AtlasEntityDef_superTypes = (Core.FieldName "superTypes")
+_AtlasEntityDef_superTypes = (Core.Name "superTypes")
 
-_AtlasEntityDef_subTypes = (Core.FieldName "subTypes")
+_AtlasEntityDef_subTypes = (Core.Name "subTypes")
 
-_AtlasEntityDef_relationshipAttributeDefs = (Core.FieldName "relationshipAttributeDefs")
+_AtlasEntityDef_relationshipAttributeDefs = (Core.Name "relationshipAttributeDefs")
 
-_AtlasEntityDef_businessAttributeDefs = (Core.FieldName "businessAttributeDefs")
+_AtlasEntityDef_businessAttributeDefs = (Core.Name "businessAttributeDefs")
 
 -- | class that captures details of a struct-attribute.
 data AtlasRelationshipAttributeDef = 
@@ -181,11 +181,11 @@ data AtlasRelationshipAttributeDef =
 
 _AtlasRelationshipAttributeDef = (Core.Name "org/apache/atlas.AtlasRelationshipAttributeDef")
 
-_AtlasRelationshipAttributeDef_asAtlasAttributeDef = (Core.FieldName "asAtlasAttributeDef")
+_AtlasRelationshipAttributeDef_asAtlasAttributeDef = (Core.Name "asAtlasAttributeDef")
 
-_AtlasRelationshipAttributeDef_relationshipTypeName = (Core.FieldName "relationshipTypeName")
+_AtlasRelationshipAttributeDef_relationshipTypeName = (Core.Name "relationshipTypeName")
 
-_AtlasRelationshipAttributeDef_isLegacyAttribute = (Core.FieldName "isLegacyAttribute")
+_AtlasRelationshipAttributeDef_isLegacyAttribute = (Core.Name "isLegacyAttribute")
 
 -- | class that captures details of a struct-type.
 data AtlasStructDef = 
@@ -196,9 +196,9 @@ data AtlasStructDef =
 
 _AtlasStructDef = (Core.Name "org/apache/atlas.AtlasStructDef")
 
-_AtlasStructDef_asAtlasBaseTypeDef = (Core.FieldName "asAtlasBaseTypeDef")
+_AtlasStructDef_asAtlasBaseTypeDef = (Core.Name "asAtlasBaseTypeDef")
 
-_AtlasStructDef_attributeDefs = (Core.FieldName "attributeDefs")
+_AtlasStructDef_attributeDefs = (Core.Name "attributeDefs")
 
 data TypeCategory = 
   TypeCategoryPrimitive  |
@@ -215,22 +215,22 @@ data TypeCategory =
 
 _TypeCategory = (Core.Name "org/apache/atlas.TypeCategory")
 
-_TypeCategory_primitive = (Core.FieldName "primitive")
+_TypeCategory_primitive = (Core.Name "primitive")
 
-_TypeCategory_objectIdType = (Core.FieldName "objectIdType")
+_TypeCategory_objectIdType = (Core.Name "objectIdType")
 
-_TypeCategory_enum = (Core.FieldName "enum")
+_TypeCategory_enum = (Core.Name "enum")
 
-_TypeCategory_struct = (Core.FieldName "struct")
+_TypeCategory_struct = (Core.Name "struct")
 
-_TypeCategory_classification = (Core.FieldName "classification")
+_TypeCategory_classification = (Core.Name "classification")
 
-_TypeCategory_entity = (Core.FieldName "entity")
+_TypeCategory_entity = (Core.Name "entity")
 
-_TypeCategory_array = (Core.FieldName "array")
+_TypeCategory_array = (Core.Name "array")
 
-_TypeCategory_map = (Core.FieldName "map")
+_TypeCategory_map = (Core.Name "map")
 
-_TypeCategory_relationship = (Core.FieldName "relationship")
+_TypeCategory_relationship = (Core.Name "relationship")
 
-_TypeCategory_businessMetadata = (Core.FieldName "businessMetadata")
+_TypeCategory_businessMetadata = (Core.Name "businessMetadata")

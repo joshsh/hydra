@@ -15,9 +15,9 @@ data Definition =
 
 _Definition = (Core.Name "hydra/langs/protobuf/proto3.Definition")
 
-_Definition_enum = (Core.FieldName "enum")
+_Definition_enum = (Core.Name "enum")
 
-_Definition_message = (Core.FieldName "message")
+_Definition_message = (Core.Name "message")
 
 -- | Enum type definition
 data EnumDefinition = 
@@ -32,11 +32,11 @@ data EnumDefinition =
 
 _EnumDefinition = (Core.Name "hydra/langs/protobuf/proto3.EnumDefinition")
 
-_EnumDefinition_name = (Core.FieldName "name")
+_EnumDefinition_name = (Core.Name "name")
 
-_EnumDefinition_values = (Core.FieldName "values")
+_EnumDefinition_values = (Core.Name "values")
 
-_EnumDefinition_options = (Core.FieldName "options")
+_EnumDefinition_options = (Core.Name "options")
 
 -- | Enum value definition
 data EnumValue = 
@@ -51,11 +51,11 @@ data EnumValue =
 
 _EnumValue = (Core.Name "hydra/langs/protobuf/proto3.EnumValue")
 
-_EnumValue_name = (Core.FieldName "name")
+_EnumValue_name = (Core.Name "name")
 
-_EnumValue_number = (Core.FieldName "number")
+_EnumValue_number = (Core.Name "number")
 
-_EnumValue_options = (Core.FieldName "options")
+_EnumValue_options = (Core.Name "options")
 
 newtype EnumValueName = 
   EnumValueName {
@@ -81,15 +81,15 @@ data Field =
 
 _Field = (Core.Name "hydra/langs/protobuf/proto3.Field")
 
-_Field_name = (Core.FieldName "name")
+_Field_name = (Core.Name "name")
 
-_Field_jsonName = (Core.FieldName "jsonName")
+_Field_jsonName = (Core.Name "jsonName")
 
-_Field_type = (Core.FieldName "type")
+_Field_type = (Core.Name "type")
 
-_Field_number = (Core.FieldName "number")
+_Field_number = (Core.Name "number")
 
-_Field_options = (Core.FieldName "options")
+_Field_options = (Core.Name "options")
 
 -- | The name of a field
 newtype FieldName = 
@@ -109,13 +109,13 @@ data FieldType =
 
 _FieldType = (Core.Name "hydra/langs/protobuf/proto3.FieldType")
 
-_FieldType_map = (Core.FieldName "map")
+_FieldType_map = (Core.Name "map")
 
-_FieldType_oneof = (Core.FieldName "oneof")
+_FieldType_oneof = (Core.Name "oneof")
 
-_FieldType_repeated = (Core.FieldName "repeated")
+_FieldType_repeated = (Core.Name "repeated")
 
-_FieldType_simple = (Core.FieldName "simple")
+_FieldType_simple = (Core.Name "simple")
 
 newtype FileReference = 
   FileReference {
@@ -137,11 +137,11 @@ data MessageDefinition =
 
 _MessageDefinition = (Core.Name "hydra/langs/protobuf/proto3.MessageDefinition")
 
-_MessageDefinition_name = (Core.FieldName "name")
+_MessageDefinition_name = (Core.Name "name")
 
-_MessageDefinition_fields = (Core.FieldName "fields")
+_MessageDefinition_fields = (Core.Name "fields")
 
-_MessageDefinition_options = (Core.FieldName "options")
+_MessageDefinition_options = (Core.Name "options")
 
 -- | A protocol buffer option, which can be attached to a message, field, enumeration, etc
 data Option = 
@@ -154,9 +154,9 @@ data Option =
 
 _Option = (Core.Name "hydra/langs/protobuf/proto3.Option")
 
-_Option_name = (Core.FieldName "name")
+_Option_name = (Core.Name "name")
 
-_Option_value = (Core.FieldName "value")
+_Option_value = (Core.Name "value")
 
 newtype PackageName = 
   PackageName {
@@ -176,13 +176,13 @@ data ProtoFile =
 
 _ProtoFile = (Core.Name "hydra/langs/protobuf/proto3.ProtoFile")
 
-_ProtoFile_package = (Core.FieldName "package")
+_ProtoFile_package = (Core.Name "package")
 
-_ProtoFile_imports = (Core.FieldName "imports")
+_ProtoFile_imports = (Core.Name "imports")
 
-_ProtoFile_types = (Core.FieldName "types")
+_ProtoFile_types = (Core.Name "types")
 
-_ProtoFile_options = (Core.FieldName "options")
+_ProtoFile_options = (Core.Name "options")
 
 -- | One of several Proto3 scalar types
 data ScalarType = 
@@ -205,35 +205,35 @@ data ScalarType =
 
 _ScalarType = (Core.Name "hydra/langs/protobuf/proto3.ScalarType")
 
-_ScalarType_bool = (Core.FieldName "bool")
+_ScalarType_bool = (Core.Name "bool")
 
-_ScalarType_bytes = (Core.FieldName "bytes")
+_ScalarType_bytes = (Core.Name "bytes")
 
-_ScalarType_double = (Core.FieldName "double")
+_ScalarType_double = (Core.Name "double")
 
-_ScalarType_fixed32 = (Core.FieldName "fixed32")
+_ScalarType_fixed32 = (Core.Name "fixed32")
 
-_ScalarType_fixed64 = (Core.FieldName "fixed64")
+_ScalarType_fixed64 = (Core.Name "fixed64")
 
-_ScalarType_float = (Core.FieldName "float")
+_ScalarType_float = (Core.Name "float")
 
-_ScalarType_int32 = (Core.FieldName "int32")
+_ScalarType_int32 = (Core.Name "int32")
 
-_ScalarType_int64 = (Core.FieldName "int64")
+_ScalarType_int64 = (Core.Name "int64")
 
-_ScalarType_sfixed32 = (Core.FieldName "sfixed32")
+_ScalarType_sfixed32 = (Core.Name "sfixed32")
 
-_ScalarType_sfixed64 = (Core.FieldName "sfixed64")
+_ScalarType_sfixed64 = (Core.Name "sfixed64")
 
-_ScalarType_sint32 = (Core.FieldName "sint32")
+_ScalarType_sint32 = (Core.Name "sint32")
 
-_ScalarType_sint64 = (Core.FieldName "sint64")
+_ScalarType_sint64 = (Core.Name "sint64")
 
-_ScalarType_string = (Core.FieldName "string")
+_ScalarType_string = (Core.Name "string")
 
-_ScalarType_uint32 = (Core.FieldName "uint32")
+_ScalarType_uint32 = (Core.Name "uint32")
 
-_ScalarType_uint64 = (Core.FieldName "uint64")
+_ScalarType_uint64 = (Core.Name "uint64")
 
 -- | A scalar type or a reference to an enum type or message type
 data SimpleType = 
@@ -243,9 +243,9 @@ data SimpleType =
 
 _SimpleType = (Core.Name "hydra/langs/protobuf/proto3.SimpleType")
 
-_SimpleType_reference = (Core.FieldName "reference")
+_SimpleType_reference = (Core.Name "reference")
 
-_SimpleType_scalar = (Core.FieldName "scalar")
+_SimpleType_scalar = (Core.Name "scalar")
 
 -- | The local name of an enum type or message type
 newtype TypeName = 

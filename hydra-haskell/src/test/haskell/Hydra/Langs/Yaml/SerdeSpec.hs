@@ -86,14 +86,14 @@ checkRecordsAndUnions = H.describe "Test and document handling of optionals vs. 
     QC.property $ \() -> checkSerialization yamlStringCoder
       (TypedTerm
         (TypeRecord $ RowType testTypeName Nothing [Types.field "one" $ Types.optional Types.string, Types.field "two" $ Types.optional Types.int32])
-        (record testTypeName [Field (FieldName "one") $ optional $ Just $ string "test", Field (FieldName "two") $ optional Nothing]))
+        (record testTypeName [Field (Name "one") $ optional $ Just $ string "test", Field (Name "two") $ optional Nothing]))
       "one: test"
 
   H.it "Simple unions become simple objects, via records" $
     QC.property $ \() -> checkSerialization yamlStringCoder
       (TypedTerm
         (TypeUnion $ RowType testTypeName Nothing [Types.field "left" Types.string, Types.field "right" Types.int32])
-        (inject testTypeName $ Field (FieldName "left") $ string "test"))
+        (inject testTypeName $ Field (Name "left") $ string "test"))
       "left: test\n"
 
 yamlByteStringCoderIsInformationPreserving :: H.SpecWith ()

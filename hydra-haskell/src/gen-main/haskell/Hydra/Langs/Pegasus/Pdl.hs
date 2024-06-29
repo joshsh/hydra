@@ -19,9 +19,9 @@ data Annotations =
 
 _Annotations = (Core.Name "hydra/langs/pegasus/pdl.Annotations")
 
-_Annotations_doc = (Core.FieldName "doc")
+_Annotations_doc = (Core.Name "doc")
 
-_Annotations_deprecated = (Core.FieldName "deprecated")
+_Annotations_deprecated = (Core.Name "deprecated")
 
 data EnumField = 
   EnumField {
@@ -31,9 +31,9 @@ data EnumField =
 
 _EnumField = (Core.Name "hydra/langs/pegasus/pdl.EnumField")
 
-_EnumField_name = (Core.FieldName "name")
+_EnumField_name = (Core.Name "name")
 
-_EnumField_annotations = (Core.FieldName "annotations")
+_EnumField_annotations = (Core.Name "annotations")
 
 newtype EnumFieldName = 
   EnumFieldName {
@@ -49,7 +49,7 @@ data EnumSchema =
 
 _EnumSchema = (Core.Name "hydra/langs/pegasus/pdl.EnumSchema")
 
-_EnumSchema_fields = (Core.FieldName "fields")
+_EnumSchema_fields = (Core.Name "fields")
 
 newtype FieldName = 
   FieldName {
@@ -67,11 +67,11 @@ data NamedSchema =
 
 _NamedSchema = (Core.Name "hydra/langs/pegasus/pdl.NamedSchema")
 
-_NamedSchema_qualifiedName = (Core.FieldName "qualifiedName")
+_NamedSchema_qualifiedName = (Core.Name "qualifiedName")
 
-_NamedSchema_type = (Core.FieldName "type")
+_NamedSchema_type = (Core.Name "type")
 
-_NamedSchema_annotations = (Core.FieldName "annotations")
+_NamedSchema_annotations = (Core.Name "annotations")
 
 data NamedSchema_Type = 
   NamedSchema_TypeRecord RecordSchema |
@@ -81,11 +81,11 @@ data NamedSchema_Type =
 
 _NamedSchema_Type = (Core.Name "hydra/langs/pegasus/pdl.NamedSchema.Type")
 
-_NamedSchema_Type_record = (Core.FieldName "record")
+_NamedSchema_Type_record = (Core.Name "record")
 
-_NamedSchema_Type_enum = (Core.FieldName "enum")
+_NamedSchema_Type_enum = (Core.Name "enum")
 
-_NamedSchema_Type_typeref = (Core.FieldName "typeref")
+_NamedSchema_Type_typeref = (Core.Name "typeref")
 
 newtype Name = 
   Name {
@@ -120,19 +120,19 @@ data PrimitiveType =
 
 _PrimitiveType = (Core.Name "hydra/langs/pegasus/pdl.PrimitiveType")
 
-_PrimitiveType_boolean = (Core.FieldName "boolean")
+_PrimitiveType_boolean = (Core.Name "boolean")
 
-_PrimitiveType_bytes = (Core.FieldName "bytes")
+_PrimitiveType_bytes = (Core.Name "bytes")
 
-_PrimitiveType_double = (Core.FieldName "double")
+_PrimitiveType_double = (Core.Name "double")
 
-_PrimitiveType_float = (Core.FieldName "float")
+_PrimitiveType_float = (Core.Name "float")
 
-_PrimitiveType_int = (Core.FieldName "int")
+_PrimitiveType_int = (Core.Name "int")
 
-_PrimitiveType_long = (Core.FieldName "long")
+_PrimitiveType_long = (Core.Name "long")
 
-_PrimitiveType_string = (Core.FieldName "string")
+_PrimitiveType_string = (Core.Name "string")
 
 newtype PropertyKey = 
   PropertyKey {
@@ -149,9 +149,9 @@ data Property =
 
 _Property = (Core.Name "hydra/langs/pegasus/pdl.Property")
 
-_Property_key = (Core.FieldName "key")
+_Property_key = (Core.Name "key")
 
-_Property_value = (Core.FieldName "value")
+_Property_value = (Core.Name "value")
 
 data QualifiedName = 
   QualifiedName {
@@ -161,9 +161,9 @@ data QualifiedName =
 
 _QualifiedName = (Core.Name "hydra/langs/pegasus/pdl.QualifiedName")
 
-_QualifiedName_name = (Core.FieldName "name")
+_QualifiedName_name = (Core.Name "name")
 
-_QualifiedName_namespace = (Core.FieldName "namespace")
+_QualifiedName_namespace = (Core.Name "namespace")
 
 data RecordField = 
   RecordField {
@@ -176,15 +176,15 @@ data RecordField =
 
 _RecordField = (Core.Name "hydra/langs/pegasus/pdl.RecordField")
 
-_RecordField_name = (Core.FieldName "name")
+_RecordField_name = (Core.Name "name")
 
-_RecordField_value = (Core.FieldName "value")
+_RecordField_value = (Core.Name "value")
 
-_RecordField_optional = (Core.FieldName "optional")
+_RecordField_optional = (Core.Name "optional")
 
-_RecordField_default = (Core.FieldName "default")
+_RecordField_default = (Core.Name "default")
 
-_RecordField_annotations = (Core.FieldName "annotations")
+_RecordField_annotations = (Core.Name "annotations")
 
 data RecordSchema = 
   RecordSchema {
@@ -194,9 +194,9 @@ data RecordSchema =
 
 _RecordSchema = (Core.Name "hydra/langs/pegasus/pdl.RecordSchema")
 
-_RecordSchema_fields = (Core.FieldName "fields")
+_RecordSchema_fields = (Core.Name "fields")
 
-_RecordSchema_includes = (Core.FieldName "includes")
+_RecordSchema_includes = (Core.Name "includes")
 
 data Schema = 
   SchemaArray Schema |
@@ -211,21 +211,21 @@ data Schema =
 
 _Schema = (Core.Name "hydra/langs/pegasus/pdl.Schema")
 
-_Schema_array = (Core.FieldName "array")
+_Schema_array = (Core.Name "array")
 
-_Schema_fixed = (Core.FieldName "fixed")
+_Schema_fixed = (Core.Name "fixed")
 
-_Schema_inline = (Core.FieldName "inline")
+_Schema_inline = (Core.Name "inline")
 
-_Schema_map = (Core.FieldName "map")
+_Schema_map = (Core.Name "map")
 
-_Schema_named = (Core.FieldName "named")
+_Schema_named = (Core.Name "named")
 
-_Schema_null = (Core.FieldName "null")
+_Schema_null = (Core.Name "null")
 
-_Schema_primitive = (Core.FieldName "primitive")
+_Schema_primitive = (Core.Name "primitive")
 
-_Schema_union = (Core.FieldName "union")
+_Schema_union = (Core.Name "union")
 
 data SchemaFile = 
   SchemaFile {
@@ -237,13 +237,13 @@ data SchemaFile =
 
 _SchemaFile = (Core.Name "hydra/langs/pegasus/pdl.SchemaFile")
 
-_SchemaFile_namespace = (Core.FieldName "namespace")
+_SchemaFile_namespace = (Core.Name "namespace")
 
-_SchemaFile_package = (Core.FieldName "package")
+_SchemaFile_package = (Core.Name "package")
 
-_SchemaFile_imports = (Core.FieldName "imports")
+_SchemaFile_imports = (Core.Name "imports")
 
-_SchemaFile_schemas = (Core.FieldName "schemas")
+_SchemaFile_schemas = (Core.Name "schemas")
 
 data UnionMember = 
   UnionMember {
@@ -254,11 +254,11 @@ data UnionMember =
 
 _UnionMember = (Core.Name "hydra/langs/pegasus/pdl.UnionMember")
 
-_UnionMember_alias = (Core.FieldName "alias")
+_UnionMember_alias = (Core.Name "alias")
 
-_UnionMember_value = (Core.FieldName "value")
+_UnionMember_value = (Core.Name "value")
 
-_UnionMember_annotations = (Core.FieldName "annotations")
+_UnionMember_annotations = (Core.Name "annotations")
 
 newtype UnionSchema = 
   UnionSchema {

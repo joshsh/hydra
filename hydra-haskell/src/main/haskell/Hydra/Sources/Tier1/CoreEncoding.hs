@@ -24,7 +24,6 @@ coreEncodingModule = Module (Namespace "hydra/coreEncoding") elements [hydraCore
      Base.el coreEncodeCaseStatementDef,
      Base.el coreEncodeEliminationDef,
      Base.el coreEncodeFieldDef,
-     Base.el coreEncodeFieldNameDef,
      Base.el coreEncodeFieldTypeDef,
      Base.el coreEncodeFloatTypeDef,
      Base.el coreEncodeFloatValueDef,
@@ -65,24 +64,21 @@ encodedBinary = encodedLiteral . variant _Literal _Literal_binary
 encodedBoolean :: Term -> Term
 encodedBoolean = encodedLiteral . variant _Literal _Literal_boolean
 
-encodedCase :: Name -> FieldName -> Term -> Field
+encodedCase :: Name -> Name -> Term -> Field
 encodedCase tname fname fun = Field fname $ lambda "v" $ encodedVariant tname fname (fun @@ var "v")
 
-encodedField :: FieldName -> Term -> Term
-encodedField fname = encodedFieldRaw (encodedFieldName fname)
+encodedField :: Name -> Term -> Term
+encodedField fname = encodedFieldRaw (encodedName fname)
 
 encodedFieldRaw :: Term -> Term -> Term
 encodedFieldRaw fname term = record _Field [
   Field _Field_name fname,
   Field _Field_term term]
 
-encodedFieldName :: FieldName -> Term
-encodedFieldName = wrap _FieldName . string . unFieldName
-
 encodedFloatValue :: Term -> Term
 encodedFloatValue = encodedLiteral . variant _Literal _Literal_float
 
-encodedInjection :: Name -> FieldName -> Term -> Term
+encodedInjection :: Name -> Name -> Term -> Term
 encodedInjection tname fname term = record _Injection [
   Field _Injection_typeName $ encodedName tname,
   Field _Injection_field $ encodedField fname term]
@@ -116,7 +112,7 @@ encodedNominalRaw name term = variant _Term _Term_wrap $ record _Nominal [
 encodedOptional :: Term -> Term
 encodedOptional = variant _Term _Term_optional
 
-encodedRecord :: Name -> [(FieldName, Term)] -> Term
+encodedRecord :: Name -> [(Name, Term)] -> Term
 encodedRecord tname pairs = variant _Term _Term_record $ record _Record [
     Field _Record_typeName $ encodedName tname,
     Field _Record_fields $ list (encField <$> pairs)]
@@ -132,7 +128,7 @@ encodedString = encodedLiteral . variant _Literal _Literal_string
 encodedUnion :: Term -> Term
 encodedUnion = variant _Term _Term_union
 
-encodedVariant :: Name -> FieldName -> Term -> Term
+encodedVariant :: Name -> Name -> Term -> Term
 encodedVariant tname fname term = encodedUnion $ encodedInjection tname fname term
 
 coreEncodeAnnotatedTermDef :: Definition (Annotated Term -> Term)
@@ -187,17 +183,13 @@ coreEncodeEliminationDef = coreEncodingDefinition "Elimination" $
 coreEncodeFieldDef :: Definition (Field -> Term)
 coreEncodeFieldDef = coreEncodingDefinition "Field" $
   lambda "f" $ encodedRecord _Field [
-    (_Field_name, encodedNominal _FieldName $ encodedString $ (unwrap _FieldName @@ (project _Field _Field_name @@ var "f"))),
+    (_Field_name, encodedNominal _Name $ encodedString $ (unwrap _Name @@ (project _Field _Field_name @@ var "f"))),
     (_Field_term, ref coreEncodeTermDef @@ (project _Field _Field_term @@ var "f"))]
-
-coreEncodeFieldNameDef :: Definition (FieldName -> Term)
-coreEncodeFieldNameDef = coreEncodingDefinition "FieldName" $
-  lambda "fn" $ encodedNominal _FieldName $ encodedString (unwrap _FieldName @@ var "fn")
 
 coreEncodeFieldTypeDef :: Definition (FieldType -> Term)
 coreEncodeFieldTypeDef = coreEncodingDefinition "FieldType" $
   lambda "ft" $ encodedRecord _FieldType [
-    (_FieldType_name, ref coreEncodeFieldNameDef @@ (project _FieldType _FieldType_name @@ var "ft")),
+    (_FieldType_name, ref coreEncodeNameDef @@ (project _FieldType _FieldType_name @@ var "ft")),
     (_FieldType_type, ref coreEncodeTypeDef @@ (project _FieldType _FieldType_type @@ var "ft"))]
 
 coreEncodeFloatTypeDef :: Definition (FloatType -> Term)
@@ -348,7 +340,7 @@ coreEncodeProjectionDef :: Definition (Projection -> Term)
 coreEncodeProjectionDef = coreEncodingDefinition "Projection" $
   lambda "p" $ encodedRecord _Projection [
     (_Projection_typeName, ref coreEncodeNameDef @@ (project _Projection _Projection_typeName @@ var "p")),
-    (_Projection_field, ref coreEncodeFieldNameDef @@ (project _Projection _Projection_field @@ var "p"))]
+    (_Projection_field, ref coreEncodeNameDef @@ (project _Projection _Projection_field @@ var "p"))]
 
 coreEncodeRecordDef :: Definition (Record -> Term)
 coreEncodeRecordDef = coreEncodingDefinition "Record" $

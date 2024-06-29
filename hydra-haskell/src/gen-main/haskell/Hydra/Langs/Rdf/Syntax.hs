@@ -38,9 +38,9 @@ data Description =
 
 _Description = (Core.Name "hydra/langs/rdf/syntax.Description")
 
-_Description_subject = (Core.FieldName "subject")
+_Description_subject = (Core.Name "subject")
 
-_Description_graph = (Core.FieldName "graph")
+_Description_graph = (Core.Name "graph")
 
 newtype Graph = 
   Graph {
@@ -66,9 +66,9 @@ data IriOrLiteral =
 
 _IriOrLiteral = (Core.Name "hydra/langs/rdf/syntax.IriOrLiteral")
 
-_IriOrLiteral_iri = (Core.FieldName "iri")
+_IriOrLiteral_iri = (Core.Name "iri")
 
-_IriOrLiteral_literal = (Core.FieldName "literal")
+_IriOrLiteral_literal = (Core.Name "literal")
 
 -- | A convenience type which provides at most one string value per language, and optionally a value without a language
 newtype LangStrings = 
@@ -101,11 +101,11 @@ data Literal =
 
 _Literal = (Core.Name "hydra/langs/rdf/syntax.Literal")
 
-_Literal_lexicalForm = (Core.FieldName "lexicalForm")
+_Literal_lexicalForm = (Core.Name "lexicalForm")
 
-_Literal_datatypeIri = (Core.FieldName "datatypeIri")
+_Literal_datatypeIri = (Core.Name "datatypeIri")
 
-_Literal_languageTag = (Core.FieldName "languageTag")
+_Literal_languageTag = (Core.Name "languageTag")
 
 data Node = 
   NodeIri Iri |
@@ -115,11 +115,11 @@ data Node =
 
 _Node = (Core.Name "hydra/langs/rdf/syntax.Node")
 
-_Node_iri = (Core.FieldName "iri")
+_Node_iri = (Core.Name "iri")
 
-_Node_bnode = (Core.FieldName "bnode")
+_Node_bnode = (Core.Name "bnode")
 
-_Node_literal = (Core.FieldName "literal")
+_Node_literal = (Core.Name "literal")
 
 -- | A type representing an RDF property, and encapsulating its domain, range, and subclass relationships
 data Property = 
@@ -133,11 +133,11 @@ data Property =
 
 _Property = (Core.Name "hydra/langs/rdf/syntax.Property")
 
-_Property_domain = (Core.FieldName "domain")
+_Property_domain = (Core.Name "domain")
 
-_Property_range = (Core.FieldName "range")
+_Property_range = (Core.Name "range")
 
-_Property_subPropertyOf = (Core.FieldName "subPropertyOf")
+_Property_subPropertyOf = (Core.Name "subPropertyOf")
 
 -- | An RDF triple with an optional named graph component
 data Quad = 
@@ -150,13 +150,13 @@ data Quad =
 
 _Quad = (Core.Name "hydra/langs/rdf/syntax.Quad")
 
-_Quad_subject = (Core.FieldName "subject")
+_Quad_subject = (Core.Name "subject")
 
-_Quad_predicate = (Core.FieldName "predicate")
+_Quad_predicate = (Core.Name "predicate")
 
-_Quad_object = (Core.FieldName "object")
+_Quad_object = (Core.Name "object")
 
-_Quad_graph = (Core.FieldName "graph")
+_Quad_graph = (Core.Name "graph")
 
 data Resource = 
   ResourceIri Iri |
@@ -165,9 +165,9 @@ data Resource =
 
 _Resource = (Core.Name "hydra/langs/rdf/syntax.Resource")
 
-_Resource_iri = (Core.FieldName "iri")
+_Resource_iri = (Core.Name "iri")
 
-_Resource_bnode = (Core.FieldName "bnode")
+_Resource_bnode = (Core.Name "bnode")
 
 -- | An RDF triple defined by a subject, predicate, and object
 data Triple = 
@@ -179,8 +179,8 @@ data Triple =
 
 _Triple = (Core.Name "hydra/langs/rdf/syntax.Triple")
 
-_Triple_subject = (Core.FieldName "subject")
+_Triple_subject = (Core.Name "subject")
 
-_Triple_predicate = (Core.FieldName "predicate")
+_Triple_predicate = (Core.Name "predicate")
 
-_Triple_object = (Core.FieldName "object")
+_Triple_object = (Core.Name "object")

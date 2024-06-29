@@ -114,10 +114,10 @@ parsePattern pat = withTrace "parse path pattern" $ do
               TermOptional mt -> case mt of
                 Nothing -> pure []
                 Just term' -> evalStep step term'
-              TermRecord (Record _ fields) -> case M.lookup (FieldName step) (fieldMap fields) of
+              TermRecord (Record _ fields) -> case M.lookup (Name step) (fieldMap fields) of
                 Nothing -> fail $ "No such field " ++ step ++ " in record: " ++ show term
                 Just term' -> pure [term']
-              TermUnion (Injection _ field) -> if unFieldName (fieldName field) == step
+              TermUnion (Injection _ field) -> if unName (fieldName field) == step
                 then evalStep step $ fieldTerm field
                 else pure [] -- Note: not checking the step against the union type; assuming it is correct but that it references a field unused by the injection
               TermWrap (Nominal _ term') -> evalStep step term'
@@ -231,21 +231,21 @@ decodeVertexSpec term = withTrace "decode vertex spec" $ matchRecord (\fields ->
 
 -- General-purpose code for decoding
 
-matchInjection :: [(FieldName, Term -> Flow s x)] -> Term -> Flow s x
+matchInjection :: [(Name, Term -> Flow s x)] -> Term -> Flow s x
 matchInjection cases encoded = do
-  mp <- Expect.map (\k -> FieldName <$> Expect.string k) pure encoded
+  mp <- Expect.map (\k -> Name <$> Expect.string k) pure encoded
   f <- case M.toList mp of
     [] -> fail "empty injection"
     [(k, v)] -> pure $ Field k v
     _ -> fail $ "invalid injection: " ++ show mp
   case snd <$> (L.filter (\c -> fst c == fieldName f) cases) of
-    [] -> fail $ "unexpected field: " ++ unFieldName (fieldName f)
+    [] -> fail $ "unexpected field: " ++ unName (fieldName f)
     [fun] -> fun (fieldTerm f)
     _ -> fail "duplicate field name in cases"
 
-matchRecord :: (M.Map FieldName Term -> Flow s x) -> Term -> Flow s x
-matchRecord cons term = Expect.map (\k -> FieldName <$> Expect.string k) pure term >>= cons
+matchRecord :: (M.Map Name Term -> Flow s x) -> Term -> Flow s x
+matchRecord cons term = Expect.map (\k -> Name <$> Expect.string k) pure term >>= cons
 
 readField fields fname fun = case M.lookup fname fields of
-  Nothing -> fail $ "no such field: " ++ unFieldName fname
+  Nothing -> fail $ "no such field: " ++ unName fname
   Just t -> fun t

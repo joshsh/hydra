@@ -19,11 +19,11 @@ data Ontology =
 
 _Ontology = (Core.Name "hydra/langs/owl/syntax.Ontology")
 
-_Ontology_directImports = (Core.FieldName "directImports")
+_Ontology_directImports = (Core.Name "directImports")
 
-_Ontology_annotations = (Core.FieldName "annotations")
+_Ontology_annotations = (Core.Name "annotations")
 
-_Ontology_axioms = (Core.FieldName "axioms")
+_Ontology_axioms = (Core.Name "axioms")
 
 data Declaration = 
   Declaration {
@@ -33,9 +33,9 @@ data Declaration =
 
 _Declaration = (Core.Name "hydra/langs/owl/syntax.Declaration")
 
-_Declaration_annotations = (Core.FieldName "annotations")
+_Declaration_annotations = (Core.Name "annotations")
 
-_Declaration_entity = (Core.FieldName "entity")
+_Declaration_entity = (Core.Name "entity")
 
 data Entity = 
   EntityAnnotationProperty AnnotationProperty |
@@ -48,17 +48,17 @@ data Entity =
 
 _Entity = (Core.Name "hydra/langs/owl/syntax.Entity")
 
-_Entity_annotationProperty = (Core.FieldName "annotationProperty")
+_Entity_annotationProperty = (Core.Name "annotationProperty")
 
-_Entity_class = (Core.FieldName "class")
+_Entity_class = (Core.Name "class")
 
-_Entity_dataProperty = (Core.FieldName "dataProperty")
+_Entity_dataProperty = (Core.Name "dataProperty")
 
-_Entity_datatype = (Core.FieldName "datatype")
+_Entity_datatype = (Core.Name "datatype")
 
-_Entity_namedIndividual = (Core.FieldName "namedIndividual")
+_Entity_namedIndividual = (Core.Name "namedIndividual")
 
-_Entity_objectProperty = (Core.FieldName "objectProperty")
+_Entity_objectProperty = (Core.Name "objectProperty")
 
 data AnnotationSubject = 
   AnnotationSubjectIri Syntax.Iri |
@@ -67,9 +67,9 @@ data AnnotationSubject =
 
 _AnnotationSubject = (Core.Name "hydra/langs/owl/syntax.AnnotationSubject")
 
-_AnnotationSubject_iri = (Core.FieldName "iri")
+_AnnotationSubject_iri = (Core.Name "iri")
 
-_AnnotationSubject_anonymousIndividual = (Core.FieldName "anonymousIndividual")
+_AnnotationSubject_anonymousIndividual = (Core.Name "anonymousIndividual")
 
 data AnnotationValue = 
   AnnotationValueAnonymousIndividual AnonymousIndividual |
@@ -79,11 +79,11 @@ data AnnotationValue =
 
 _AnnotationValue = (Core.Name "hydra/langs/owl/syntax.AnnotationValue")
 
-_AnnotationValue_anonymousIndividual = (Core.FieldName "anonymousIndividual")
+_AnnotationValue_anonymousIndividual = (Core.Name "anonymousIndividual")
 
-_AnnotationValue_iri = (Core.FieldName "iri")
+_AnnotationValue_iri = (Core.Name "iri")
 
-_AnnotationValue_literal = (Core.FieldName "literal")
+_AnnotationValue_literal = (Core.Name "literal")
 
 data Annotation = 
   Annotation {
@@ -94,11 +94,11 @@ data Annotation =
 
 _Annotation = (Core.Name "hydra/langs/owl/syntax.Annotation")
 
-_Annotation_annotations = (Core.FieldName "annotations")
+_Annotation_annotations = (Core.Name "annotations")
 
-_Annotation_property = (Core.FieldName "property")
+_Annotation_property = (Core.Name "property")
 
-_Annotation_value = (Core.FieldName "value")
+_Annotation_value = (Core.Name "value")
 
 data AnnotationAxiom = 
   AnnotationAxiomAnnotationAssertion AnnotationAssertion |
@@ -109,13 +109,13 @@ data AnnotationAxiom =
 
 _AnnotationAxiom = (Core.Name "hydra/langs/owl/syntax.AnnotationAxiom")
 
-_AnnotationAxiom_annotationAssertion = (Core.FieldName "annotationAssertion")
+_AnnotationAxiom_annotationAssertion = (Core.Name "annotationAssertion")
 
-_AnnotationAxiom_annotationPropertyDomain = (Core.FieldName "annotationPropertyDomain")
+_AnnotationAxiom_annotationPropertyDomain = (Core.Name "annotationPropertyDomain")
 
-_AnnotationAxiom_annotationPropertyRange = (Core.FieldName "annotationPropertyRange")
+_AnnotationAxiom_annotationPropertyRange = (Core.Name "annotationPropertyRange")
 
-_AnnotationAxiom_subAnnotationPropertyOf = (Core.FieldName "subAnnotationPropertyOf")
+_AnnotationAxiom_subAnnotationPropertyOf = (Core.Name "subAnnotationPropertyOf")
 
 data AnnotationAssertion = 
   AnnotationAssertion {
@@ -127,13 +127,13 @@ data AnnotationAssertion =
 
 _AnnotationAssertion = (Core.Name "hydra/langs/owl/syntax.AnnotationAssertion")
 
-_AnnotationAssertion_annotations = (Core.FieldName "annotations")
+_AnnotationAssertion_annotations = (Core.Name "annotations")
 
-_AnnotationAssertion_property = (Core.FieldName "property")
+_AnnotationAssertion_property = (Core.Name "property")
 
-_AnnotationAssertion_subject = (Core.FieldName "subject")
+_AnnotationAssertion_subject = (Core.Name "subject")
 
-_AnnotationAssertion_value = (Core.FieldName "value")
+_AnnotationAssertion_value = (Core.Name "value")
 
 data SubAnnotationPropertyOf = 
   SubAnnotationPropertyOf {
@@ -144,11 +144,11 @@ data SubAnnotationPropertyOf =
 
 _SubAnnotationPropertyOf = (Core.Name "hydra/langs/owl/syntax.SubAnnotationPropertyOf")
 
-_SubAnnotationPropertyOf_annotations = (Core.FieldName "annotations")
+_SubAnnotationPropertyOf_annotations = (Core.Name "annotations")
 
-_SubAnnotationPropertyOf_subProperty = (Core.FieldName "subProperty")
+_SubAnnotationPropertyOf_subProperty = (Core.Name "subProperty")
 
-_SubAnnotationPropertyOf_superProperty = (Core.FieldName "superProperty")
+_SubAnnotationPropertyOf_superProperty = (Core.Name "superProperty")
 
 data AnnotationPropertyDomain = 
   AnnotationPropertyDomain {
@@ -159,11 +159,11 @@ data AnnotationPropertyDomain =
 
 _AnnotationPropertyDomain = (Core.Name "hydra/langs/owl/syntax.AnnotationPropertyDomain")
 
-_AnnotationPropertyDomain_annotations = (Core.FieldName "annotations")
+_AnnotationPropertyDomain_annotations = (Core.Name "annotations")
 
-_AnnotationPropertyDomain_property = (Core.FieldName "property")
+_AnnotationPropertyDomain_property = (Core.Name "property")
 
-_AnnotationPropertyDomain_iri = (Core.FieldName "iri")
+_AnnotationPropertyDomain_iri = (Core.Name "iri")
 
 data AnnotationPropertyRange = 
   AnnotationPropertyRange {
@@ -174,11 +174,11 @@ data AnnotationPropertyRange =
 
 _AnnotationPropertyRange = (Core.Name "hydra/langs/owl/syntax.AnnotationPropertyRange")
 
-_AnnotationPropertyRange_annotations = (Core.FieldName "annotations")
+_AnnotationPropertyRange_annotations = (Core.Name "annotations")
 
-_AnnotationPropertyRange_property = (Core.FieldName "property")
+_AnnotationPropertyRange_property = (Core.Name "property")
 
-_AnnotationPropertyRange_iri = (Core.FieldName "iri")
+_AnnotationPropertyRange_iri = (Core.Name "iri")
 
 -- | See https://www.w3.org/TR/owl2-syntax/#Classes
 data Class = 
@@ -196,9 +196,9 @@ data Datatype =
 
 _Datatype = (Core.Name "hydra/langs/owl/syntax.Datatype")
 
-_Datatype_xmlSchema = (Core.FieldName "xmlSchema")
+_Datatype_xmlSchema = (Core.Name "xmlSchema")
 
-_Datatype_other = (Core.FieldName "other")
+_Datatype_other = (Core.Name "other")
 
 -- | See https://www.w3.org/TR/owl2-syntax/#Object_Properties
 data ObjectProperty = 
@@ -226,9 +226,9 @@ data Individual =
 
 _Individual = (Core.Name "hydra/langs/owl/syntax.Individual")
 
-_Individual_named = (Core.FieldName "named")
+_Individual_named = (Core.Name "named")
 
-_Individual_anonymous = (Core.FieldName "anonymous")
+_Individual_anonymous = (Core.Name "anonymous")
 
 data NamedIndividual = 
   NamedIndividual {}
@@ -249,9 +249,9 @@ data ObjectPropertyExpression =
 
 _ObjectPropertyExpression = (Core.Name "hydra/langs/owl/syntax.ObjectPropertyExpression")
 
-_ObjectPropertyExpression_object = (Core.FieldName "object")
+_ObjectPropertyExpression_object = (Core.Name "object")
 
-_ObjectPropertyExpression_inverseObject = (Core.FieldName "inverseObject")
+_ObjectPropertyExpression_inverseObject = (Core.Name "inverseObject")
 
 newtype InverseObjectProperty = 
   InverseObjectProperty {
@@ -279,17 +279,17 @@ data DataRange =
 
 _DataRange = (Core.Name "hydra/langs/owl/syntax.DataRange")
 
-_DataRange_dataComplementOf = (Core.FieldName "dataComplementOf")
+_DataRange_dataComplementOf = (Core.Name "dataComplementOf")
 
-_DataRange_dataIntersectionOf = (Core.FieldName "dataIntersectionOf")
+_DataRange_dataIntersectionOf = (Core.Name "dataIntersectionOf")
 
-_DataRange_dataOneOf = (Core.FieldName "dataOneOf")
+_DataRange_dataOneOf = (Core.Name "dataOneOf")
 
-_DataRange_dataUnionOf = (Core.FieldName "dataUnionOf")
+_DataRange_dataUnionOf = (Core.Name "dataUnionOf")
 
-_DataRange_datatype = (Core.FieldName "datatype")
+_DataRange_datatype = (Core.Name "datatype")
 
-_DataRange_datatypeRestriction = (Core.FieldName "datatypeRestriction")
+_DataRange_datatypeRestriction = (Core.Name "datatypeRestriction")
 
 -- | See https://www.w3.org/TR/owl2-syntax/#Intersection_of_Data_Ranges
 newtype DataIntersectionOf = 
@@ -336,9 +336,9 @@ data DatatypeRestriction =
 
 _DatatypeRestriction = (Core.Name "hydra/langs/owl/syntax.DatatypeRestriction")
 
-_DatatypeRestriction_datatype = (Core.FieldName "datatype")
+_DatatypeRestriction_datatype = (Core.Name "datatype")
 
-_DatatypeRestriction_constraints = (Core.FieldName "constraints")
+_DatatypeRestriction_constraints = (Core.Name "constraints")
 
 data DatatypeRestriction_Constraint = 
   DatatypeRestriction_Constraint {
@@ -348,9 +348,9 @@ data DatatypeRestriction_Constraint =
 
 _DatatypeRestriction_Constraint = (Core.Name "hydra/langs/owl/syntax.DatatypeRestriction.Constraint")
 
-_DatatypeRestriction_Constraint_constrainingFacet = (Core.FieldName "constrainingFacet")
+_DatatypeRestriction_Constraint_constrainingFacet = (Core.Name "constrainingFacet")
 
-_DatatypeRestriction_Constraint_restrictionValue = (Core.FieldName "restrictionValue")
+_DatatypeRestriction_Constraint_restrictionValue = (Core.Name "restrictionValue")
 
 data DatatypeRestriction_ConstrainingFacet = 
   -- | Note: XML Schema constraining facets are treated as a special case in this model (not in the OWL 2 specification itself) because they are particularly common
@@ -360,9 +360,9 @@ data DatatypeRestriction_ConstrainingFacet =
 
 _DatatypeRestriction_ConstrainingFacet = (Core.Name "hydra/langs/owl/syntax.DatatypeRestriction.ConstrainingFacet")
 
-_DatatypeRestriction_ConstrainingFacet_xmlSchema = (Core.FieldName "xmlSchema")
+_DatatypeRestriction_ConstrainingFacet_xmlSchema = (Core.Name "xmlSchema")
 
-_DatatypeRestriction_ConstrainingFacet_other = (Core.FieldName "other")
+_DatatypeRestriction_ConstrainingFacet_other = (Core.Name "other")
 
 data ClassExpression = 
   ClassExpressionClass Class |
@@ -386,39 +386,39 @@ data ClassExpression =
 
 _ClassExpression = (Core.Name "hydra/langs/owl/syntax.ClassExpression")
 
-_ClassExpression_class = (Core.FieldName "class")
+_ClassExpression_class = (Core.Name "class")
 
-_ClassExpression_dataSomeValuesFrom = (Core.FieldName "dataSomeValuesFrom")
+_ClassExpression_dataSomeValuesFrom = (Core.Name "dataSomeValuesFrom")
 
-_ClassExpression_dataAllValuesFrom = (Core.FieldName "dataAllValuesFrom")
+_ClassExpression_dataAllValuesFrom = (Core.Name "dataAllValuesFrom")
 
-_ClassExpression_dataHasValue = (Core.FieldName "dataHasValue")
+_ClassExpression_dataHasValue = (Core.Name "dataHasValue")
 
-_ClassExpression_dataMinCardinality = (Core.FieldName "dataMinCardinality")
+_ClassExpression_dataMinCardinality = (Core.Name "dataMinCardinality")
 
-_ClassExpression_dataMaxCardinality = (Core.FieldName "dataMaxCardinality")
+_ClassExpression_dataMaxCardinality = (Core.Name "dataMaxCardinality")
 
-_ClassExpression_dataExactCardinality = (Core.FieldName "dataExactCardinality")
+_ClassExpression_dataExactCardinality = (Core.Name "dataExactCardinality")
 
-_ClassExpression_objectAllValuesFrom = (Core.FieldName "objectAllValuesFrom")
+_ClassExpression_objectAllValuesFrom = (Core.Name "objectAllValuesFrom")
 
-_ClassExpression_objectExactCardinality = (Core.FieldName "objectExactCardinality")
+_ClassExpression_objectExactCardinality = (Core.Name "objectExactCardinality")
 
-_ClassExpression_objectHasSelf = (Core.FieldName "objectHasSelf")
+_ClassExpression_objectHasSelf = (Core.Name "objectHasSelf")
 
-_ClassExpression_objectHasValue = (Core.FieldName "objectHasValue")
+_ClassExpression_objectHasValue = (Core.Name "objectHasValue")
 
-_ClassExpression_objectIntersectionOf = (Core.FieldName "objectIntersectionOf")
+_ClassExpression_objectIntersectionOf = (Core.Name "objectIntersectionOf")
 
-_ClassExpression_objectMaxCardinality = (Core.FieldName "objectMaxCardinality")
+_ClassExpression_objectMaxCardinality = (Core.Name "objectMaxCardinality")
 
-_ClassExpression_objectMinCardinality = (Core.FieldName "objectMinCardinality")
+_ClassExpression_objectMinCardinality = (Core.Name "objectMinCardinality")
 
-_ClassExpression_objectOneOf = (Core.FieldName "objectOneOf")
+_ClassExpression_objectOneOf = (Core.Name "objectOneOf")
 
-_ClassExpression_objectSomeValuesFrom = (Core.FieldName "objectSomeValuesFrom")
+_ClassExpression_objectSomeValuesFrom = (Core.Name "objectSomeValuesFrom")
 
-_ClassExpression_objectUnionOf = (Core.FieldName "objectUnionOf")
+_ClassExpression_objectUnionOf = (Core.Name "objectUnionOf")
 
 newtype ObjectIntersectionOf = 
   ObjectIntersectionOf {
@@ -456,9 +456,9 @@ data ObjectSomeValuesFrom =
 
 _ObjectSomeValuesFrom = (Core.Name "hydra/langs/owl/syntax.ObjectSomeValuesFrom")
 
-_ObjectSomeValuesFrom_property = (Core.FieldName "property")
+_ObjectSomeValuesFrom_property = (Core.Name "property")
 
-_ObjectSomeValuesFrom_class = (Core.FieldName "class")
+_ObjectSomeValuesFrom_class = (Core.Name "class")
 
 data ObjectAllValuesFrom = 
   ObjectAllValuesFrom {
@@ -468,9 +468,9 @@ data ObjectAllValuesFrom =
 
 _ObjectAllValuesFrom = (Core.Name "hydra/langs/owl/syntax.ObjectAllValuesFrom")
 
-_ObjectAllValuesFrom_property = (Core.FieldName "property")
+_ObjectAllValuesFrom_property = (Core.Name "property")
 
-_ObjectAllValuesFrom_class = (Core.FieldName "class")
+_ObjectAllValuesFrom_class = (Core.Name "class")
 
 data ObjectHasValue = 
   ObjectHasValue {
@@ -480,9 +480,9 @@ data ObjectHasValue =
 
 _ObjectHasValue = (Core.Name "hydra/langs/owl/syntax.ObjectHasValue")
 
-_ObjectHasValue_property = (Core.FieldName "property")
+_ObjectHasValue_property = (Core.Name "property")
 
-_ObjectHasValue_individual = (Core.FieldName "individual")
+_ObjectHasValue_individual = (Core.Name "individual")
 
 newtype ObjectHasSelf = 
   ObjectHasSelf {
@@ -501,11 +501,11 @@ data ObjectMinCardinality =
 
 _ObjectMinCardinality = (Core.Name "hydra/langs/owl/syntax.ObjectMinCardinality")
 
-_ObjectMinCardinality_bound = (Core.FieldName "bound")
+_ObjectMinCardinality_bound = (Core.Name "bound")
 
-_ObjectMinCardinality_property = (Core.FieldName "property")
+_ObjectMinCardinality_property = (Core.Name "property")
 
-_ObjectMinCardinality_class = (Core.FieldName "class")
+_ObjectMinCardinality_class = (Core.Name "class")
 
 -- | See https://www.w3.org/TR/owl2-syntax/#Maximum_Cardinality
 data ObjectMaxCardinality = 
@@ -517,11 +517,11 @@ data ObjectMaxCardinality =
 
 _ObjectMaxCardinality = (Core.Name "hydra/langs/owl/syntax.ObjectMaxCardinality")
 
-_ObjectMaxCardinality_bound = (Core.FieldName "bound")
+_ObjectMaxCardinality_bound = (Core.Name "bound")
 
-_ObjectMaxCardinality_property = (Core.FieldName "property")
+_ObjectMaxCardinality_property = (Core.Name "property")
 
-_ObjectMaxCardinality_class = (Core.FieldName "class")
+_ObjectMaxCardinality_class = (Core.Name "class")
 
 -- | See https://www.w3.org/TR/owl2-syntax/#Exact_Cardinality
 data ObjectExactCardinality = 
@@ -533,11 +533,11 @@ data ObjectExactCardinality =
 
 _ObjectExactCardinality = (Core.Name "hydra/langs/owl/syntax.ObjectExactCardinality")
 
-_ObjectExactCardinality_bound = (Core.FieldName "bound")
+_ObjectExactCardinality_bound = (Core.Name "bound")
 
-_ObjectExactCardinality_property = (Core.FieldName "property")
+_ObjectExactCardinality_property = (Core.Name "property")
 
-_ObjectExactCardinality_class = (Core.FieldName "class")
+_ObjectExactCardinality_class = (Core.Name "class")
 
 data DataSomeValuesFrom = 
   DataSomeValuesFrom {
@@ -547,9 +547,9 @@ data DataSomeValuesFrom =
 
 _DataSomeValuesFrom = (Core.Name "hydra/langs/owl/syntax.DataSomeValuesFrom")
 
-_DataSomeValuesFrom_property = (Core.FieldName "property")
+_DataSomeValuesFrom_property = (Core.Name "property")
 
-_DataSomeValuesFrom_range = (Core.FieldName "range")
+_DataSomeValuesFrom_range = (Core.Name "range")
 
 data DataAllValuesFrom = 
   DataAllValuesFrom {
@@ -559,9 +559,9 @@ data DataAllValuesFrom =
 
 _DataAllValuesFrom = (Core.Name "hydra/langs/owl/syntax.DataAllValuesFrom")
 
-_DataAllValuesFrom_property = (Core.FieldName "property")
+_DataAllValuesFrom_property = (Core.Name "property")
 
-_DataAllValuesFrom_range = (Core.FieldName "range")
+_DataAllValuesFrom_range = (Core.Name "range")
 
 data DataHasValue = 
   DataHasValue {
@@ -571,9 +571,9 @@ data DataHasValue =
 
 _DataHasValue = (Core.Name "hydra/langs/owl/syntax.DataHasValue")
 
-_DataHasValue_property = (Core.FieldName "property")
+_DataHasValue_property = (Core.Name "property")
 
-_DataHasValue_value = (Core.FieldName "value")
+_DataHasValue_value = (Core.Name "value")
 
 data DataMinCardinality = 
   DataMinCardinality {
@@ -584,11 +584,11 @@ data DataMinCardinality =
 
 _DataMinCardinality = (Core.Name "hydra/langs/owl/syntax.DataMinCardinality")
 
-_DataMinCardinality_bound = (Core.FieldName "bound")
+_DataMinCardinality_bound = (Core.Name "bound")
 
-_DataMinCardinality_property = (Core.FieldName "property")
+_DataMinCardinality_property = (Core.Name "property")
 
-_DataMinCardinality_range = (Core.FieldName "range")
+_DataMinCardinality_range = (Core.Name "range")
 
 data DataMaxCardinality = 
   DataMaxCardinality {
@@ -599,11 +599,11 @@ data DataMaxCardinality =
 
 _DataMaxCardinality = (Core.Name "hydra/langs/owl/syntax.DataMaxCardinality")
 
-_DataMaxCardinality_bound = (Core.FieldName "bound")
+_DataMaxCardinality_bound = (Core.Name "bound")
 
-_DataMaxCardinality_property = (Core.FieldName "property")
+_DataMaxCardinality_property = (Core.Name "property")
 
-_DataMaxCardinality_range = (Core.FieldName "range")
+_DataMaxCardinality_range = (Core.Name "range")
 
 data DataExactCardinality = 
   DataExactCardinality {
@@ -614,11 +614,11 @@ data DataExactCardinality =
 
 _DataExactCardinality = (Core.Name "hydra/langs/owl/syntax.DataExactCardinality")
 
-_DataExactCardinality_bound = (Core.FieldName "bound")
+_DataExactCardinality_bound = (Core.Name "bound")
 
-_DataExactCardinality_property = (Core.FieldName "property")
+_DataExactCardinality_property = (Core.Name "property")
 
-_DataExactCardinality_range = (Core.FieldName "range")
+_DataExactCardinality_range = (Core.Name "range")
 
 -- | See https://www.w3.org/TR/owl2-syntax/#Axioms
 data Axiom = 
@@ -634,21 +634,21 @@ data Axiom =
 
 _Axiom = (Core.Name "hydra/langs/owl/syntax.Axiom")
 
-_Axiom_annotationAxiom = (Core.FieldName "annotationAxiom")
+_Axiom_annotationAxiom = (Core.Name "annotationAxiom")
 
-_Axiom_assertion = (Core.FieldName "assertion")
+_Axiom_assertion = (Core.Name "assertion")
 
-_Axiom_classAxiom = (Core.FieldName "classAxiom")
+_Axiom_classAxiom = (Core.Name "classAxiom")
 
-_Axiom_dataPropertyAxiom = (Core.FieldName "dataPropertyAxiom")
+_Axiom_dataPropertyAxiom = (Core.Name "dataPropertyAxiom")
 
-_Axiom_datatypeDefinition = (Core.FieldName "datatypeDefinition")
+_Axiom_datatypeDefinition = (Core.Name "datatypeDefinition")
 
-_Axiom_declaration = (Core.FieldName "declaration")
+_Axiom_declaration = (Core.Name "declaration")
 
-_Axiom_hasKey = (Core.FieldName "hasKey")
+_Axiom_hasKey = (Core.Name "hasKey")
 
-_Axiom_objectPropertyAxiom = (Core.FieldName "objectPropertyAxiom")
+_Axiom_objectPropertyAxiom = (Core.Name "objectPropertyAxiom")
 
 data ClassAxiom = 
   ClassAxiomDisjointClasses DisjointClasses |
@@ -659,13 +659,13 @@ data ClassAxiom =
 
 _ClassAxiom = (Core.Name "hydra/langs/owl/syntax.ClassAxiom")
 
-_ClassAxiom_disjointClasses = (Core.FieldName "disjointClasses")
+_ClassAxiom_disjointClasses = (Core.Name "disjointClasses")
 
-_ClassAxiom_disjointUnion = (Core.FieldName "disjointUnion")
+_ClassAxiom_disjointUnion = (Core.Name "disjointUnion")
 
-_ClassAxiom_equivalentClasses = (Core.FieldName "equivalentClasses")
+_ClassAxiom_equivalentClasses = (Core.Name "equivalentClasses")
 
-_ClassAxiom_subClassOf = (Core.FieldName "subClassOf")
+_ClassAxiom_subClassOf = (Core.Name "subClassOf")
 
 data SubClassOf = 
   SubClassOf {
@@ -676,11 +676,11 @@ data SubClassOf =
 
 _SubClassOf = (Core.Name "hydra/langs/owl/syntax.SubClassOf")
 
-_SubClassOf_annotations = (Core.FieldName "annotations")
+_SubClassOf_annotations = (Core.Name "annotations")
 
-_SubClassOf_subClass = (Core.FieldName "subClass")
+_SubClassOf_subClass = (Core.Name "subClass")
 
-_SubClassOf_superClass = (Core.FieldName "superClass")
+_SubClassOf_superClass = (Core.Name "superClass")
 
 data EquivalentClasses = 
   EquivalentClasses {
@@ -690,9 +690,9 @@ data EquivalentClasses =
 
 _EquivalentClasses = (Core.Name "hydra/langs/owl/syntax.EquivalentClasses")
 
-_EquivalentClasses_annotations = (Core.FieldName "annotations")
+_EquivalentClasses_annotations = (Core.Name "annotations")
 
-_EquivalentClasses_classes = (Core.FieldName "classes")
+_EquivalentClasses_classes = (Core.Name "classes")
 
 data DisjointClasses = 
   DisjointClasses {
@@ -702,9 +702,9 @@ data DisjointClasses =
 
 _DisjointClasses = (Core.Name "hydra/langs/owl/syntax.DisjointClasses")
 
-_DisjointClasses_annotations = (Core.FieldName "annotations")
+_DisjointClasses_annotations = (Core.Name "annotations")
 
-_DisjointClasses_classes = (Core.FieldName "classes")
+_DisjointClasses_classes = (Core.Name "classes")
 
 -- | See https://www.w3.org/TR/owl2-syntax/#Disjoint_Union_of_Class_Expressions
 data DisjointUnion = 
@@ -716,11 +716,11 @@ data DisjointUnion =
 
 _DisjointUnion = (Core.Name "hydra/langs/owl/syntax.DisjointUnion")
 
-_DisjointUnion_annotations = (Core.FieldName "annotations")
+_DisjointUnion_annotations = (Core.Name "annotations")
 
-_DisjointUnion_class = (Core.FieldName "class")
+_DisjointUnion_class = (Core.Name "class")
 
-_DisjointUnion_classes = (Core.FieldName "classes")
+_DisjointUnion_classes = (Core.Name "classes")
 
 data ObjectPropertyAxiom = 
   ObjectPropertyAxiomAsymmetricObjectProperty AsymmetricObjectProperty |
@@ -740,31 +740,31 @@ data ObjectPropertyAxiom =
 
 _ObjectPropertyAxiom = (Core.Name "hydra/langs/owl/syntax.ObjectPropertyAxiom")
 
-_ObjectPropertyAxiom_asymmetricObjectProperty = (Core.FieldName "asymmetricObjectProperty")
+_ObjectPropertyAxiom_asymmetricObjectProperty = (Core.Name "asymmetricObjectProperty")
 
-_ObjectPropertyAxiom_disjointObjectProperties = (Core.FieldName "disjointObjectProperties")
+_ObjectPropertyAxiom_disjointObjectProperties = (Core.Name "disjointObjectProperties")
 
-_ObjectPropertyAxiom_equivalentObjectProperties = (Core.FieldName "equivalentObjectProperties")
+_ObjectPropertyAxiom_equivalentObjectProperties = (Core.Name "equivalentObjectProperties")
 
-_ObjectPropertyAxiom_functionalObjectProperty = (Core.FieldName "functionalObjectProperty")
+_ObjectPropertyAxiom_functionalObjectProperty = (Core.Name "functionalObjectProperty")
 
-_ObjectPropertyAxiom_inverseFunctionalObjectProperty = (Core.FieldName "inverseFunctionalObjectProperty")
+_ObjectPropertyAxiom_inverseFunctionalObjectProperty = (Core.Name "inverseFunctionalObjectProperty")
 
-_ObjectPropertyAxiom_inverseObjectProperties = (Core.FieldName "inverseObjectProperties")
+_ObjectPropertyAxiom_inverseObjectProperties = (Core.Name "inverseObjectProperties")
 
-_ObjectPropertyAxiom_irreflexiveObjectProperty = (Core.FieldName "irreflexiveObjectProperty")
+_ObjectPropertyAxiom_irreflexiveObjectProperty = (Core.Name "irreflexiveObjectProperty")
 
-_ObjectPropertyAxiom_objectPropertyDomain = (Core.FieldName "objectPropertyDomain")
+_ObjectPropertyAxiom_objectPropertyDomain = (Core.Name "objectPropertyDomain")
 
-_ObjectPropertyAxiom_objectPropertyRange = (Core.FieldName "objectPropertyRange")
+_ObjectPropertyAxiom_objectPropertyRange = (Core.Name "objectPropertyRange")
 
-_ObjectPropertyAxiom_reflexiveObjectProperty = (Core.FieldName "reflexiveObjectProperty")
+_ObjectPropertyAxiom_reflexiveObjectProperty = (Core.Name "reflexiveObjectProperty")
 
-_ObjectPropertyAxiom_subObjectPropertyOf = (Core.FieldName "subObjectPropertyOf")
+_ObjectPropertyAxiom_subObjectPropertyOf = (Core.Name "subObjectPropertyOf")
 
-_ObjectPropertyAxiom_symmetricObjectProperty = (Core.FieldName "symmetricObjectProperty")
+_ObjectPropertyAxiom_symmetricObjectProperty = (Core.Name "symmetricObjectProperty")
 
-_ObjectPropertyAxiom_transitiveObjectProperty = (Core.FieldName "transitiveObjectProperty")
+_ObjectPropertyAxiom_transitiveObjectProperty = (Core.Name "transitiveObjectProperty")
 
 data SubObjectPropertyOf = 
   SubObjectPropertyOf {
@@ -775,11 +775,11 @@ data SubObjectPropertyOf =
 
 _SubObjectPropertyOf = (Core.Name "hydra/langs/owl/syntax.SubObjectPropertyOf")
 
-_SubObjectPropertyOf_annotations = (Core.FieldName "annotations")
+_SubObjectPropertyOf_annotations = (Core.Name "annotations")
 
-_SubObjectPropertyOf_subProperty = (Core.FieldName "subProperty")
+_SubObjectPropertyOf_subProperty = (Core.Name "subProperty")
 
-_SubObjectPropertyOf_superProperty = (Core.FieldName "superProperty")
+_SubObjectPropertyOf_superProperty = (Core.Name "superProperty")
 
 data EquivalentObjectProperties = 
   EquivalentObjectProperties {
@@ -789,9 +789,9 @@ data EquivalentObjectProperties =
 
 _EquivalentObjectProperties = (Core.Name "hydra/langs/owl/syntax.EquivalentObjectProperties")
 
-_EquivalentObjectProperties_annotations = (Core.FieldName "annotations")
+_EquivalentObjectProperties_annotations = (Core.Name "annotations")
 
-_EquivalentObjectProperties_properties = (Core.FieldName "properties")
+_EquivalentObjectProperties_properties = (Core.Name "properties")
 
 data DisjointObjectProperties = 
   DisjointObjectProperties {
@@ -801,9 +801,9 @@ data DisjointObjectProperties =
 
 _DisjointObjectProperties = (Core.Name "hydra/langs/owl/syntax.DisjointObjectProperties")
 
-_DisjointObjectProperties_annotations = (Core.FieldName "annotations")
+_DisjointObjectProperties_annotations = (Core.Name "annotations")
 
-_DisjointObjectProperties_properties = (Core.FieldName "properties")
+_DisjointObjectProperties_properties = (Core.Name "properties")
 
 -- | See https://www.w3.org/TR/owl2-syntax/#Object_Property_Domain
 data ObjectPropertyDomain = 
@@ -815,11 +815,11 @@ data ObjectPropertyDomain =
 
 _ObjectPropertyDomain = (Core.Name "hydra/langs/owl/syntax.ObjectPropertyDomain")
 
-_ObjectPropertyDomain_annotations = (Core.FieldName "annotations")
+_ObjectPropertyDomain_annotations = (Core.Name "annotations")
 
-_ObjectPropertyDomain_property = (Core.FieldName "property")
+_ObjectPropertyDomain_property = (Core.Name "property")
 
-_ObjectPropertyDomain_domain = (Core.FieldName "domain")
+_ObjectPropertyDomain_domain = (Core.Name "domain")
 
 -- | See https://www.w3.org/TR/owl2-syntax/#Object_Property_Range
 data ObjectPropertyRange = 
@@ -831,11 +831,11 @@ data ObjectPropertyRange =
 
 _ObjectPropertyRange = (Core.Name "hydra/langs/owl/syntax.ObjectPropertyRange")
 
-_ObjectPropertyRange_annotations = (Core.FieldName "annotations")
+_ObjectPropertyRange_annotations = (Core.Name "annotations")
 
-_ObjectPropertyRange_property = (Core.FieldName "property")
+_ObjectPropertyRange_property = (Core.Name "property")
 
-_ObjectPropertyRange_range = (Core.FieldName "range")
+_ObjectPropertyRange_range = (Core.Name "range")
 
 data InverseObjectProperties = 
   InverseObjectProperties {
@@ -846,11 +846,11 @@ data InverseObjectProperties =
 
 _InverseObjectProperties = (Core.Name "hydra/langs/owl/syntax.InverseObjectProperties")
 
-_InverseObjectProperties_annotations = (Core.FieldName "annotations")
+_InverseObjectProperties_annotations = (Core.Name "annotations")
 
-_InverseObjectProperties_property1 = (Core.FieldName "property1")
+_InverseObjectProperties_property1 = (Core.Name "property1")
 
-_InverseObjectProperties_property2 = (Core.FieldName "property2")
+_InverseObjectProperties_property2 = (Core.Name "property2")
 
 data FunctionalObjectProperty = 
   FunctionalObjectProperty {
@@ -860,9 +860,9 @@ data FunctionalObjectProperty =
 
 _FunctionalObjectProperty = (Core.Name "hydra/langs/owl/syntax.FunctionalObjectProperty")
 
-_FunctionalObjectProperty_annotations = (Core.FieldName "annotations")
+_FunctionalObjectProperty_annotations = (Core.Name "annotations")
 
-_FunctionalObjectProperty_property = (Core.FieldName "property")
+_FunctionalObjectProperty_property = (Core.Name "property")
 
 data InverseFunctionalObjectProperty = 
   InverseFunctionalObjectProperty {
@@ -872,9 +872,9 @@ data InverseFunctionalObjectProperty =
 
 _InverseFunctionalObjectProperty = (Core.Name "hydra/langs/owl/syntax.InverseFunctionalObjectProperty")
 
-_InverseFunctionalObjectProperty_annotations = (Core.FieldName "annotations")
+_InverseFunctionalObjectProperty_annotations = (Core.Name "annotations")
 
-_InverseFunctionalObjectProperty_property = (Core.FieldName "property")
+_InverseFunctionalObjectProperty_property = (Core.Name "property")
 
 data ReflexiveObjectProperty = 
   ReflexiveObjectProperty {
@@ -884,9 +884,9 @@ data ReflexiveObjectProperty =
 
 _ReflexiveObjectProperty = (Core.Name "hydra/langs/owl/syntax.ReflexiveObjectProperty")
 
-_ReflexiveObjectProperty_annotations = (Core.FieldName "annotations")
+_ReflexiveObjectProperty_annotations = (Core.Name "annotations")
 
-_ReflexiveObjectProperty_property = (Core.FieldName "property")
+_ReflexiveObjectProperty_property = (Core.Name "property")
 
 data IrreflexiveObjectProperty = 
   IrreflexiveObjectProperty {
@@ -896,9 +896,9 @@ data IrreflexiveObjectProperty =
 
 _IrreflexiveObjectProperty = (Core.Name "hydra/langs/owl/syntax.IrreflexiveObjectProperty")
 
-_IrreflexiveObjectProperty_annotations = (Core.FieldName "annotations")
+_IrreflexiveObjectProperty_annotations = (Core.Name "annotations")
 
-_IrreflexiveObjectProperty_property = (Core.FieldName "property")
+_IrreflexiveObjectProperty_property = (Core.Name "property")
 
 data SymmetricObjectProperty = 
   SymmetricObjectProperty {
@@ -908,9 +908,9 @@ data SymmetricObjectProperty =
 
 _SymmetricObjectProperty = (Core.Name "hydra/langs/owl/syntax.SymmetricObjectProperty")
 
-_SymmetricObjectProperty_annotations = (Core.FieldName "annotations")
+_SymmetricObjectProperty_annotations = (Core.Name "annotations")
 
-_SymmetricObjectProperty_property = (Core.FieldName "property")
+_SymmetricObjectProperty_property = (Core.Name "property")
 
 data AsymmetricObjectProperty = 
   AsymmetricObjectProperty {
@@ -920,9 +920,9 @@ data AsymmetricObjectProperty =
 
 _AsymmetricObjectProperty = (Core.Name "hydra/langs/owl/syntax.AsymmetricObjectProperty")
 
-_AsymmetricObjectProperty_annotations = (Core.FieldName "annotations")
+_AsymmetricObjectProperty_annotations = (Core.Name "annotations")
 
-_AsymmetricObjectProperty_property = (Core.FieldName "property")
+_AsymmetricObjectProperty_property = (Core.Name "property")
 
 data TransitiveObjectProperty = 
   TransitiveObjectProperty {
@@ -932,9 +932,9 @@ data TransitiveObjectProperty =
 
 _TransitiveObjectProperty = (Core.Name "hydra/langs/owl/syntax.TransitiveObjectProperty")
 
-_TransitiveObjectProperty_annotations = (Core.FieldName "annotations")
+_TransitiveObjectProperty_annotations = (Core.Name "annotations")
 
-_TransitiveObjectProperty_property = (Core.FieldName "property")
+_TransitiveObjectProperty_property = (Core.Name "property")
 
 data DataPropertyAxiom = 
   DataPropertyAxiomDataPropertyAxiom DataPropertyAxiom |
@@ -947,17 +947,17 @@ data DataPropertyAxiom =
 
 _DataPropertyAxiom = (Core.Name "hydra/langs/owl/syntax.DataPropertyAxiom")
 
-_DataPropertyAxiom_dataPropertyAxiom = (Core.FieldName "dataPropertyAxiom")
+_DataPropertyAxiom_dataPropertyAxiom = (Core.Name "dataPropertyAxiom")
 
-_DataPropertyAxiom_dataPropertyRange = (Core.FieldName "dataPropertyRange")
+_DataPropertyAxiom_dataPropertyRange = (Core.Name "dataPropertyRange")
 
-_DataPropertyAxiom_disjointDataProperties = (Core.FieldName "disjointDataProperties")
+_DataPropertyAxiom_disjointDataProperties = (Core.Name "disjointDataProperties")
 
-_DataPropertyAxiom_equivalentDataProperties = (Core.FieldName "equivalentDataProperties")
+_DataPropertyAxiom_equivalentDataProperties = (Core.Name "equivalentDataProperties")
 
-_DataPropertyAxiom_functionalDataProperty = (Core.FieldName "functionalDataProperty")
+_DataPropertyAxiom_functionalDataProperty = (Core.Name "functionalDataProperty")
 
-_DataPropertyAxiom_subDataPropertyOf = (Core.FieldName "subDataPropertyOf")
+_DataPropertyAxiom_subDataPropertyOf = (Core.Name "subDataPropertyOf")
 
 data SubDataPropertyOf = 
   SubDataPropertyOf {
@@ -968,11 +968,11 @@ data SubDataPropertyOf =
 
 _SubDataPropertyOf = (Core.Name "hydra/langs/owl/syntax.SubDataPropertyOf")
 
-_SubDataPropertyOf_annotations = (Core.FieldName "annotations")
+_SubDataPropertyOf_annotations = (Core.Name "annotations")
 
-_SubDataPropertyOf_subProperty = (Core.FieldName "subProperty")
+_SubDataPropertyOf_subProperty = (Core.Name "subProperty")
 
-_SubDataPropertyOf_superProperty = (Core.FieldName "superProperty")
+_SubDataPropertyOf_superProperty = (Core.Name "superProperty")
 
 data EquivalentDataProperties = 
   EquivalentDataProperties {
@@ -982,9 +982,9 @@ data EquivalentDataProperties =
 
 _EquivalentDataProperties = (Core.Name "hydra/langs/owl/syntax.EquivalentDataProperties")
 
-_EquivalentDataProperties_annotations = (Core.FieldName "annotations")
+_EquivalentDataProperties_annotations = (Core.Name "annotations")
 
-_EquivalentDataProperties_properties = (Core.FieldName "properties")
+_EquivalentDataProperties_properties = (Core.Name "properties")
 
 data DisjointDataProperties = 
   DisjointDataProperties {
@@ -994,9 +994,9 @@ data DisjointDataProperties =
 
 _DisjointDataProperties = (Core.Name "hydra/langs/owl/syntax.DisjointDataProperties")
 
-_DisjointDataProperties_annotations = (Core.FieldName "annotations")
+_DisjointDataProperties_annotations = (Core.Name "annotations")
 
-_DisjointDataProperties_properties = (Core.FieldName "properties")
+_DisjointDataProperties_properties = (Core.Name "properties")
 
 data DataPropertyDomain = 
   DataPropertyDomain {
@@ -1007,11 +1007,11 @@ data DataPropertyDomain =
 
 _DataPropertyDomain = (Core.Name "hydra/langs/owl/syntax.DataPropertyDomain")
 
-_DataPropertyDomain_annotations = (Core.FieldName "annotations")
+_DataPropertyDomain_annotations = (Core.Name "annotations")
 
-_DataPropertyDomain_property = (Core.FieldName "property")
+_DataPropertyDomain_property = (Core.Name "property")
 
-_DataPropertyDomain_domain = (Core.FieldName "domain")
+_DataPropertyDomain_domain = (Core.Name "domain")
 
 data DataPropertyRange = 
   DataPropertyRange {
@@ -1022,11 +1022,11 @@ data DataPropertyRange =
 
 _DataPropertyRange = (Core.Name "hydra/langs/owl/syntax.DataPropertyRange")
 
-_DataPropertyRange_annotations = (Core.FieldName "annotations")
+_DataPropertyRange_annotations = (Core.Name "annotations")
 
-_DataPropertyRange_property = (Core.FieldName "property")
+_DataPropertyRange_property = (Core.Name "property")
 
-_DataPropertyRange_range = (Core.FieldName "range")
+_DataPropertyRange_range = (Core.Name "range")
 
 data FunctionalDataProperty = 
   FunctionalDataProperty {
@@ -1036,9 +1036,9 @@ data FunctionalDataProperty =
 
 _FunctionalDataProperty = (Core.Name "hydra/langs/owl/syntax.FunctionalDataProperty")
 
-_FunctionalDataProperty_annotations = (Core.FieldName "annotations")
+_FunctionalDataProperty_annotations = (Core.Name "annotations")
 
-_FunctionalDataProperty_property = (Core.FieldName "property")
+_FunctionalDataProperty_property = (Core.Name "property")
 
 data DatatypeDefinition = 
   DatatypeDefinition {
@@ -1049,11 +1049,11 @@ data DatatypeDefinition =
 
 _DatatypeDefinition = (Core.Name "hydra/langs/owl/syntax.DatatypeDefinition")
 
-_DatatypeDefinition_annotations = (Core.FieldName "annotations")
+_DatatypeDefinition_annotations = (Core.Name "annotations")
 
-_DatatypeDefinition_datatype = (Core.FieldName "datatype")
+_DatatypeDefinition_datatype = (Core.Name "datatype")
 
-_DatatypeDefinition_range = (Core.FieldName "range")
+_DatatypeDefinition_range = (Core.Name "range")
 
 -- | See https://www.w3.org/TR/owl2-syntax/#Keys
 data HasKey = 
@@ -1066,13 +1066,13 @@ data HasKey =
 
 _HasKey = (Core.Name "hydra/langs/owl/syntax.HasKey")
 
-_HasKey_annotations = (Core.FieldName "annotations")
+_HasKey_annotations = (Core.Name "annotations")
 
-_HasKey_class = (Core.FieldName "class")
+_HasKey_class = (Core.Name "class")
 
-_HasKey_objectProperties = (Core.FieldName "objectProperties")
+_HasKey_objectProperties = (Core.Name "objectProperties")
 
-_HasKey_dataProperties = (Core.FieldName "dataProperties")
+_HasKey_dataProperties = (Core.Name "dataProperties")
 
 data Assertion = 
   AssertionClassAssertion ClassAssertion |
@@ -1086,19 +1086,19 @@ data Assertion =
 
 _Assertion = (Core.Name "hydra/langs/owl/syntax.Assertion")
 
-_Assertion_classAssertion = (Core.FieldName "classAssertion")
+_Assertion_classAssertion = (Core.Name "classAssertion")
 
-_Assertion_dataPropertyAssertion = (Core.FieldName "dataPropertyAssertion")
+_Assertion_dataPropertyAssertion = (Core.Name "dataPropertyAssertion")
 
-_Assertion_differentIndividuals = (Core.FieldName "differentIndividuals")
+_Assertion_differentIndividuals = (Core.Name "differentIndividuals")
 
-_Assertion_objectPropertyAssertion = (Core.FieldName "objectPropertyAssertion")
+_Assertion_objectPropertyAssertion = (Core.Name "objectPropertyAssertion")
 
-_Assertion_negativeDataPropertyAssertion = (Core.FieldName "negativeDataPropertyAssertion")
+_Assertion_negativeDataPropertyAssertion = (Core.Name "negativeDataPropertyAssertion")
 
-_Assertion_negativeObjectPropertyAssertion = (Core.FieldName "negativeObjectPropertyAssertion")
+_Assertion_negativeObjectPropertyAssertion = (Core.Name "negativeObjectPropertyAssertion")
 
-_Assertion_sameIndividual = (Core.FieldName "sameIndividual")
+_Assertion_sameIndividual = (Core.Name "sameIndividual")
 
 data SameIndividual = 
   SameIndividual {
@@ -1108,9 +1108,9 @@ data SameIndividual =
 
 _SameIndividual = (Core.Name "hydra/langs/owl/syntax.SameIndividual")
 
-_SameIndividual_annotations = (Core.FieldName "annotations")
+_SameIndividual_annotations = (Core.Name "annotations")
 
-_SameIndividual_individuals = (Core.FieldName "individuals")
+_SameIndividual_individuals = (Core.Name "individuals")
 
 data DifferentIndividuals = 
   DifferentIndividuals {
@@ -1120,9 +1120,9 @@ data DifferentIndividuals =
 
 _DifferentIndividuals = (Core.Name "hydra/langs/owl/syntax.DifferentIndividuals")
 
-_DifferentIndividuals_annotations = (Core.FieldName "annotations")
+_DifferentIndividuals_annotations = (Core.Name "annotations")
 
-_DifferentIndividuals_individuals = (Core.FieldName "individuals")
+_DifferentIndividuals_individuals = (Core.Name "individuals")
 
 data ClassAssertion = 
   ClassAssertion {
@@ -1133,11 +1133,11 @@ data ClassAssertion =
 
 _ClassAssertion = (Core.Name "hydra/langs/owl/syntax.ClassAssertion")
 
-_ClassAssertion_annotations = (Core.FieldName "annotations")
+_ClassAssertion_annotations = (Core.Name "annotations")
 
-_ClassAssertion_class = (Core.FieldName "class")
+_ClassAssertion_class = (Core.Name "class")
 
-_ClassAssertion_individual = (Core.FieldName "individual")
+_ClassAssertion_individual = (Core.Name "individual")
 
 data ObjectPropertyAssertion = 
   ObjectPropertyAssertion {
@@ -1149,13 +1149,13 @@ data ObjectPropertyAssertion =
 
 _ObjectPropertyAssertion = (Core.Name "hydra/langs/owl/syntax.ObjectPropertyAssertion")
 
-_ObjectPropertyAssertion_annotations = (Core.FieldName "annotations")
+_ObjectPropertyAssertion_annotations = (Core.Name "annotations")
 
-_ObjectPropertyAssertion_property = (Core.FieldName "property")
+_ObjectPropertyAssertion_property = (Core.Name "property")
 
-_ObjectPropertyAssertion_source = (Core.FieldName "source")
+_ObjectPropertyAssertion_source = (Core.Name "source")
 
-_ObjectPropertyAssertion_target = (Core.FieldName "target")
+_ObjectPropertyAssertion_target = (Core.Name "target")
 
 data NegativeObjectPropertyAssertion = 
   NegativeObjectPropertyAssertion {
@@ -1167,13 +1167,13 @@ data NegativeObjectPropertyAssertion =
 
 _NegativeObjectPropertyAssertion = (Core.Name "hydra/langs/owl/syntax.NegativeObjectPropertyAssertion")
 
-_NegativeObjectPropertyAssertion_annotations = (Core.FieldName "annotations")
+_NegativeObjectPropertyAssertion_annotations = (Core.Name "annotations")
 
-_NegativeObjectPropertyAssertion_property = (Core.FieldName "property")
+_NegativeObjectPropertyAssertion_property = (Core.Name "property")
 
-_NegativeObjectPropertyAssertion_source = (Core.FieldName "source")
+_NegativeObjectPropertyAssertion_source = (Core.Name "source")
 
-_NegativeObjectPropertyAssertion_target = (Core.FieldName "target")
+_NegativeObjectPropertyAssertion_target = (Core.Name "target")
 
 data DataPropertyAssertion = 
   DataPropertyAssertion {
@@ -1185,13 +1185,13 @@ data DataPropertyAssertion =
 
 _DataPropertyAssertion = (Core.Name "hydra/langs/owl/syntax.DataPropertyAssertion")
 
-_DataPropertyAssertion_annotations = (Core.FieldName "annotations")
+_DataPropertyAssertion_annotations = (Core.Name "annotations")
 
-_DataPropertyAssertion_property = (Core.FieldName "property")
+_DataPropertyAssertion_property = (Core.Name "property")
 
-_DataPropertyAssertion_source = (Core.FieldName "source")
+_DataPropertyAssertion_source = (Core.Name "source")
 
-_DataPropertyAssertion_target = (Core.FieldName "target")
+_DataPropertyAssertion_target = (Core.Name "target")
 
 data NegativeDataPropertyAssertion = 
   NegativeDataPropertyAssertion {
@@ -1203,10 +1203,10 @@ data NegativeDataPropertyAssertion =
 
 _NegativeDataPropertyAssertion = (Core.Name "hydra/langs/owl/syntax.NegativeDataPropertyAssertion")
 
-_NegativeDataPropertyAssertion_annotations = (Core.FieldName "annotations")
+_NegativeDataPropertyAssertion_annotations = (Core.Name "annotations")
 
-_NegativeDataPropertyAssertion_property = (Core.FieldName "property")
+_NegativeDataPropertyAssertion_property = (Core.Name "property")
 
-_NegativeDataPropertyAssertion_source = (Core.FieldName "source")
+_NegativeDataPropertyAssertion_source = (Core.Name "source")
 
-_NegativeDataPropertyAssertion_target = (Core.FieldName "target")
+_NegativeDataPropertyAssertion_target = (Core.Name "target")

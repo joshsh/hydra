@@ -46,7 +46,7 @@ dereferenceType name = withTrace ("dereference" ++ unName name) $ do
     Nothing -> return Nothing
     Just el -> Just <$> coreDecodeType (elementData el)
 
-fieldTypes :: Type -> Flow Graph (M.Map FieldName Type)
+fieldTypes :: Type -> Flow Graph (M.Map Name Type)
 fieldTypes t = withTrace "field types" $ case stripType t of
     TypeLambda (LambdaType _ body) -> fieldTypes body
     TypeRecord rt -> pure $ toMap $ rowTypeFields rt

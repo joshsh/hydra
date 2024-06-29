@@ -34,7 +34,7 @@ data AvroQualifiedName = AvroQualifiedName (Maybe String) String deriving (Eq, O
 
 data ForeignKey = ForeignKey Name (String -> Name)
 
-data PrimaryKey = PrimaryKey FieldName (String -> Name)
+data PrimaryKey = PrimaryKey Name (String -> Name)
 
 emptyAvroEnvironment = AvroEnvironment M.empty Nothing M.empty
 
@@ -82,31 +82,31 @@ avroHydraAdapter schema = case schema of
                 where
                   typ = TypeUnion (RowType hydraName Nothing $ toField <$> syms)
                     where
-                      toField s = FieldType (FieldName s) Types.unit
-                  encode (Json.ValueString s) = pure $ TermUnion (Injection hydraName $ Field (FieldName s) Terms.unit)
+                      toField s = FieldType (Name s) Types.unit
+                  encode (Json.ValueString s) = pure $ TermUnion (Injection hydraName $ Field (Name s) Terms.unit)
                   -- Note: we simply trust that data coming from the Hydra side is correct
-                  decode (TermUnion (Injection _ (Field fn _))) = return $ Json.ValueString $ unFieldName fn
+                  decode (TermUnion (Injection _ (Field fn _))) = return $ Json.ValueString $ unName fn
               Avro.NamedTypeFixed (Avro.Fixed size) -> simpleAdapter Types.binary encode decode
                 where
                   encode (Json.ValueString s) = pure $ Terms.binary s
                   decode term = Json.ValueString <$> Expect.binary term
               Avro.NamedTypeRecord r -> do
                   let avroFields = Avro.recordFields r
-                  adaptersByFieldName <- M.fromList <$> (CM.mapM prepareField avroFields)
+                  adaptersByName <- M.fromList <$> (CM.mapM prepareField avroFields)
                   pk <- findPrimaryKeyField qname avroFields
                   -- TODO: Nothing values for optional fields
-                  let encodePair (k, v) = case M.lookup k adaptersByFieldName of
+                  let encodePair (k, v) = case M.lookup k adaptersByName of
                         Nothing -> fail $ "unrecognized field for " ++ showQname qname ++ ": " ++ show k
                         Just (f, ad) -> do
                           v' <- coderEncode (adapterCoder ad) v
-                          return $ Field (FieldName k) v'
-                  let decodeField (Field (FieldName k) v) = case M.lookup k adaptersByFieldName of
+                          return $ Field (Name k) v'
+                  let decodeField (Field (Name k) v) = case M.lookup k adaptersByName of
                         Nothing -> fail $ "unrecognized field for " ++ showQname qname ++ ": " ++ show k
                         Just (f, ad) -> do
                           v' <- coderDecode (adapterCoder ad) v
                           return (k, v')
-                  let lossy = L.foldl (\b (_, ad) -> b || adapterIsLossy ad) False $ M.elems adaptersByFieldName
-                  let hfields = toHydraField <$> M.elems adaptersByFieldName
+                  let lossy = L.foldl (\b (_, ad) -> b || adapterIsLossy ad) False $ M.elems adaptersByName
+                  let hfields = toHydraField <$> M.elems adaptersByName
                   let target = TypeRecord $ RowType hydraName Nothing hfields
                   let coder = Coder {
                     -- Note: the order of the fields is changed
@@ -118,7 +118,7 @@ avroHydraAdapter schema = case schema of
                     coderDecode = \(TermRecord (Record _ fields)) -> Json.ValueObject . M.fromList <$> (CM.mapM decodeField fields)}
                   return $ Adapter lossy schema target coder
                 where
-                  toHydraField (f, ad) = FieldType (FieldName $ Avro.fieldName f) $ adapterTarget ad
+                  toHydraField (f, ad) = FieldType (Name $ Avro.fieldName f) $ adapterTarget ad
             env <- getState
             putState $ putAvroHydraAdapter qname ad env
             return $ annotate ann ad
@@ -138,7 +138,7 @@ avroHydraAdapter schema = case schema of
                   env <- getState
                   putState $ env {avroEnvironmentElements = M.insert name el (avroEnvironmentElements env)}
                   return ()
-              _ -> fail $ "multiple fields named " ++ unFieldName fname
+              _ -> fail $ "multiple fields named " ++ unName fname
             where
               isPkField field = fieldName field == fname
         findPrimaryKeyField qname avroFields = do
@@ -310,7 +310,7 @@ primaryKey f = do
     Nothing -> pure Nothing
     Just v -> do
       s <- expectString v
-      return $ Just $ PrimaryKey (FieldName $ Avro.fieldName f) $ patternToNameConstructor s
+      return $ Just $ PrimaryKey (Name $ Avro.fieldName f) $ patternToNameConstructor s
 
 parseAvroName :: Maybe String -> String -> AvroQualifiedName
 parseAvroName mns name = case L.reverse $ Strings.splitOn "." name of

@@ -451,10 +451,10 @@ termDependencyNames withVars withPrims withNoms = foldOverTerm TraversalOrderPre
 topologicalSortBindings :: [Field] -> [[(Name, Term)]]
 topologicalSortBindings bindings = fmap (fmap toPair) (topologicalSortComponents (depsOf <$> bindings))
   where
-    keys = S.fromList (Name . unFieldName . fieldName <$> bindings)
-    depsOf (Field (FieldName name) term) = (Name name, S.toList (S.intersection keys $ freeVariablesInTerm term))
+    keys = S.fromList (Name . unName . fieldName <$> bindings)
+    depsOf (Field (Name name) term) = (Name name, S.toList (S.intersection keys $ freeVariablesInTerm term))
     toPair name = (name, unbind name)
-    unbind (Name name) = case L.filter (\f -> name == (unFieldName $ fieldName f)) bindings of
+    unbind (Name name) = case L.filter (\f -> name == (unName $ fieldName f)) bindings of
       [f] -> fieldTerm f
       _ -> TermLiteral $ LiteralString "Impossible!"
 

@@ -4,7 +4,7 @@ import hydra.Flows;
 import hydra.Reduction;
 import hydra.compute.Flow;
 import hydra.core.Field;
-import hydra.core.FieldName;
+import hydra.core.Name;
 import hydra.core.FloatValue;
 import hydra.core.IntegerValue;
 import hydra.core.Literal;
@@ -92,9 +92,9 @@ public class Expect {
         }));
     }
 
-    public static <S, A, X> Flow<S, X> field (final FieldName fname,
+    public static <S, A, X> Flow<S, X> field (final Name fname,
                                               final Function<Term<A>, Flow<S, X>> accessor,
-                                              final Map<FieldName, Term<A>> fields) {
+                                              final Map<Name, Term<A>> fields) {
         Term<A> term = fields.get(fname);
         if (term == null) {
             return Flows.fail("field " + fname + " not found");
@@ -329,9 +329,9 @@ public class Expect {
         });
     }
 
-    public static <S, A> Flow<S, Map<FieldName, Term<A>>> recordAsMap(final Name tname, final Term<A> term) {
+    public static <S, A> Flow<S, Map<Name, Term<A>>> recordAsMap(final Name tname, final Term<A> term) {
         return Flows.map(record(tname, term), fields -> {
-            Map<FieldName, Term<A>> result = new HashMap<>();
+            Map<Name, Term<A>> result = new HashMap<>();
             for (Field<A> f : fields) {
                 result.put(f.name, f.term);
             }

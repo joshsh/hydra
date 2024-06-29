@@ -162,15 +162,15 @@ testNormalization = do
     H.it "Check records" $ do
       checkNormed
         (TypeRecord $ RowType (Name "SomeRecord") Nothing [
-          FieldType (FieldName "one") $ Types.lambda "a" $ Types.var "a",
-          FieldType (FieldName "two") $ Types.list $ Types.lambda "b" $ Types.var "b",
-          FieldType (FieldName "three") $ Types.map Types.string $ Types.lambda "v" $ Types.optional $ Types.var "v",
-          FieldType (FieldName "four") Types.string])
+          FieldType (Name "one") $ Types.lambda "a" $ Types.var "a",
+          FieldType (Name "two") $ Types.list $ Types.lambda "b" $ Types.var "b",
+          FieldType (Name "three") $ Types.map Types.string $ Types.lambda "v" $ Types.optional $ Types.var "v",
+          FieldType (Name "four") Types.string])
         (Types.lambdas ["a", "b", "v"] $ TypeRecord $ RowType (Name "SomeRecord") Nothing [
-          FieldType (FieldName "one") $ Types.var "a",
-          FieldType (FieldName "two") $ Types.list $ Types.var "b",
-          FieldType (FieldName "three") $ Types.map Types.string $ Types.optional $ Types.var "v",
-          FieldType (FieldName "four") Types.string])
+          FieldType (Name "one") $ Types.var "a",
+          FieldType (Name "two") $ Types.list $ Types.var "b",
+          FieldType (Name "three") $ Types.map Types.string $ Types.optional $ Types.var "v",
+          FieldType (Name "four") Types.string])
 
     H.it "Check annotations" $ do
       checkNormed
@@ -184,11 +184,11 @@ testNormalization = do
         (Types.lambda "a" $ Types.list $ TypeAnnotated $ Annotated (Types.var "a") M.empty)
       checkNormed
         (TypeRecord $ RowType (Name "SomeRecord") Nothing [
-          FieldType (FieldName "one") $ TypeAnnotated $ Annotated (Types.lambda "a" $ Types.var "a") M.empty,
-          FieldType (FieldName "two") Types.string])
+          FieldType (Name "one") $ TypeAnnotated $ Annotated (Types.lambda "a" $ Types.var "a") M.empty,
+          FieldType (Name "two") Types.string])
         (Types.lambda "a" $ TypeRecord $ RowType (Name "SomeRecord") Nothing [
-          FieldType (FieldName "one") $ TypeAnnotated $ Annotated (Types.var "a") M.empty,
-          FieldType (FieldName "two") Types.string])
+          FieldType (Name "one") $ TypeAnnotated $ Annotated (Types.var "a") M.empty,
+          FieldType (Name "two") Types.string])
 
     H.it "Check universal types" $ do
       checkNormed
@@ -341,9 +341,9 @@ testTopologicalSortBindings = do
         (topologicalSortBindings bindings)
         expected
       where
-        bindings = fmap (\(k, v) -> Field (FieldName k) v) bindings0
+        bindings = fmap (\(k, v) -> Field (Name k) v) bindings0
         expected = fmap (fmap (\k -> (Name k, unbind k))) expectedVars
-        unbind k = case L.filter (\f -> k == unFieldName (fieldName f)) bindings of
+        unbind k = case L.filter (\f -> k == unName (fieldName f)) bindings of
           [field] -> fieldTerm field
           _ -> unit
 

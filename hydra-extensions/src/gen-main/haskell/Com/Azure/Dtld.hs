@@ -37,23 +37,23 @@ data Command =
 
 _Command = (Core.Name "com/azure/dtld.Command")
 
-_Command_type = (Core.FieldName "type")
+_Command_type = (Core.Name "type")
 
-_Command_name = (Core.FieldName "name")
+_Command_name = (Core.Name "name")
 
-_Command_id = (Core.FieldName "id")
+_Command_id = (Core.Name "id")
 
-_Command_comment = (Core.FieldName "comment")
+_Command_comment = (Core.Name "comment")
 
-_Command_description = (Core.FieldName "description")
+_Command_description = (Core.Name "description")
 
-_Command_displayName = (Core.FieldName "displayName")
+_Command_displayName = (Core.Name "displayName")
 
-_Command_commandType = (Core.FieldName "commandType")
+_Command_commandType = (Core.Name "commandType")
 
-_Command_request = (Core.FieldName "request")
+_Command_request = (Core.Name "request")
 
-_Command_response = (Core.FieldName "response")
+_Command_response = (Core.Name "response")
 
 -- | A CommandPayload describes the inputs to or the outputs from a Command.
 data CommandPayload = 
@@ -74,17 +74,17 @@ data CommandPayload =
 
 _CommandPayload = (Core.Name "com/azure/dtld.CommandPayload")
 
-_CommandPayload_name = (Core.FieldName "name")
+_CommandPayload_name = (Core.Name "name")
 
-_CommandPayload_schema = (Core.FieldName "schema")
+_CommandPayload_schema = (Core.Name "schema")
 
-_CommandPayload_id = (Core.FieldName "id")
+_CommandPayload_id = (Core.Name "id")
 
-_CommandPayload_comment = (Core.FieldName "comment")
+_CommandPayload_comment = (Core.Name "comment")
 
-_CommandPayload_description = (Core.FieldName "description")
+_CommandPayload_description = (Core.Name "description")
 
-_CommandPayload_displayName = (Core.FieldName "displayName")
+_CommandPayload_displayName = (Core.Name "displayName")
 
 -- | CommandType is deprecated. Either value, synchronous or asynchronous, has the same meaning: a command that starts execution within a configurable time and that completes execution within a configurable time.
 data CommandType = 
@@ -94,9 +94,9 @@ data CommandType =
 
 _CommandType = (Core.Name "com/azure/dtld.CommandType")
 
-_CommandType_synchronous = (Core.FieldName "synchronous")
+_CommandType_synchronous = (Core.Name "synchronous")
 
-_CommandType_asynchronous = (Core.FieldName "asynchronous")
+_CommandType_asynchronous = (Core.Name "asynchronous")
 
 -- | Components enable interfaces to be composed of other interfaces. Components are different from relationships because they describe contents that are directly part of the interface. (A relationship describes a link between two interfaces.)
 data Component = 
@@ -119,19 +119,19 @@ data Component =
 
 _Component = (Core.Name "com/azure/dtld.Component")
 
-_Component_type = (Core.FieldName "type")
+_Component_type = (Core.Name "type")
 
-_Component_name = (Core.FieldName "name")
+_Component_name = (Core.Name "name")
 
-_Component_schema = (Core.FieldName "schema")
+_Component_schema = (Core.Name "schema")
 
-_Component_id = (Core.FieldName "id")
+_Component_id = (Core.Name "id")
 
-_Component_comment = (Core.FieldName "comment")
+_Component_comment = (Core.Name "comment")
 
-_Component_description = (Core.FieldName "description")
+_Component_description = (Core.Name "description")
 
-_Component_displayName = (Core.FieldName "displayName")
+_Component_displayName = (Core.Name "displayName")
 
 -- | A digital twin model identifier
 newtype Dtmi = 
@@ -161,17 +161,17 @@ data EnumValue =
 
 _EnumValue = (Core.Name "com/azure/dtld.EnumValue")
 
-_EnumValue_name = (Core.FieldName "name")
+_EnumValue_name = (Core.Name "name")
 
-_EnumValue_enumValue = (Core.FieldName "enumValue")
+_EnumValue_enumValue = (Core.Name "enumValue")
 
-_EnumValue_id = (Core.FieldName "id")
+_EnumValue_id = (Core.Name "id")
 
-_EnumValue_comment = (Core.FieldName "comment")
+_EnumValue_comment = (Core.Name "comment")
 
-_EnumValue_description = (Core.FieldName "description")
+_EnumValue_description = (Core.Name "description")
 
-_EnumValue_displayName = (Core.FieldName "displayName")
+_EnumValue_displayName = (Core.Name "displayName")
 
 -- | A Field describes a field in an Object.
 data Field = 
@@ -192,17 +192,17 @@ data Field =
 
 _Field = (Core.Name "com/azure/dtld.Field")
 
-_Field_name = (Core.FieldName "name")
+_Field_name = (Core.Name "name")
 
-_Field_schema = (Core.FieldName "schema")
+_Field_schema = (Core.Name "schema")
 
-_Field_id = (Core.FieldName "id")
+_Field_id = (Core.Name "id")
 
-_Field_comment = (Core.FieldName "comment")
+_Field_comment = (Core.Name "comment")
 
-_Field_description = (Core.FieldName "description")
+_Field_description = (Core.Name "description")
 
-_Field_displayName = (Core.FieldName "displayName")
+_Field_displayName = (Core.Name "displayName")
 
 data IntegerOrString = 
   IntegerOrStringInteger Int |
@@ -211,9 +211,9 @@ data IntegerOrString =
 
 _IntegerOrString = (Core.Name "com/azure/dtld.IntegerOrString")
 
-_IntegerOrString_integer = (Core.FieldName "integer")
+_IntegerOrString_integer = (Core.Name "integer")
 
-_IntegerOrString_string = (Core.FieldName "string")
+_IntegerOrString_string = (Core.Name "string")
 
 data Interface = 
   Interface {
@@ -239,23 +239,23 @@ data Interface =
 
 _Interface = (Core.Name "com/azure/dtld.Interface")
 
-_Interface_id = (Core.FieldName "id")
+_Interface_id = (Core.Name "id")
 
-_Interface_type = (Core.FieldName "type")
+_Interface_type = (Core.Name "type")
 
-_Interface_context = (Core.FieldName "context")
+_Interface_context = (Core.Name "context")
 
-_Interface_comment = (Core.FieldName "comment")
+_Interface_comment = (Core.Name "comment")
 
-_Interface_contents = (Core.FieldName "contents")
+_Interface_contents = (Core.Name "contents")
 
-_Interface_description = (Core.FieldName "description")
+_Interface_description = (Core.Name "description")
 
-_Interface_displayName = (Core.FieldName "displayName")
+_Interface_displayName = (Core.Name "displayName")
 
-_Interface_extends = (Core.FieldName "extends")
+_Interface_extends = (Core.Name "extends")
 
-_Interface_schemas = (Core.FieldName "schemas")
+_Interface_schemas = (Core.Name "schemas")
 
 data Interface_Contents = 
   Interface_ContentsCommand Command |
@@ -267,15 +267,15 @@ data Interface_Contents =
 
 _Interface_Contents = (Core.Name "com/azure/dtld.Interface.Contents")
 
-_Interface_Contents_command = (Core.FieldName "command")
+_Interface_Contents_command = (Core.Name "command")
 
-_Interface_Contents_component = (Core.FieldName "component")
+_Interface_Contents_component = (Core.Name "component")
 
-_Interface_Contents_property = (Core.FieldName "property")
+_Interface_Contents_property = (Core.Name "property")
 
-_Interface_Contents_relationship = (Core.FieldName "relationship")
+_Interface_Contents_relationship = (Core.Name "relationship")
 
-_Interface_Contents_telemetry = (Core.FieldName "telemetry")
+_Interface_Contents_telemetry = (Core.Name "telemetry")
 
 newtype Iri = 
   Iri {
@@ -303,17 +303,17 @@ data MapKey =
 
 _MapKey = (Core.Name "com/azure/dtld.MapKey")
 
-_MapKey_name = (Core.FieldName "name")
+_MapKey_name = (Core.Name "name")
 
-_MapKey_schema = (Core.FieldName "schema")
+_MapKey_schema = (Core.Name "schema")
 
-_MapKey_id = (Core.FieldName "id")
+_MapKey_id = (Core.Name "id")
 
-_MapKey_comment = (Core.FieldName "comment")
+_MapKey_comment = (Core.Name "comment")
 
-_MapKey_description = (Core.FieldName "description")
+_MapKey_description = (Core.Name "description")
 
-_MapKey_displayName = (Core.FieldName "displayName")
+_MapKey_displayName = (Core.Name "displayName")
 
 -- | A MapValue describes the values in a Map.
 data MapValue = 
@@ -334,17 +334,17 @@ data MapValue =
 
 _MapValue = (Core.Name "com/azure/dtld.MapValue")
 
-_MapValue_name = (Core.FieldName "name")
+_MapValue_name = (Core.Name "name")
 
-_MapValue_schema = (Core.FieldName "schema")
+_MapValue_schema = (Core.Name "schema")
 
-_MapValue_id = (Core.FieldName "id")
+_MapValue_id = (Core.Name "id")
 
-_MapValue_comment = (Core.FieldName "comment")
+_MapValue_comment = (Core.Name "comment")
 
-_MapValue_description = (Core.FieldName "description")
+_MapValue_description = (Core.Name "description")
 
-_MapValue_displayName = (Core.FieldName "displayName")
+_MapValue_displayName = (Core.Name "displayName")
 
 -- | A Property describes the read-only and read/write state of any digital twin. For example, a device serial number may be a read-only property, the desired temperature on a thermostat may be a read-write property; and the name of a room may be a read-write property.
 data Property = 
@@ -371,23 +371,23 @@ data Property =
 
 _Property = (Core.Name "com/azure/dtld.Property")
 
-_Property_type = (Core.FieldName "type")
+_Property_type = (Core.Name "type")
 
-_Property_name = (Core.FieldName "name")
+_Property_name = (Core.Name "name")
 
-_Property_schema = (Core.FieldName "schema")
+_Property_schema = (Core.Name "schema")
 
-_Property_id = (Core.FieldName "id")
+_Property_id = (Core.Name "id")
 
-_Property_comment = (Core.FieldName "comment")
+_Property_comment = (Core.Name "comment")
 
-_Property_description = (Core.FieldName "description")
+_Property_description = (Core.Name "description")
 
-_Property_displayName = (Core.FieldName "displayName")
+_Property_displayName = (Core.Name "displayName")
 
-_Property_unit = (Core.FieldName "unit")
+_Property_unit = (Core.Name "unit")
 
-_Property_writable = (Core.FieldName "writable")
+_Property_writable = (Core.Name "writable")
 
 -- | A Relationship describes a link to another digital twin and enables graphs of digital twins to be created. Relationships are different from Components because they describe a link to a separate digital twin.
 data Relationship = 
@@ -418,27 +418,27 @@ data Relationship =
 
 _Relationship = (Core.Name "com/azure/dtld.Relationship")
 
-_Relationship_type = (Core.FieldName "type")
+_Relationship_type = (Core.Name "type")
 
-_Relationship_name = (Core.FieldName "name")
+_Relationship_name = (Core.Name "name")
 
-_Relationship_id = (Core.FieldName "id")
+_Relationship_id = (Core.Name "id")
 
-_Relationship_comment = (Core.FieldName "comment")
+_Relationship_comment = (Core.Name "comment")
 
-_Relationship_description = (Core.FieldName "description")
+_Relationship_description = (Core.Name "description")
 
-_Relationship_displayName = (Core.FieldName "displayName")
+_Relationship_displayName = (Core.Name "displayName")
 
-_Relationship_maxMultiplicity = (Core.FieldName "maxMultiplicity")
+_Relationship_maxMultiplicity = (Core.Name "maxMultiplicity")
 
-_Relationship_minMultiplicity = (Core.FieldName "minMultiplicity")
+_Relationship_minMultiplicity = (Core.Name "minMultiplicity")
 
-_Relationship_properties = (Core.FieldName "properties")
+_Relationship_properties = (Core.Name "properties")
 
-_Relationship_target = (Core.FieldName "target")
+_Relationship_target = (Core.Name "target")
 
-_Relationship_writable = (Core.FieldName "writable")
+_Relationship_writable = (Core.Name "writable")
 
 -- | Schemas are used to describe the on-the-wire or serialized format of the data in a digital twin interface. A full set of primitive data types are provided, along with support for a variety of complex schemas in the forms of Arrays, Enums, Maps, and Objects. Schemas described through digital twin's schema definition language are compatible with popular serialization formats, including JSON, Avro, and Protobuf.
 data Schema = 
@@ -448,9 +448,9 @@ data Schema =
 
 _Schema = (Core.Name "com/azure/dtld.Schema")
 
-_Schema_primitive = (Core.FieldName "primitive")
+_Schema_primitive = (Core.Name "primitive")
 
-_Schema_complex = (Core.FieldName "complex")
+_Schema_complex = (Core.Name "complex")
 
 -- | An Array describes an indexable data type where each element is of the same schema. An Array elements' schema can itself be a primitive or complex schema.
 data Schema_Array = 
@@ -471,17 +471,17 @@ data Schema_Array =
 
 _Schema_Array = (Core.Name "com/azure/dtld.Schema.Array")
 
-_Schema_Array_type = (Core.FieldName "type")
+_Schema_Array_type = (Core.Name "type")
 
-_Schema_Array_elementSchema = (Core.FieldName "elementSchema")
+_Schema_Array_elementSchema = (Core.Name "elementSchema")
 
-_Schema_Array_id = (Core.FieldName "id")
+_Schema_Array_id = (Core.Name "id")
 
-_Schema_Array_comment = (Core.FieldName "comment")
+_Schema_Array_comment = (Core.Name "comment")
 
-_Schema_Array_description = (Core.FieldName "description")
+_Schema_Array_description = (Core.Name "description")
 
-_Schema_Array_displayName = (Core.FieldName "displayName")
+_Schema_Array_displayName = (Core.Name "displayName")
 
 -- | Complex schemas are designed for supporting complex data types made up of primitive data types. Currently the following complex schemas are provided: Array, Enum, Map, and Object. A complex schema can be specified directly as the value in a schema statement or described in the interface schemas set and referenced in the schema statement.
 data Schema_Complex = 
@@ -493,13 +493,13 @@ data Schema_Complex =
 
 _Schema_Complex = (Core.Name "com/azure/dtld.Schema.Complex")
 
-_Schema_Complex_array = (Core.FieldName "array")
+_Schema_Complex_array = (Core.Name "array")
 
-_Schema_Complex_enum = (Core.FieldName "enum")
+_Schema_Complex_enum = (Core.Name "enum")
 
-_Schema_Complex_map = (Core.FieldName "map")
+_Schema_Complex_map = (Core.Name "map")
 
-_Schema_Complex_object = (Core.FieldName "object")
+_Schema_Complex_object = (Core.Name "object")
 
 -- | An Enum describes a data type with a set of named labels that map to values. The values in an Enum can be either integers or strings, but the labels are always strings.
 data Schema_Enum = 
@@ -522,19 +522,19 @@ data Schema_Enum =
 
 _Schema_Enum = (Core.Name "com/azure/dtld.Schema.Enum")
 
-_Schema_Enum_type = (Core.FieldName "type")
+_Schema_Enum_type = (Core.Name "type")
 
-_Schema_Enum_enumValues = (Core.FieldName "enumValues")
+_Schema_Enum_enumValues = (Core.Name "enumValues")
 
-_Schema_Enum_valueSchema = (Core.FieldName "valueSchema")
+_Schema_Enum_valueSchema = (Core.Name "valueSchema")
 
-_Schema_Enum_id = (Core.FieldName "id")
+_Schema_Enum_id = (Core.Name "id")
 
-_Schema_Enum_comment = (Core.FieldName "comment")
+_Schema_Enum_comment = (Core.Name "comment")
 
-_Schema_Enum_description = (Core.FieldName "description")
+_Schema_Enum_description = (Core.Name "description")
 
-_Schema_Enum_displayName = (Core.FieldName "displayName")
+_Schema_Enum_displayName = (Core.Name "displayName")
 
 -- | Within an interface definition, complex schemas may be defined for reusability across Telemetry, Properties, and Commands. This is designed to promote readability and improved maintenance because schemas that are reused can be defined once (per interface). Interface schemas are defined in the schemas property of an interface.
 data Schema_Interface = 
@@ -553,15 +553,15 @@ data Schema_Interface =
 
 _Schema_Interface = (Core.Name "com/azure/dtld.Schema.Interface")
 
-_Schema_Interface_id = (Core.FieldName "id")
+_Schema_Interface_id = (Core.Name "id")
 
-_Schema_Interface_type = (Core.FieldName "type")
+_Schema_Interface_type = (Core.Name "type")
 
-_Schema_Interface_comment = (Core.FieldName "comment")
+_Schema_Interface_comment = (Core.Name "comment")
 
-_Schema_Interface_description = (Core.FieldName "description")
+_Schema_Interface_description = (Core.Name "description")
 
-_Schema_Interface_displayName = (Core.FieldName "displayName")
+_Schema_Interface_displayName = (Core.Name "displayName")
 
 data Schema_Interface_Type = 
   Schema_Interface_TypeArray Schema_Array |
@@ -572,13 +572,13 @@ data Schema_Interface_Type =
 
 _Schema_Interface_Type = (Core.Name "com/azure/dtld.Schema.Interface.Type")
 
-_Schema_Interface_Type_array = (Core.FieldName "array")
+_Schema_Interface_Type_array = (Core.Name "array")
 
-_Schema_Interface_Type_enum = (Core.FieldName "enum")
+_Schema_Interface_Type_enum = (Core.Name "enum")
 
-_Schema_Interface_Type_map = (Core.FieldName "map")
+_Schema_Interface_Type_map = (Core.Name "map")
 
-_Schema_Interface_Type_object = (Core.FieldName "object")
+_Schema_Interface_Type_object = (Core.Name "object")
 
 -- | A Map describes a data type of key-value pairs where the values share the same schema. The key in a Map must be a string. The values in a Map can be any schema.
 data Schema_Map = 
@@ -601,19 +601,19 @@ data Schema_Map =
 
 _Schema_Map = (Core.Name "com/azure/dtld.Schema.Map")
 
-_Schema_Map_type = (Core.FieldName "type")
+_Schema_Map_type = (Core.Name "type")
 
-_Schema_Map_mapKey = (Core.FieldName "mapKey")
+_Schema_Map_mapKey = (Core.Name "mapKey")
 
-_Schema_Map_mapValue = (Core.FieldName "mapValue")
+_Schema_Map_mapValue = (Core.Name "mapValue")
 
-_Schema_Map_id = (Core.FieldName "id")
+_Schema_Map_id = (Core.Name "id")
 
-_Schema_Map_comment = (Core.FieldName "comment")
+_Schema_Map_comment = (Core.Name "comment")
 
-_Schema_Map_description = (Core.FieldName "description")
+_Schema_Map_description = (Core.Name "description")
 
-_Schema_Map_displayName = (Core.FieldName "displayName")
+_Schema_Map_displayName = (Core.Name "displayName")
 
 -- | An Object describes a data type made up of named fields (like a struct in C). The fields in an Object map can be primitive or complex schemas.
 data Schema_Object = 
@@ -634,17 +634,17 @@ data Schema_Object =
 
 _Schema_Object = (Core.Name "com/azure/dtld.Schema.Object")
 
-_Schema_Object_type = (Core.FieldName "type")
+_Schema_Object_type = (Core.Name "type")
 
-_Schema_Object_fields = (Core.FieldName "fields")
+_Schema_Object_fields = (Core.Name "fields")
 
-_Schema_Object_id = (Core.FieldName "id")
+_Schema_Object_id = (Core.Name "id")
 
-_Schema_Object_comment = (Core.FieldName "comment")
+_Schema_Object_comment = (Core.Name "comment")
 
-_Schema_Object_description = (Core.FieldName "description")
+_Schema_Object_description = (Core.Name "description")
 
-_Schema_Object_displayName = (Core.FieldName "displayName")
+_Schema_Object_displayName = (Core.Name "displayName")
 
 -- | A full set of primitive data types are provided and can be specified directly as the value in a schema statement in a digital twin interface.
 data Schema_Primitive = 
@@ -672,25 +672,25 @@ data Schema_Primitive =
 
 _Schema_Primitive = (Core.Name "com/azure/dtld.Schema.Primitive")
 
-_Schema_Primitive_boolean = (Core.FieldName "boolean")
+_Schema_Primitive_boolean = (Core.Name "boolean")
 
-_Schema_Primitive_date = (Core.FieldName "date")
+_Schema_Primitive_date = (Core.Name "date")
 
-_Schema_Primitive_dateTime = (Core.FieldName "dateTime")
+_Schema_Primitive_dateTime = (Core.Name "dateTime")
 
-_Schema_Primitive_double = (Core.FieldName "double")
+_Schema_Primitive_double = (Core.Name "double")
 
-_Schema_Primitive_duration = (Core.FieldName "duration")
+_Schema_Primitive_duration = (Core.Name "duration")
 
-_Schema_Primitive_float = (Core.FieldName "float")
+_Schema_Primitive_float = (Core.Name "float")
 
-_Schema_Primitive_integer = (Core.FieldName "integer")
+_Schema_Primitive_integer = (Core.Name "integer")
 
-_Schema_Primitive_long = (Core.FieldName "long")
+_Schema_Primitive_long = (Core.Name "long")
 
-_Schema_Primitive_string = (Core.FieldName "string")
+_Schema_Primitive_string = (Core.Name "string")
 
-_Schema_Primitive_time = (Core.FieldName "time")
+_Schema_Primitive_time = (Core.Name "time")
 
 -- | Telemetry describes the data emitted by any digital twin, whether the data is a regular stream of sensor readings or a computed stream of data, such as occupancy, or an occasional error or information message.
 data Telemetry = 
@@ -715,21 +715,21 @@ data Telemetry =
 
 _Telemetry = (Core.Name "com/azure/dtld.Telemetry")
 
-_Telemetry_type = (Core.FieldName "type")
+_Telemetry_type = (Core.Name "type")
 
-_Telemetry_name = (Core.FieldName "name")
+_Telemetry_name = (Core.Name "name")
 
-_Telemetry_schema = (Core.FieldName "schema")
+_Telemetry_schema = (Core.Name "schema")
 
-_Telemetry_id = (Core.FieldName "id")
+_Telemetry_id = (Core.Name "id")
 
-_Telemetry_comment = (Core.FieldName "comment")
+_Telemetry_comment = (Core.Name "comment")
 
-_Telemetry_description = (Core.FieldName "description")
+_Telemetry_description = (Core.Name "description")
 
-_Telemetry_displayName = (Core.FieldName "displayName")
+_Telemetry_displayName = (Core.Name "displayName")
 
-_Telemetry_unit = (Core.FieldName "unit")
+_Telemetry_unit = (Core.Name "unit")
 
 data Unit = 
   Unit {}

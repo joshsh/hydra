@@ -18,13 +18,13 @@ data Adapter s1 s2 t1 t2 v1 v2 =
 
 _Adapter = (Core.Name "hydra/compute.Adapter")
 
-_Adapter_isLossy = (Core.FieldName "isLossy")
+_Adapter_isLossy = (Core.Name "isLossy")
 
-_Adapter_source = (Core.FieldName "source")
+_Adapter_source = (Core.Name "source")
 
-_Adapter_target = (Core.FieldName "target")
+_Adapter_target = (Core.Name "target")
 
-_Adapter_coder = (Core.FieldName "coder")
+_Adapter_coder = (Core.Name "coder")
 
 -- | A two-level encoder and decoder, operating both at a type level and an instance (data) level
 data Bicoder s1 s2 t1 t2 v1 v2 = 
@@ -34,9 +34,9 @@ data Bicoder s1 s2 t1 t2 v1 v2 =
 
 _Bicoder = (Core.Name "hydra/compute.Bicoder")
 
-_Bicoder_encode = (Core.FieldName "encode")
+_Bicoder_encode = (Core.Name "encode")
 
-_Bicoder_decode = (Core.FieldName "decode")
+_Bicoder_decode = (Core.Name "decode")
 
 -- | An encoder and decoder; a bidirectional flow between two types
 data Coder s1 s2 v1 v2 = 
@@ -46,9 +46,9 @@ data Coder s1 s2 v1 v2 =
 
 _Coder = (Core.Name "hydra/compute.Coder")
 
-_Coder_encode = (Core.FieldName "encode")
+_Coder_encode = (Core.Name "encode")
 
-_Coder_decode = (Core.FieldName "decode")
+_Coder_decode = (Core.Name "decode")
 
 -- | A variant of the State monad with built-in logging and error handling
 newtype Flow s a = 
@@ -67,11 +67,11 @@ data FlowState s a =
 
 _FlowState = (Core.Name "hydra/compute.FlowState")
 
-_FlowState_value = (Core.FieldName "value")
+_FlowState_value = (Core.Name "value")
 
-_FlowState_state = (Core.FieldName "state")
+_FlowState_state = (Core.Name "state")
 
-_FlowState_trace = (Core.FieldName "trace")
+_FlowState_trace = (Core.Name "trace")
 
 -- | A container for logging and error information
 data Trace = 
@@ -84,8 +84,8 @@ data Trace =
 
 _Trace = (Core.Name "hydra/compute.Trace")
 
-_Trace_stack = (Core.FieldName "stack")
+_Trace_stack = (Core.Name "stack")
 
-_Trace_messages = (Core.FieldName "messages")
+_Trace_messages = (Core.Name "messages")
 
-_Trace_other = (Core.FieldName "other")
+_Trace_other = (Core.Name "other")

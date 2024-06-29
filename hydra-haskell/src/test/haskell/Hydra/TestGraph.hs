@@ -24,8 +24,8 @@ testTypeLatLonPolyName = Name "LatLonPoly"
 
 latlonRecord :: Float -> Float -> Term
 latlonRecord lat lon = record testTypeLatLonName [
-  Field (FieldName "lat") $ float32 lat,
-  Field (FieldName "lon") $ float32 lon]
+  Field (Name "lat") $ float32 lat,
+  Field (Name "lon") $ float32 lon]
 
 testTypeLatLon :: Type
 testTypeLatLon = TypeRecord $ RowType testTypeLatLonName Nothing [
@@ -61,7 +61,7 @@ testElementArthur = Element {
 testElementFirstName :: Element
 testElementFirstName = Element {
   elementName = Name "firstName",
-  elementData = project testTypePersonName $ FieldName "firstName"}
+  elementData = project testTypePersonName $ Name "firstName"}
 
 testGraph :: Graph
 testGraph = elementsToGraph hydraCore (Just testSchemaGraph) [testElementArthur, testElementFirstName]
@@ -188,8 +188,8 @@ testTypePersonOrSomethingName = Name "PersonOrSomething"
 
 testTypeTimestamp :: Type
 testTypeTimestamp = TypeUnion $ RowType testTypeTimestampName Nothing [
-  FieldType (FieldName "unixTimeMillis") Types.uint64,
-  FieldType (FieldName "date") Types.string]
+  FieldType (Name "unixTimeMillis") Types.uint64,
+  FieldType (Name "date") Types.string]
 
 testTypeTimestampName :: Name
 testTypeTimestampName = Name "Timestamp"

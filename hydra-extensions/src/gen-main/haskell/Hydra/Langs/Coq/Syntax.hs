@@ -16,9 +16,9 @@ data AnnotatedApplication =
 
 _AnnotatedApplication = (Core.Name "hydra/langs/coq/syntax.AnnotatedApplication")
 
-_AnnotatedApplication_annot = (Core.FieldName "annot")
+_AnnotatedApplication_annot = (Core.Name "annot")
 
-_AnnotatedApplication_terms = (Core.FieldName "terms")
+_AnnotatedApplication_terms = (Core.Name "terms")
 
 data Application = 
   ApplicationNormal NormalApplication |
@@ -27,9 +27,9 @@ data Application =
 
 _Application = (Core.Name "hydra/langs/coq/syntax.Application")
 
-_Application_normal = (Core.FieldName "normal")
+_Application_normal = (Core.Name "normal")
 
-_Application_annotated = (Core.FieldName "annotated")
+_Application_annotated = (Core.Name "annotated")
 
 data Arg = 
   ArgIdent IdentArg |
@@ -39,11 +39,11 @@ data Arg =
 
 _Arg = (Core.Name "hydra/langs/coq/syntax.Arg")
 
-_Arg_ident = (Core.FieldName "ident")
+_Arg_ident = (Core.Name "ident")
 
-_Arg_natural = (Core.FieldName "natural")
+_Arg_natural = (Core.Name "natural")
 
-_Arg_term = (Core.FieldName "term")
+_Arg_term = (Core.Name "term")
 
 data Binder = 
   BinderName Name |
@@ -56,17 +56,17 @@ data Binder =
 
 _Binder = (Core.Name "hydra/langs/coq/syntax.Binder")
 
-_Binder_name = (Core.FieldName "name")
+_Binder_name = (Core.Name "name")
 
-_Binder_type = (Core.FieldName "type")
+_Binder_type = (Core.Name "type")
 
-_Binder_term = (Core.FieldName "term")
+_Binder_term = (Core.Name "term")
 
-_Binder_implicit = (Core.FieldName "implicit")
+_Binder_implicit = (Core.Name "implicit")
 
-_Binder_generalizing = (Core.FieldName "generalizing")
+_Binder_generalizing = (Core.Name "generalizing")
 
-_Binder_pattern = (Core.FieldName "pattern")
+_Binder_pattern = (Core.Name "pattern")
 
 data CaseItem = 
   CaseItem {
@@ -77,11 +77,11 @@ data CaseItem =
 
 _CaseItem = (Core.Name "hydra/langs/coq/syntax.CaseItem")
 
-_CaseItem_term = (Core.FieldName "term")
+_CaseItem_term = (Core.Name "term")
 
-_CaseItem_as = (Core.FieldName "as")
+_CaseItem_as = (Core.Name "as")
 
-_CaseItem_in = (Core.FieldName "in")
+_CaseItem_in = (Core.Name "in")
 
 data Cofix = 
   Cofix {
@@ -91,9 +91,9 @@ data Cofix =
 
 _Cofix = (Core.Name "hydra/langs/coq/syntax.Cofix")
 
-_Cofix_body = (Core.FieldName "body")
+_Cofix_body = (Core.Name "body")
 
-_Cofix_qual = (Core.FieldName "qual")
+_Cofix_qual = (Core.Name "qual")
 
 data CofixBody = 
   CofixBody {
@@ -105,13 +105,13 @@ data CofixBody =
 
 _CofixBody = (Core.Name "hydra/langs/coq/syntax.CofixBody")
 
-_CofixBody_ident = (Core.FieldName "ident")
+_CofixBody_ident = (Core.Name "ident")
 
-_CofixBody_binders = (Core.FieldName "binders")
+_CofixBody_binders = (Core.Name "binders")
 
-_CofixBody_type = (Core.FieldName "type")
+_CofixBody_type = (Core.Name "type")
 
-_CofixBody_term = (Core.FieldName "term")
+_CofixBody_term = (Core.Name "term")
 
 data CofixQual = 
   CofixQualIn Term |
@@ -120,9 +120,9 @@ data CofixQual =
 
 _CofixQual = (Core.Name "hydra/langs/coq/syntax.CofixQual")
 
-_CofixQual_in = (Core.FieldName "in")
+_CofixQual_in = (Core.Name "in")
 
-_CofixQual_with = (Core.FieldName "with")
+_CofixQual_with = (Core.Name "with")
 
 data CofixWith = 
   CofixWith {
@@ -132,9 +132,9 @@ data CofixWith =
 
 _CofixWith = (Core.Name "hydra/langs/coq/syntax.CofixWith")
 
-_CofixWith_with = (Core.FieldName "with")
+_CofixWith_with = (Core.Name "with")
 
-_CofixWith_for = (Core.FieldName "for")
+_CofixWith_for = (Core.Name "for")
 
 data Equation = 
   Equation {
@@ -144,9 +144,9 @@ data Equation =
 
 _Equation = (Core.Name "hydra/langs/coq/syntax.Equation")
 
-_Equation_pattern = (Core.FieldName "pattern")
+_Equation_pattern = (Core.Name "pattern")
 
-_Equation_term = (Core.FieldName "term")
+_Equation_term = (Core.Name "term")
 
 data ExistentialVariable = 
   ExistentialVariable {
@@ -156,9 +156,9 @@ data ExistentialVariable =
 
 _ExistentialVariable = (Core.Name "hydra/langs/coq/syntax.ExistentialVariable")
 
-_ExistentialVariable_ident = (Core.FieldName "ident")
+_ExistentialVariable_ident = (Core.Name "ident")
 
-_ExistentialVariable_variant = (Core.FieldName "variant")
+_ExistentialVariable_variant = (Core.Name "variant")
 
 data ExistentialVariableVariant = 
   ExistentialVariableVariantPlaceholder  |
@@ -169,13 +169,13 @@ data ExistentialVariableVariant =
 
 _ExistentialVariableVariant = (Core.Name "hydra/langs/coq/syntax.ExistentialVariableVariant")
 
-_ExistentialVariableVariant_placeholder = (Core.FieldName "placeholder")
+_ExistentialVariableVariant_placeholder = (Core.Name "placeholder")
 
-_ExistentialVariableVariant_inside1 = (Core.FieldName "inside1")
+_ExistentialVariableVariant_inside1 = (Core.Name "inside1")
 
-_ExistentialVariableVariant_inside2 = (Core.FieldName "inside2")
+_ExistentialVariableVariant_inside2 = (Core.Name "inside2")
 
-_ExistentialVariableVariant_outside = (Core.FieldName "outside")
+_ExistentialVariableVariant_outside = (Core.Name "outside")
 
 newtype FieldIdent = 
   FieldIdent {
@@ -191,9 +191,9 @@ data Fix =
 
 _Fix = (Core.Name "hydra/langs/coq/syntax.Fix")
 
-_Fix_decl = (Core.FieldName "decl")
+_Fix_decl = (Core.Name "decl")
 
-_Fix_qual = (Core.FieldName "qual")
+_Fix_qual = (Core.Name "qual")
 
 data FixAnnot = 
   FixAnnotStruct Ident |
@@ -203,11 +203,11 @@ data FixAnnot =
 
 _FixAnnot = (Core.Name "hydra/langs/coq/syntax.FixAnnot")
 
-_FixAnnot_struct = (Core.FieldName "struct")
+_FixAnnot_struct = (Core.Name "struct")
 
-_FixAnnot_wf = (Core.FieldName "wf")
+_FixAnnot_wf = (Core.Name "wf")
 
-_FixAnnot_measure = (Core.FieldName "measure")
+_FixAnnot_measure = (Core.Name "measure")
 
 data FixAnnot_Measure = 
   FixAnnot_Measure {
@@ -218,11 +218,11 @@ data FixAnnot_Measure =
 
 _FixAnnot_Measure = (Core.Name "hydra/langs/coq/syntax.FixAnnot.Measure")
 
-_FixAnnot_Measure_term = (Core.FieldName "term")
+_FixAnnot_Measure_term = (Core.Name "term")
 
-_FixAnnot_Measure_ident = (Core.FieldName "ident")
+_FixAnnot_Measure_ident = (Core.Name "ident")
 
-_FixAnnot_Measure_term2 = (Core.FieldName "term2")
+_FixAnnot_Measure_term2 = (Core.Name "term2")
 
 data FixAnnot_Wf = 
   FixAnnot_Wf {
@@ -232,9 +232,9 @@ data FixAnnot_Wf =
 
 _FixAnnot_Wf = (Core.Name "hydra/langs/coq/syntax.FixAnnot.Wf")
 
-_FixAnnot_Wf_term = (Core.FieldName "term")
+_FixAnnot_Wf_term = (Core.Name "term")
 
-_FixAnnot_Wf_ident = (Core.FieldName "ident")
+_FixAnnot_Wf_ident = (Core.Name "ident")
 
 data Fix_Decl = 
   Fix_Decl {
@@ -247,15 +247,15 @@ data Fix_Decl =
 
 _Fix_Decl = (Core.Name "hydra/langs/coq/syntax.Fix.Decl")
 
-_Fix_Decl_ident = (Core.FieldName "ident")
+_Fix_Decl_ident = (Core.Name "ident")
 
-_Fix_Decl_binders = (Core.FieldName "binders")
+_Fix_Decl_binders = (Core.Name "binders")
 
-_Fix_Decl_annot = (Core.FieldName "annot")
+_Fix_Decl_annot = (Core.Name "annot")
 
-_Fix_Decl_type = (Core.FieldName "type")
+_Fix_Decl_type = (Core.Name "type")
 
-_Fix_Decl_term = (Core.FieldName "term")
+_Fix_Decl_term = (Core.Name "term")
 
 data Fix_Qual = 
   Fix_QualIn Term |
@@ -264,9 +264,9 @@ data Fix_Qual =
 
 _Fix_Qual = (Core.Name "hydra/langs/coq/syntax.Fix.Qual")
 
-_Fix_Qual_in = (Core.FieldName "in")
+_Fix_Qual_in = (Core.Name "in")
 
-_Fix_Qual_with = (Core.FieldName "with")
+_Fix_Qual_with = (Core.Name "with")
 
 data FixWith = 
   FixWith {
@@ -276,9 +276,9 @@ data FixWith =
 
 _FixWith = (Core.Name "hydra/langs/coq/syntax.FixWith")
 
-_FixWith_decls = (Core.FieldName "decls")
+_FixWith_decls = (Core.Name "decls")
 
-_FixWith_for = (Core.FieldName "for")
+_FixWith_for = (Core.Name "for")
 
 data Forall = 
   Forall {
@@ -288,9 +288,9 @@ data Forall =
 
 _Forall = (Core.Name "hydra/langs/coq/syntax.Forall")
 
-_Forall_binders = (Core.FieldName "binders")
+_Forall_binders = (Core.Name "binders")
 
-_Forall_type = (Core.FieldName "type")
+_Forall_type = (Core.Name "type")
 
 data ForallOrFun = 
   ForallOrFunForall Forall |
@@ -299,9 +299,9 @@ data ForallOrFun =
 
 _ForallOrFun = (Core.Name "hydra/langs/coq/syntax.ForallOrFun")
 
-_ForallOrFun_forall = (Core.FieldName "forall")
+_ForallOrFun_forall = (Core.Name "forall")
 
-_ForallOrFun_fun = (Core.FieldName "fun")
+_ForallOrFun_fun = (Core.Name "fun")
 
 data Fun = 
   Fun {
@@ -311,9 +311,9 @@ data Fun =
 
 _Fun = (Core.Name "hydra/langs/coq/syntax.Fun")
 
-_Fun_binders = (Core.FieldName "binders")
+_Fun_binders = (Core.Name "binders")
 
-_Fun_body = (Core.FieldName "body")
+_Fun_body = (Core.Name "body")
 
 data GeneralizingBinder = 
   -- | Terms surrounded by `( ) introduce their free variables as explicit arguments
@@ -326,11 +326,11 @@ data GeneralizingBinder =
 
 _GeneralizingBinder = (Core.Name "hydra/langs/coq/syntax.GeneralizingBinder")
 
-_GeneralizingBinder_explicit = (Core.FieldName "explicit")
+_GeneralizingBinder_explicit = (Core.Name "explicit")
 
-_GeneralizingBinder_implicitMaximallyInserted = (Core.FieldName "implicitMaximallyInserted")
+_GeneralizingBinder_implicitMaximallyInserted = (Core.Name "implicitMaximallyInserted")
 
-_GeneralizingBinder_implicitNonMaximallyInserted = (Core.FieldName "implicitNonMaximallyInserted")
+_GeneralizingBinder_implicitNonMaximallyInserted = (Core.Name "implicitNonMaximallyInserted")
 
 newtype Ident = 
   Ident {
@@ -347,9 +347,9 @@ data IdentArg =
 
 _IdentArg = (Core.Name "hydra/langs/coq/syntax.IdentArg")
 
-_IdentArg_ident = (Core.FieldName "ident")
+_IdentArg_ident = (Core.Name "ident")
 
-_IdentArg_term = (Core.FieldName "term")
+_IdentArg_term = (Core.Name "term")
 
 -- | Pattern match on boolean values
 data If = 
@@ -362,13 +362,13 @@ data If =
 
 _If = (Core.Name "hydra/langs/coq/syntax.If")
 
-_If_condition = (Core.FieldName "condition")
+_If_condition = (Core.Name "condition")
 
-_If_returnAs = (Core.FieldName "returnAs")
+_If_returnAs = (Core.Name "returnAs")
 
-_If_then = (Core.FieldName "then")
+_If_then = (Core.Name "then")
 
-_If_else = (Core.FieldName "else")
+_If_else = (Core.Name "else")
 
 -- | In the context of a function definition, these forms specify that name is an implicit argument.
 data ImplicitBinders = 
@@ -380,9 +380,9 @@ data ImplicitBinders =
 
 _ImplicitBinders = (Core.Name "hydra/langs/coq/syntax.ImplicitBinders")
 
-_ImplicitBinders_maximallyInserted = (Core.FieldName "maximallyInserted")
+_ImplicitBinders_maximallyInserted = (Core.Name "maximallyInserted")
 
-_ImplicitBinders_nonMaximallyInserted = (Core.FieldName "nonMaximallyInserted")
+_ImplicitBinders_nonMaximallyInserted = (Core.Name "nonMaximallyInserted")
 
 -- | A let-in definition
 data Let = 
@@ -393,9 +393,9 @@ data Let =
 
 _Let = (Core.Name "hydra/langs/coq/syntax.Let")
 
-_Let_bindings = (Core.FieldName "bindings")
+_Let_bindings = (Core.Name "bindings")
 
-_Let_in = (Core.FieldName "in")
+_Let_in = (Core.Name "in")
 
 -- | Some constructions allow the binding of a variable to value. This is called a “let-binder”.
 data LetBinder = 
@@ -407,11 +407,11 @@ data LetBinder =
 
 _LetBinder = (Core.Name "hydra/langs/coq/syntax.LetBinder")
 
-_LetBinder_name = (Core.FieldName "name")
+_LetBinder_name = (Core.Name "name")
 
-_LetBinder_type = (Core.FieldName "type")
+_LetBinder_type = (Core.Name "type")
 
-_LetBinder_term = (Core.FieldName "term")
+_LetBinder_term = (Core.Name "term")
 
 data LetBindings = 
   LetBindingsNamed LetNamed |
@@ -420,9 +420,9 @@ data LetBindings =
 
 _LetBindings = (Core.Name "hydra/langs/coq/syntax.LetBindings")
 
-_LetBindings_named = (Core.FieldName "named")
+_LetBindings_named = (Core.Name "named")
 
-_LetBindings_destructuring = (Core.FieldName "destructuring")
+_LetBindings_destructuring = (Core.Name "destructuring")
 
 data LetNamed = 
   LetNamed {
@@ -432,9 +432,9 @@ data LetNamed =
 
 _LetNamed = (Core.Name "hydra/langs/coq/syntax.LetNamed")
 
-_LetNamed_binder = (Core.FieldName "binder")
+_LetNamed_binder = (Core.Name "binder")
 
-_LetNamed_binders = (Core.FieldName "binders")
+_LetNamed_binders = (Core.Name "binders")
 
 data LetDestructuring = 
   LetDestructuringVariant1 LetDestructuring_Variant1 |
@@ -444,11 +444,11 @@ data LetDestructuring =
 
 _LetDestructuring = (Core.Name "hydra/langs/coq/syntax.LetDestructuring")
 
-_LetDestructuring_variant1 = (Core.FieldName "variant1")
+_LetDestructuring_variant1 = (Core.Name "variant1")
 
-_LetDestructuring_variant2 = (Core.FieldName "variant2")
+_LetDestructuring_variant2 = (Core.Name "variant2")
 
-_LetDestructuring_variant3 = (Core.FieldName "variant3")
+_LetDestructuring_variant3 = (Core.Name "variant3")
 
 data LetDestructuring_Variant1 = 
   LetDestructuring_Variant1 {
@@ -459,11 +459,11 @@ data LetDestructuring_Variant1 =
 
 _LetDestructuring_Variant1 = (Core.Name "hydra/langs/coq/syntax.LetDestructuring.Variant1")
 
-_LetDestructuring_Variant1_names = (Core.FieldName "names")
+_LetDestructuring_Variant1_names = (Core.Name "names")
 
-_LetDestructuring_Variant1_returnAs = (Core.FieldName "returnAs")
+_LetDestructuring_Variant1_returnAs = (Core.Name "returnAs")
 
-_LetDestructuring_Variant1_term = (Core.FieldName "term")
+_LetDestructuring_Variant1_term = (Core.Name "term")
 
 data LetDestructuring_Variant2 = 
   LetDestructuring_Variant2 {
@@ -474,11 +474,11 @@ data LetDestructuring_Variant2 =
 
 _LetDestructuring_Variant2 = (Core.Name "hydra/langs/coq/syntax.LetDestructuring.Variant2")
 
-_LetDestructuring_Variant2_pattern = (Core.FieldName "pattern")
+_LetDestructuring_Variant2_pattern = (Core.Name "pattern")
 
-_LetDestructuring_Variant2_term = (Core.FieldName "term")
+_LetDestructuring_Variant2_term = (Core.Name "term")
 
-_LetDestructuring_Variant2_return = (Core.FieldName "return")
+_LetDestructuring_Variant2_return = (Core.Name "return")
 
 data LetDestructuring_Variant3 = 
   LetDestructuring_Variant3 {
@@ -490,13 +490,13 @@ data LetDestructuring_Variant3 =
 
 _LetDestructuring_Variant3 = (Core.Name "hydra/langs/coq/syntax.LetDestructuring.Variant3")
 
-_LetDestructuring_Variant3_pattern1 = (Core.FieldName "pattern1")
+_LetDestructuring_Variant3_pattern1 = (Core.Name "pattern1")
 
-_LetDestructuring_Variant3_pattern2 = (Core.FieldName "pattern2")
+_LetDestructuring_Variant3_pattern2 = (Core.Name "pattern2")
 
-_LetDestructuring_Variant3_term = (Core.FieldName "term")
+_LetDestructuring_Variant3_term = (Core.Name "term")
 
-_LetDestructuring_Variant3_return = (Core.FieldName "return")
+_LetDestructuring_Variant3_return = (Core.Name "return")
 
 data Match = 
   Match {
@@ -508,13 +508,13 @@ data Match =
 
 _Match = (Core.Name "hydra/langs/coq/syntax.Match")
 
-_Match_caseItems = (Core.FieldName "caseItems")
+_Match_caseItems = (Core.Name "caseItems")
 
-_Match_return = (Core.FieldName "return")
+_Match_return = (Core.Name "return")
 
-_Match_pipe = (Core.FieldName "pipe")
+_Match_pipe = (Core.Name "pipe")
 
-_Match_equations = (Core.FieldName "equations")
+_Match_equations = (Core.Name "equations")
 
 newtype Name = 
   Name {
@@ -540,9 +540,9 @@ data NaturalArg =
 
 _NaturalArg = (Core.Name "hydra/langs/coq/syntax.NaturalArg")
 
-_NaturalArg_natural = (Core.FieldName "natural")
+_NaturalArg_natural = (Core.Name "natural")
 
-_NaturalArg_term = (Core.FieldName "term")
+_NaturalArg_term = (Core.Name "term")
 
 data NormalApplication = 
   NormalApplication {
@@ -552,9 +552,9 @@ data NormalApplication =
 
 _NormalApplication = (Core.Name "hydra/langs/coq/syntax.NormalApplication")
 
-_NormalApplication_lhs = (Core.FieldName "lhs")
+_NormalApplication_lhs = (Core.Name "lhs")
 
-_NormalApplication_rhs = (Core.FieldName "rhs")
+_NormalApplication_rhs = (Core.Name "rhs")
 
 newtype Number = 
   Number {
@@ -570,9 +570,9 @@ data OneTerm =
 
 _OneTerm = (Core.Name "hydra/langs/coq/syntax.OneTerm")
 
-_OneTerm_explicit = (Core.FieldName "explicit")
+_OneTerm_explicit = (Core.Name "explicit")
 
-_OneTerm_term1 = (Core.FieldName "term1")
+_OneTerm_term1 = (Core.Name "term1")
 
 data OpenBinders = 
   OpenBindersType TypeBinders |
@@ -581,9 +581,9 @@ data OpenBinders =
 
 _OpenBinders = (Core.Name "hydra/langs/coq/syntax.OpenBinders")
 
-_OpenBinders_type = (Core.FieldName "type")
+_OpenBinders_type = (Core.Name "type")
 
-_OpenBinders_binders = (Core.FieldName "binders")
+_OpenBinders_binders = (Core.Name "binders")
 
 data Pattern = 
   PatternPattern Pattern10 |
@@ -592,9 +592,9 @@ data Pattern =
 
 _Pattern = (Core.Name "hydra/langs/coq/syntax.Pattern")
 
-_Pattern_pattern = (Core.FieldName "pattern")
+_Pattern_pattern = (Core.Name "pattern")
 
-_Pattern_term = (Core.FieldName "term")
+_Pattern_term = (Core.Name "term")
 
 data Pattern0 = 
   Pattern0Qualid Qualid |
@@ -607,17 +607,17 @@ data Pattern0 =
 
 _Pattern0 = (Core.Name "hydra/langs/coq/syntax.Pattern0")
 
-_Pattern0_qualid = (Core.FieldName "qualid")
+_Pattern0_qualid = (Core.Name "qualid")
 
-_Pattern0_qualIdAndPattern = (Core.FieldName "qualIdAndPattern")
+_Pattern0_qualIdAndPattern = (Core.Name "qualIdAndPattern")
 
-_Pattern0_placeholder = (Core.FieldName "placeholder")
+_Pattern0_placeholder = (Core.Name "placeholder")
 
-_Pattern0_parens = (Core.FieldName "parens")
+_Pattern0_parens = (Core.Name "parens")
 
-_Pattern0_number = (Core.FieldName "number")
+_Pattern0_number = (Core.Name "number")
 
-_Pattern0_string = (Core.FieldName "string")
+_Pattern0_string = (Core.Name "string")
 
 data Pattern1 = 
   Pattern1 {
@@ -627,9 +627,9 @@ data Pattern1 =
 
 _Pattern1 = (Core.Name "hydra/langs/coq/syntax.Pattern1")
 
-_Pattern1_pattern = (Core.FieldName "pattern")
+_Pattern1_pattern = (Core.Name "pattern")
 
-_Pattern1_scope = (Core.FieldName "scope")
+_Pattern1_scope = (Core.Name "scope")
 
 data Pattern10 = 
   Pattern10As Pattern10_As |
@@ -639,11 +639,11 @@ data Pattern10 =
 
 _Pattern10 = (Core.Name "hydra/langs/coq/syntax.Pattern10")
 
-_Pattern10_as = (Core.FieldName "as")
+_Pattern10_as = (Core.Name "as")
 
-_Pattern10_patterns = (Core.FieldName "patterns")
+_Pattern10_patterns = (Core.Name "patterns")
 
-_Pattern10_qualiid = (Core.FieldName "qualiid")
+_Pattern10_qualiid = (Core.Name "qualiid")
 
 data Pattern10_As = 
   Pattern10_As {
@@ -653,9 +653,9 @@ data Pattern10_As =
 
 _Pattern10_As = (Core.Name "hydra/langs/coq/syntax.Pattern10.As")
 
-_Pattern10_As_pattern = (Core.FieldName "pattern")
+_Pattern10_As_pattern = (Core.Name "pattern")
 
-_Pattern10_As_as = (Core.FieldName "as")
+_Pattern10_As_as = (Core.Name "as")
 
 data Pattern10_Patterns = 
   Pattern10_Patterns {
@@ -665,9 +665,9 @@ data Pattern10_Patterns =
 
 _Pattern10_Patterns = (Core.Name "hydra/langs/coq/syntax.Pattern10.Patterns")
 
-_Pattern10_Patterns_pattern = (Core.FieldName "pattern")
+_Pattern10_Patterns_pattern = (Core.Name "pattern")
 
-_Pattern10_Patterns_patterns = (Core.FieldName "patterns")
+_Pattern10_Patterns_patterns = (Core.Name "patterns")
 
 data Pattern10_Qualid = 
   Pattern10_Qualid {
@@ -677,9 +677,9 @@ data Pattern10_Qualid =
 
 _Pattern10_Qualid = (Core.Name "hydra/langs/coq/syntax.Pattern10.Qualid")
 
-_Pattern10_Qualid_qualid = (Core.FieldName "qualid")
+_Pattern10_Qualid_qualid = (Core.Name "qualid")
 
-_Pattern10_Qualid_patterns = (Core.FieldName "patterns")
+_Pattern10_Qualid_patterns = (Core.Name "patterns")
 
 data PrimitiveNotations = 
   PrimitiveNotationsNumber Number |
@@ -688,9 +688,9 @@ data PrimitiveNotations =
 
 _PrimitiveNotations = (Core.Name "hydra/langs/coq/syntax.PrimitiveNotations")
 
-_PrimitiveNotations_number = (Core.FieldName "number")
+_PrimitiveNotations_number = (Core.Name "number")
 
-_PrimitiveNotations_string = (Core.FieldName "string")
+_PrimitiveNotations_string = (Core.Name "string")
 
 -- | A qualified identifier
 data Qualid = 
@@ -701,9 +701,9 @@ data Qualid =
 
 _Qualid = (Core.Name "hydra/langs/coq/syntax.Qualid")
 
-_Qualid_id = (Core.FieldName "id")
+_Qualid_id = (Core.Name "id")
 
-_Qualid_fieldIds = (Core.FieldName "fieldIds")
+_Qualid_fieldIds = (Core.Name "fieldIds")
 
 data QualidAndPattern = 
   QualidAndPattern {
@@ -713,9 +713,9 @@ data QualidAndPattern =
 
 _QualidAndPattern = (Core.Name "hydra/langs/coq/syntax.QualidAndPattern")
 
-_QualidAndPattern_qualid = (Core.FieldName "qualid")
+_QualidAndPattern_qualid = (Core.Name "qualid")
 
-_QualidAndPattern_pattern = (Core.FieldName "pattern")
+_QualidAndPattern_pattern = (Core.Name "pattern")
 
 data QualidAnnotated = 
   QualidAnnotated {
@@ -725,9 +725,9 @@ data QualidAnnotated =
 
 _QualidAnnotated = (Core.Name "hydra/langs/coq/syntax.QualidAnnotated")
 
-_QualidAnnotated_qualid = (Core.FieldName "qualid")
+_QualidAnnotated_qualid = (Core.Name "qualid")
 
-_QualidAnnotated_univAnnot = (Core.FieldName "univAnnot")
+_QualidAnnotated_univAnnot = (Core.Name "univAnnot")
 
 data ReturnAs = 
   ReturnAs {
@@ -737,9 +737,9 @@ data ReturnAs =
 
 _ReturnAs = (Core.Name "hydra/langs/coq/syntax.ReturnAs")
 
-_ReturnAs_as = (Core.FieldName "as")
+_ReturnAs_as = (Core.Name "as")
 
-_ReturnAs_return = (Core.FieldName "return")
+_ReturnAs_return = (Core.Name "return")
 
 newtype ScopeKey = 
   ScopeKey {
@@ -763,17 +763,17 @@ data Sort =
 
 _Sort = (Core.Name "hydra/langs/coq/syntax.Sort")
 
-_Sort_set = (Core.FieldName "set")
+_Sort_set = (Core.Name "set")
 
-_Sort_prop = (Core.FieldName "prop")
+_Sort_prop = (Core.Name "prop")
 
-_Sort_sProp = (Core.FieldName "sProp")
+_Sort_sProp = (Core.Name "sProp")
 
-_Sort_type = (Core.FieldName "type")
+_Sort_type = (Core.Name "type")
 
-_Sort_typeWithAnyUniverse = (Core.FieldName "typeWithAnyUniverse")
+_Sort_typeWithAnyUniverse = (Core.Name "typeWithAnyUniverse")
 
-_Sort_typeWithUniverse = (Core.FieldName "typeWithUniverse")
+_Sort_typeWithUniverse = (Core.Name "typeWithUniverse")
 
 newtype String_ = 
   String_ {
@@ -793,17 +793,17 @@ data Term =
 
 _Term = (Core.Name "hydra/langs/coq/syntax.Term")
 
-_Term_forallOrFun = (Core.FieldName "forallOrFun")
+_Term_forallOrFun = (Core.Name "forallOrFun")
 
-_Term_let = (Core.FieldName "let")
+_Term_let = (Core.Name "let")
 
-_Term_if = (Core.FieldName "if")
+_Term_if = (Core.Name "if")
 
-_Term_fix = (Core.FieldName "fix")
+_Term_fix = (Core.Name "fix")
 
-_Term_cofix = (Core.FieldName "cofix")
+_Term_cofix = (Core.Name "cofix")
 
-_Term_term100 = (Core.FieldName "term100")
+_Term_term100 = (Core.Name "term100")
 
 data Term0 = 
   Term0QualidAnnotated QualidAnnotated |
@@ -819,23 +819,23 @@ data Term0 =
 
 _Term0 = (Core.Name "hydra/langs/coq/syntax.Term0")
 
-_Term0_qualidAnnotated = (Core.FieldName "qualidAnnotated")
+_Term0_qualidAnnotated = (Core.Name "qualidAnnotated")
 
-_Term0_sort = (Core.FieldName "sort")
+_Term0_sort = (Core.Name "sort")
 
-_Term0_primitiveNotations = (Core.FieldName "primitiveNotations")
+_Term0_primitiveNotations = (Core.Name "primitiveNotations")
 
-_Term0_evar = (Core.FieldName "evar")
+_Term0_evar = (Core.Name "evar")
 
-_Term0_match = (Core.FieldName "match")
+_Term0_match = (Core.Name "match")
 
-_Term0_record = (Core.FieldName "record")
+_Term0_record = (Core.Name "record")
 
-_Term0_generalizing = (Core.FieldName "generalizing")
+_Term0_generalizing = (Core.Name "generalizing")
 
-_Term0_ltac = (Core.FieldName "ltac")
+_Term0_ltac = (Core.Name "ltac")
 
-_Term0_parens = (Core.FieldName "parens")
+_Term0_parens = (Core.Name "parens")
 
 data Term1 = 
   Term1Projection  |
@@ -845,11 +845,11 @@ data Term1 =
 
 _Term1 = (Core.Name "hydra/langs/coq/syntax.Term1")
 
-_Term1_projection = (Core.FieldName "projection")
+_Term1_projection = (Core.Name "projection")
 
-_Term1_scope = (Core.FieldName "scope")
+_Term1_scope = (Core.Name "scope")
 
-_Term1_term0 = (Core.FieldName "term0")
+_Term1_term0 = (Core.Name "term0")
 
 data Term10 = 
   Term10Application Application |
@@ -858,9 +858,9 @@ data Term10 =
 
 _Term10 = (Core.Name "hydra/langs/coq/syntax.Term10")
 
-_Term10_application = (Core.FieldName "application")
+_Term10_application = (Core.Name "application")
 
-_Term10_oneTerm = (Core.FieldName "oneTerm")
+_Term10_oneTerm = (Core.Name "oneTerm")
 
 data Term100 = 
   Term100Cast TypeCast |
@@ -869,9 +869,9 @@ data Term100 =
 
 _Term100 = (Core.Name "hydra/langs/coq/syntax.Term100")
 
-_Term100_cast = (Core.FieldName "cast")
+_Term100_cast = (Core.Name "cast")
 
-_Term100_term10 = (Core.FieldName "term10")
+_Term100_term10 = (Core.Name "term10")
 
 newtype Type = 
   Type {
@@ -889,11 +889,11 @@ data TypeCast =
 
 _TypeCast = (Core.Name "hydra/langs/coq/syntax.TypeCast")
 
-_TypeCast_term = (Core.FieldName "term")
+_TypeCast_term = (Core.Name "term")
 
-_TypeCast_type = (Core.FieldName "type")
+_TypeCast_type = (Core.Name "type")
 
-_TypeCast_operator = (Core.FieldName "operator")
+_TypeCast_operator = (Core.Name "operator")
 
 data TypeCastOperator = 
   -- | The expression term10 : type is a type cast expression. It enforces the type of term10 to be type.
@@ -906,11 +906,11 @@ data TypeCastOperator =
 
 _TypeCastOperator = (Core.Name "hydra/langs/coq/syntax.TypeCastOperator")
 
-_TypeCastOperator_normal = (Core.FieldName "normal")
+_TypeCastOperator_normal = (Core.Name "normal")
 
-_TypeCastOperator_vmCompute = (Core.FieldName "vmCompute")
+_TypeCastOperator_vmCompute = (Core.Name "vmCompute")
 
-_TypeCastOperator_nativeCompute = (Core.FieldName "nativeCompute")
+_TypeCastOperator_nativeCompute = (Core.Name "nativeCompute")
 
 data TypeBinders = 
   TypeBinders {
@@ -920,9 +920,9 @@ data TypeBinders =
 
 _TypeBinders = (Core.Name "hydra/langs/coq/syntax.TypeBinders")
 
-_TypeBinders_names = (Core.FieldName "names")
+_TypeBinders_names = (Core.Name "names")
 
-_TypeBinders_type = (Core.FieldName "type")
+_TypeBinders_type = (Core.Name "type")
 
 data TypeclassConstraint = 
   TypeclassConstraint {
@@ -933,11 +933,11 @@ data TypeclassConstraint =
 
 _TypeclassConstraint = (Core.Name "hydra/langs/coq/syntax.TypeclassConstraint")
 
-_TypeclassConstraint_name = (Core.FieldName "name")
+_TypeclassConstraint_name = (Core.Name "name")
 
-_TypeclassConstraint_generalizing = (Core.FieldName "generalizing")
+_TypeclassConstraint_generalizing = (Core.Name "generalizing")
 
-_TypeclassConstraint_term = (Core.FieldName "term")
+_TypeclassConstraint_term = (Core.Name "term")
 
 newtype UnivAnnot = 
   UnivAnnot {
@@ -953,9 +953,9 @@ data Universe =
 
 _Universe = (Core.Name "hydra/langs/coq/syntax.Universe")
 
-_Universe_max = (Core.FieldName "max")
+_Universe_max = (Core.Name "max")
 
-_Universe_expr = (Core.FieldName "expr")
+_Universe_expr = (Core.Name "expr")
 
 data Universe_Expr = 
   Universe_Expr {
@@ -965,9 +965,9 @@ data Universe_Expr =
 
 _Universe_Expr = (Core.Name "hydra/langs/coq/syntax.Universe.Expr")
 
-_Universe_Expr_name = (Core.FieldName "name")
+_Universe_Expr_name = (Core.Name "name")
 
-_Universe_Expr_number = (Core.FieldName "number")
+_Universe_Expr_number = (Core.Name "number")
 
 data UniverseLevel = 
   UniverseLevelSet  |
@@ -979,15 +979,15 @@ data UniverseLevel =
 
 _UniverseLevel = (Core.Name "hydra/langs/coq/syntax.UniverseLevel")
 
-_UniverseLevel_set = (Core.FieldName "set")
+_UniverseLevel_set = (Core.Name "set")
 
-_UniverseLevel_prop = (Core.FieldName "prop")
+_UniverseLevel_prop = (Core.Name "prop")
 
-_UniverseLevel_type = (Core.FieldName "type")
+_UniverseLevel_type = (Core.Name "type")
 
-_UniverseLevel_ignored = (Core.FieldName "ignored")
+_UniverseLevel_ignored = (Core.Name "ignored")
 
-_UniverseLevel_qualid = (Core.FieldName "qualid")
+_UniverseLevel_qualid = (Core.Name "qualid")
 
 data UniverseName = 
   UniverseNameQualid Qualid |
@@ -997,8 +997,8 @@ data UniverseName =
 
 _UniverseName = (Core.Name "hydra/langs/coq/syntax.UniverseName")
 
-_UniverseName_qualid = (Core.FieldName "qualid")
+_UniverseName_qualid = (Core.Name "qualid")
 
-_UniverseName_set = (Core.FieldName "set")
+_UniverseName_set = (Core.Name "set")
 
-_UniverseName_prop = (Core.FieldName "prop")
+_UniverseName_prop = (Core.Name "prop")

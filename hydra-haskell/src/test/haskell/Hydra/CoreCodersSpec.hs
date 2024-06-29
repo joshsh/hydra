@@ -52,11 +52,11 @@ checkDecodingIndividualTypes = do
             Field _RowType_fields $
               list [
                 record _FieldType [
-                  Field _FieldType_name $ wrap _FieldName $ string "left",
+                  Field _FieldType_name $ wrap _Name $ string "left",
                   Field _FieldType_type $ variant _Type _Type_literal $ variant _LiteralType _LiteralType_integer $
                     unitVariant _IntegerType _IntegerType_int64],
                 record _FieldType [
-                  Field _FieldType_name $ wrap _FieldName $ string "right",
+                  Field _FieldType_name $ wrap _Name $ string "right",
                   Field _FieldType_type $ variant _Type _Type_literal $ variant _LiteralType _LiteralType_float $
                     unitVariant _FloatType _FloatType_float64]]])
           (TypeUnion $ RowType testTypeName Nothing [
@@ -68,7 +68,7 @@ checkDecodingInvalidTerms = do
   H.describe "Decode invalid terms" $ do
 
     H.it "Try to decode a term with wrong fields for Type" $ do
-      shouldFail (coreDecodeType $ variant untyped (FieldName "unknownField") $ list [])
+      shouldFail (coreDecodeType $ variant untyped (Name "unknownField") $ list [])
 
     H.it "Try to decode an incomplete representation of a Type" $ do
       shouldFail (coreDecodeType $ variant _Type _Type_literal $ unitVariant _LiteralType _LiteralType_integer)
@@ -102,10 +102,10 @@ checkEncodingIndividualTypes = do
             Field _RowType_extends $ optional Nothing,
             Field _RowType_fields $ list [
               record _FieldType [
-                Field _FieldType_name $ wrap _FieldName $ string "something",
+                Field _FieldType_name $ wrap _Name $ string "something",
                 Field _FieldType_type $ variant _Type _Type_literal $ unitVariant _LiteralType _LiteralType_string],
               record _FieldType [
-                Field _FieldType_name $ wrap _FieldName $ string "nothing",
+                Field _FieldType_name $ wrap _Name $ string "nothing",
                 Field _FieldType_type $ variant _Type _Type_record $ record _RowType [
                   Field _RowType_typeName $ wrap _Name $ string "hydra/core.UnitType",
                   Field _RowType_extends $ optional Nothing,

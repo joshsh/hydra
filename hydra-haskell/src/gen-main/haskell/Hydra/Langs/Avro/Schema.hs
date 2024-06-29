@@ -17,7 +17,7 @@ data Array =
 
 _Array = (Core.Name "hydra/langs/avro/schema.Array")
 
-_Array_items = (Core.FieldName "items")
+_Array_items = (Core.Name "items")
 
 data Enum_ = 
   Enum_ {
@@ -29,9 +29,9 @@ data Enum_ =
 
 _Enum = (Core.Name "hydra/langs/avro/schema.Enum")
 
-_Enum_symbols = (Core.FieldName "symbols")
+_Enum_symbols = (Core.Name "symbols")
 
-_Enum_default = (Core.FieldName "default")
+_Enum_default = (Core.Name "default")
 
 data Field = 
   Field {
@@ -53,19 +53,19 @@ data Field =
 
 _Field = (Core.Name "hydra/langs/avro/schema.Field")
 
-_Field_name = (Core.FieldName "name")
+_Field_name = (Core.Name "name")
 
-_Field_doc = (Core.FieldName "doc")
+_Field_doc = (Core.Name "doc")
 
-_Field_type = (Core.FieldName "type")
+_Field_type = (Core.Name "type")
 
-_Field_default = (Core.FieldName "default")
+_Field_default = (Core.Name "default")
 
-_Field_order = (Core.FieldName "order")
+_Field_order = (Core.Name "order")
 
-_Field_aliases = (Core.FieldName "aliases")
+_Field_aliases = (Core.Name "aliases")
 
-_Field_annotations = (Core.FieldName "annotations")
+_Field_annotations = (Core.Name "annotations")
 
 data Fixed = 
   Fixed {
@@ -75,7 +75,7 @@ data Fixed =
 
 _Fixed = (Core.Name "hydra/langs/avro/schema.Fixed")
 
-_Fixed_size = (Core.FieldName "size")
+_Fixed_size = (Core.Name "size")
 
 data Map_ = 
   Map_ {
@@ -84,7 +84,7 @@ data Map_ =
 
 _Map = (Core.Name "hydra/langs/avro/schema.Map")
 
-_Map_values = (Core.FieldName "values")
+_Map_values = (Core.Name "values")
 
 data Named = 
   Named {
@@ -103,17 +103,17 @@ data Named =
 
 _Named = (Core.Name "hydra/langs/avro/schema.Named")
 
-_Named_name = (Core.FieldName "name")
+_Named_name = (Core.Name "name")
 
-_Named_namespace = (Core.FieldName "namespace")
+_Named_namespace = (Core.Name "namespace")
 
-_Named_aliases = (Core.FieldName "aliases")
+_Named_aliases = (Core.Name "aliases")
 
-_Named_doc = (Core.FieldName "doc")
+_Named_doc = (Core.Name "doc")
 
-_Named_type = (Core.FieldName "type")
+_Named_type = (Core.Name "type")
 
-_Named_annotations = (Core.FieldName "annotations")
+_Named_annotations = (Core.Name "annotations")
 
 data NamedType = 
   NamedTypeEnum Enum_ |
@@ -123,11 +123,11 @@ data NamedType =
 
 _NamedType = (Core.Name "hydra/langs/avro/schema.NamedType")
 
-_NamedType_enum = (Core.FieldName "enum")
+_NamedType_enum = (Core.Name "enum")
 
-_NamedType_fixed = (Core.FieldName "fixed")
+_NamedType_fixed = (Core.Name "fixed")
 
-_NamedType_record = (Core.FieldName "record")
+_NamedType_record = (Core.Name "record")
 
 data Order = 
   OrderAscending  |
@@ -137,11 +137,11 @@ data Order =
 
 _Order = (Core.Name "hydra/langs/avro/schema.Order")
 
-_Order_ascending = (Core.FieldName "ascending")
+_Order_ascending = (Core.Name "ascending")
 
-_Order_descending = (Core.FieldName "descending")
+_Order_descending = (Core.Name "descending")
 
-_Order_ignore = (Core.FieldName "ignore")
+_Order_ignore = (Core.Name "ignore")
 
 data Primitive = 
   -- | no value
@@ -164,21 +164,21 @@ data Primitive =
 
 _Primitive = (Core.Name "hydra/langs/avro/schema.Primitive")
 
-_Primitive_null = (Core.FieldName "null")
+_Primitive_null = (Core.Name "null")
 
-_Primitive_boolean = (Core.FieldName "boolean")
+_Primitive_boolean = (Core.Name "boolean")
 
-_Primitive_int = (Core.FieldName "int")
+_Primitive_int = (Core.Name "int")
 
-_Primitive_long = (Core.FieldName "long")
+_Primitive_long = (Core.Name "long")
 
-_Primitive_float = (Core.FieldName "float")
+_Primitive_float = (Core.Name "float")
 
-_Primitive_double = (Core.FieldName "double")
+_Primitive_double = (Core.Name "double")
 
-_Primitive_bytes = (Core.FieldName "bytes")
+_Primitive_bytes = (Core.Name "bytes")
 
-_Primitive_string = (Core.FieldName "string")
+_Primitive_string = (Core.Name "string")
 
 data Record = 
   Record {
@@ -188,7 +188,7 @@ data Record =
 
 _Record = (Core.Name "hydra/langs/avro/schema.Record")
 
-_Record_fields = (Core.FieldName "fields")
+_Record_fields = (Core.Name "fields")
 
 data Schema = 
   SchemaArray Array |
@@ -202,17 +202,17 @@ data Schema =
 
 _Schema = (Core.Name "hydra/langs/avro/schema.Schema")
 
-_Schema_array = (Core.FieldName "array")
+_Schema_array = (Core.Name "array")
 
-_Schema_map = (Core.FieldName "map")
+_Schema_map = (Core.Name "map")
 
-_Schema_named = (Core.FieldName "named")
+_Schema_named = (Core.Name "named")
 
-_Schema_primitive = (Core.FieldName "primitive")
+_Schema_primitive = (Core.Name "primitive")
 
-_Schema_reference = (Core.FieldName "reference")
+_Schema_reference = (Core.Name "reference")
 
-_Schema_union = (Core.FieldName "union")
+_Schema_union = (Core.Name "union")
 
 newtype Union = 
   Union {

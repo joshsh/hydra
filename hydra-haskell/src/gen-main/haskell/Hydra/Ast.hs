@@ -18,13 +18,13 @@ data Associativity =
 
 _Associativity = (Core.Name "hydra/ast.Associativity")
 
-_Associativity_none = (Core.FieldName "none")
+_Associativity_none = (Core.Name "none")
 
-_Associativity_left = (Core.FieldName "left")
+_Associativity_left = (Core.Name "left")
 
-_Associativity_right = (Core.FieldName "right")
+_Associativity_right = (Core.Name "right")
 
-_Associativity_both = (Core.FieldName "both")
+_Associativity_both = (Core.Name "both")
 
 -- | Formatting option for code blocks
 data BlockStyle = 
@@ -36,11 +36,11 @@ data BlockStyle =
 
 _BlockStyle = (Core.Name "hydra/ast.BlockStyle")
 
-_BlockStyle_indent = (Core.FieldName "indent")
+_BlockStyle_indent = (Core.Name "indent")
 
-_BlockStyle_newlineBeforeContent = (Core.FieldName "newlineBeforeContent")
+_BlockStyle_newlineBeforeContent = (Core.Name "newlineBeforeContent")
 
-_BlockStyle_newlineAfterContent = (Core.FieldName "newlineAfterContent")
+_BlockStyle_newlineAfterContent = (Core.Name "newlineAfterContent")
 
 -- | An expression enclosed by brackets
 data BracketExpr = 
@@ -52,11 +52,11 @@ data BracketExpr =
 
 _BracketExpr = (Core.Name "hydra/ast.BracketExpr")
 
-_BracketExpr_brackets = (Core.FieldName "brackets")
+_BracketExpr_brackets = (Core.Name "brackets")
 
-_BracketExpr_enclosed = (Core.FieldName "enclosed")
+_BracketExpr_enclosed = (Core.Name "enclosed")
 
-_BracketExpr_style = (Core.FieldName "style")
+_BracketExpr_style = (Core.Name "style")
 
 -- | Matching open and close bracket symbols
 data Brackets = 
@@ -67,9 +67,9 @@ data Brackets =
 
 _Brackets = (Core.Name "hydra/ast.Brackets")
 
-_Brackets_open = (Core.FieldName "open")
+_Brackets_open = (Core.Name "open")
 
-_Brackets_close = (Core.FieldName "close")
+_Brackets_close = (Core.Name "close")
 
 -- | An abstract expression
 data Expr = 
@@ -81,13 +81,13 @@ data Expr =
 
 _Expr = (Core.Name "hydra/ast.Expr")
 
-_Expr_const = (Core.FieldName "const")
+_Expr_const = (Core.Name "const")
 
-_Expr_indent = (Core.FieldName "indent")
+_Expr_indent = (Core.Name "indent")
 
-_Expr_op = (Core.FieldName "op")
+_Expr_op = (Core.Name "op")
 
-_Expr_brackets = (Core.FieldName "brackets")
+_Expr_brackets = (Core.Name "brackets")
 
 -- | An expression indented in a certain style
 data IndentedExpression = 
@@ -98,9 +98,9 @@ data IndentedExpression =
 
 _IndentedExpression = (Core.Name "hydra/ast.IndentedExpression")
 
-_IndentedExpression_style = (Core.FieldName "style")
+_IndentedExpression_style = (Core.Name "style")
 
-_IndentedExpression_expr = (Core.FieldName "expr")
+_IndentedExpression_expr = (Core.Name "expr")
 
 -- | Any of several indentation styles
 data IndentStyle = 
@@ -110,9 +110,9 @@ data IndentStyle =
 
 _IndentStyle = (Core.Name "hydra/ast.IndentStyle")
 
-_IndentStyle_allLines = (Core.FieldName "allLines")
+_IndentStyle_allLines = (Core.Name "allLines")
 
-_IndentStyle_subsequentLines = (Core.FieldName "subsequentLines")
+_IndentStyle_subsequentLines = (Core.Name "subsequentLines")
 
 -- | An operator symbol
 data Op = 
@@ -125,13 +125,13 @@ data Op =
 
 _Op = (Core.Name "hydra/ast.Op")
 
-_Op_symbol = (Core.FieldName "symbol")
+_Op_symbol = (Core.Name "symbol")
 
-_Op_padding = (Core.FieldName "padding")
+_Op_padding = (Core.Name "padding")
 
-_Op_precedence = (Core.FieldName "precedence")
+_Op_precedence = (Core.Name "precedence")
 
-_Op_associativity = (Core.FieldName "associativity")
+_Op_associativity = (Core.Name "associativity")
 
 -- | An operator expression
 data OpExpr = 
@@ -143,11 +143,11 @@ data OpExpr =
 
 _OpExpr = (Core.Name "hydra/ast.OpExpr")
 
-_OpExpr_op = (Core.FieldName "op")
+_OpExpr_op = (Core.Name "op")
 
-_OpExpr_lhs = (Core.FieldName "lhs")
+_OpExpr_lhs = (Core.Name "lhs")
 
-_OpExpr_rhs = (Core.FieldName "rhs")
+_OpExpr_rhs = (Core.Name "rhs")
 
 -- | Left and right padding for an operator
 data Padding = 
@@ -158,9 +158,9 @@ data Padding =
 
 _Padding = (Core.Name "hydra/ast.Padding")
 
-_Padding_left = (Core.FieldName "left")
+_Padding_left = (Core.Name "left")
 
-_Padding_right = (Core.FieldName "right")
+_Padding_right = (Core.Name "right")
 
 -- | Operator precedence
 newtype Precedence = 
@@ -191,12 +191,12 @@ data Ws =
 
 _Ws = (Core.Name "hydra/ast.Ws")
 
-_Ws_none = (Core.FieldName "none")
+_Ws_none = (Core.Name "none")
 
-_Ws_space = (Core.FieldName "space")
+_Ws_space = (Core.Name "space")
 
-_Ws_break = (Core.FieldName "break")
+_Ws_break = (Core.Name "break")
 
-_Ws_breakAndIndent = (Core.FieldName "breakAndIndent")
+_Ws_breakAndIndent = (Core.Name "breakAndIndent")
 
-_Ws_doubleBreak = (Core.FieldName "doubleBreak")
+_Ws_doubleBreak = (Core.Name "doubleBreak")

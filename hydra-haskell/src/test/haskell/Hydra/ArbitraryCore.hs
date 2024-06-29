@@ -32,11 +32,6 @@ instance QC.Arbitrary Literal
       LiteralInteger <$> QC.arbitrary,
       LiteralString <$> QC.arbitrary]
 
-instance QC.Arbitrary FieldName
-  where
-    arbitrary = FieldName <$> QC.arbitrary
-    shrink (FieldName n) = FieldName <$> QC.shrink n
-
 instance QC.Arbitrary FloatType
   where
     arbitrary = QC.oneof $ pure <$> [
@@ -263,7 +258,7 @@ shrinkers typ = trivialShrinker ++ case typ of
         shrinkType = (\(t, m) -> (Types.optional t,
           \(TermOptional mb) -> Y.maybe [] (fmap (optional . Just) . m) mb)) <$> shrinkers ot
     TypeRecord (RowType name _ sfields) -> dropFields
-        ++ shrinkFieldNames (TypeRecord . RowType name Nothing) (record name) (\(TermRecord (Record _ dfields)) -> dfields) sfields
+        ++ shrinkNames (TypeRecord . RowType name Nothing) (record name) (\(TermRecord (Record _ dfields)) -> dfields) sfields
         ++ promoteTypes ++ shrinkTypes
       where
         dropFields = dropField <$> indices
@@ -282,7 +277,7 @@ shrinkers typ = trivialShrinker ++ case typ of
         promoteType = (st, \(TermSet els) -> S.toList els)
         shrinkType = (\(t, m) -> (Types.set t, \(TermSet els) -> set . S.fromList <$> CM.mapM m (S.toList els))) <$> shrinkers st
     TypeUnion (RowType name _ sfields) -> dropFields
-        ++ shrinkFieldNames (TypeUnion . RowType name Nothing) (inject name . L.head) (\(TermUnion (Injection _ f)) -> [f]) sfields
+        ++ shrinkNames (TypeUnion . RowType name Nothing) (inject name . L.head) (\(TermUnion (Injection _ f)) -> [f]) sfields
         ++ promoteTypes ++ shrinkTypes
       where
         dropFields = [] -- TODO
@@ -296,13 +291,13 @@ shrinkers typ = trivialShrinker ++ case typ of
     dropIth i l = L.take i l ++ L.drop (i+1) l
     nodupes l = L.length (L.nub l) == L.length l
     trivialShrinker = [(Types.unit, const [unit]) | typ /= Types.unit]
-    shrinkFieldNames toType toTerm fromTerm sfields = forNames <$> altNames
+    shrinkNames toType toTerm fromTerm sfields = forNames <$> altNames
       where
         forNames names = (toType $ withFieldTypeNames names sfields,
-           \term -> [toTerm $ withFieldNames names $ fromTerm term])
+           \term -> [toTerm $ withNames names $ fromTerm term])
         altNames = L.filter nodupes $ CM.mapM QC.shrink (fieldTypeName <$> sfields)
         withFieldTypeNames = L.zipWith (\n f -> FieldType n $ fieldTypeType f)
-        withFieldNames = L.zipWith (\n f -> Field n $ fieldTerm f)
+        withNames = L.zipWith (\n f -> Field n $ fieldTerm f)
 
 -- | A placeholder for a type name. Use in tests only, where a union term is needed but no type name is known.
 untyped :: Name

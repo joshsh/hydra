@@ -57,41 +57,41 @@ data DataTypeFeatures =
 
 _DataTypeFeatures = (Core.Name "hydra/langs/tinkerpop/features.DataTypeFeatures")
 
-_DataTypeFeatures_supportsBooleanArrayValues = (Core.FieldName "supportsBooleanArrayValues")
+_DataTypeFeatures_supportsBooleanArrayValues = (Core.Name "supportsBooleanArrayValues")
 
-_DataTypeFeatures_supportsBooleanValues = (Core.FieldName "supportsBooleanValues")
+_DataTypeFeatures_supportsBooleanValues = (Core.Name "supportsBooleanValues")
 
-_DataTypeFeatures_supportsByteArrayValues = (Core.FieldName "supportsByteArrayValues")
+_DataTypeFeatures_supportsByteArrayValues = (Core.Name "supportsByteArrayValues")
 
-_DataTypeFeatures_supportsByteValues = (Core.FieldName "supportsByteValues")
+_DataTypeFeatures_supportsByteValues = (Core.Name "supportsByteValues")
 
-_DataTypeFeatures_supportsDoubleArrayValues = (Core.FieldName "supportsDoubleArrayValues")
+_DataTypeFeatures_supportsDoubleArrayValues = (Core.Name "supportsDoubleArrayValues")
 
-_DataTypeFeatures_supportsDoubleValues = (Core.FieldName "supportsDoubleValues")
+_DataTypeFeatures_supportsDoubleValues = (Core.Name "supportsDoubleValues")
 
-_DataTypeFeatures_supportsFloatArrayValues = (Core.FieldName "supportsFloatArrayValues")
+_DataTypeFeatures_supportsFloatArrayValues = (Core.Name "supportsFloatArrayValues")
 
-_DataTypeFeatures_supportsFloatValues = (Core.FieldName "supportsFloatValues")
+_DataTypeFeatures_supportsFloatValues = (Core.Name "supportsFloatValues")
 
-_DataTypeFeatures_supportsIntegerArrayValues = (Core.FieldName "supportsIntegerArrayValues")
+_DataTypeFeatures_supportsIntegerArrayValues = (Core.Name "supportsIntegerArrayValues")
 
-_DataTypeFeatures_supportsIntegerValues = (Core.FieldName "supportsIntegerValues")
+_DataTypeFeatures_supportsIntegerValues = (Core.Name "supportsIntegerValues")
 
-_DataTypeFeatures_supportsLongArrayValues = (Core.FieldName "supportsLongArrayValues")
+_DataTypeFeatures_supportsLongArrayValues = (Core.Name "supportsLongArrayValues")
 
-_DataTypeFeatures_supportsLongValues = (Core.FieldName "supportsLongValues")
+_DataTypeFeatures_supportsLongValues = (Core.Name "supportsLongValues")
 
-_DataTypeFeatures_supportsMapValues = (Core.FieldName "supportsMapValues")
+_DataTypeFeatures_supportsMapValues = (Core.Name "supportsMapValues")
 
-_DataTypeFeatures_supportsMixedListValues = (Core.FieldName "supportsMixedListValues")
+_DataTypeFeatures_supportsMixedListValues = (Core.Name "supportsMixedListValues")
 
-_DataTypeFeatures_supportsSerializableValues = (Core.FieldName "supportsSerializableValues")
+_DataTypeFeatures_supportsSerializableValues = (Core.Name "supportsSerializableValues")
 
-_DataTypeFeatures_supportsStringArrayValues = (Core.FieldName "supportsStringArrayValues")
+_DataTypeFeatures_supportsStringArrayValues = (Core.Name "supportsStringArrayValues")
 
-_DataTypeFeatures_supportsStringValues = (Core.FieldName "supportsStringValues")
+_DataTypeFeatures_supportsStringValues = (Core.Name "supportsStringValues")
 
-_DataTypeFeatures_supportsUniformListValues = (Core.FieldName "supportsUniformListValues")
+_DataTypeFeatures_supportsUniformListValues = (Core.Name "supportsUniformListValues")
 
 -- | Features that are related to Edge operations.
 data EdgeFeatures = 
@@ -108,15 +108,15 @@ data EdgeFeatures =
 
 _EdgeFeatures = (Core.Name "hydra/langs/tinkerpop/features.EdgeFeatures")
 
-_EdgeFeatures_elementFeatures = (Core.FieldName "elementFeatures")
+_EdgeFeatures_elementFeatures = (Core.Name "elementFeatures")
 
-_EdgeFeatures_properties = (Core.FieldName "properties")
+_EdgeFeatures_properties = (Core.Name "properties")
 
-_EdgeFeatures_supportsAddEdges = (Core.FieldName "supportsAddEdges")
+_EdgeFeatures_supportsAddEdges = (Core.Name "supportsAddEdges")
 
-_EdgeFeatures_supportsRemoveEdges = (Core.FieldName "supportsRemoveEdges")
+_EdgeFeatures_supportsRemoveEdges = (Core.Name "supportsRemoveEdges")
 
-_EdgeFeatures_supportsUpsert = (Core.FieldName "supportsUpsert")
+_EdgeFeatures_supportsUpsert = (Core.Name "supportsUpsert")
 
 -- | Features that are related to Edge Property objects.
 data EdgePropertyFeatures = 
@@ -126,7 +126,7 @@ data EdgePropertyFeatures =
 
 _EdgePropertyFeatures = (Core.Name "hydra/langs/tinkerpop/features.EdgePropertyFeatures")
 
-_EdgePropertyFeatures_propertyFeatures = (Core.FieldName "propertyFeatures")
+_EdgePropertyFeatures_propertyFeatures = (Core.Name "propertyFeatures")
 
 -- | Features that are related to Element objects.
 data ElementFeatures = 
@@ -151,21 +151,21 @@ data ElementFeatures =
 
 _ElementFeatures = (Core.Name "hydra/langs/tinkerpop/features.ElementFeatures")
 
-_ElementFeatures_supportsAddProperty = (Core.FieldName "supportsAddProperty")
+_ElementFeatures_supportsAddProperty = (Core.Name "supportsAddProperty")
 
-_ElementFeatures_supportsAnyIds = (Core.FieldName "supportsAnyIds")
+_ElementFeatures_supportsAnyIds = (Core.Name "supportsAnyIds")
 
-_ElementFeatures_supportsCustomIds = (Core.FieldName "supportsCustomIds")
+_ElementFeatures_supportsCustomIds = (Core.Name "supportsCustomIds")
 
-_ElementFeatures_supportsNumericIds = (Core.FieldName "supportsNumericIds")
+_ElementFeatures_supportsNumericIds = (Core.Name "supportsNumericIds")
 
-_ElementFeatures_supportsRemoveProperty = (Core.FieldName "supportsRemoveProperty")
+_ElementFeatures_supportsRemoveProperty = (Core.Name "supportsRemoveProperty")
 
-_ElementFeatures_supportsStringIds = (Core.FieldName "supportsStringIds")
+_ElementFeatures_supportsStringIds = (Core.Name "supportsStringIds")
 
-_ElementFeatures_supportsUserSuppliedIds = (Core.FieldName "supportsUserSuppliedIds")
+_ElementFeatures_supportsUserSuppliedIds = (Core.Name "supportsUserSuppliedIds")
 
-_ElementFeatures_supportsUuidIds = (Core.FieldName "supportsUuidIds")
+_ElementFeatures_supportsUuidIds = (Core.Name "supportsUuidIds")
 
 -- | Additional features which are needed for the complete specification of language constraints in Hydra, above and beyond TinkerPop Graph.Features
 data ExtraFeatures a = 
@@ -174,7 +174,7 @@ data ExtraFeatures a =
 
 _ExtraFeatures = (Core.Name "hydra/langs/tinkerpop/features.ExtraFeatures")
 
-_ExtraFeatures_supportsMapKey = (Core.FieldName "supportsMapKey")
+_ExtraFeatures_supportsMapKey = (Core.Name "supportsMapKey")
 
 -- | An interface that represents the capabilities of a Graph implementation. By default all methods of features return true and it is up to implementers to disable feature they don't support. Users should check features prior to using various functions of TinkerPop to help ensure code portability across implementations. For example, a common usage would be to check if a graph supports transactions prior to calling the commit method on Graph.tx().
 -- | 
@@ -191,11 +191,11 @@ data Features =
 
 _Features = (Core.Name "hydra/langs/tinkerpop/features.Features")
 
-_Features_edge = (Core.FieldName "edge")
+_Features_edge = (Core.Name "edge")
 
-_Features_graph = (Core.FieldName "graph")
+_Features_graph = (Core.Name "graph")
 
-_Features_vertex = (Core.FieldName "vertex")
+_Features_vertex = (Core.Name "vertex")
 
 -- | Features specific to a operations of a graph.
 data GraphFeatures = 
@@ -220,21 +220,21 @@ data GraphFeatures =
 
 _GraphFeatures = (Core.Name "hydra/langs/tinkerpop/features.GraphFeatures")
 
-_GraphFeatures_supportsComputer = (Core.FieldName "supportsComputer")
+_GraphFeatures_supportsComputer = (Core.Name "supportsComputer")
 
-_GraphFeatures_supportsConcurrentAccess = (Core.FieldName "supportsConcurrentAccess")
+_GraphFeatures_supportsConcurrentAccess = (Core.Name "supportsConcurrentAccess")
 
-_GraphFeatures_supportsIoRead = (Core.FieldName "supportsIoRead")
+_GraphFeatures_supportsIoRead = (Core.Name "supportsIoRead")
 
-_GraphFeatures_supportsIoWrite = (Core.FieldName "supportsIoWrite")
+_GraphFeatures_supportsIoWrite = (Core.Name "supportsIoWrite")
 
-_GraphFeatures_supportsPersistence = (Core.FieldName "supportsPersistence")
+_GraphFeatures_supportsPersistence = (Core.Name "supportsPersistence")
 
-_GraphFeatures_supportsThreadedTransactions = (Core.FieldName "supportsThreadedTransactions")
+_GraphFeatures_supportsThreadedTransactions = (Core.Name "supportsThreadedTransactions")
 
-_GraphFeatures_supportsTransactions = (Core.FieldName "supportsTransactions")
+_GraphFeatures_supportsTransactions = (Core.Name "supportsTransactions")
 
-_GraphFeatures_variables = (Core.FieldName "variables")
+_GraphFeatures_variables = (Core.Name "variables")
 
 -- | A base interface for Edge or Vertex Property features.
 data PropertyFeatures = 
@@ -246,9 +246,9 @@ data PropertyFeatures =
 
 _PropertyFeatures = (Core.Name "hydra/langs/tinkerpop/features.PropertyFeatures")
 
-_PropertyFeatures_dataTypeFeatures = (Core.FieldName "dataTypeFeatures")
+_PropertyFeatures_dataTypeFeatures = (Core.Name "dataTypeFeatures")
 
-_PropertyFeatures_supportsProperties = (Core.FieldName "supportsProperties")
+_PropertyFeatures_supportsProperties = (Core.Name "supportsProperties")
 
 -- | Features for Graph.Variables.
 data VariableFeatures = 
@@ -260,9 +260,9 @@ data VariableFeatures =
 
 _VariableFeatures = (Core.Name "hydra/langs/tinkerpop/features.VariableFeatures")
 
-_VariableFeatures_dataTypeFeatures = (Core.FieldName "dataTypeFeatures")
+_VariableFeatures_dataTypeFeatures = (Core.Name "dataTypeFeatures")
 
-_VariableFeatures_supportsVariables = (Core.FieldName "supportsVariables")
+_VariableFeatures_supportsVariables = (Core.Name "supportsVariables")
 
 -- | Features that are related to Vertex operations.
 data VertexFeatures = 
@@ -285,21 +285,21 @@ data VertexFeatures =
 
 _VertexFeatures = (Core.Name "hydra/langs/tinkerpop/features.VertexFeatures")
 
-_VertexFeatures_elementFeatures = (Core.FieldName "elementFeatures")
+_VertexFeatures_elementFeatures = (Core.Name "elementFeatures")
 
-_VertexFeatures_properties = (Core.FieldName "properties")
+_VertexFeatures_properties = (Core.Name "properties")
 
-_VertexFeatures_supportsAddVertices = (Core.FieldName "supportsAddVertices")
+_VertexFeatures_supportsAddVertices = (Core.Name "supportsAddVertices")
 
-_VertexFeatures_supportsDuplicateMultiProperties = (Core.FieldName "supportsDuplicateMultiProperties")
+_VertexFeatures_supportsDuplicateMultiProperties = (Core.Name "supportsDuplicateMultiProperties")
 
-_VertexFeatures_supportsMetaProperties = (Core.FieldName "supportsMetaProperties")
+_VertexFeatures_supportsMetaProperties = (Core.Name "supportsMetaProperties")
 
-_VertexFeatures_supportsMultiProperties = (Core.FieldName "supportsMultiProperties")
+_VertexFeatures_supportsMultiProperties = (Core.Name "supportsMultiProperties")
 
-_VertexFeatures_supportsRemoveVertices = (Core.FieldName "supportsRemoveVertices")
+_VertexFeatures_supportsRemoveVertices = (Core.Name "supportsRemoveVertices")
 
-_VertexFeatures_supportsUpsert = (Core.FieldName "supportsUpsert")
+_VertexFeatures_supportsUpsert = (Core.Name "supportsUpsert")
 
 -- | Features that are related to Vertex Property objects.
 data VertexPropertyFeatures = 
@@ -313,10 +313,10 @@ data VertexPropertyFeatures =
 
 _VertexPropertyFeatures = (Core.Name "hydra/langs/tinkerpop/features.VertexPropertyFeatures")
 
-_VertexPropertyFeatures_dataTypeFeatures = (Core.FieldName "dataTypeFeatures")
+_VertexPropertyFeatures_dataTypeFeatures = (Core.Name "dataTypeFeatures")
 
-_VertexPropertyFeatures_propertyFeatures = (Core.FieldName "propertyFeatures")
+_VertexPropertyFeatures_propertyFeatures = (Core.Name "propertyFeatures")
 
-_VertexPropertyFeatures_elementFeatures = (Core.FieldName "elementFeatures")
+_VertexPropertyFeatures_elementFeatures = (Core.Name "elementFeatures")
 
-_VertexPropertyFeatures_supportsRemove = (Core.FieldName "supportsRemove")
+_VertexPropertyFeatures_supportsRemove = (Core.Name "supportsRemove")

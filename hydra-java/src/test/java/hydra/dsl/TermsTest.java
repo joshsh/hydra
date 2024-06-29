@@ -81,7 +81,7 @@ public class TermsTest {
 
     assertTrue(bayAreaLocation instanceof Term.Union);
     assertEquals(name("Location"), ((Term.Union<String>) bayAreaLocation).value.typeName);
-    assertEquals(fieldName("latlon"), ((Term.Union<String>) bayAreaLocation).value.field.name);
+    assertEquals(name("latlon"), ((Term.Union<String>) bayAreaLocation).value.field.name);
 
     assertTrue(Strings.length() instanceof Term.Function);
     assertTrue(((Term.Function<Object>) Strings.length()).value instanceof Function.Primitive);
@@ -98,7 +98,7 @@ public class TermsTest {
         ((Function.Elimination<String>) ((Term.Function<String>) longitude).value).value instanceof Elimination.Record);
     assertEquals(name("LatLon"),
         ((Elimination.Record<String>) ((Function.Elimination<String>) ((Term.Function<String>) longitude).value).value).value.typeName);
-    assertEquals(fieldName("lon"),
+    assertEquals(name("lon"),
         ((Elimination.Record<String>) ((Function.Elimination<String>) ((Term.Function<String>) longitude).value).value).value.field);
 
     assertTrue(longitudeAnnotated instanceof Term.Annotated);

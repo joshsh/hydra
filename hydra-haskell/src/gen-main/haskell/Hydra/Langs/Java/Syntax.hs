@@ -35,17 +35,17 @@ data Literal =
 
 _Literal = (Core.Name "hydra/langs/java/syntax.Literal")
 
-_Literal_null = (Core.FieldName "null")
+_Literal_null = (Core.Name "null")
 
-_Literal_integer = (Core.FieldName "integer")
+_Literal_integer = (Core.Name "integer")
 
-_Literal_floatingPoint = (Core.FieldName "floatingPoint")
+_Literal_floatingPoint = (Core.Name "floatingPoint")
 
-_Literal_boolean = (Core.FieldName "boolean")
+_Literal_boolean = (Core.Name "boolean")
 
-_Literal_character = (Core.FieldName "character")
+_Literal_character = (Core.Name "character")
 
-_Literal_string = (Core.FieldName "string")
+_Literal_string = (Core.Name "string")
 
 -- | Note: this is an approximation which ignores encoding
 newtype IntegerLiteral = 
@@ -81,9 +81,9 @@ data Type =
 
 _Type = (Core.Name "hydra/langs/java/syntax.Type")
 
-_Type_primitive = (Core.FieldName "primitive")
+_Type_primitive = (Core.Name "primitive")
 
-_Type_reference = (Core.FieldName "reference")
+_Type_reference = (Core.Name "reference")
 
 data PrimitiveTypeWithAnnotations = 
   PrimitiveTypeWithAnnotations {
@@ -93,9 +93,9 @@ data PrimitiveTypeWithAnnotations =
 
 _PrimitiveTypeWithAnnotations = (Core.Name "hydra/langs/java/syntax.PrimitiveTypeWithAnnotations")
 
-_PrimitiveTypeWithAnnotations_type = (Core.FieldName "type")
+_PrimitiveTypeWithAnnotations_type = (Core.Name "type")
 
-_PrimitiveTypeWithAnnotations_annotations = (Core.FieldName "annotations")
+_PrimitiveTypeWithAnnotations_annotations = (Core.Name "annotations")
 
 data PrimitiveType = 
   PrimitiveTypeNumeric NumericType |
@@ -104,9 +104,9 @@ data PrimitiveType =
 
 _PrimitiveType = (Core.Name "hydra/langs/java/syntax.PrimitiveType")
 
-_PrimitiveType_numeric = (Core.FieldName "numeric")
+_PrimitiveType_numeric = (Core.Name "numeric")
 
-_PrimitiveType_boolean = (Core.FieldName "boolean")
+_PrimitiveType_boolean = (Core.Name "boolean")
 
 data NumericType = 
   NumericTypeIntegral IntegralType |
@@ -115,9 +115,9 @@ data NumericType =
 
 _NumericType = (Core.Name "hydra/langs/java/syntax.NumericType")
 
-_NumericType_integral = (Core.FieldName "integral")
+_NumericType_integral = (Core.Name "integral")
 
-_NumericType_floatingPoint = (Core.FieldName "floatingPoint")
+_NumericType_floatingPoint = (Core.Name "floatingPoint")
 
 data IntegralType = 
   IntegralTypeByte  |
@@ -129,15 +129,15 @@ data IntegralType =
 
 _IntegralType = (Core.Name "hydra/langs/java/syntax.IntegralType")
 
-_IntegralType_byte = (Core.FieldName "byte")
+_IntegralType_byte = (Core.Name "byte")
 
-_IntegralType_short = (Core.FieldName "short")
+_IntegralType_short = (Core.Name "short")
 
-_IntegralType_int = (Core.FieldName "int")
+_IntegralType_int = (Core.Name "int")
 
-_IntegralType_long = (Core.FieldName "long")
+_IntegralType_long = (Core.Name "long")
 
-_IntegralType_char = (Core.FieldName "char")
+_IntegralType_char = (Core.Name "char")
 
 data FloatingPointType = 
   FloatingPointTypeFloat  |
@@ -146,9 +146,9 @@ data FloatingPointType =
 
 _FloatingPointType = (Core.Name "hydra/langs/java/syntax.FloatingPointType")
 
-_FloatingPointType_float = (Core.FieldName "float")
+_FloatingPointType_float = (Core.Name "float")
 
-_FloatingPointType_double = (Core.FieldName "double")
+_FloatingPointType_double = (Core.Name "double")
 
 data ReferenceType = 
   ReferenceTypeClassOrInterface ClassOrInterfaceType |
@@ -158,11 +158,11 @@ data ReferenceType =
 
 _ReferenceType = (Core.Name "hydra/langs/java/syntax.ReferenceType")
 
-_ReferenceType_classOrInterface = (Core.FieldName "classOrInterface")
+_ReferenceType_classOrInterface = (Core.Name "classOrInterface")
 
-_ReferenceType_variable = (Core.FieldName "variable")
+_ReferenceType_variable = (Core.Name "variable")
 
-_ReferenceType_array = (Core.FieldName "array")
+_ReferenceType_array = (Core.Name "array")
 
 data ClassOrInterfaceType = 
   ClassOrInterfaceTypeClass ClassType |
@@ -171,9 +171,9 @@ data ClassOrInterfaceType =
 
 _ClassOrInterfaceType = (Core.Name "hydra/langs/java/syntax.ClassOrInterfaceType")
 
-_ClassOrInterfaceType_class = (Core.FieldName "class")
+_ClassOrInterfaceType_class = (Core.Name "class")
 
-_ClassOrInterfaceType_interface = (Core.FieldName "interface")
+_ClassOrInterfaceType_interface = (Core.Name "interface")
 
 data ClassType = 
   ClassType {
@@ -185,13 +185,13 @@ data ClassType =
 
 _ClassType = (Core.Name "hydra/langs/java/syntax.ClassType")
 
-_ClassType_annotations = (Core.FieldName "annotations")
+_ClassType_annotations = (Core.Name "annotations")
 
-_ClassType_qualifier = (Core.FieldName "qualifier")
+_ClassType_qualifier = (Core.Name "qualifier")
 
-_ClassType_identifier = (Core.FieldName "identifier")
+_ClassType_identifier = (Core.Name "identifier")
 
-_ClassType_arguments = (Core.FieldName "arguments")
+_ClassType_arguments = (Core.Name "arguments")
 
 data ClassTypeQualifier = 
   ClassTypeQualifierNone  |
@@ -201,11 +201,11 @@ data ClassTypeQualifier =
 
 _ClassTypeQualifier = (Core.Name "hydra/langs/java/syntax.ClassTypeQualifier")
 
-_ClassTypeQualifier_none = (Core.FieldName "none")
+_ClassTypeQualifier_none = (Core.Name "none")
 
-_ClassTypeQualifier_package = (Core.FieldName "package")
+_ClassTypeQualifier_package = (Core.Name "package")
 
-_ClassTypeQualifier_parent = (Core.FieldName "parent")
+_ClassTypeQualifier_parent = (Core.Name "parent")
 
 newtype InterfaceType = 
   InterfaceType {
@@ -222,9 +222,9 @@ data TypeVariable =
 
 _TypeVariable = (Core.Name "hydra/langs/java/syntax.TypeVariable")
 
-_TypeVariable_annotations = (Core.FieldName "annotations")
+_TypeVariable_annotations = (Core.Name "annotations")
 
-_TypeVariable_identifier = (Core.FieldName "identifier")
+_TypeVariable_identifier = (Core.Name "identifier")
 
 data ArrayType = 
   ArrayType {
@@ -234,9 +234,9 @@ data ArrayType =
 
 _ArrayType = (Core.Name "hydra/langs/java/syntax.ArrayType")
 
-_ArrayType_dims = (Core.FieldName "dims")
+_ArrayType_dims = (Core.Name "dims")
 
-_ArrayType_variant = (Core.FieldName "variant")
+_ArrayType_variant = (Core.Name "variant")
 
 data ArrayType_Variant = 
   ArrayType_VariantPrimitive PrimitiveTypeWithAnnotations |
@@ -246,11 +246,11 @@ data ArrayType_Variant =
 
 _ArrayType_Variant = (Core.Name "hydra/langs/java/syntax.ArrayType.Variant")
 
-_ArrayType_Variant_primitive = (Core.FieldName "primitive")
+_ArrayType_Variant_primitive = (Core.Name "primitive")
 
-_ArrayType_Variant_classOrInterface = (Core.FieldName "classOrInterface")
+_ArrayType_Variant_classOrInterface = (Core.Name "classOrInterface")
 
-_ArrayType_Variant_variable = (Core.FieldName "variable")
+_ArrayType_Variant_variable = (Core.Name "variable")
 
 newtype Dims = 
   Dims {
@@ -268,11 +268,11 @@ data TypeParameter =
 
 _TypeParameter = (Core.Name "hydra/langs/java/syntax.TypeParameter")
 
-_TypeParameter_modifiers = (Core.FieldName "modifiers")
+_TypeParameter_modifiers = (Core.Name "modifiers")
 
-_TypeParameter_identifier = (Core.FieldName "identifier")
+_TypeParameter_identifier = (Core.Name "identifier")
 
-_TypeParameter_bound = (Core.FieldName "bound")
+_TypeParameter_bound = (Core.Name "bound")
 
 newtype TypeParameterModifier = 
   TypeParameterModifier {
@@ -288,9 +288,9 @@ data TypeBound =
 
 _TypeBound = (Core.Name "hydra/langs/java/syntax.TypeBound")
 
-_TypeBound_variable = (Core.FieldName "variable")
+_TypeBound_variable = (Core.Name "variable")
 
-_TypeBound_classOrInterface = (Core.FieldName "classOrInterface")
+_TypeBound_classOrInterface = (Core.Name "classOrInterface")
 
 data TypeBound_ClassOrInterface = 
   TypeBound_ClassOrInterface {
@@ -300,9 +300,9 @@ data TypeBound_ClassOrInterface =
 
 _TypeBound_ClassOrInterface = (Core.Name "hydra/langs/java/syntax.TypeBound.ClassOrInterface")
 
-_TypeBound_ClassOrInterface_type = (Core.FieldName "type")
+_TypeBound_ClassOrInterface_type = (Core.Name "type")
 
-_TypeBound_ClassOrInterface_additional = (Core.FieldName "additional")
+_TypeBound_ClassOrInterface_additional = (Core.Name "additional")
 
 newtype AdditionalBound = 
   AdditionalBound {
@@ -318,9 +318,9 @@ data TypeArgument =
 
 _TypeArgument = (Core.Name "hydra/langs/java/syntax.TypeArgument")
 
-_TypeArgument_reference = (Core.FieldName "reference")
+_TypeArgument_reference = (Core.Name "reference")
 
-_TypeArgument_wildcard = (Core.FieldName "wildcard")
+_TypeArgument_wildcard = (Core.Name "wildcard")
 
 data Wildcard = 
   Wildcard {
@@ -330,9 +330,9 @@ data Wildcard =
 
 _Wildcard = (Core.Name "hydra/langs/java/syntax.Wildcard")
 
-_Wildcard_annotations = (Core.FieldName "annotations")
+_Wildcard_annotations = (Core.Name "annotations")
 
-_Wildcard_wildcard = (Core.FieldName "wildcard")
+_Wildcard_wildcard = (Core.Name "wildcard")
 
 data WildcardBounds = 
   WildcardBoundsExtends ReferenceType |
@@ -341,9 +341,9 @@ data WildcardBounds =
 
 _WildcardBounds = (Core.Name "hydra/langs/java/syntax.WildcardBounds")
 
-_WildcardBounds_extends = (Core.FieldName "extends")
+_WildcardBounds_extends = (Core.Name "extends")
 
-_WildcardBounds_super = (Core.FieldName "super")
+_WildcardBounds_super = (Core.Name "super")
 
 data ModuleName = 
   ModuleName {
@@ -353,9 +353,9 @@ data ModuleName =
 
 _ModuleName = (Core.Name "hydra/langs/java/syntax.ModuleName")
 
-_ModuleName_identifier = (Core.FieldName "identifier")
+_ModuleName_identifier = (Core.Name "identifier")
 
-_ModuleName_name = (Core.FieldName "name")
+_ModuleName_name = (Core.Name "name")
 
 newtype PackageName = 
   PackageName {
@@ -372,9 +372,9 @@ data TypeName =
 
 _TypeName = (Core.Name "hydra/langs/java/syntax.TypeName")
 
-_TypeName_identifier = (Core.FieldName "identifier")
+_TypeName_identifier = (Core.Name "identifier")
 
-_TypeName_qualifier = (Core.FieldName "qualifier")
+_TypeName_qualifier = (Core.Name "qualifier")
 
 data ExpressionName = 
   ExpressionName {
@@ -384,9 +384,9 @@ data ExpressionName =
 
 _ExpressionName = (Core.Name "hydra/langs/java/syntax.ExpressionName")
 
-_ExpressionName_qualifier = (Core.FieldName "qualifier")
+_ExpressionName_qualifier = (Core.Name "qualifier")
 
-_ExpressionName_identifier = (Core.FieldName "identifier")
+_ExpressionName_identifier = (Core.Name "identifier")
 
 newtype MethodName = 
   MethodName {
@@ -416,9 +416,9 @@ data CompilationUnit =
 
 _CompilationUnit = (Core.Name "hydra/langs/java/syntax.CompilationUnit")
 
-_CompilationUnit_ordinary = (Core.FieldName "ordinary")
+_CompilationUnit_ordinary = (Core.Name "ordinary")
 
-_CompilationUnit_modular = (Core.FieldName "modular")
+_CompilationUnit_modular = (Core.Name "modular")
 
 data OrdinaryCompilationUnit = 
   OrdinaryCompilationUnit {
@@ -429,11 +429,11 @@ data OrdinaryCompilationUnit =
 
 _OrdinaryCompilationUnit = (Core.Name "hydra/langs/java/syntax.OrdinaryCompilationUnit")
 
-_OrdinaryCompilationUnit_package = (Core.FieldName "package")
+_OrdinaryCompilationUnit_package = (Core.Name "package")
 
-_OrdinaryCompilationUnit_imports = (Core.FieldName "imports")
+_OrdinaryCompilationUnit_imports = (Core.Name "imports")
 
-_OrdinaryCompilationUnit_types = (Core.FieldName "types")
+_OrdinaryCompilationUnit_types = (Core.Name "types")
 
 data ModularCompilationUnit = 
   ModularCompilationUnit {
@@ -443,9 +443,9 @@ data ModularCompilationUnit =
 
 _ModularCompilationUnit = (Core.Name "hydra/langs/java/syntax.ModularCompilationUnit")
 
-_ModularCompilationUnit_imports = (Core.FieldName "imports")
+_ModularCompilationUnit_imports = (Core.Name "imports")
 
-_ModularCompilationUnit_module = (Core.FieldName "module")
+_ModularCompilationUnit_module = (Core.Name "module")
 
 data PackageDeclaration = 
   PackageDeclaration {
@@ -455,9 +455,9 @@ data PackageDeclaration =
 
 _PackageDeclaration = (Core.Name "hydra/langs/java/syntax.PackageDeclaration")
 
-_PackageDeclaration_modifiers = (Core.FieldName "modifiers")
+_PackageDeclaration_modifiers = (Core.Name "modifiers")
 
-_PackageDeclaration_identifiers = (Core.FieldName "identifiers")
+_PackageDeclaration_identifiers = (Core.Name "identifiers")
 
 newtype PackageModifier = 
   PackageModifier {
@@ -475,13 +475,13 @@ data ImportDeclaration =
 
 _ImportDeclaration = (Core.Name "hydra/langs/java/syntax.ImportDeclaration")
 
-_ImportDeclaration_singleType = (Core.FieldName "singleType")
+_ImportDeclaration_singleType = (Core.Name "singleType")
 
-_ImportDeclaration_typeImportOnDemand = (Core.FieldName "typeImportOnDemand")
+_ImportDeclaration_typeImportOnDemand = (Core.Name "typeImportOnDemand")
 
-_ImportDeclaration_singleStaticImport = (Core.FieldName "singleStaticImport")
+_ImportDeclaration_singleStaticImport = (Core.Name "singleStaticImport")
 
-_ImportDeclaration_staticImportOnDemand = (Core.FieldName "staticImportOnDemand")
+_ImportDeclaration_staticImportOnDemand = (Core.Name "staticImportOnDemand")
 
 newtype SingleTypeImportDeclaration = 
   SingleTypeImportDeclaration {
@@ -505,9 +505,9 @@ data SingleStaticImportDeclaration =
 
 _SingleStaticImportDeclaration = (Core.Name "hydra/langs/java/syntax.SingleStaticImportDeclaration")
 
-_SingleStaticImportDeclaration_typeName = (Core.FieldName "typeName")
+_SingleStaticImportDeclaration_typeName = (Core.Name "typeName")
 
-_SingleStaticImportDeclaration_identifier = (Core.FieldName "identifier")
+_SingleStaticImportDeclaration_identifier = (Core.Name "identifier")
 
 newtype StaticImportOnDemandDeclaration = 
   StaticImportOnDemandDeclaration {
@@ -524,11 +524,11 @@ data TypeDeclaration =
 
 _TypeDeclaration = (Core.Name "hydra/langs/java/syntax.TypeDeclaration")
 
-_TypeDeclaration_class = (Core.FieldName "class")
+_TypeDeclaration_class = (Core.Name "class")
 
-_TypeDeclaration_interface = (Core.FieldName "interface")
+_TypeDeclaration_interface = (Core.Name "interface")
 
-_TypeDeclaration_none = (Core.FieldName "none")
+_TypeDeclaration_none = (Core.Name "none")
 
 data TypeDeclarationWithComments = 
   TypeDeclarationWithComments {
@@ -538,9 +538,9 @@ data TypeDeclarationWithComments =
 
 _TypeDeclarationWithComments = (Core.Name "hydra/langs/java/syntax.TypeDeclarationWithComments")
 
-_TypeDeclarationWithComments_value = (Core.FieldName "value")
+_TypeDeclarationWithComments_value = (Core.Name "value")
 
-_TypeDeclarationWithComments_comments = (Core.FieldName "comments")
+_TypeDeclarationWithComments_comments = (Core.Name "comments")
 
 data ModuleDeclaration = 
   ModuleDeclaration {
@@ -552,13 +552,13 @@ data ModuleDeclaration =
 
 _ModuleDeclaration = (Core.Name "hydra/langs/java/syntax.ModuleDeclaration")
 
-_ModuleDeclaration_annotations = (Core.FieldName "annotations")
+_ModuleDeclaration_annotations = (Core.Name "annotations")
 
-_ModuleDeclaration_open = (Core.FieldName "open")
+_ModuleDeclaration_open = (Core.Name "open")
 
-_ModuleDeclaration_identifiers = (Core.FieldName "identifiers")
+_ModuleDeclaration_identifiers = (Core.Name "identifiers")
 
-_ModuleDeclaration_directives = (Core.FieldName "directives")
+_ModuleDeclaration_directives = (Core.Name "directives")
 
 data ModuleDirective = 
   ModuleDirectiveRequires ModuleDirective_Requires |
@@ -570,15 +570,15 @@ data ModuleDirective =
 
 _ModuleDirective = (Core.Name "hydra/langs/java/syntax.ModuleDirective")
 
-_ModuleDirective_requires = (Core.FieldName "requires")
+_ModuleDirective_requires = (Core.Name "requires")
 
-_ModuleDirective_exports = (Core.FieldName "exports")
+_ModuleDirective_exports = (Core.Name "exports")
 
-_ModuleDirective_opens = (Core.FieldName "opens")
+_ModuleDirective_opens = (Core.Name "opens")
 
-_ModuleDirective_uses = (Core.FieldName "uses")
+_ModuleDirective_uses = (Core.Name "uses")
 
-_ModuleDirective_provides = (Core.FieldName "provides")
+_ModuleDirective_provides = (Core.Name "provides")
 
 data ModuleDirective_Requires = 
   ModuleDirective_Requires {
@@ -588,9 +588,9 @@ data ModuleDirective_Requires =
 
 _ModuleDirective_Requires = (Core.Name "hydra/langs/java/syntax.ModuleDirective.Requires")
 
-_ModuleDirective_Requires_modifiers = (Core.FieldName "modifiers")
+_ModuleDirective_Requires_modifiers = (Core.Name "modifiers")
 
-_ModuleDirective_Requires_module = (Core.FieldName "module")
+_ModuleDirective_Requires_module = (Core.Name "module")
 
 data ModuleDirective_ExportsOrOpens = 
   ModuleDirective_ExportsOrOpens {
@@ -601,9 +601,9 @@ data ModuleDirective_ExportsOrOpens =
 
 _ModuleDirective_ExportsOrOpens = (Core.Name "hydra/langs/java/syntax.ModuleDirective.ExportsOrOpens")
 
-_ModuleDirective_ExportsOrOpens_package = (Core.FieldName "package")
+_ModuleDirective_ExportsOrOpens_package = (Core.Name "package")
 
-_ModuleDirective_ExportsOrOpens_modules = (Core.FieldName "modules")
+_ModuleDirective_ExportsOrOpens_modules = (Core.Name "modules")
 
 data ModuleDirective_Provides = 
   ModuleDirective_Provides {
@@ -614,9 +614,9 @@ data ModuleDirective_Provides =
 
 _ModuleDirective_Provides = (Core.Name "hydra/langs/java/syntax.ModuleDirective.Provides")
 
-_ModuleDirective_Provides_to = (Core.FieldName "to")
+_ModuleDirective_Provides_to = (Core.Name "to")
 
-_ModuleDirective_Provides_with = (Core.FieldName "with")
+_ModuleDirective_Provides_with = (Core.Name "with")
 
 data RequiresModifier = 
   RequiresModifierTransitive  |
@@ -625,9 +625,9 @@ data RequiresModifier =
 
 _RequiresModifier = (Core.Name "hydra/langs/java/syntax.RequiresModifier")
 
-_RequiresModifier_transitive = (Core.FieldName "transitive")
+_RequiresModifier_transitive = (Core.Name "transitive")
 
-_RequiresModifier_static = (Core.FieldName "static")
+_RequiresModifier_static = (Core.Name "static")
 
 data ClassDeclaration = 
   ClassDeclarationNormal NormalClassDeclaration |
@@ -636,9 +636,9 @@ data ClassDeclaration =
 
 _ClassDeclaration = (Core.Name "hydra/langs/java/syntax.ClassDeclaration")
 
-_ClassDeclaration_normal = (Core.FieldName "normal")
+_ClassDeclaration_normal = (Core.Name "normal")
 
-_ClassDeclaration_enum = (Core.FieldName "enum")
+_ClassDeclaration_enum = (Core.Name "enum")
 
 data NormalClassDeclaration = 
   NormalClassDeclaration {
@@ -652,17 +652,17 @@ data NormalClassDeclaration =
 
 _NormalClassDeclaration = (Core.Name "hydra/langs/java/syntax.NormalClassDeclaration")
 
-_NormalClassDeclaration_modifiers = (Core.FieldName "modifiers")
+_NormalClassDeclaration_modifiers = (Core.Name "modifiers")
 
-_NormalClassDeclaration_identifier = (Core.FieldName "identifier")
+_NormalClassDeclaration_identifier = (Core.Name "identifier")
 
-_NormalClassDeclaration_parameters = (Core.FieldName "parameters")
+_NormalClassDeclaration_parameters = (Core.Name "parameters")
 
-_NormalClassDeclaration_extends = (Core.FieldName "extends")
+_NormalClassDeclaration_extends = (Core.Name "extends")
 
-_NormalClassDeclaration_implements = (Core.FieldName "implements")
+_NormalClassDeclaration_implements = (Core.Name "implements")
 
-_NormalClassDeclaration_body = (Core.FieldName "body")
+_NormalClassDeclaration_body = (Core.Name "body")
 
 data ClassModifier = 
   ClassModifierAnnotation Annotation |
@@ -677,21 +677,21 @@ data ClassModifier =
 
 _ClassModifier = (Core.Name "hydra/langs/java/syntax.ClassModifier")
 
-_ClassModifier_annotation = (Core.FieldName "annotation")
+_ClassModifier_annotation = (Core.Name "annotation")
 
-_ClassModifier_public = (Core.FieldName "public")
+_ClassModifier_public = (Core.Name "public")
 
-_ClassModifier_protected = (Core.FieldName "protected")
+_ClassModifier_protected = (Core.Name "protected")
 
-_ClassModifier_private = (Core.FieldName "private")
+_ClassModifier_private = (Core.Name "private")
 
-_ClassModifier_abstract = (Core.FieldName "abstract")
+_ClassModifier_abstract = (Core.Name "abstract")
 
-_ClassModifier_static = (Core.FieldName "static")
+_ClassModifier_static = (Core.Name "static")
 
-_ClassModifier_final = (Core.FieldName "final")
+_ClassModifier_final = (Core.Name "final")
 
-_ClassModifier_strictfp = (Core.FieldName "strictfp")
+_ClassModifier_strictfp = (Core.Name "strictfp")
 
 newtype ClassBody = 
   ClassBody {
@@ -709,13 +709,13 @@ data ClassBodyDeclaration =
 
 _ClassBodyDeclaration = (Core.Name "hydra/langs/java/syntax.ClassBodyDeclaration")
 
-_ClassBodyDeclaration_classMember = (Core.FieldName "classMember")
+_ClassBodyDeclaration_classMember = (Core.Name "classMember")
 
-_ClassBodyDeclaration_instanceInitializer = (Core.FieldName "instanceInitializer")
+_ClassBodyDeclaration_instanceInitializer = (Core.Name "instanceInitializer")
 
-_ClassBodyDeclaration_staticInitializer = (Core.FieldName "staticInitializer")
+_ClassBodyDeclaration_staticInitializer = (Core.Name "staticInitializer")
 
-_ClassBodyDeclaration_constructorDeclaration = (Core.FieldName "constructorDeclaration")
+_ClassBodyDeclaration_constructorDeclaration = (Core.Name "constructorDeclaration")
 
 data ClassBodyDeclarationWithComments = 
   ClassBodyDeclarationWithComments {
@@ -725,9 +725,9 @@ data ClassBodyDeclarationWithComments =
 
 _ClassBodyDeclarationWithComments = (Core.Name "hydra/langs/java/syntax.ClassBodyDeclarationWithComments")
 
-_ClassBodyDeclarationWithComments_value = (Core.FieldName "value")
+_ClassBodyDeclarationWithComments_value = (Core.Name "value")
 
-_ClassBodyDeclarationWithComments_comments = (Core.FieldName "comments")
+_ClassBodyDeclarationWithComments_comments = (Core.Name "comments")
 
 data ClassMemberDeclaration = 
   ClassMemberDeclarationField FieldDeclaration |
@@ -739,15 +739,15 @@ data ClassMemberDeclaration =
 
 _ClassMemberDeclaration = (Core.Name "hydra/langs/java/syntax.ClassMemberDeclaration")
 
-_ClassMemberDeclaration_field = (Core.FieldName "field")
+_ClassMemberDeclaration_field = (Core.Name "field")
 
-_ClassMemberDeclaration_method = (Core.FieldName "method")
+_ClassMemberDeclaration_method = (Core.Name "method")
 
-_ClassMemberDeclaration_class = (Core.FieldName "class")
+_ClassMemberDeclaration_class = (Core.Name "class")
 
-_ClassMemberDeclaration_interface = (Core.FieldName "interface")
+_ClassMemberDeclaration_interface = (Core.Name "interface")
 
-_ClassMemberDeclaration_none = (Core.FieldName "none")
+_ClassMemberDeclaration_none = (Core.Name "none")
 
 data FieldDeclaration = 
   FieldDeclaration {
@@ -758,11 +758,11 @@ data FieldDeclaration =
 
 _FieldDeclaration = (Core.Name "hydra/langs/java/syntax.FieldDeclaration")
 
-_FieldDeclaration_modifiers = (Core.FieldName "modifiers")
+_FieldDeclaration_modifiers = (Core.Name "modifiers")
 
-_FieldDeclaration_unannType = (Core.FieldName "unannType")
+_FieldDeclaration_unannType = (Core.Name "unannType")
 
-_FieldDeclaration_variableDeclarators = (Core.FieldName "variableDeclarators")
+_FieldDeclaration_variableDeclarators = (Core.Name "variableDeclarators")
 
 data FieldModifier = 
   FieldModifierAnnotation Annotation |
@@ -777,21 +777,21 @@ data FieldModifier =
 
 _FieldModifier = (Core.Name "hydra/langs/java/syntax.FieldModifier")
 
-_FieldModifier_annotation = (Core.FieldName "annotation")
+_FieldModifier_annotation = (Core.Name "annotation")
 
-_FieldModifier_public = (Core.FieldName "public")
+_FieldModifier_public = (Core.Name "public")
 
-_FieldModifier_protected = (Core.FieldName "protected")
+_FieldModifier_protected = (Core.Name "protected")
 
-_FieldModifier_private = (Core.FieldName "private")
+_FieldModifier_private = (Core.Name "private")
 
-_FieldModifier_static = (Core.FieldName "static")
+_FieldModifier_static = (Core.Name "static")
 
-_FieldModifier_final = (Core.FieldName "final")
+_FieldModifier_final = (Core.Name "final")
 
-_FieldModifier_transient = (Core.FieldName "transient")
+_FieldModifier_transient = (Core.Name "transient")
 
-_FieldModifier_volatile = (Core.FieldName "volatile")
+_FieldModifier_volatile = (Core.Name "volatile")
 
 data VariableDeclarator = 
   VariableDeclarator {
@@ -801,9 +801,9 @@ data VariableDeclarator =
 
 _VariableDeclarator = (Core.Name "hydra/langs/java/syntax.VariableDeclarator")
 
-_VariableDeclarator_id = (Core.FieldName "id")
+_VariableDeclarator_id = (Core.Name "id")
 
-_VariableDeclarator_initializer = (Core.FieldName "initializer")
+_VariableDeclarator_initializer = (Core.Name "initializer")
 
 data VariableDeclaratorId = 
   VariableDeclaratorId {
@@ -813,9 +813,9 @@ data VariableDeclaratorId =
 
 _VariableDeclaratorId = (Core.Name "hydra/langs/java/syntax.VariableDeclaratorId")
 
-_VariableDeclaratorId_identifier = (Core.FieldName "identifier")
+_VariableDeclaratorId_identifier = (Core.Name "identifier")
 
-_VariableDeclaratorId_dims = (Core.FieldName "dims")
+_VariableDeclaratorId_dims = (Core.Name "dims")
 
 data VariableInitializer = 
   VariableInitializerExpression Expression |
@@ -824,9 +824,9 @@ data VariableInitializer =
 
 _VariableInitializer = (Core.Name "hydra/langs/java/syntax.VariableInitializer")
 
-_VariableInitializer_expression = (Core.FieldName "expression")
+_VariableInitializer_expression = (Core.Name "expression")
 
-_VariableInitializer_arrayInitializer = (Core.FieldName "arrayInitializer")
+_VariableInitializer_arrayInitializer = (Core.Name "arrayInitializer")
 
 -- | A Type which does not allow annotations
 newtype UnannType = 
@@ -857,13 +857,13 @@ data MethodDeclaration =
 
 _MethodDeclaration = (Core.Name "hydra/langs/java/syntax.MethodDeclaration")
 
-_MethodDeclaration_annotations = (Core.FieldName "annotations")
+_MethodDeclaration_annotations = (Core.Name "annotations")
 
-_MethodDeclaration_modifiers = (Core.FieldName "modifiers")
+_MethodDeclaration_modifiers = (Core.Name "modifiers")
 
-_MethodDeclaration_header = (Core.FieldName "header")
+_MethodDeclaration_header = (Core.Name "header")
 
-_MethodDeclaration_body = (Core.FieldName "body")
+_MethodDeclaration_body = (Core.Name "body")
 
 data MethodModifier = 
   MethodModifierAnnotation Annotation |
@@ -880,25 +880,25 @@ data MethodModifier =
 
 _MethodModifier = (Core.Name "hydra/langs/java/syntax.MethodModifier")
 
-_MethodModifier_annotation = (Core.FieldName "annotation")
+_MethodModifier_annotation = (Core.Name "annotation")
 
-_MethodModifier_public = (Core.FieldName "public")
+_MethodModifier_public = (Core.Name "public")
 
-_MethodModifier_protected = (Core.FieldName "protected")
+_MethodModifier_protected = (Core.Name "protected")
 
-_MethodModifier_private = (Core.FieldName "private")
+_MethodModifier_private = (Core.Name "private")
 
-_MethodModifier_abstract = (Core.FieldName "abstract")
+_MethodModifier_abstract = (Core.Name "abstract")
 
-_MethodModifier_static = (Core.FieldName "static")
+_MethodModifier_static = (Core.Name "static")
 
-_MethodModifier_final = (Core.FieldName "final")
+_MethodModifier_final = (Core.Name "final")
 
-_MethodModifier_synchronized = (Core.FieldName "synchronized")
+_MethodModifier_synchronized = (Core.Name "synchronized")
 
-_MethodModifier_native = (Core.FieldName "native")
+_MethodModifier_native = (Core.Name "native")
 
-_MethodModifier_strictfb = (Core.FieldName "strictfb")
+_MethodModifier_strictfb = (Core.Name "strictfb")
 
 data MethodHeader = 
   MethodHeader {
@@ -910,13 +910,13 @@ data MethodHeader =
 
 _MethodHeader = (Core.Name "hydra/langs/java/syntax.MethodHeader")
 
-_MethodHeader_parameters = (Core.FieldName "parameters")
+_MethodHeader_parameters = (Core.Name "parameters")
 
-_MethodHeader_result = (Core.FieldName "result")
+_MethodHeader_result = (Core.Name "result")
 
-_MethodHeader_declarator = (Core.FieldName "declarator")
+_MethodHeader_declarator = (Core.Name "declarator")
 
-_MethodHeader_throws = (Core.FieldName "throws")
+_MethodHeader_throws = (Core.Name "throws")
 
 data Result = 
   ResultType UnannType |
@@ -925,9 +925,9 @@ data Result =
 
 _Result = (Core.Name "hydra/langs/java/syntax.Result")
 
-_Result_type = (Core.FieldName "type")
+_Result_type = (Core.Name "type")
 
-_Result_void = (Core.FieldName "void")
+_Result_void = (Core.Name "void")
 
 data MethodDeclarator = 
   MethodDeclarator {
@@ -938,11 +938,11 @@ data MethodDeclarator =
 
 _MethodDeclarator = (Core.Name "hydra/langs/java/syntax.MethodDeclarator")
 
-_MethodDeclarator_identifier = (Core.FieldName "identifier")
+_MethodDeclarator_identifier = (Core.Name "identifier")
 
-_MethodDeclarator_receiverParameter = (Core.FieldName "receiverParameter")
+_MethodDeclarator_receiverParameter = (Core.Name "receiverParameter")
 
-_MethodDeclarator_formalParameters = (Core.FieldName "formalParameters")
+_MethodDeclarator_formalParameters = (Core.Name "formalParameters")
 
 data ReceiverParameter = 
   ReceiverParameter {
@@ -953,11 +953,11 @@ data ReceiverParameter =
 
 _ReceiverParameter = (Core.Name "hydra/langs/java/syntax.ReceiverParameter")
 
-_ReceiverParameter_annotations = (Core.FieldName "annotations")
+_ReceiverParameter_annotations = (Core.Name "annotations")
 
-_ReceiverParameter_unannType = (Core.FieldName "unannType")
+_ReceiverParameter_unannType = (Core.Name "unannType")
 
-_ReceiverParameter_identifier = (Core.FieldName "identifier")
+_ReceiverParameter_identifier = (Core.Name "identifier")
 
 data FormalParameter = 
   FormalParameterSimple FormalParameter_Simple |
@@ -966,9 +966,9 @@ data FormalParameter =
 
 _FormalParameter = (Core.Name "hydra/langs/java/syntax.FormalParameter")
 
-_FormalParameter_simple = (Core.FieldName "simple")
+_FormalParameter_simple = (Core.Name "simple")
 
-_FormalParameter_variableArity = (Core.FieldName "variableArity")
+_FormalParameter_variableArity = (Core.Name "variableArity")
 
 data FormalParameter_Simple = 
   FormalParameter_Simple {
@@ -979,11 +979,11 @@ data FormalParameter_Simple =
 
 _FormalParameter_Simple = (Core.Name "hydra/langs/java/syntax.FormalParameter.Simple")
 
-_FormalParameter_Simple_modifiers = (Core.FieldName "modifiers")
+_FormalParameter_Simple_modifiers = (Core.Name "modifiers")
 
-_FormalParameter_Simple_type = (Core.FieldName "type")
+_FormalParameter_Simple_type = (Core.Name "type")
 
-_FormalParameter_Simple_id = (Core.FieldName "id")
+_FormalParameter_Simple_id = (Core.Name "id")
 
 data VariableArityParameter = 
   VariableArityParameter {
@@ -995,13 +995,13 @@ data VariableArityParameter =
 
 _VariableArityParameter = (Core.Name "hydra/langs/java/syntax.VariableArityParameter")
 
-_VariableArityParameter_modifiers = (Core.FieldName "modifiers")
+_VariableArityParameter_modifiers = (Core.Name "modifiers")
 
-_VariableArityParameter_type = (Core.FieldName "type")
+_VariableArityParameter_type = (Core.Name "type")
 
-_VariableArityParameter_annotations = (Core.FieldName "annotations")
+_VariableArityParameter_annotations = (Core.Name "annotations")
 
-_VariableArityParameter_identifier = (Core.FieldName "identifier")
+_VariableArityParameter_identifier = (Core.Name "identifier")
 
 data VariableModifier = 
   VariableModifierAnnotation Annotation |
@@ -1010,9 +1010,9 @@ data VariableModifier =
 
 _VariableModifier = (Core.Name "hydra/langs/java/syntax.VariableModifier")
 
-_VariableModifier_annotation = (Core.FieldName "annotation")
+_VariableModifier_annotation = (Core.Name "annotation")
 
-_VariableModifier_final = (Core.FieldName "final")
+_VariableModifier_final = (Core.Name "final")
 
 newtype Throws = 
   Throws {
@@ -1028,9 +1028,9 @@ data ExceptionType =
 
 _ExceptionType = (Core.Name "hydra/langs/java/syntax.ExceptionType")
 
-_ExceptionType_class = (Core.FieldName "class")
+_ExceptionType_class = (Core.Name "class")
 
-_ExceptionType_variable = (Core.FieldName "variable")
+_ExceptionType_variable = (Core.Name "variable")
 
 data MethodBody = 
   MethodBodyBlock Block |
@@ -1039,9 +1039,9 @@ data MethodBody =
 
 _MethodBody = (Core.Name "hydra/langs/java/syntax.MethodBody")
 
-_MethodBody_block = (Core.FieldName "block")
+_MethodBody_block = (Core.Name "block")
 
-_MethodBody_none = (Core.FieldName "none")
+_MethodBody_none = (Core.Name "none")
 
 newtype InstanceInitializer = 
   InstanceInitializer {
@@ -1067,13 +1067,13 @@ data ConstructorDeclaration =
 
 _ConstructorDeclaration = (Core.Name "hydra/langs/java/syntax.ConstructorDeclaration")
 
-_ConstructorDeclaration_modifiers = (Core.FieldName "modifiers")
+_ConstructorDeclaration_modifiers = (Core.Name "modifiers")
 
-_ConstructorDeclaration_constructor = (Core.FieldName "constructor")
+_ConstructorDeclaration_constructor = (Core.Name "constructor")
 
-_ConstructorDeclaration_throws = (Core.FieldName "throws")
+_ConstructorDeclaration_throws = (Core.Name "throws")
 
-_ConstructorDeclaration_body = (Core.FieldName "body")
+_ConstructorDeclaration_body = (Core.Name "body")
 
 data ConstructorModifier = 
   ConstructorModifierAnnotation Annotation |
@@ -1084,13 +1084,13 @@ data ConstructorModifier =
 
 _ConstructorModifier = (Core.Name "hydra/langs/java/syntax.ConstructorModifier")
 
-_ConstructorModifier_annotation = (Core.FieldName "annotation")
+_ConstructorModifier_annotation = (Core.Name "annotation")
 
-_ConstructorModifier_public = (Core.FieldName "public")
+_ConstructorModifier_public = (Core.Name "public")
 
-_ConstructorModifier_protected = (Core.FieldName "protected")
+_ConstructorModifier_protected = (Core.Name "protected")
 
-_ConstructorModifier_private = (Core.FieldName "private")
+_ConstructorModifier_private = (Core.Name "private")
 
 data ConstructorDeclarator = 
   ConstructorDeclarator {
@@ -1102,13 +1102,13 @@ data ConstructorDeclarator =
 
 _ConstructorDeclarator = (Core.Name "hydra/langs/java/syntax.ConstructorDeclarator")
 
-_ConstructorDeclarator_parameters = (Core.FieldName "parameters")
+_ConstructorDeclarator_parameters = (Core.Name "parameters")
 
-_ConstructorDeclarator_name = (Core.FieldName "name")
+_ConstructorDeclarator_name = (Core.Name "name")
 
-_ConstructorDeclarator_receiverParameter = (Core.FieldName "receiverParameter")
+_ConstructorDeclarator_receiverParameter = (Core.Name "receiverParameter")
 
-_ConstructorDeclarator_formalParameters = (Core.FieldName "formalParameters")
+_ConstructorDeclarator_formalParameters = (Core.Name "formalParameters")
 
 newtype SimpleTypeName = 
   SimpleTypeName {
@@ -1125,9 +1125,9 @@ data ConstructorBody =
 
 _ConstructorBody = (Core.Name "hydra/langs/java/syntax.ConstructorBody")
 
-_ConstructorBody_invocation = (Core.FieldName "invocation")
+_ConstructorBody_invocation = (Core.Name "invocation")
 
-_ConstructorBody_statements = (Core.FieldName "statements")
+_ConstructorBody_statements = (Core.Name "statements")
 
 data ExplicitConstructorInvocation = 
   ExplicitConstructorInvocation {
@@ -1138,11 +1138,11 @@ data ExplicitConstructorInvocation =
 
 _ExplicitConstructorInvocation = (Core.Name "hydra/langs/java/syntax.ExplicitConstructorInvocation")
 
-_ExplicitConstructorInvocation_typeArguments = (Core.FieldName "typeArguments")
+_ExplicitConstructorInvocation_typeArguments = (Core.Name "typeArguments")
 
-_ExplicitConstructorInvocation_arguments = (Core.FieldName "arguments")
+_ExplicitConstructorInvocation_arguments = (Core.Name "arguments")
 
-_ExplicitConstructorInvocation_variant = (Core.FieldName "variant")
+_ExplicitConstructorInvocation_variant = (Core.Name "variant")
 
 data ExplicitConstructorInvocation_Variant = 
   ExplicitConstructorInvocation_VariantThis  |
@@ -1152,11 +1152,11 @@ data ExplicitConstructorInvocation_Variant =
 
 _ExplicitConstructorInvocation_Variant = (Core.Name "hydra/langs/java/syntax.ExplicitConstructorInvocation.Variant")
 
-_ExplicitConstructorInvocation_Variant_this = (Core.FieldName "this")
+_ExplicitConstructorInvocation_Variant_this = (Core.Name "this")
 
-_ExplicitConstructorInvocation_Variant_super = (Core.FieldName "super")
+_ExplicitConstructorInvocation_Variant_super = (Core.Name "super")
 
-_ExplicitConstructorInvocation_Variant_primary = (Core.FieldName "primary")
+_ExplicitConstructorInvocation_Variant_primary = (Core.Name "primary")
 
 data EnumDeclaration = 
   EnumDeclaration {
@@ -1168,13 +1168,13 @@ data EnumDeclaration =
 
 _EnumDeclaration = (Core.Name "hydra/langs/java/syntax.EnumDeclaration")
 
-_EnumDeclaration_modifiers = (Core.FieldName "modifiers")
+_EnumDeclaration_modifiers = (Core.Name "modifiers")
 
-_EnumDeclaration_identifier = (Core.FieldName "identifier")
+_EnumDeclaration_identifier = (Core.Name "identifier")
 
-_EnumDeclaration_implements = (Core.FieldName "implements")
+_EnumDeclaration_implements = (Core.Name "implements")
 
-_EnumDeclaration_body = (Core.FieldName "body")
+_EnumDeclaration_body = (Core.Name "body")
 
 newtype EnumBody = 
   EnumBody {
@@ -1191,9 +1191,9 @@ data EnumBody_Element =
 
 _EnumBody_Element = (Core.Name "hydra/langs/java/syntax.EnumBody.Element")
 
-_EnumBody_Element_constants = (Core.FieldName "constants")
+_EnumBody_Element_constants = (Core.Name "constants")
 
-_EnumBody_Element_bodyDeclarations = (Core.FieldName "bodyDeclarations")
+_EnumBody_Element_bodyDeclarations = (Core.Name "bodyDeclarations")
 
 data EnumConstant = 
   EnumConstant {
@@ -1205,13 +1205,13 @@ data EnumConstant =
 
 _EnumConstant = (Core.Name "hydra/langs/java/syntax.EnumConstant")
 
-_EnumConstant_modifiers = (Core.FieldName "modifiers")
+_EnumConstant_modifiers = (Core.Name "modifiers")
 
-_EnumConstant_identifier = (Core.FieldName "identifier")
+_EnumConstant_identifier = (Core.Name "identifier")
 
-_EnumConstant_arguments = (Core.FieldName "arguments")
+_EnumConstant_arguments = (Core.Name "arguments")
 
-_EnumConstant_body = (Core.FieldName "body")
+_EnumConstant_body = (Core.Name "body")
 
 newtype EnumConstantModifier = 
   EnumConstantModifier {
@@ -1227,9 +1227,9 @@ data InterfaceDeclaration =
 
 _InterfaceDeclaration = (Core.Name "hydra/langs/java/syntax.InterfaceDeclaration")
 
-_InterfaceDeclaration_normalInterface = (Core.FieldName "normalInterface")
+_InterfaceDeclaration_normalInterface = (Core.Name "normalInterface")
 
-_InterfaceDeclaration_annotationType = (Core.FieldName "annotationType")
+_InterfaceDeclaration_annotationType = (Core.Name "annotationType")
 
 data NormalInterfaceDeclaration = 
   NormalInterfaceDeclaration {
@@ -1242,15 +1242,15 @@ data NormalInterfaceDeclaration =
 
 _NormalInterfaceDeclaration = (Core.Name "hydra/langs/java/syntax.NormalInterfaceDeclaration")
 
-_NormalInterfaceDeclaration_modifiers = (Core.FieldName "modifiers")
+_NormalInterfaceDeclaration_modifiers = (Core.Name "modifiers")
 
-_NormalInterfaceDeclaration_identifier = (Core.FieldName "identifier")
+_NormalInterfaceDeclaration_identifier = (Core.Name "identifier")
 
-_NormalInterfaceDeclaration_parameters = (Core.FieldName "parameters")
+_NormalInterfaceDeclaration_parameters = (Core.Name "parameters")
 
-_NormalInterfaceDeclaration_extends = (Core.FieldName "extends")
+_NormalInterfaceDeclaration_extends = (Core.Name "extends")
 
-_NormalInterfaceDeclaration_body = (Core.FieldName "body")
+_NormalInterfaceDeclaration_body = (Core.Name "body")
 
 data InterfaceModifier = 
   InterfaceModifierAnnotation Annotation |
@@ -1264,19 +1264,19 @@ data InterfaceModifier =
 
 _InterfaceModifier = (Core.Name "hydra/langs/java/syntax.InterfaceModifier")
 
-_InterfaceModifier_annotation = (Core.FieldName "annotation")
+_InterfaceModifier_annotation = (Core.Name "annotation")
 
-_InterfaceModifier_public = (Core.FieldName "public")
+_InterfaceModifier_public = (Core.Name "public")
 
-_InterfaceModifier_protected = (Core.FieldName "protected")
+_InterfaceModifier_protected = (Core.Name "protected")
 
-_InterfaceModifier_private = (Core.FieldName "private")
+_InterfaceModifier_private = (Core.Name "private")
 
-_InterfaceModifier_abstract = (Core.FieldName "abstract")
+_InterfaceModifier_abstract = (Core.Name "abstract")
 
-_InterfaceModifier_static = (Core.FieldName "static")
+_InterfaceModifier_static = (Core.Name "static")
 
-_InterfaceModifier_strictfb = (Core.FieldName "strictfb")
+_InterfaceModifier_strictfb = (Core.Name "strictfb")
 
 newtype InterfaceBody = 
   InterfaceBody {
@@ -1294,13 +1294,13 @@ data InterfaceMemberDeclaration =
 
 _InterfaceMemberDeclaration = (Core.Name "hydra/langs/java/syntax.InterfaceMemberDeclaration")
 
-_InterfaceMemberDeclaration_constant = (Core.FieldName "constant")
+_InterfaceMemberDeclaration_constant = (Core.Name "constant")
 
-_InterfaceMemberDeclaration_interfaceMethod = (Core.FieldName "interfaceMethod")
+_InterfaceMemberDeclaration_interfaceMethod = (Core.Name "interfaceMethod")
 
-_InterfaceMemberDeclaration_class = (Core.FieldName "class")
+_InterfaceMemberDeclaration_class = (Core.Name "class")
 
-_InterfaceMemberDeclaration_interface = (Core.FieldName "interface")
+_InterfaceMemberDeclaration_interface = (Core.Name "interface")
 
 data ConstantDeclaration = 
   ConstantDeclaration {
@@ -1311,11 +1311,11 @@ data ConstantDeclaration =
 
 _ConstantDeclaration = (Core.Name "hydra/langs/java/syntax.ConstantDeclaration")
 
-_ConstantDeclaration_modifiers = (Core.FieldName "modifiers")
+_ConstantDeclaration_modifiers = (Core.Name "modifiers")
 
-_ConstantDeclaration_type = (Core.FieldName "type")
+_ConstantDeclaration_type = (Core.Name "type")
 
-_ConstantDeclaration_variables = (Core.FieldName "variables")
+_ConstantDeclaration_variables = (Core.Name "variables")
 
 data ConstantModifier = 
   ConstantModifierAnnotation Annotation |
@@ -1326,13 +1326,13 @@ data ConstantModifier =
 
 _ConstantModifier = (Core.Name "hydra/langs/java/syntax.ConstantModifier")
 
-_ConstantModifier_annotation = (Core.FieldName "annotation")
+_ConstantModifier_annotation = (Core.Name "annotation")
 
-_ConstantModifier_public = (Core.FieldName "public")
+_ConstantModifier_public = (Core.Name "public")
 
-_ConstantModifier_static = (Core.FieldName "static")
+_ConstantModifier_static = (Core.Name "static")
 
-_ConstantModifier_final = (Core.FieldName "final")
+_ConstantModifier_final = (Core.Name "final")
 
 data InterfaceMethodDeclaration = 
   InterfaceMethodDeclaration {
@@ -1343,11 +1343,11 @@ data InterfaceMethodDeclaration =
 
 _InterfaceMethodDeclaration = (Core.Name "hydra/langs/java/syntax.InterfaceMethodDeclaration")
 
-_InterfaceMethodDeclaration_modifiers = (Core.FieldName "modifiers")
+_InterfaceMethodDeclaration_modifiers = (Core.Name "modifiers")
 
-_InterfaceMethodDeclaration_header = (Core.FieldName "header")
+_InterfaceMethodDeclaration_header = (Core.Name "header")
 
-_InterfaceMethodDeclaration_body = (Core.FieldName "body")
+_InterfaceMethodDeclaration_body = (Core.Name "body")
 
 data InterfaceMethodModifier = 
   InterfaceMethodModifierAnnotation Annotation |
@@ -1361,19 +1361,19 @@ data InterfaceMethodModifier =
 
 _InterfaceMethodModifier = (Core.Name "hydra/langs/java/syntax.InterfaceMethodModifier")
 
-_InterfaceMethodModifier_annotation = (Core.FieldName "annotation")
+_InterfaceMethodModifier_annotation = (Core.Name "annotation")
 
-_InterfaceMethodModifier_public = (Core.FieldName "public")
+_InterfaceMethodModifier_public = (Core.Name "public")
 
-_InterfaceMethodModifier_private = (Core.FieldName "private")
+_InterfaceMethodModifier_private = (Core.Name "private")
 
-_InterfaceMethodModifier_abstract = (Core.FieldName "abstract")
+_InterfaceMethodModifier_abstract = (Core.Name "abstract")
 
-_InterfaceMethodModifier_default = (Core.FieldName "default")
+_InterfaceMethodModifier_default = (Core.Name "default")
 
-_InterfaceMethodModifier_static = (Core.FieldName "static")
+_InterfaceMethodModifier_static = (Core.Name "static")
 
-_InterfaceMethodModifier_strictfp = (Core.FieldName "strictfp")
+_InterfaceMethodModifier_strictfp = (Core.Name "strictfp")
 
 data AnnotationTypeDeclaration = 
   AnnotationTypeDeclaration {
@@ -1384,11 +1384,11 @@ data AnnotationTypeDeclaration =
 
 _AnnotationTypeDeclaration = (Core.Name "hydra/langs/java/syntax.AnnotationTypeDeclaration")
 
-_AnnotationTypeDeclaration_modifiers = (Core.FieldName "modifiers")
+_AnnotationTypeDeclaration_modifiers = (Core.Name "modifiers")
 
-_AnnotationTypeDeclaration_identifier = (Core.FieldName "identifier")
+_AnnotationTypeDeclaration_identifier = (Core.Name "identifier")
 
-_AnnotationTypeDeclaration_body = (Core.FieldName "body")
+_AnnotationTypeDeclaration_body = (Core.Name "body")
 
 newtype AnnotationTypeBody = 
   AnnotationTypeBody {
@@ -1406,13 +1406,13 @@ data AnnotationTypeMemberDeclaration =
 
 _AnnotationTypeMemberDeclaration = (Core.Name "hydra/langs/java/syntax.AnnotationTypeMemberDeclaration")
 
-_AnnotationTypeMemberDeclaration_annotationType = (Core.FieldName "annotationType")
+_AnnotationTypeMemberDeclaration_annotationType = (Core.Name "annotationType")
 
-_AnnotationTypeMemberDeclaration_constant = (Core.FieldName "constant")
+_AnnotationTypeMemberDeclaration_constant = (Core.Name "constant")
 
-_AnnotationTypeMemberDeclaration_class = (Core.FieldName "class")
+_AnnotationTypeMemberDeclaration_class = (Core.Name "class")
 
-_AnnotationTypeMemberDeclaration_interface = (Core.FieldName "interface")
+_AnnotationTypeMemberDeclaration_interface = (Core.Name "interface")
 
 data AnnotationTypeElementDeclaration = 
   AnnotationTypeElementDeclaration {
@@ -1425,15 +1425,15 @@ data AnnotationTypeElementDeclaration =
 
 _AnnotationTypeElementDeclaration = (Core.Name "hydra/langs/java/syntax.AnnotationTypeElementDeclaration")
 
-_AnnotationTypeElementDeclaration_modifiers = (Core.FieldName "modifiers")
+_AnnotationTypeElementDeclaration_modifiers = (Core.Name "modifiers")
 
-_AnnotationTypeElementDeclaration_type = (Core.FieldName "type")
+_AnnotationTypeElementDeclaration_type = (Core.Name "type")
 
-_AnnotationTypeElementDeclaration_identifier = (Core.FieldName "identifier")
+_AnnotationTypeElementDeclaration_identifier = (Core.Name "identifier")
 
-_AnnotationTypeElementDeclaration_dims = (Core.FieldName "dims")
+_AnnotationTypeElementDeclaration_dims = (Core.Name "dims")
 
-_AnnotationTypeElementDeclaration_default = (Core.FieldName "default")
+_AnnotationTypeElementDeclaration_default = (Core.Name "default")
 
 data AnnotationTypeElementModifier = 
   AnnotationTypeElementModifierPublic Annotation |
@@ -1442,9 +1442,9 @@ data AnnotationTypeElementModifier =
 
 _AnnotationTypeElementModifier = (Core.Name "hydra/langs/java/syntax.AnnotationTypeElementModifier")
 
-_AnnotationTypeElementModifier_public = (Core.FieldName "public")
+_AnnotationTypeElementModifier_public = (Core.Name "public")
 
-_AnnotationTypeElementModifier_abstract = (Core.FieldName "abstract")
+_AnnotationTypeElementModifier_abstract = (Core.Name "abstract")
 
 newtype DefaultValue = 
   DefaultValue {
@@ -1461,11 +1461,11 @@ data Annotation =
 
 _Annotation = (Core.Name "hydra/langs/java/syntax.Annotation")
 
-_Annotation_normal = (Core.FieldName "normal")
+_Annotation_normal = (Core.Name "normal")
 
-_Annotation_marker = (Core.FieldName "marker")
+_Annotation_marker = (Core.Name "marker")
 
-_Annotation_singleElement = (Core.FieldName "singleElement")
+_Annotation_singleElement = (Core.Name "singleElement")
 
 data NormalAnnotation = 
   NormalAnnotation {
@@ -1475,9 +1475,9 @@ data NormalAnnotation =
 
 _NormalAnnotation = (Core.Name "hydra/langs/java/syntax.NormalAnnotation")
 
-_NormalAnnotation_typeName = (Core.FieldName "typeName")
+_NormalAnnotation_typeName = (Core.Name "typeName")
 
-_NormalAnnotation_pairs = (Core.FieldName "pairs")
+_NormalAnnotation_pairs = (Core.Name "pairs")
 
 data ElementValuePair = 
   ElementValuePair {
@@ -1487,9 +1487,9 @@ data ElementValuePair =
 
 _ElementValuePair = (Core.Name "hydra/langs/java/syntax.ElementValuePair")
 
-_ElementValuePair_key = (Core.FieldName "key")
+_ElementValuePair_key = (Core.Name "key")
 
-_ElementValuePair_value = (Core.FieldName "value")
+_ElementValuePair_value = (Core.Name "value")
 
 data ElementValue = 
   ElementValueConditionalExpression ConditionalExpression |
@@ -1499,11 +1499,11 @@ data ElementValue =
 
 _ElementValue = (Core.Name "hydra/langs/java/syntax.ElementValue")
 
-_ElementValue_conditionalExpression = (Core.FieldName "conditionalExpression")
+_ElementValue_conditionalExpression = (Core.Name "conditionalExpression")
 
-_ElementValue_elementValueArrayInitializer = (Core.FieldName "elementValueArrayInitializer")
+_ElementValue_elementValueArrayInitializer = (Core.Name "elementValueArrayInitializer")
 
-_ElementValue_annotation = (Core.FieldName "annotation")
+_ElementValue_annotation = (Core.Name "annotation")
 
 newtype ElementValueArrayInitializer = 
   ElementValueArrayInitializer {
@@ -1527,9 +1527,9 @@ data SingleElementAnnotation =
 
 _SingleElementAnnotation = (Core.Name "hydra/langs/java/syntax.SingleElementAnnotation")
 
-_SingleElementAnnotation_name = (Core.FieldName "name")
+_SingleElementAnnotation_name = (Core.Name "name")
 
-_SingleElementAnnotation_value = (Core.FieldName "value")
+_SingleElementAnnotation_value = (Core.Name "value")
 
 newtype ArrayInitializer = 
   ArrayInitializer {
@@ -1553,11 +1553,11 @@ data BlockStatement =
 
 _BlockStatement = (Core.Name "hydra/langs/java/syntax.BlockStatement")
 
-_BlockStatement_localVariableDeclaration = (Core.FieldName "localVariableDeclaration")
+_BlockStatement_localVariableDeclaration = (Core.Name "localVariableDeclaration")
 
-_BlockStatement_class = (Core.FieldName "class")
+_BlockStatement_class = (Core.Name "class")
 
-_BlockStatement_statement = (Core.FieldName "statement")
+_BlockStatement_statement = (Core.Name "statement")
 
 newtype LocalVariableDeclarationStatement = 
   LocalVariableDeclarationStatement {
@@ -1575,11 +1575,11 @@ data LocalVariableDeclaration =
 
 _LocalVariableDeclaration = (Core.Name "hydra/langs/java/syntax.LocalVariableDeclaration")
 
-_LocalVariableDeclaration_modifiers = (Core.FieldName "modifiers")
+_LocalVariableDeclaration_modifiers = (Core.Name "modifiers")
 
-_LocalVariableDeclaration_type = (Core.FieldName "type")
+_LocalVariableDeclaration_type = (Core.Name "type")
 
-_LocalVariableDeclaration_declarators = (Core.FieldName "declarators")
+_LocalVariableDeclaration_declarators = (Core.Name "declarators")
 
 data LocalVariableType = 
   LocalVariableTypeType UnannType |
@@ -1588,9 +1588,9 @@ data LocalVariableType =
 
 _LocalVariableType = (Core.Name "hydra/langs/java/syntax.LocalVariableType")
 
-_LocalVariableType_type = (Core.FieldName "type")
+_LocalVariableType_type = (Core.Name "type")
 
-_LocalVariableType_var = (Core.FieldName "var")
+_LocalVariableType_var = (Core.Name "var")
 
 data Statement = 
   StatementWithoutTrailing StatementWithoutTrailingSubstatement |
@@ -1603,17 +1603,17 @@ data Statement =
 
 _Statement = (Core.Name "hydra/langs/java/syntax.Statement")
 
-_Statement_withoutTrailing = (Core.FieldName "withoutTrailing")
+_Statement_withoutTrailing = (Core.Name "withoutTrailing")
 
-_Statement_labeled = (Core.FieldName "labeled")
+_Statement_labeled = (Core.Name "labeled")
 
-_Statement_ifThen = (Core.FieldName "ifThen")
+_Statement_ifThen = (Core.Name "ifThen")
 
-_Statement_ifThenElse = (Core.FieldName "ifThenElse")
+_Statement_ifThenElse = (Core.Name "ifThenElse")
 
-_Statement_while = (Core.FieldName "while")
+_Statement_while = (Core.Name "while")
 
-_Statement_for = (Core.FieldName "for")
+_Statement_for = (Core.Name "for")
 
 data StatementNoShortIf = 
   StatementNoShortIfWithoutTrailing StatementWithoutTrailingSubstatement |
@@ -1625,15 +1625,15 @@ data StatementNoShortIf =
 
 _StatementNoShortIf = (Core.Name "hydra/langs/java/syntax.StatementNoShortIf")
 
-_StatementNoShortIf_withoutTrailing = (Core.FieldName "withoutTrailing")
+_StatementNoShortIf_withoutTrailing = (Core.Name "withoutTrailing")
 
-_StatementNoShortIf_labeled = (Core.FieldName "labeled")
+_StatementNoShortIf_labeled = (Core.Name "labeled")
 
-_StatementNoShortIf_ifThenElse = (Core.FieldName "ifThenElse")
+_StatementNoShortIf_ifThenElse = (Core.Name "ifThenElse")
 
-_StatementNoShortIf_while = (Core.FieldName "while")
+_StatementNoShortIf_while = (Core.Name "while")
 
-_StatementNoShortIf_for = (Core.FieldName "for")
+_StatementNoShortIf_for = (Core.Name "for")
 
 data StatementWithoutTrailingSubstatement = 
   StatementWithoutTrailingSubstatementBlock Block |
@@ -1652,29 +1652,29 @@ data StatementWithoutTrailingSubstatement =
 
 _StatementWithoutTrailingSubstatement = (Core.Name "hydra/langs/java/syntax.StatementWithoutTrailingSubstatement")
 
-_StatementWithoutTrailingSubstatement_block = (Core.FieldName "block")
+_StatementWithoutTrailingSubstatement_block = (Core.Name "block")
 
-_StatementWithoutTrailingSubstatement_empty = (Core.FieldName "empty")
+_StatementWithoutTrailingSubstatement_empty = (Core.Name "empty")
 
-_StatementWithoutTrailingSubstatement_expression = (Core.FieldName "expression")
+_StatementWithoutTrailingSubstatement_expression = (Core.Name "expression")
 
-_StatementWithoutTrailingSubstatement_assert = (Core.FieldName "assert")
+_StatementWithoutTrailingSubstatement_assert = (Core.Name "assert")
 
-_StatementWithoutTrailingSubstatement_switch = (Core.FieldName "switch")
+_StatementWithoutTrailingSubstatement_switch = (Core.Name "switch")
 
-_StatementWithoutTrailingSubstatement_do = (Core.FieldName "do")
+_StatementWithoutTrailingSubstatement_do = (Core.Name "do")
 
-_StatementWithoutTrailingSubstatement_break = (Core.FieldName "break")
+_StatementWithoutTrailingSubstatement_break = (Core.Name "break")
 
-_StatementWithoutTrailingSubstatement_continue = (Core.FieldName "continue")
+_StatementWithoutTrailingSubstatement_continue = (Core.Name "continue")
 
-_StatementWithoutTrailingSubstatement_return = (Core.FieldName "return")
+_StatementWithoutTrailingSubstatement_return = (Core.Name "return")
 
-_StatementWithoutTrailingSubstatement_synchronized = (Core.FieldName "synchronized")
+_StatementWithoutTrailingSubstatement_synchronized = (Core.Name "synchronized")
 
-_StatementWithoutTrailingSubstatement_throw = (Core.FieldName "throw")
+_StatementWithoutTrailingSubstatement_throw = (Core.Name "throw")
 
-_StatementWithoutTrailingSubstatement_try = (Core.FieldName "try")
+_StatementWithoutTrailingSubstatement_try = (Core.Name "try")
 
 data EmptyStatement = 
   EmptyStatement {}
@@ -1690,9 +1690,9 @@ data LabeledStatement =
 
 _LabeledStatement = (Core.Name "hydra/langs/java/syntax.LabeledStatement")
 
-_LabeledStatement_identifier = (Core.FieldName "identifier")
+_LabeledStatement_identifier = (Core.Name "identifier")
 
-_LabeledStatement_statement = (Core.FieldName "statement")
+_LabeledStatement_statement = (Core.Name "statement")
 
 data LabeledStatementNoShortIf = 
   LabeledStatementNoShortIf {
@@ -1702,9 +1702,9 @@ data LabeledStatementNoShortIf =
 
 _LabeledStatementNoShortIf = (Core.Name "hydra/langs/java/syntax.LabeledStatementNoShortIf")
 
-_LabeledStatementNoShortIf_identifier = (Core.FieldName "identifier")
+_LabeledStatementNoShortIf_identifier = (Core.Name "identifier")
 
-_LabeledStatementNoShortIf_statement = (Core.FieldName "statement")
+_LabeledStatementNoShortIf_statement = (Core.Name "statement")
 
 newtype ExpressionStatement = 
   ExpressionStatement {
@@ -1725,19 +1725,19 @@ data StatementExpression =
 
 _StatementExpression = (Core.Name "hydra/langs/java/syntax.StatementExpression")
 
-_StatementExpression_assignment = (Core.FieldName "assignment")
+_StatementExpression_assignment = (Core.Name "assignment")
 
-_StatementExpression_preIncrement = (Core.FieldName "preIncrement")
+_StatementExpression_preIncrement = (Core.Name "preIncrement")
 
-_StatementExpression_preDecrement = (Core.FieldName "preDecrement")
+_StatementExpression_preDecrement = (Core.Name "preDecrement")
 
-_StatementExpression_postIncrement = (Core.FieldName "postIncrement")
+_StatementExpression_postIncrement = (Core.Name "postIncrement")
 
-_StatementExpression_postDecrement = (Core.FieldName "postDecrement")
+_StatementExpression_postDecrement = (Core.Name "postDecrement")
 
-_StatementExpression_methodInvocation = (Core.FieldName "methodInvocation")
+_StatementExpression_methodInvocation = (Core.Name "methodInvocation")
 
-_StatementExpression_classInstanceCreation = (Core.FieldName "classInstanceCreation")
+_StatementExpression_classInstanceCreation = (Core.Name "classInstanceCreation")
 
 data IfThenStatement = 
   IfThenStatement {
@@ -1747,9 +1747,9 @@ data IfThenStatement =
 
 _IfThenStatement = (Core.Name "hydra/langs/java/syntax.IfThenStatement")
 
-_IfThenStatement_expression = (Core.FieldName "expression")
+_IfThenStatement_expression = (Core.Name "expression")
 
-_IfThenStatement_statement = (Core.FieldName "statement")
+_IfThenStatement_statement = (Core.Name "statement")
 
 data IfThenElseStatement = 
   IfThenElseStatement {
@@ -1760,11 +1760,11 @@ data IfThenElseStatement =
 
 _IfThenElseStatement = (Core.Name "hydra/langs/java/syntax.IfThenElseStatement")
 
-_IfThenElseStatement_cond = (Core.FieldName "cond")
+_IfThenElseStatement_cond = (Core.Name "cond")
 
-_IfThenElseStatement_then = (Core.FieldName "then")
+_IfThenElseStatement_then = (Core.Name "then")
 
-_IfThenElseStatement_else = (Core.FieldName "else")
+_IfThenElseStatement_else = (Core.Name "else")
 
 data IfThenElseStatementNoShortIf = 
   IfThenElseStatementNoShortIf {
@@ -1775,11 +1775,11 @@ data IfThenElseStatementNoShortIf =
 
 _IfThenElseStatementNoShortIf = (Core.Name "hydra/langs/java/syntax.IfThenElseStatementNoShortIf")
 
-_IfThenElseStatementNoShortIf_cond = (Core.FieldName "cond")
+_IfThenElseStatementNoShortIf_cond = (Core.Name "cond")
 
-_IfThenElseStatementNoShortIf_then = (Core.FieldName "then")
+_IfThenElseStatementNoShortIf_then = (Core.Name "then")
 
-_IfThenElseStatementNoShortIf_else = (Core.FieldName "else")
+_IfThenElseStatementNoShortIf_else = (Core.Name "else")
 
 data AssertStatement = 
   AssertStatementSingle Expression |
@@ -1788,9 +1788,9 @@ data AssertStatement =
 
 _AssertStatement = (Core.Name "hydra/langs/java/syntax.AssertStatement")
 
-_AssertStatement_single = (Core.FieldName "single")
+_AssertStatement_single = (Core.Name "single")
 
-_AssertStatement_pair = (Core.FieldName "pair")
+_AssertStatement_pair = (Core.Name "pair")
 
 data AssertStatement_Pair = 
   AssertStatement_Pair {
@@ -1800,9 +1800,9 @@ data AssertStatement_Pair =
 
 _AssertStatement_Pair = (Core.Name "hydra/langs/java/syntax.AssertStatement.Pair")
 
-_AssertStatement_Pair_first = (Core.FieldName "first")
+_AssertStatement_Pair_first = (Core.Name "first")
 
-_AssertStatement_Pair_second = (Core.FieldName "second")
+_AssertStatement_Pair_second = (Core.Name "second")
 
 data SwitchStatement = 
   SwitchStatement {
@@ -1812,9 +1812,9 @@ data SwitchStatement =
 
 _SwitchStatement = (Core.Name "hydra/langs/java/syntax.SwitchStatement")
 
-_SwitchStatement_cond = (Core.FieldName "cond")
+_SwitchStatement_cond = (Core.Name "cond")
 
-_SwitchStatement_block = (Core.FieldName "block")
+_SwitchStatement_block = (Core.Name "block")
 
 newtype SwitchBlock = 
   SwitchBlock {
@@ -1831,9 +1831,9 @@ data SwitchBlock_Pair =
 
 _SwitchBlock_Pair = (Core.Name "hydra/langs/java/syntax.SwitchBlock.Pair")
 
-_SwitchBlock_Pair_statements = (Core.FieldName "statements")
+_SwitchBlock_Pair_statements = (Core.Name "statements")
 
-_SwitchBlock_Pair_labels = (Core.FieldName "labels")
+_SwitchBlock_Pair_labels = (Core.Name "labels")
 
 data SwitchBlockStatementGroup = 
   SwitchBlockStatementGroup {
@@ -1843,9 +1843,9 @@ data SwitchBlockStatementGroup =
 
 _SwitchBlockStatementGroup = (Core.Name "hydra/langs/java/syntax.SwitchBlockStatementGroup")
 
-_SwitchBlockStatementGroup_labels = (Core.FieldName "labels")
+_SwitchBlockStatementGroup_labels = (Core.Name "labels")
 
-_SwitchBlockStatementGroup_statements = (Core.FieldName "statements")
+_SwitchBlockStatementGroup_statements = (Core.Name "statements")
 
 data SwitchLabel = 
   SwitchLabelConstant ConstantExpression |
@@ -1855,11 +1855,11 @@ data SwitchLabel =
 
 _SwitchLabel = (Core.Name "hydra/langs/java/syntax.SwitchLabel")
 
-_SwitchLabel_constant = (Core.FieldName "constant")
+_SwitchLabel_constant = (Core.Name "constant")
 
-_SwitchLabel_enumConstant = (Core.FieldName "enumConstant")
+_SwitchLabel_enumConstant = (Core.Name "enumConstant")
 
-_SwitchLabel_default = (Core.FieldName "default")
+_SwitchLabel_default = (Core.Name "default")
 
 newtype EnumConstantName = 
   EnumConstantName {
@@ -1876,9 +1876,9 @@ data WhileStatement =
 
 _WhileStatement = (Core.Name "hydra/langs/java/syntax.WhileStatement")
 
-_WhileStatement_cond = (Core.FieldName "cond")
+_WhileStatement_cond = (Core.Name "cond")
 
-_WhileStatement_body = (Core.FieldName "body")
+_WhileStatement_body = (Core.Name "body")
 
 data WhileStatementNoShortIf = 
   WhileStatementNoShortIf {
@@ -1888,9 +1888,9 @@ data WhileStatementNoShortIf =
 
 _WhileStatementNoShortIf = (Core.Name "hydra/langs/java/syntax.WhileStatementNoShortIf")
 
-_WhileStatementNoShortIf_cond = (Core.FieldName "cond")
+_WhileStatementNoShortIf_cond = (Core.Name "cond")
 
-_WhileStatementNoShortIf_body = (Core.FieldName "body")
+_WhileStatementNoShortIf_body = (Core.Name "body")
 
 data DoStatement = 
   DoStatement {
@@ -1900,9 +1900,9 @@ data DoStatement =
 
 _DoStatement = (Core.Name "hydra/langs/java/syntax.DoStatement")
 
-_DoStatement_body = (Core.FieldName "body")
+_DoStatement_body = (Core.Name "body")
 
-_DoStatement_conde = (Core.FieldName "conde")
+_DoStatement_conde = (Core.Name "conde")
 
 data ForStatement = 
   ForStatementBasic BasicForStatement |
@@ -1911,9 +1911,9 @@ data ForStatement =
 
 _ForStatement = (Core.Name "hydra/langs/java/syntax.ForStatement")
 
-_ForStatement_basic = (Core.FieldName "basic")
+_ForStatement_basic = (Core.Name "basic")
 
-_ForStatement_enhanced = (Core.FieldName "enhanced")
+_ForStatement_enhanced = (Core.Name "enhanced")
 
 data ForStatementNoShortIf = 
   ForStatementNoShortIfBasic BasicForStatementNoShortIf |
@@ -1922,9 +1922,9 @@ data ForStatementNoShortIf =
 
 _ForStatementNoShortIf = (Core.Name "hydra/langs/java/syntax.ForStatementNoShortIf")
 
-_ForStatementNoShortIf_basic = (Core.FieldName "basic")
+_ForStatementNoShortIf_basic = (Core.Name "basic")
 
-_ForStatementNoShortIf_enhanced = (Core.FieldName "enhanced")
+_ForStatementNoShortIf_enhanced = (Core.Name "enhanced")
 
 data BasicForStatement = 
   BasicForStatement {
@@ -1934,9 +1934,9 @@ data BasicForStatement =
 
 _BasicForStatement = (Core.Name "hydra/langs/java/syntax.BasicForStatement")
 
-_BasicForStatement_cond = (Core.FieldName "cond")
+_BasicForStatement_cond = (Core.Name "cond")
 
-_BasicForStatement_body = (Core.FieldName "body")
+_BasicForStatement_body = (Core.Name "body")
 
 data ForCond = 
   ForCond {
@@ -1947,11 +1947,11 @@ data ForCond =
 
 _ForCond = (Core.Name "hydra/langs/java/syntax.ForCond")
 
-_ForCond_init = (Core.FieldName "init")
+_ForCond_init = (Core.Name "init")
 
-_ForCond_cond = (Core.FieldName "cond")
+_ForCond_cond = (Core.Name "cond")
 
-_ForCond_update = (Core.FieldName "update")
+_ForCond_update = (Core.Name "update")
 
 data BasicForStatementNoShortIf = 
   BasicForStatementNoShortIf {
@@ -1961,9 +1961,9 @@ data BasicForStatementNoShortIf =
 
 _BasicForStatementNoShortIf = (Core.Name "hydra/langs/java/syntax.BasicForStatementNoShortIf")
 
-_BasicForStatementNoShortIf_cond = (Core.FieldName "cond")
+_BasicForStatementNoShortIf_cond = (Core.Name "cond")
 
-_BasicForStatementNoShortIf_body = (Core.FieldName "body")
+_BasicForStatementNoShortIf_body = (Core.Name "body")
 
 data ForInit = 
   ForInitStatements [StatementExpression] |
@@ -1972,9 +1972,9 @@ data ForInit =
 
 _ForInit = (Core.Name "hydra/langs/java/syntax.ForInit")
 
-_ForInit_statements = (Core.FieldName "statements")
+_ForInit_statements = (Core.Name "statements")
 
-_ForInit_localVariable = (Core.FieldName "localVariable")
+_ForInit_localVariable = (Core.Name "localVariable")
 
 newtype ForUpdate = 
   ForUpdate {
@@ -1991,9 +1991,9 @@ data EnhancedForStatement =
 
 _EnhancedForStatement = (Core.Name "hydra/langs/java/syntax.EnhancedForStatement")
 
-_EnhancedForStatement_cond = (Core.FieldName "cond")
+_EnhancedForStatement_cond = (Core.Name "cond")
 
-_EnhancedForStatement_body = (Core.FieldName "body")
+_EnhancedForStatement_body = (Core.Name "body")
 
 data EnhancedForCond = 
   EnhancedForCond {
@@ -2005,13 +2005,13 @@ data EnhancedForCond =
 
 _EnhancedForCond = (Core.Name "hydra/langs/java/syntax.EnhancedForCond")
 
-_EnhancedForCond_modifiers = (Core.FieldName "modifiers")
+_EnhancedForCond_modifiers = (Core.Name "modifiers")
 
-_EnhancedForCond_type = (Core.FieldName "type")
+_EnhancedForCond_type = (Core.Name "type")
 
-_EnhancedForCond_id = (Core.FieldName "id")
+_EnhancedForCond_id = (Core.Name "id")
 
-_EnhancedForCond_expression = (Core.FieldName "expression")
+_EnhancedForCond_expression = (Core.Name "expression")
 
 data EnhancedForStatementNoShortIf = 
   EnhancedForStatementNoShortIf {
@@ -2021,9 +2021,9 @@ data EnhancedForStatementNoShortIf =
 
 _EnhancedForStatementNoShortIf = (Core.Name "hydra/langs/java/syntax.EnhancedForStatementNoShortIf")
 
-_EnhancedForStatementNoShortIf_cond = (Core.FieldName "cond")
+_EnhancedForStatementNoShortIf_cond = (Core.Name "cond")
 
-_EnhancedForStatementNoShortIf_body = (Core.FieldName "body")
+_EnhancedForStatementNoShortIf_body = (Core.Name "body")
 
 newtype BreakStatement = 
   BreakStatement {
@@ -2061,9 +2061,9 @@ data SynchronizedStatement =
 
 _SynchronizedStatement = (Core.Name "hydra/langs/java/syntax.SynchronizedStatement")
 
-_SynchronizedStatement_expression = (Core.FieldName "expression")
+_SynchronizedStatement_expression = (Core.Name "expression")
 
-_SynchronizedStatement_block = (Core.FieldName "block")
+_SynchronizedStatement_block = (Core.Name "block")
 
 data TryStatement = 
   TryStatementSimple TryStatement_Simple |
@@ -2073,11 +2073,11 @@ data TryStatement =
 
 _TryStatement = (Core.Name "hydra/langs/java/syntax.TryStatement")
 
-_TryStatement_simple = (Core.FieldName "simple")
+_TryStatement_simple = (Core.Name "simple")
 
-_TryStatement_withFinally = (Core.FieldName "withFinally")
+_TryStatement_withFinally = (Core.Name "withFinally")
 
-_TryStatement_withResources = (Core.FieldName "withResources")
+_TryStatement_withResources = (Core.Name "withResources")
 
 data TryStatement_Simple = 
   TryStatement_Simple {
@@ -2087,9 +2087,9 @@ data TryStatement_Simple =
 
 _TryStatement_Simple = (Core.Name "hydra/langs/java/syntax.TryStatement.Simple")
 
-_TryStatement_Simple_block = (Core.FieldName "block")
+_TryStatement_Simple_block = (Core.Name "block")
 
-_TryStatement_Simple_catches = (Core.FieldName "catches")
+_TryStatement_Simple_catches = (Core.Name "catches")
 
 data TryStatement_WithFinally = 
   TryStatement_WithFinally {
@@ -2100,11 +2100,11 @@ data TryStatement_WithFinally =
 
 _TryStatement_WithFinally = (Core.Name "hydra/langs/java/syntax.TryStatement.WithFinally")
 
-_TryStatement_WithFinally_block = (Core.FieldName "block")
+_TryStatement_WithFinally_block = (Core.Name "block")
 
-_TryStatement_WithFinally_catches = (Core.FieldName "catches")
+_TryStatement_WithFinally_catches = (Core.Name "catches")
 
-_TryStatement_WithFinally_finally = (Core.FieldName "finally")
+_TryStatement_WithFinally_finally = (Core.Name "finally")
 
 newtype Catches = 
   Catches {
@@ -2121,9 +2121,9 @@ data CatchClause =
 
 _CatchClause = (Core.Name "hydra/langs/java/syntax.CatchClause")
 
-_CatchClause_parameter = (Core.FieldName "parameter")
+_CatchClause_parameter = (Core.Name "parameter")
 
-_CatchClause_block = (Core.FieldName "block")
+_CatchClause_block = (Core.Name "block")
 
 data CatchFormalParameter = 
   CatchFormalParameter {
@@ -2134,11 +2134,11 @@ data CatchFormalParameter =
 
 _CatchFormalParameter = (Core.Name "hydra/langs/java/syntax.CatchFormalParameter")
 
-_CatchFormalParameter_modifiers = (Core.FieldName "modifiers")
+_CatchFormalParameter_modifiers = (Core.Name "modifiers")
 
-_CatchFormalParameter_type = (Core.FieldName "type")
+_CatchFormalParameter_type = (Core.Name "type")
 
-_CatchFormalParameter_id = (Core.FieldName "id")
+_CatchFormalParameter_id = (Core.Name "id")
 
 data CatchType = 
   CatchType {
@@ -2148,9 +2148,9 @@ data CatchType =
 
 _CatchType = (Core.Name "hydra/langs/java/syntax.CatchType")
 
-_CatchType_type = (Core.FieldName "type")
+_CatchType_type = (Core.Name "type")
 
-_CatchType_types = (Core.FieldName "types")
+_CatchType_types = (Core.Name "types")
 
 newtype Finally = 
   Finally {
@@ -2169,13 +2169,13 @@ data TryWithResourcesStatement =
 
 _TryWithResourcesStatement = (Core.Name "hydra/langs/java/syntax.TryWithResourcesStatement")
 
-_TryWithResourcesStatement_resourceSpecification = (Core.FieldName "resourceSpecification")
+_TryWithResourcesStatement_resourceSpecification = (Core.Name "resourceSpecification")
 
-_TryWithResourcesStatement_block = (Core.FieldName "block")
+_TryWithResourcesStatement_block = (Core.Name "block")
 
-_TryWithResourcesStatement_catches = (Core.FieldName "catches")
+_TryWithResourcesStatement_catches = (Core.Name "catches")
 
-_TryWithResourcesStatement_finally = (Core.FieldName "finally")
+_TryWithResourcesStatement_finally = (Core.Name "finally")
 
 newtype ResourceSpecification = 
   ResourceSpecification {
@@ -2191,9 +2191,9 @@ data Resource =
 
 _Resource = (Core.Name "hydra/langs/java/syntax.Resource")
 
-_Resource_local = (Core.FieldName "local")
+_Resource_local = (Core.Name "local")
 
-_Resource_variable = (Core.FieldName "variable")
+_Resource_variable = (Core.Name "variable")
 
 data Resource_Local = 
   Resource_Local {
@@ -2205,13 +2205,13 @@ data Resource_Local =
 
 _Resource_Local = (Core.Name "hydra/langs/java/syntax.Resource.Local")
 
-_Resource_Local_modifiers = (Core.FieldName "modifiers")
+_Resource_Local_modifiers = (Core.Name "modifiers")
 
-_Resource_Local_type = (Core.FieldName "type")
+_Resource_Local_type = (Core.Name "type")
 
-_Resource_Local_identifier = (Core.FieldName "identifier")
+_Resource_Local_identifier = (Core.Name "identifier")
 
-_Resource_Local_expression = (Core.FieldName "expression")
+_Resource_Local_expression = (Core.Name "expression")
 
 data VariableAccess = 
   VariableAccessExpressionName ExpressionName |
@@ -2220,9 +2220,9 @@ data VariableAccess =
 
 _VariableAccess = (Core.Name "hydra/langs/java/syntax.VariableAccess")
 
-_VariableAccess_expressionName = (Core.FieldName "expressionName")
+_VariableAccess_expressionName = (Core.Name "expressionName")
 
-_VariableAccess_fieldAccess = (Core.FieldName "fieldAccess")
+_VariableAccess_fieldAccess = (Core.Name "fieldAccess")
 
 data Primary = 
   PrimaryNoNewArray PrimaryNoNewArray |
@@ -2231,9 +2231,9 @@ data Primary =
 
 _Primary = (Core.Name "hydra/langs/java/syntax.Primary")
 
-_Primary_noNewArray = (Core.FieldName "noNewArray")
+_Primary_noNewArray = (Core.Name "noNewArray")
 
-_Primary_arrayCreation = (Core.FieldName "arrayCreation")
+_Primary_arrayCreation = (Core.Name "arrayCreation")
 
 data PrimaryNoNewArray = 
   PrimaryNoNewArrayLiteral Literal |
@@ -2250,25 +2250,25 @@ data PrimaryNoNewArray =
 
 _PrimaryNoNewArray = (Core.Name "hydra/langs/java/syntax.PrimaryNoNewArray")
 
-_PrimaryNoNewArray_literal = (Core.FieldName "literal")
+_PrimaryNoNewArray_literal = (Core.Name "literal")
 
-_PrimaryNoNewArray_classLiteral = (Core.FieldName "classLiteral")
+_PrimaryNoNewArray_classLiteral = (Core.Name "classLiteral")
 
-_PrimaryNoNewArray_this = (Core.FieldName "this")
+_PrimaryNoNewArray_this = (Core.Name "this")
 
-_PrimaryNoNewArray_dotThis = (Core.FieldName "dotThis")
+_PrimaryNoNewArray_dotThis = (Core.Name "dotThis")
 
-_PrimaryNoNewArray_parens = (Core.FieldName "parens")
+_PrimaryNoNewArray_parens = (Core.Name "parens")
 
-_PrimaryNoNewArray_classInstance = (Core.FieldName "classInstance")
+_PrimaryNoNewArray_classInstance = (Core.Name "classInstance")
 
-_PrimaryNoNewArray_fieldAccess = (Core.FieldName "fieldAccess")
+_PrimaryNoNewArray_fieldAccess = (Core.Name "fieldAccess")
 
-_PrimaryNoNewArray_arrayAccess = (Core.FieldName "arrayAccess")
+_PrimaryNoNewArray_arrayAccess = (Core.Name "arrayAccess")
 
-_PrimaryNoNewArray_methodInvocation = (Core.FieldName "methodInvocation")
+_PrimaryNoNewArray_methodInvocation = (Core.Name "methodInvocation")
 
-_PrimaryNoNewArray_methodReference = (Core.FieldName "methodReference")
+_PrimaryNoNewArray_methodReference = (Core.Name "methodReference")
 
 data ClassLiteral = 
   ClassLiteralType TypeNameArray |
@@ -2279,13 +2279,13 @@ data ClassLiteral =
 
 _ClassLiteral = (Core.Name "hydra/langs/java/syntax.ClassLiteral")
 
-_ClassLiteral_type = (Core.FieldName "type")
+_ClassLiteral_type = (Core.Name "type")
 
-_ClassLiteral_numericType = (Core.FieldName "numericType")
+_ClassLiteral_numericType = (Core.Name "numericType")
 
-_ClassLiteral_boolean = (Core.FieldName "boolean")
+_ClassLiteral_boolean = (Core.Name "boolean")
 
-_ClassLiteral_void = (Core.FieldName "void")
+_ClassLiteral_void = (Core.Name "void")
 
 data TypeNameArray = 
   TypeNameArraySimple TypeName |
@@ -2294,9 +2294,9 @@ data TypeNameArray =
 
 _TypeNameArray = (Core.Name "hydra/langs/java/syntax.TypeNameArray")
 
-_TypeNameArray_simple = (Core.FieldName "simple")
+_TypeNameArray_simple = (Core.Name "simple")
 
-_TypeNameArray_array = (Core.FieldName "array")
+_TypeNameArray_array = (Core.Name "array")
 
 data NumericTypeArray = 
   NumericTypeArraySimple NumericType |
@@ -2305,9 +2305,9 @@ data NumericTypeArray =
 
 _NumericTypeArray = (Core.Name "hydra/langs/java/syntax.NumericTypeArray")
 
-_NumericTypeArray_simple = (Core.FieldName "simple")
+_NumericTypeArray_simple = (Core.Name "simple")
 
-_NumericTypeArray_array = (Core.FieldName "array")
+_NumericTypeArray_array = (Core.Name "array")
 
 data BooleanArray = 
   BooleanArraySimple  |
@@ -2316,9 +2316,9 @@ data BooleanArray =
 
 _BooleanArray = (Core.Name "hydra/langs/java/syntax.BooleanArray")
 
-_BooleanArray_simple = (Core.FieldName "simple")
+_BooleanArray_simple = (Core.Name "simple")
 
-_BooleanArray_array = (Core.FieldName "array")
+_BooleanArray_array = (Core.Name "array")
 
 data ClassInstanceCreationExpression = 
   ClassInstanceCreationExpression {
@@ -2328,9 +2328,9 @@ data ClassInstanceCreationExpression =
 
 _ClassInstanceCreationExpression = (Core.Name "hydra/langs/java/syntax.ClassInstanceCreationExpression")
 
-_ClassInstanceCreationExpression_qualifier = (Core.FieldName "qualifier")
+_ClassInstanceCreationExpression_qualifier = (Core.Name "qualifier")
 
-_ClassInstanceCreationExpression_expression = (Core.FieldName "expression")
+_ClassInstanceCreationExpression_expression = (Core.Name "expression")
 
 data ClassInstanceCreationExpression_Qualifier = 
   ClassInstanceCreationExpression_QualifierExpression ExpressionName |
@@ -2339,9 +2339,9 @@ data ClassInstanceCreationExpression_Qualifier =
 
 _ClassInstanceCreationExpression_Qualifier = (Core.Name "hydra/langs/java/syntax.ClassInstanceCreationExpression.Qualifier")
 
-_ClassInstanceCreationExpression_Qualifier_expression = (Core.FieldName "expression")
+_ClassInstanceCreationExpression_Qualifier_expression = (Core.Name "expression")
 
-_ClassInstanceCreationExpression_Qualifier_primary = (Core.FieldName "primary")
+_ClassInstanceCreationExpression_Qualifier_primary = (Core.Name "primary")
 
 data UnqualifiedClassInstanceCreationExpression = 
   UnqualifiedClassInstanceCreationExpression {
@@ -2353,13 +2353,13 @@ data UnqualifiedClassInstanceCreationExpression =
 
 _UnqualifiedClassInstanceCreationExpression = (Core.Name "hydra/langs/java/syntax.UnqualifiedClassInstanceCreationExpression")
 
-_UnqualifiedClassInstanceCreationExpression_typeArguments = (Core.FieldName "typeArguments")
+_UnqualifiedClassInstanceCreationExpression_typeArguments = (Core.Name "typeArguments")
 
-_UnqualifiedClassInstanceCreationExpression_classOrInterface = (Core.FieldName "classOrInterface")
+_UnqualifiedClassInstanceCreationExpression_classOrInterface = (Core.Name "classOrInterface")
 
-_UnqualifiedClassInstanceCreationExpression_arguments = (Core.FieldName "arguments")
+_UnqualifiedClassInstanceCreationExpression_arguments = (Core.Name "arguments")
 
-_UnqualifiedClassInstanceCreationExpression_body = (Core.FieldName "body")
+_UnqualifiedClassInstanceCreationExpression_body = (Core.Name "body")
 
 data ClassOrInterfaceTypeToInstantiate = 
   ClassOrInterfaceTypeToInstantiate {
@@ -2369,9 +2369,9 @@ data ClassOrInterfaceTypeToInstantiate =
 
 _ClassOrInterfaceTypeToInstantiate = (Core.Name "hydra/langs/java/syntax.ClassOrInterfaceTypeToInstantiate")
 
-_ClassOrInterfaceTypeToInstantiate_identifiers = (Core.FieldName "identifiers")
+_ClassOrInterfaceTypeToInstantiate_identifiers = (Core.Name "identifiers")
 
-_ClassOrInterfaceTypeToInstantiate_typeArguments = (Core.FieldName "typeArguments")
+_ClassOrInterfaceTypeToInstantiate_typeArguments = (Core.Name "typeArguments")
 
 data AnnotatedIdentifier = 
   AnnotatedIdentifier {
@@ -2381,9 +2381,9 @@ data AnnotatedIdentifier =
 
 _AnnotatedIdentifier = (Core.Name "hydra/langs/java/syntax.AnnotatedIdentifier")
 
-_AnnotatedIdentifier_annotations = (Core.FieldName "annotations")
+_AnnotatedIdentifier_annotations = (Core.Name "annotations")
 
-_AnnotatedIdentifier_identifier = (Core.FieldName "identifier")
+_AnnotatedIdentifier_identifier = (Core.Name "identifier")
 
 data TypeArgumentsOrDiamond = 
   TypeArgumentsOrDiamondArguments [TypeArgument] |
@@ -2392,9 +2392,9 @@ data TypeArgumentsOrDiamond =
 
 _TypeArgumentsOrDiamond = (Core.Name "hydra/langs/java/syntax.TypeArgumentsOrDiamond")
 
-_TypeArgumentsOrDiamond_arguments = (Core.FieldName "arguments")
+_TypeArgumentsOrDiamond_arguments = (Core.Name "arguments")
 
-_TypeArgumentsOrDiamond_diamond = (Core.FieldName "diamond")
+_TypeArgumentsOrDiamond_diamond = (Core.Name "diamond")
 
 data FieldAccess = 
   FieldAccess {
@@ -2404,9 +2404,9 @@ data FieldAccess =
 
 _FieldAccess = (Core.Name "hydra/langs/java/syntax.FieldAccess")
 
-_FieldAccess_qualifier = (Core.FieldName "qualifier")
+_FieldAccess_qualifier = (Core.Name "qualifier")
 
-_FieldAccess_identifier = (Core.FieldName "identifier")
+_FieldAccess_identifier = (Core.Name "identifier")
 
 data FieldAccess_Qualifier = 
   FieldAccess_QualifierPrimary Primary |
@@ -2416,11 +2416,11 @@ data FieldAccess_Qualifier =
 
 _FieldAccess_Qualifier = (Core.Name "hydra/langs/java/syntax.FieldAccess.Qualifier")
 
-_FieldAccess_Qualifier_primary = (Core.FieldName "primary")
+_FieldAccess_Qualifier_primary = (Core.Name "primary")
 
-_FieldAccess_Qualifier_super = (Core.FieldName "super")
+_FieldAccess_Qualifier_super = (Core.Name "super")
 
-_FieldAccess_Qualifier_typed = (Core.FieldName "typed")
+_FieldAccess_Qualifier_typed = (Core.Name "typed")
 
 data ArrayAccess = 
   ArrayAccess {
@@ -2430,9 +2430,9 @@ data ArrayAccess =
 
 _ArrayAccess = (Core.Name "hydra/langs/java/syntax.ArrayAccess")
 
-_ArrayAccess_expression = (Core.FieldName "expression")
+_ArrayAccess_expression = (Core.Name "expression")
 
-_ArrayAccess_variant = (Core.FieldName "variant")
+_ArrayAccess_variant = (Core.Name "variant")
 
 data ArrayAccess_Variant = 
   ArrayAccess_VariantName ExpressionName |
@@ -2441,9 +2441,9 @@ data ArrayAccess_Variant =
 
 _ArrayAccess_Variant = (Core.Name "hydra/langs/java/syntax.ArrayAccess.Variant")
 
-_ArrayAccess_Variant_name = (Core.FieldName "name")
+_ArrayAccess_Variant_name = (Core.Name "name")
 
-_ArrayAccess_Variant_primary = (Core.FieldName "primary")
+_ArrayAccess_Variant_primary = (Core.Name "primary")
 
 data MethodInvocation = 
   MethodInvocation {
@@ -2453,9 +2453,9 @@ data MethodInvocation =
 
 _MethodInvocation = (Core.Name "hydra/langs/java/syntax.MethodInvocation")
 
-_MethodInvocation_header = (Core.FieldName "header")
+_MethodInvocation_header = (Core.Name "header")
 
-_MethodInvocation_arguments = (Core.FieldName "arguments")
+_MethodInvocation_arguments = (Core.Name "arguments")
 
 data MethodInvocation_Header = 
   MethodInvocation_HeaderSimple MethodName |
@@ -2464,9 +2464,9 @@ data MethodInvocation_Header =
 
 _MethodInvocation_Header = (Core.Name "hydra/langs/java/syntax.MethodInvocation.Header")
 
-_MethodInvocation_Header_simple = (Core.FieldName "simple")
+_MethodInvocation_Header_simple = (Core.Name "simple")
 
-_MethodInvocation_Header_complex = (Core.FieldName "complex")
+_MethodInvocation_Header_complex = (Core.Name "complex")
 
 data MethodInvocation_Complex = 
   MethodInvocation_Complex {
@@ -2477,11 +2477,11 @@ data MethodInvocation_Complex =
 
 _MethodInvocation_Complex = (Core.Name "hydra/langs/java/syntax.MethodInvocation.Complex")
 
-_MethodInvocation_Complex_variant = (Core.FieldName "variant")
+_MethodInvocation_Complex_variant = (Core.Name "variant")
 
-_MethodInvocation_Complex_typeArguments = (Core.FieldName "typeArguments")
+_MethodInvocation_Complex_typeArguments = (Core.Name "typeArguments")
 
-_MethodInvocation_Complex_identifier = (Core.FieldName "identifier")
+_MethodInvocation_Complex_identifier = (Core.Name "identifier")
 
 data MethodInvocation_Variant = 
   MethodInvocation_VariantType TypeName |
@@ -2493,15 +2493,15 @@ data MethodInvocation_Variant =
 
 _MethodInvocation_Variant = (Core.Name "hydra/langs/java/syntax.MethodInvocation.Variant")
 
-_MethodInvocation_Variant_type = (Core.FieldName "type")
+_MethodInvocation_Variant_type = (Core.Name "type")
 
-_MethodInvocation_Variant_expression = (Core.FieldName "expression")
+_MethodInvocation_Variant_expression = (Core.Name "expression")
 
-_MethodInvocation_Variant_primary = (Core.FieldName "primary")
+_MethodInvocation_Variant_primary = (Core.Name "primary")
 
-_MethodInvocation_Variant_super = (Core.FieldName "super")
+_MethodInvocation_Variant_super = (Core.Name "super")
 
-_MethodInvocation_Variant_typeSuper = (Core.FieldName "typeSuper")
+_MethodInvocation_Variant_typeSuper = (Core.Name "typeSuper")
 
 data MethodReference = 
   MethodReferenceExpression MethodReference_Expression |
@@ -2514,17 +2514,17 @@ data MethodReference =
 
 _MethodReference = (Core.Name "hydra/langs/java/syntax.MethodReference")
 
-_MethodReference_expression = (Core.FieldName "expression")
+_MethodReference_expression = (Core.Name "expression")
 
-_MethodReference_primary = (Core.FieldName "primary")
+_MethodReference_primary = (Core.Name "primary")
 
-_MethodReference_referenceType = (Core.FieldName "referenceType")
+_MethodReference_referenceType = (Core.Name "referenceType")
 
-_MethodReference_super = (Core.FieldName "super")
+_MethodReference_super = (Core.Name "super")
 
-_MethodReference_new = (Core.FieldName "new")
+_MethodReference_new = (Core.Name "new")
 
-_MethodReference_array = (Core.FieldName "array")
+_MethodReference_array = (Core.Name "array")
 
 data MethodReference_Expression = 
   MethodReference_Expression {
@@ -2535,11 +2535,11 @@ data MethodReference_Expression =
 
 _MethodReference_Expression = (Core.Name "hydra/langs/java/syntax.MethodReference.Expression")
 
-_MethodReference_Expression_name = (Core.FieldName "name")
+_MethodReference_Expression_name = (Core.Name "name")
 
-_MethodReference_Expression_typeArguments = (Core.FieldName "typeArguments")
+_MethodReference_Expression_typeArguments = (Core.Name "typeArguments")
 
-_MethodReference_Expression_identifier = (Core.FieldName "identifier")
+_MethodReference_Expression_identifier = (Core.Name "identifier")
 
 data MethodReference_Primary = 
   MethodReference_Primary {
@@ -2550,11 +2550,11 @@ data MethodReference_Primary =
 
 _MethodReference_Primary = (Core.Name "hydra/langs/java/syntax.MethodReference.Primary")
 
-_MethodReference_Primary_primary = (Core.FieldName "primary")
+_MethodReference_Primary_primary = (Core.Name "primary")
 
-_MethodReference_Primary_typeArguments = (Core.FieldName "typeArguments")
+_MethodReference_Primary_typeArguments = (Core.Name "typeArguments")
 
-_MethodReference_Primary_identifier = (Core.FieldName "identifier")
+_MethodReference_Primary_identifier = (Core.Name "identifier")
 
 data MethodReference_ReferenceType = 
   MethodReference_ReferenceType {
@@ -2565,11 +2565,11 @@ data MethodReference_ReferenceType =
 
 _MethodReference_ReferenceType = (Core.Name "hydra/langs/java/syntax.MethodReference.ReferenceType")
 
-_MethodReference_ReferenceType_referenceType = (Core.FieldName "referenceType")
+_MethodReference_ReferenceType_referenceType = (Core.Name "referenceType")
 
-_MethodReference_ReferenceType_typeArguments = (Core.FieldName "typeArguments")
+_MethodReference_ReferenceType_typeArguments = (Core.Name "typeArguments")
 
-_MethodReference_ReferenceType_identifier = (Core.FieldName "identifier")
+_MethodReference_ReferenceType_identifier = (Core.Name "identifier")
 
 data MethodReference_Super = 
   MethodReference_Super {
@@ -2580,11 +2580,11 @@ data MethodReference_Super =
 
 _MethodReference_Super = (Core.Name "hydra/langs/java/syntax.MethodReference.Super")
 
-_MethodReference_Super_typeArguments = (Core.FieldName "typeArguments")
+_MethodReference_Super_typeArguments = (Core.Name "typeArguments")
 
-_MethodReference_Super_identifier = (Core.FieldName "identifier")
+_MethodReference_Super_identifier = (Core.Name "identifier")
 
-_MethodReference_Super_super = (Core.FieldName "super")
+_MethodReference_Super_super = (Core.Name "super")
 
 data MethodReference_New = 
   MethodReference_New {
@@ -2594,9 +2594,9 @@ data MethodReference_New =
 
 _MethodReference_New = (Core.Name "hydra/langs/java/syntax.MethodReference.New")
 
-_MethodReference_New_classType = (Core.FieldName "classType")
+_MethodReference_New_classType = (Core.Name "classType")
 
-_MethodReference_New_typeArguments = (Core.FieldName "typeArguments")
+_MethodReference_New_typeArguments = (Core.Name "typeArguments")
 
 newtype MethodReference_Array = 
   MethodReference_Array {
@@ -2614,13 +2614,13 @@ data ArrayCreationExpression =
 
 _ArrayCreationExpression = (Core.Name "hydra/langs/java/syntax.ArrayCreationExpression")
 
-_ArrayCreationExpression_primitive = (Core.FieldName "primitive")
+_ArrayCreationExpression_primitive = (Core.Name "primitive")
 
-_ArrayCreationExpression_classOrInterface = (Core.FieldName "classOrInterface")
+_ArrayCreationExpression_classOrInterface = (Core.Name "classOrInterface")
 
-_ArrayCreationExpression_primitiveArray = (Core.FieldName "primitiveArray")
+_ArrayCreationExpression_primitiveArray = (Core.Name "primitiveArray")
 
-_ArrayCreationExpression_classOrInterfaceArray = (Core.FieldName "classOrInterfaceArray")
+_ArrayCreationExpression_classOrInterfaceArray = (Core.Name "classOrInterfaceArray")
 
 data ArrayCreationExpression_Primitive = 
   ArrayCreationExpression_Primitive {
@@ -2631,11 +2631,11 @@ data ArrayCreationExpression_Primitive =
 
 _ArrayCreationExpression_Primitive = (Core.Name "hydra/langs/java/syntax.ArrayCreationExpression.Primitive")
 
-_ArrayCreationExpression_Primitive_type = (Core.FieldName "type")
+_ArrayCreationExpression_Primitive_type = (Core.Name "type")
 
-_ArrayCreationExpression_Primitive_dimExprs = (Core.FieldName "dimExprs")
+_ArrayCreationExpression_Primitive_dimExprs = (Core.Name "dimExprs")
 
-_ArrayCreationExpression_Primitive_dims = (Core.FieldName "dims")
+_ArrayCreationExpression_Primitive_dims = (Core.Name "dims")
 
 data ArrayCreationExpression_ClassOrInterface = 
   ArrayCreationExpression_ClassOrInterface {
@@ -2646,11 +2646,11 @@ data ArrayCreationExpression_ClassOrInterface =
 
 _ArrayCreationExpression_ClassOrInterface = (Core.Name "hydra/langs/java/syntax.ArrayCreationExpression.ClassOrInterface")
 
-_ArrayCreationExpression_ClassOrInterface_type = (Core.FieldName "type")
+_ArrayCreationExpression_ClassOrInterface_type = (Core.Name "type")
 
-_ArrayCreationExpression_ClassOrInterface_dimExprs = (Core.FieldName "dimExprs")
+_ArrayCreationExpression_ClassOrInterface_dimExprs = (Core.Name "dimExprs")
 
-_ArrayCreationExpression_ClassOrInterface_dims = (Core.FieldName "dims")
+_ArrayCreationExpression_ClassOrInterface_dims = (Core.Name "dims")
 
 data ArrayCreationExpression_PrimitiveArray = 
   ArrayCreationExpression_PrimitiveArray {
@@ -2661,11 +2661,11 @@ data ArrayCreationExpression_PrimitiveArray =
 
 _ArrayCreationExpression_PrimitiveArray = (Core.Name "hydra/langs/java/syntax.ArrayCreationExpression.PrimitiveArray")
 
-_ArrayCreationExpression_PrimitiveArray_type = (Core.FieldName "type")
+_ArrayCreationExpression_PrimitiveArray_type = (Core.Name "type")
 
-_ArrayCreationExpression_PrimitiveArray_dims = (Core.FieldName "dims")
+_ArrayCreationExpression_PrimitiveArray_dims = (Core.Name "dims")
 
-_ArrayCreationExpression_PrimitiveArray_array = (Core.FieldName "array")
+_ArrayCreationExpression_PrimitiveArray_array = (Core.Name "array")
 
 data ArrayCreationExpression_ClassOrInterfaceArray = 
   ArrayCreationExpression_ClassOrInterfaceArray {
@@ -2676,11 +2676,11 @@ data ArrayCreationExpression_ClassOrInterfaceArray =
 
 _ArrayCreationExpression_ClassOrInterfaceArray = (Core.Name "hydra/langs/java/syntax.ArrayCreationExpression.ClassOrInterfaceArray")
 
-_ArrayCreationExpression_ClassOrInterfaceArray_type = (Core.FieldName "type")
+_ArrayCreationExpression_ClassOrInterfaceArray_type = (Core.Name "type")
 
-_ArrayCreationExpression_ClassOrInterfaceArray_dims = (Core.FieldName "dims")
+_ArrayCreationExpression_ClassOrInterfaceArray_dims = (Core.Name "dims")
 
-_ArrayCreationExpression_ClassOrInterfaceArray_array = (Core.FieldName "array")
+_ArrayCreationExpression_ClassOrInterfaceArray_array = (Core.Name "array")
 
 data DimExpr = 
   DimExpr {
@@ -2690,9 +2690,9 @@ data DimExpr =
 
 _DimExpr = (Core.Name "hydra/langs/java/syntax.DimExpr")
 
-_DimExpr_annotations = (Core.FieldName "annotations")
+_DimExpr_annotations = (Core.Name "annotations")
 
-_DimExpr_expression = (Core.FieldName "expression")
+_DimExpr_expression = (Core.Name "expression")
 
 data Expression = 
   ExpressionLambda LambdaExpression |
@@ -2701,9 +2701,9 @@ data Expression =
 
 _Expression = (Core.Name "hydra/langs/java/syntax.Expression")
 
-_Expression_lambda = (Core.FieldName "lambda")
+_Expression_lambda = (Core.Name "lambda")
 
-_Expression_assignment = (Core.FieldName "assignment")
+_Expression_assignment = (Core.Name "assignment")
 
 data LambdaExpression = 
   LambdaExpression {
@@ -2713,9 +2713,9 @@ data LambdaExpression =
 
 _LambdaExpression = (Core.Name "hydra/langs/java/syntax.LambdaExpression")
 
-_LambdaExpression_parameters = (Core.FieldName "parameters")
+_LambdaExpression_parameters = (Core.Name "parameters")
 
-_LambdaExpression_body = (Core.FieldName "body")
+_LambdaExpression_body = (Core.Name "body")
 
 data LambdaParameters = 
   LambdaParametersTuple [LambdaParameters] |
@@ -2724,9 +2724,9 @@ data LambdaParameters =
 
 _LambdaParameters = (Core.Name "hydra/langs/java/syntax.LambdaParameters")
 
-_LambdaParameters_tuple = (Core.FieldName "tuple")
+_LambdaParameters_tuple = (Core.Name "tuple")
 
-_LambdaParameters_single = (Core.FieldName "single")
+_LambdaParameters_single = (Core.Name "single")
 
 data LambdaParameter = 
   LambdaParameterNormal LambdaParameter_Normal |
@@ -2735,9 +2735,9 @@ data LambdaParameter =
 
 _LambdaParameter = (Core.Name "hydra/langs/java/syntax.LambdaParameter")
 
-_LambdaParameter_normal = (Core.FieldName "normal")
+_LambdaParameter_normal = (Core.Name "normal")
 
-_LambdaParameter_variableArity = (Core.FieldName "variableArity")
+_LambdaParameter_variableArity = (Core.Name "variableArity")
 
 data LambdaParameter_Normal = 
   LambdaParameter_Normal {
@@ -2748,11 +2748,11 @@ data LambdaParameter_Normal =
 
 _LambdaParameter_Normal = (Core.Name "hydra/langs/java/syntax.LambdaParameter.Normal")
 
-_LambdaParameter_Normal_modifiers = (Core.FieldName "modifiers")
+_LambdaParameter_Normal_modifiers = (Core.Name "modifiers")
 
-_LambdaParameter_Normal_type = (Core.FieldName "type")
+_LambdaParameter_Normal_type = (Core.Name "type")
 
-_LambdaParameter_Normal_id = (Core.FieldName "id")
+_LambdaParameter_Normal_id = (Core.Name "id")
 
 data LambdaParameterType = 
   LambdaParameterTypeType UnannType |
@@ -2761,9 +2761,9 @@ data LambdaParameterType =
 
 _LambdaParameterType = (Core.Name "hydra/langs/java/syntax.LambdaParameterType")
 
-_LambdaParameterType_type = (Core.FieldName "type")
+_LambdaParameterType_type = (Core.Name "type")
 
-_LambdaParameterType_var = (Core.FieldName "var")
+_LambdaParameterType_var = (Core.Name "var")
 
 data LambdaBody = 
   LambdaBodyExpression Expression |
@@ -2772,9 +2772,9 @@ data LambdaBody =
 
 _LambdaBody = (Core.Name "hydra/langs/java/syntax.LambdaBody")
 
-_LambdaBody_expression = (Core.FieldName "expression")
+_LambdaBody_expression = (Core.Name "expression")
 
-_LambdaBody_block = (Core.FieldName "block")
+_LambdaBody_block = (Core.Name "block")
 
 data AssignmentExpression = 
   AssignmentExpressionConditional ConditionalExpression |
@@ -2783,9 +2783,9 @@ data AssignmentExpression =
 
 _AssignmentExpression = (Core.Name "hydra/langs/java/syntax.AssignmentExpression")
 
-_AssignmentExpression_conditional = (Core.FieldName "conditional")
+_AssignmentExpression_conditional = (Core.Name "conditional")
 
-_AssignmentExpression_assignment = (Core.FieldName "assignment")
+_AssignmentExpression_assignment = (Core.Name "assignment")
 
 data Assignment = 
   Assignment {
@@ -2796,11 +2796,11 @@ data Assignment =
 
 _Assignment = (Core.Name "hydra/langs/java/syntax.Assignment")
 
-_Assignment_lhs = (Core.FieldName "lhs")
+_Assignment_lhs = (Core.Name "lhs")
 
-_Assignment_op = (Core.FieldName "op")
+_Assignment_op = (Core.Name "op")
 
-_Assignment_expression = (Core.FieldName "expression")
+_Assignment_expression = (Core.Name "expression")
 
 data LeftHandSide = 
   LeftHandSideExpressionName ExpressionName |
@@ -2810,11 +2810,11 @@ data LeftHandSide =
 
 _LeftHandSide = (Core.Name "hydra/langs/java/syntax.LeftHandSide")
 
-_LeftHandSide_expressionName = (Core.FieldName "expressionName")
+_LeftHandSide_expressionName = (Core.Name "expressionName")
 
-_LeftHandSide_fieldAccess = (Core.FieldName "fieldAccess")
+_LeftHandSide_fieldAccess = (Core.Name "fieldAccess")
 
-_LeftHandSide_arrayAccess = (Core.FieldName "arrayAccess")
+_LeftHandSide_arrayAccess = (Core.Name "arrayAccess")
 
 data AssignmentOperator = 
   AssignmentOperatorSimple  |
@@ -2833,29 +2833,29 @@ data AssignmentOperator =
 
 _AssignmentOperator = (Core.Name "hydra/langs/java/syntax.AssignmentOperator")
 
-_AssignmentOperator_simple = (Core.FieldName "simple")
+_AssignmentOperator_simple = (Core.Name "simple")
 
-_AssignmentOperator_times = (Core.FieldName "times")
+_AssignmentOperator_times = (Core.Name "times")
 
-_AssignmentOperator_div = (Core.FieldName "div")
+_AssignmentOperator_div = (Core.Name "div")
 
-_AssignmentOperator_mod = (Core.FieldName "mod")
+_AssignmentOperator_mod = (Core.Name "mod")
 
-_AssignmentOperator_plus = (Core.FieldName "plus")
+_AssignmentOperator_plus = (Core.Name "plus")
 
-_AssignmentOperator_minus = (Core.FieldName "minus")
+_AssignmentOperator_minus = (Core.Name "minus")
 
-_AssignmentOperator_shiftLeft = (Core.FieldName "shiftLeft")
+_AssignmentOperator_shiftLeft = (Core.Name "shiftLeft")
 
-_AssignmentOperator_shiftRight = (Core.FieldName "shiftRight")
+_AssignmentOperator_shiftRight = (Core.Name "shiftRight")
 
-_AssignmentOperator_shiftRightZeroFill = (Core.FieldName "shiftRightZeroFill")
+_AssignmentOperator_shiftRightZeroFill = (Core.Name "shiftRightZeroFill")
 
-_AssignmentOperator_and = (Core.FieldName "and")
+_AssignmentOperator_and = (Core.Name "and")
 
-_AssignmentOperator_xor = (Core.FieldName "xor")
+_AssignmentOperator_xor = (Core.Name "xor")
 
-_AssignmentOperator_or = (Core.FieldName "or")
+_AssignmentOperator_or = (Core.Name "or")
 
 data ConditionalExpression = 
   ConditionalExpressionSimple ConditionalOrExpression |
@@ -2865,11 +2865,11 @@ data ConditionalExpression =
 
 _ConditionalExpression = (Core.Name "hydra/langs/java/syntax.ConditionalExpression")
 
-_ConditionalExpression_simple = (Core.FieldName "simple")
+_ConditionalExpression_simple = (Core.Name "simple")
 
-_ConditionalExpression_ternaryCond = (Core.FieldName "ternaryCond")
+_ConditionalExpression_ternaryCond = (Core.Name "ternaryCond")
 
-_ConditionalExpression_ternaryLambda = (Core.FieldName "ternaryLambda")
+_ConditionalExpression_ternaryLambda = (Core.Name "ternaryLambda")
 
 data ConditionalExpression_TernaryCond = 
   ConditionalExpression_TernaryCond {
@@ -2880,11 +2880,11 @@ data ConditionalExpression_TernaryCond =
 
 _ConditionalExpression_TernaryCond = (Core.Name "hydra/langs/java/syntax.ConditionalExpression.TernaryCond")
 
-_ConditionalExpression_TernaryCond_cond = (Core.FieldName "cond")
+_ConditionalExpression_TernaryCond_cond = (Core.Name "cond")
 
-_ConditionalExpression_TernaryCond_ifTrue = (Core.FieldName "ifTrue")
+_ConditionalExpression_TernaryCond_ifTrue = (Core.Name "ifTrue")
 
-_ConditionalExpression_TernaryCond_ifFalse = (Core.FieldName "ifFalse")
+_ConditionalExpression_TernaryCond_ifFalse = (Core.Name "ifFalse")
 
 data ConditionalExpression_TernaryLambda = 
   ConditionalExpression_TernaryLambda {
@@ -2895,11 +2895,11 @@ data ConditionalExpression_TernaryLambda =
 
 _ConditionalExpression_TernaryLambda = (Core.Name "hydra/langs/java/syntax.ConditionalExpression.TernaryLambda")
 
-_ConditionalExpression_TernaryLambda_cond = (Core.FieldName "cond")
+_ConditionalExpression_TernaryLambda_cond = (Core.Name "cond")
 
-_ConditionalExpression_TernaryLambda_ifTrue = (Core.FieldName "ifTrue")
+_ConditionalExpression_TernaryLambda_ifTrue = (Core.Name "ifTrue")
 
-_ConditionalExpression_TernaryLambda_ifFalse = (Core.FieldName "ifFalse")
+_ConditionalExpression_TernaryLambda_ifFalse = (Core.Name "ifFalse")
 
 newtype ConditionalOrExpression = 
   ConditionalOrExpression {
@@ -2944,11 +2944,11 @@ data EqualityExpression =
 
 _EqualityExpression = (Core.Name "hydra/langs/java/syntax.EqualityExpression")
 
-_EqualityExpression_unary = (Core.FieldName "unary")
+_EqualityExpression_unary = (Core.Name "unary")
 
-_EqualityExpression_equal = (Core.FieldName "equal")
+_EqualityExpression_equal = (Core.Name "equal")
 
-_EqualityExpression_notEqual = (Core.FieldName "notEqual")
+_EqualityExpression_notEqual = (Core.Name "notEqual")
 
 data EqualityExpression_Binary = 
   EqualityExpression_Binary {
@@ -2958,9 +2958,9 @@ data EqualityExpression_Binary =
 
 _EqualityExpression_Binary = (Core.Name "hydra/langs/java/syntax.EqualityExpression.Binary")
 
-_EqualityExpression_Binary_lhs = (Core.FieldName "lhs")
+_EqualityExpression_Binary_lhs = (Core.Name "lhs")
 
-_EqualityExpression_Binary_rhs = (Core.FieldName "rhs")
+_EqualityExpression_Binary_rhs = (Core.Name "rhs")
 
 data RelationalExpression = 
   RelationalExpressionSimple ShiftExpression |
@@ -2973,17 +2973,17 @@ data RelationalExpression =
 
 _RelationalExpression = (Core.Name "hydra/langs/java/syntax.RelationalExpression")
 
-_RelationalExpression_simple = (Core.FieldName "simple")
+_RelationalExpression_simple = (Core.Name "simple")
 
-_RelationalExpression_lessThan = (Core.FieldName "lessThan")
+_RelationalExpression_lessThan = (Core.Name "lessThan")
 
-_RelationalExpression_greaterThan = (Core.FieldName "greaterThan")
+_RelationalExpression_greaterThan = (Core.Name "greaterThan")
 
-_RelationalExpression_lessThanEqual = (Core.FieldName "lessThanEqual")
+_RelationalExpression_lessThanEqual = (Core.Name "lessThanEqual")
 
-_RelationalExpression_greaterThanEqual = (Core.FieldName "greaterThanEqual")
+_RelationalExpression_greaterThanEqual = (Core.Name "greaterThanEqual")
 
-_RelationalExpression_instanceof = (Core.FieldName "instanceof")
+_RelationalExpression_instanceof = (Core.Name "instanceof")
 
 data RelationalExpression_LessThan = 
   RelationalExpression_LessThan {
@@ -2993,9 +2993,9 @@ data RelationalExpression_LessThan =
 
 _RelationalExpression_LessThan = (Core.Name "hydra/langs/java/syntax.RelationalExpression.LessThan")
 
-_RelationalExpression_LessThan_lhs = (Core.FieldName "lhs")
+_RelationalExpression_LessThan_lhs = (Core.Name "lhs")
 
-_RelationalExpression_LessThan_rhs = (Core.FieldName "rhs")
+_RelationalExpression_LessThan_rhs = (Core.Name "rhs")
 
 data RelationalExpression_GreaterThan = 
   RelationalExpression_GreaterThan {
@@ -3005,9 +3005,9 @@ data RelationalExpression_GreaterThan =
 
 _RelationalExpression_GreaterThan = (Core.Name "hydra/langs/java/syntax.RelationalExpression.GreaterThan")
 
-_RelationalExpression_GreaterThan_lhs = (Core.FieldName "lhs")
+_RelationalExpression_GreaterThan_lhs = (Core.Name "lhs")
 
-_RelationalExpression_GreaterThan_rhs = (Core.FieldName "rhs")
+_RelationalExpression_GreaterThan_rhs = (Core.Name "rhs")
 
 data RelationalExpression_LessThanEqual = 
   RelationalExpression_LessThanEqual {
@@ -3017,9 +3017,9 @@ data RelationalExpression_LessThanEqual =
 
 _RelationalExpression_LessThanEqual = (Core.Name "hydra/langs/java/syntax.RelationalExpression.LessThanEqual")
 
-_RelationalExpression_LessThanEqual_lhs = (Core.FieldName "lhs")
+_RelationalExpression_LessThanEqual_lhs = (Core.Name "lhs")
 
-_RelationalExpression_LessThanEqual_rhs = (Core.FieldName "rhs")
+_RelationalExpression_LessThanEqual_rhs = (Core.Name "rhs")
 
 data RelationalExpression_GreaterThanEqual = 
   RelationalExpression_GreaterThanEqual {
@@ -3029,9 +3029,9 @@ data RelationalExpression_GreaterThanEqual =
 
 _RelationalExpression_GreaterThanEqual = (Core.Name "hydra/langs/java/syntax.RelationalExpression.GreaterThanEqual")
 
-_RelationalExpression_GreaterThanEqual_lhs = (Core.FieldName "lhs")
+_RelationalExpression_GreaterThanEqual_lhs = (Core.Name "lhs")
 
-_RelationalExpression_GreaterThanEqual_rhs = (Core.FieldName "rhs")
+_RelationalExpression_GreaterThanEqual_rhs = (Core.Name "rhs")
 
 data RelationalExpression_InstanceOf = 
   RelationalExpression_InstanceOf {
@@ -3041,9 +3041,9 @@ data RelationalExpression_InstanceOf =
 
 _RelationalExpression_InstanceOf = (Core.Name "hydra/langs/java/syntax.RelationalExpression.InstanceOf")
 
-_RelationalExpression_InstanceOf_lhs = (Core.FieldName "lhs")
+_RelationalExpression_InstanceOf_lhs = (Core.Name "lhs")
 
-_RelationalExpression_InstanceOf_rhs = (Core.FieldName "rhs")
+_RelationalExpression_InstanceOf_rhs = (Core.Name "rhs")
 
 data ShiftExpression = 
   ShiftExpressionUnary AdditiveExpression |
@@ -3054,13 +3054,13 @@ data ShiftExpression =
 
 _ShiftExpression = (Core.Name "hydra/langs/java/syntax.ShiftExpression")
 
-_ShiftExpression_unary = (Core.FieldName "unary")
+_ShiftExpression_unary = (Core.Name "unary")
 
-_ShiftExpression_shiftLeft = (Core.FieldName "shiftLeft")
+_ShiftExpression_shiftLeft = (Core.Name "shiftLeft")
 
-_ShiftExpression_shiftRight = (Core.FieldName "shiftRight")
+_ShiftExpression_shiftRight = (Core.Name "shiftRight")
 
-_ShiftExpression_shiftRightZeroFill = (Core.FieldName "shiftRightZeroFill")
+_ShiftExpression_shiftRightZeroFill = (Core.Name "shiftRightZeroFill")
 
 data ShiftExpression_Binary = 
   ShiftExpression_Binary {
@@ -3070,9 +3070,9 @@ data ShiftExpression_Binary =
 
 _ShiftExpression_Binary = (Core.Name "hydra/langs/java/syntax.ShiftExpression.Binary")
 
-_ShiftExpression_Binary_lhs = (Core.FieldName "lhs")
+_ShiftExpression_Binary_lhs = (Core.Name "lhs")
 
-_ShiftExpression_Binary_rhs = (Core.FieldName "rhs")
+_ShiftExpression_Binary_rhs = (Core.Name "rhs")
 
 data AdditiveExpression = 
   AdditiveExpressionUnary MultiplicativeExpression |
@@ -3082,11 +3082,11 @@ data AdditiveExpression =
 
 _AdditiveExpression = (Core.Name "hydra/langs/java/syntax.AdditiveExpression")
 
-_AdditiveExpression_unary = (Core.FieldName "unary")
+_AdditiveExpression_unary = (Core.Name "unary")
 
-_AdditiveExpression_plus = (Core.FieldName "plus")
+_AdditiveExpression_plus = (Core.Name "plus")
 
-_AdditiveExpression_minus = (Core.FieldName "minus")
+_AdditiveExpression_minus = (Core.Name "minus")
 
 data AdditiveExpression_Binary = 
   AdditiveExpression_Binary {
@@ -3096,9 +3096,9 @@ data AdditiveExpression_Binary =
 
 _AdditiveExpression_Binary = (Core.Name "hydra/langs/java/syntax.AdditiveExpression.Binary")
 
-_AdditiveExpression_Binary_lhs = (Core.FieldName "lhs")
+_AdditiveExpression_Binary_lhs = (Core.Name "lhs")
 
-_AdditiveExpression_Binary_rhs = (Core.FieldName "rhs")
+_AdditiveExpression_Binary_rhs = (Core.Name "rhs")
 
 data MultiplicativeExpression = 
   MultiplicativeExpressionUnary UnaryExpression |
@@ -3109,13 +3109,13 @@ data MultiplicativeExpression =
 
 _MultiplicativeExpression = (Core.Name "hydra/langs/java/syntax.MultiplicativeExpression")
 
-_MultiplicativeExpression_unary = (Core.FieldName "unary")
+_MultiplicativeExpression_unary = (Core.Name "unary")
 
-_MultiplicativeExpression_times = (Core.FieldName "times")
+_MultiplicativeExpression_times = (Core.Name "times")
 
-_MultiplicativeExpression_divide = (Core.FieldName "divide")
+_MultiplicativeExpression_divide = (Core.Name "divide")
 
-_MultiplicativeExpression_mod = (Core.FieldName "mod")
+_MultiplicativeExpression_mod = (Core.Name "mod")
 
 data MultiplicativeExpression_Binary = 
   MultiplicativeExpression_Binary {
@@ -3125,9 +3125,9 @@ data MultiplicativeExpression_Binary =
 
 _MultiplicativeExpression_Binary = (Core.Name "hydra/langs/java/syntax.MultiplicativeExpression.Binary")
 
-_MultiplicativeExpression_Binary_lhs = (Core.FieldName "lhs")
+_MultiplicativeExpression_Binary_lhs = (Core.Name "lhs")
 
-_MultiplicativeExpression_Binary_rhs = (Core.FieldName "rhs")
+_MultiplicativeExpression_Binary_rhs = (Core.Name "rhs")
 
 data UnaryExpression = 
   UnaryExpressionPreIncrement PreIncrementExpression |
@@ -3139,15 +3139,15 @@ data UnaryExpression =
 
 _UnaryExpression = (Core.Name "hydra/langs/java/syntax.UnaryExpression")
 
-_UnaryExpression_preIncrement = (Core.FieldName "preIncrement")
+_UnaryExpression_preIncrement = (Core.Name "preIncrement")
 
-_UnaryExpression_preDecrement = (Core.FieldName "preDecrement")
+_UnaryExpression_preDecrement = (Core.Name "preDecrement")
 
-_UnaryExpression_plus = (Core.FieldName "plus")
+_UnaryExpression_plus = (Core.Name "plus")
 
-_UnaryExpression_minus = (Core.FieldName "minus")
+_UnaryExpression_minus = (Core.Name "minus")
 
-_UnaryExpression_other = (Core.FieldName "other")
+_UnaryExpression_other = (Core.Name "other")
 
 newtype PreIncrementExpression = 
   PreIncrementExpression {
@@ -3172,13 +3172,13 @@ data UnaryExpressionNotPlusMinus =
 
 _UnaryExpressionNotPlusMinus = (Core.Name "hydra/langs/java/syntax.UnaryExpressionNotPlusMinus")
 
-_UnaryExpressionNotPlusMinus_postfix = (Core.FieldName "postfix")
+_UnaryExpressionNotPlusMinus_postfix = (Core.Name "postfix")
 
-_UnaryExpressionNotPlusMinus_tilde = (Core.FieldName "tilde")
+_UnaryExpressionNotPlusMinus_tilde = (Core.Name "tilde")
 
-_UnaryExpressionNotPlusMinus_not = (Core.FieldName "not")
+_UnaryExpressionNotPlusMinus_not = (Core.Name "not")
 
-_UnaryExpressionNotPlusMinus_cast = (Core.FieldName "cast")
+_UnaryExpressionNotPlusMinus_cast = (Core.Name "cast")
 
 data PostfixExpression = 
   PostfixExpressionPrimary Primary |
@@ -3189,13 +3189,13 @@ data PostfixExpression =
 
 _PostfixExpression = (Core.Name "hydra/langs/java/syntax.PostfixExpression")
 
-_PostfixExpression_primary = (Core.FieldName "primary")
+_PostfixExpression_primary = (Core.Name "primary")
 
-_PostfixExpression_name = (Core.FieldName "name")
+_PostfixExpression_name = (Core.Name "name")
 
-_PostfixExpression_postIncrement = (Core.FieldName "postIncrement")
+_PostfixExpression_postIncrement = (Core.Name "postIncrement")
 
-_PostfixExpression_postDecrement = (Core.FieldName "postDecrement")
+_PostfixExpression_postDecrement = (Core.Name "postDecrement")
 
 newtype PostIncrementExpression = 
   PostIncrementExpression {
@@ -3219,11 +3219,11 @@ data CastExpression =
 
 _CastExpression = (Core.Name "hydra/langs/java/syntax.CastExpression")
 
-_CastExpression_primitive = (Core.FieldName "primitive")
+_CastExpression_primitive = (Core.Name "primitive")
 
-_CastExpression_notPlusMinus = (Core.FieldName "notPlusMinus")
+_CastExpression_notPlusMinus = (Core.Name "notPlusMinus")
 
-_CastExpression_lambda = (Core.FieldName "lambda")
+_CastExpression_lambda = (Core.Name "lambda")
 
 data CastExpression_Primitive = 
   CastExpression_Primitive {
@@ -3233,9 +3233,9 @@ data CastExpression_Primitive =
 
 _CastExpression_Primitive = (Core.Name "hydra/langs/java/syntax.CastExpression.Primitive")
 
-_CastExpression_Primitive_type = (Core.FieldName "type")
+_CastExpression_Primitive_type = (Core.Name "type")
 
-_CastExpression_Primitive_expression = (Core.FieldName "expression")
+_CastExpression_Primitive_expression = (Core.Name "expression")
 
 data CastExpression_NotPlusMinus = 
   CastExpression_NotPlusMinus {
@@ -3245,9 +3245,9 @@ data CastExpression_NotPlusMinus =
 
 _CastExpression_NotPlusMinus = (Core.Name "hydra/langs/java/syntax.CastExpression.NotPlusMinus")
 
-_CastExpression_NotPlusMinus_refAndBounds = (Core.FieldName "refAndBounds")
+_CastExpression_NotPlusMinus_refAndBounds = (Core.Name "refAndBounds")
 
-_CastExpression_NotPlusMinus_expression = (Core.FieldName "expression")
+_CastExpression_NotPlusMinus_expression = (Core.Name "expression")
 
 data CastExpression_Lambda = 
   CastExpression_Lambda {
@@ -3257,9 +3257,9 @@ data CastExpression_Lambda =
 
 _CastExpression_Lambda = (Core.Name "hydra/langs/java/syntax.CastExpression.Lambda")
 
-_CastExpression_Lambda_refAndBounds = (Core.FieldName "refAndBounds")
+_CastExpression_Lambda_refAndBounds = (Core.Name "refAndBounds")
 
-_CastExpression_Lambda_expression = (Core.FieldName "expression")
+_CastExpression_Lambda_expression = (Core.Name "expression")
 
 data CastExpression_RefAndBounds = 
   CastExpression_RefAndBounds {
@@ -3269,9 +3269,9 @@ data CastExpression_RefAndBounds =
 
 _CastExpression_RefAndBounds = (Core.Name "hydra/langs/java/syntax.CastExpression.RefAndBounds")
 
-_CastExpression_RefAndBounds_type = (Core.FieldName "type")
+_CastExpression_RefAndBounds_type = (Core.Name "type")
 
-_CastExpression_RefAndBounds_bounds = (Core.FieldName "bounds")
+_CastExpression_RefAndBounds_bounds = (Core.Name "bounds")
 
 newtype ConstantExpression = 
   ConstantExpression {

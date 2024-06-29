@@ -6,7 +6,7 @@ import hydra.core.Application;
 import hydra.core.CaseStatement;
 import hydra.core.Elimination;
 import hydra.core.Field;
-import hydra.core.FieldName;
+import hydra.core.Name;
 import hydra.core.FloatValue;
 import hydra.core.Function;
 import hydra.core.Injection;
@@ -83,7 +83,7 @@ public interface Terms {
     }
 
     static <A> Field<A> field(final String fname, final Term<A> term) {
-        return new Field<>(new FieldName(fname), term);
+        return new Field<>(new Name(fname), term);
     }
 
     static <A> Field<A> field(final String fname, final String term) {
@@ -232,16 +232,16 @@ public interface Terms {
         return primitive(name(primName));
     }
 
-    static <A> Term<A> projection(final Name recordName, final FieldName fname) {
+    static <A> Term<A> projection(final Name recordName, final Name fname) {
         return elimination(new Elimination.Record<>(new Projection(recordName, fname)));
     }
 
     static <A> Term<A> projection(final String recordName, final String fname) {
-        return projection(name(recordName), new FieldName(fname));
+        return projection(name(recordName), new Name(fname));
     }
 
     static <A> Term<A> projection(final Name recordName, final String fname) {
-        return projection(recordName, new FieldName(fname));
+        return projection(recordName, new Name(fname));
     }
 
     static <A> Term<A> record(final Name recordName, final Field<A>... fields) {

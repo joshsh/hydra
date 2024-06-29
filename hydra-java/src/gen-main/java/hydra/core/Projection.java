@@ -10,9 +10,9 @@ public class Projection implements Serializable {
   
   public final hydra.core.Name typeName;
   
-  public final hydra.core.FieldName field;
+  public final hydra.core.Name field;
   
-  public Projection (hydra.core.Name typeName, hydra.core.FieldName field) {
+  public Projection (hydra.core.Name typeName, hydra.core.Name field) {
     this.typeName = typeName;
     this.field = field;
   }
@@ -35,7 +35,7 @@ public class Projection implements Serializable {
     return new Projection(typeName, field);
   }
   
-  public Projection withField(hydra.core.FieldName field) {
+  public Projection withField(hydra.core.Name field) {
     return new Projection(typeName, field);
   }
 }

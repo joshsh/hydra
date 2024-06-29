@@ -62,9 +62,9 @@ false :: Term
 false = boolean False
 
 field :: String -> Term -> Field
-field n = Field (FieldName n)
+field n = Field (Name n)
 
-fieldsToMap :: [Field] -> M.Map FieldName Term
+fieldsToMap :: [Field] -> M.Map Name Term
 fieldsToMap fields = M.fromList $ (\(Field name term) -> (name, term)) <$> fields
 
 first :: Term
@@ -111,7 +111,7 @@ lambda param body = TermFunction $ FunctionLambda $ Lambda (Name param) Nothing 
 
 -- Construct a 'let' term with a single binding
 letTerm :: Name -> Term -> Term -> Term
-letTerm (Name v) t1 t2 = TermLet $ Let [Field (FieldName v) t1] t2
+letTerm (Name v) t1 t2 = TermLet $ Let [Field (Name v) t1] t2
 
 list :: [Term] -> Term
 list = TermList
@@ -131,7 +131,7 @@ match tname def fields = TermFunction $ FunctionElimination $ EliminationUnion $
 matchOpt :: Term -> Term -> Term
 matchOpt n j = TermFunction $ FunctionElimination $ EliminationOptional $ OptionalCases n j
 
-matchWithVariants :: Name -> Maybe Term -> [(FieldName, FieldName)] -> Term
+matchWithVariants :: Name -> Maybe Term -> [(Name, Name)] -> Term
 matchWithVariants tname def pairs = match tname def (toField <$> pairs)
   where
     toField (from, to) = Field from $ constant $ unitVariant tname to
@@ -151,7 +151,7 @@ primitive = TermFunction . FunctionPrimitive
 product :: [Term] -> Term
 product = TermProduct
 
-project :: Name -> FieldName -> Term
+project :: Name -> Name -> Term
 project tname fname = TermFunction $ FunctionElimination $ EliminationRecord $ Projection tname fname
 
 record :: Name -> [Field] -> Term
@@ -190,7 +190,7 @@ uint8 = literal . Literals.uint8
 unit :: Term
 unit = TermRecord $ Record _UnitType []
 
-unitVariant :: Name -> FieldName -> Term
+unitVariant :: Name -> Name -> Term
 unitVariant tname fname = variant tname fname unit
 
 untuple :: Int -> Int -> Term
@@ -202,13 +202,13 @@ unwrap = TermFunction . FunctionElimination . EliminationWrap
 var :: String -> Term
 var = TermVariable . Name
 
-variant :: Name -> FieldName -> Term -> Term
+variant :: Name -> Name -> Term -> Term
 variant tname fname term = TermUnion $ Injection tname $ Field fname term
 
 with :: Term -> [Field] -> Term
 env `with` bindings = TermLet $ Let bindings env
 
-withVariant :: Name -> FieldName -> Term
+withVariant :: Name -> Name -> Term
 withVariant tname = constant . unitVariant tname
 
 wrap :: Name -> Term -> Term

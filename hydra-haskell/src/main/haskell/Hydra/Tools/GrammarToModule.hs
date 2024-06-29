@@ -96,7 +96,7 @@ grammarToModule ns (G.Grammar prods) desc = Module ns elements [] desc
 
         toField n p = descend n f2 p
           where
-            f2 ((lname, typ):rest) = (FieldType (FieldName n) typ, rest)
+            f2 ((lname, typ):rest) = (FieldType (Name n) typ, rest)
 
         mod n f p = descend n f2 p
           where

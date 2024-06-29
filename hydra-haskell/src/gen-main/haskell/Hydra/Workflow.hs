@@ -22,9 +22,9 @@ data HydraSchemaSpec =
 
 _HydraSchemaSpec = (Core.Name "hydra/workflow.HydraSchemaSpec")
 
-_HydraSchemaSpec_modules = (Core.FieldName "modules")
+_HydraSchemaSpec_modules = (Core.Name "modules")
 
-_HydraSchemaSpec_typeName = (Core.FieldName "typeName")
+_HydraSchemaSpec_typeName = (Core.Name "typeName")
 
 -- | The last mile of a transformation, which encodes and serializes terms to a file
 data LastMile s a = 
@@ -38,11 +38,11 @@ data LastMile s a =
 
 _LastMile = (Core.Name "hydra/workflow.LastMile")
 
-_LastMile_encoder = (Core.FieldName "encoder")
+_LastMile_encoder = (Core.Name "encoder")
 
-_LastMile_serializer = (Core.FieldName "serializer")
+_LastMile_serializer = (Core.Name "serializer")
 
-_LastMile_fileExtension = (Core.FieldName "fileExtension")
+_LastMile_fileExtension = (Core.Name "fileExtension")
 
 -- | The specification of a schema at the source end of a workflow
 data SchemaSpec = 
@@ -56,11 +56,11 @@ data SchemaSpec =
 
 _SchemaSpec = (Core.Name "hydra/workflow.SchemaSpec")
 
-_SchemaSpec_hydra = (Core.FieldName "hydra")
+_SchemaSpec_hydra = (Core.Name "hydra")
 
-_SchemaSpec_file = (Core.FieldName "file")
+_SchemaSpec_file = (Core.Name "file")
 
-_SchemaSpec_provided = (Core.FieldName "provided")
+_SchemaSpec_provided = (Core.Name "provided")
 
 -- | The specification of a workflow which takes a schema specification, reads data from a directory, and writes data to another directory
 data TransformWorkflow = 
@@ -77,10 +77,10 @@ data TransformWorkflow =
 
 _TransformWorkflow = (Core.Name "hydra/workflow.TransformWorkflow")
 
-_TransformWorkflow_name = (Core.FieldName "name")
+_TransformWorkflow_name = (Core.Name "name")
 
-_TransformWorkflow_schemaSpec = (Core.FieldName "schemaSpec")
+_TransformWorkflow_schemaSpec = (Core.Name "schemaSpec")
 
-_TransformWorkflow_srcDir = (Core.FieldName "srcDir")
+_TransformWorkflow_srcDir = (Core.Name "srcDir")
 
-_TransformWorkflow_destDir = (Core.FieldName "destDir")
+_TransformWorkflow_destDir = (Core.Name "destDir")

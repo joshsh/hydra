@@ -212,9 +212,8 @@ sInferTypeInternal term = case term of
         then sInferTypeInternal $ TermLet (Let [L.head fields] $ TermLet $ Let (L.tail fields) env)
         else forSingleBinding $ L.head fields
       where
-        forSingleBinding (Field (FieldName key') value) = Flows.bind sNewVar withVar
+        forSingleBinding (Field key value) = Flows.bind sNewVar withVar
           where
-            key = Name key'
             -- Create a temporary type variable for the binding
             withVar var = sWithTypeBinding key (Types.mono $ TypeVariable var) $
                 Flows.bind (sInferTypeInternal value) withValueType
@@ -367,8 +366,8 @@ _var = TermVariable . Name
 f @@ x = TermApplication $ Application f x
 
 infixr 0 >:
-(>:) :: String -> Term -> (FieldName, Term)
-n >: t = (FieldName n, t)
+(>:) :: String -> Term -> (Name, Term)
+n >: t = (Name n, t)
 
 int32 = TermLiteral . LiteralInteger . IntegerValueInt32
 lambda v b = TermFunction $ FunctionLambda $ Lambda (Name v) Nothing b

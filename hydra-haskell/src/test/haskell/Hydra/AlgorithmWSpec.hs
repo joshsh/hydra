@@ -173,8 +173,8 @@ checkEliminations = H.describe "Check a few hand-picked elimination terms" $ do
   H.it "Match statements" $ do
     expectType
       (match testTypeSimpleNumberName Nothing [
-        Field (FieldName "int") $ lambda "x" $ var "x",
-        Field (FieldName "float") $ lambda "x" $ int32 42])
+        Field (Name "int") $ lambda "x" $ var "x",
+        Field (Name "float") $ lambda "x" $ int32 42])
       (funT (TypeVariable testTypeSimpleNumberName) Types.int32)
 
 checkIndividualTerms :: H.SpecWith ()
@@ -217,91 +217,91 @@ checkIndividualTerms = H.describe "Check a few hand-picked terms" $ do
     H.it "test #1" $
       expectType
         (record testTypeLatLonName [
-          Field (FieldName "lat") $ float32 37.7749,
-          Field (FieldName "lon") $ float32 $ negate 122.4194])
+          Field (Name "lat") $ float32 37.7749,
+          Field (Name "lon") $ float32 $ negate 122.4194])
         (TypeVariable testTypeLatLonName)
     H.it "test #2" $
       expectType
         (record testTypeLatLonPolyName [
-          Field (FieldName "lat") $ float32 37.7749,
-          Field (FieldName "lon") $ float32 $ negate 122.4194])
+          Field (Name "lat") $ float32 37.7749,
+          Field (Name "lon") $ float32 $ negate 122.4194])
         (Types.apply (TypeVariable testTypeLatLonPolyName) Types.float32)
     H.it "test #3" $
       expectType
         (lambda "lon" (record testTypeLatLonPolyName [
-          Field (FieldName "lat") $ float32 37.7749,
-          Field (FieldName "lon") $ var "lon"]))
+          Field (Name "lat") $ float32 37.7749,
+          Field (Name "lon") $ var "lon"]))
         (Types.function (Types.float32) (Types.apply (TypeVariable testTypeLatLonPolyName) Types.float32))
     H.it "test #4" $
       expectPolytype
         (lambda "latlon" (record testTypeLatLonPolyName [
-          Field (FieldName "lat") $ var "latlon",
-          Field (FieldName "lon") $ var "latlon"]))
+          Field (Name "lat") $ var "latlon",
+          Field (Name "lon") $ var "latlon"]))
         ["t0"] (Types.function (Types.var "t0") (Types.apply (TypeVariable testTypeLatLonPolyName) (Types.var "t0")))
 
   H.describe "Record instances of simply recursive record types" $ do
     H.it "test #1" $
       expectType
         (record testTypeIntListName [
-          Field (FieldName "head") $ int32 42,
-          Field (FieldName "tail") $ optional $ Just $ record testTypeIntListName [
-            Field (FieldName "head") $ int32 43,
-            Field (FieldName "tail") $ optional Nothing]])
+          Field (Name "head") $ int32 42,
+          Field (Name "tail") $ optional $ Just $ record testTypeIntListName [
+            Field (Name "head") $ int32 43,
+            Field (Name "tail") $ optional Nothing]])
         (TypeVariable testTypeIntListName)
     H.it "test #2" $
       expectType
         ((lambda "x" $ record testTypeIntListName [
-          Field (FieldName "head") $ var "x",
-          Field (FieldName "tail") $ optional $ Just $ record testTypeIntListName [
-            Field (FieldName "head") $ var "x",
-            Field (FieldName "tail") $ optional Nothing]]) @@ int32 42)
+          Field (Name "head") $ var "x",
+          Field (Name "tail") $ optional $ Just $ record testTypeIntListName [
+            Field (Name "head") $ var "x",
+            Field (Name "tail") $ optional Nothing]]) @@ int32 42)
         (TypeVariable testTypeIntListName)
     H.it "test #3" $
       expectType
         (record testTypeListName [
-          Field (FieldName "head") $ int32 42,
-          Field (FieldName "tail") $ optional $ Just $ record testTypeListName [
-            Field (FieldName "head") $ int32 43,
-            Field (FieldName "tail") $ optional Nothing]])
+          Field (Name "head") $ int32 42,
+          Field (Name "tail") $ optional $ Just $ record testTypeListName [
+            Field (Name "head") $ int32 43,
+            Field (Name "tail") $ optional Nothing]])
         (Types.apply (TypeVariable testTypeListName) Types.int32)
     H.it "test #4" $
       expectType
         ((lambda "x" $ record testTypeListName [
-          Field (FieldName "head") $ var "x",
-          Field (FieldName "tail") $ optional $ Just $ record testTypeListName [
-            Field (FieldName "head") $ var "x",
-            Field (FieldName "tail") $ optional Nothing]]) @@ int32 42)
+          Field (Name "head") $ var "x",
+          Field (Name "tail") $ optional $ Just $ record testTypeListName [
+            Field (Name "head") $ var "x",
+            Field (Name "tail") $ optional Nothing]]) @@ int32 42)
         (Types.apply (TypeVariable testTypeListName) Types.int32)
     H.it "test #5" $
       expectPolytype
         (lambda "x" $ record testTypeListName [
-          Field (FieldName "head") $ var "x",
-          Field (FieldName "tail") $ optional $ Just $ record testTypeListName [
-            Field (FieldName "head") $ var "x",
-            Field (FieldName "tail") $ optional Nothing]])
+          Field (Name "head") $ var "x",
+          Field (Name "tail") $ optional $ Just $ record testTypeListName [
+            Field (Name "head") $ var "x",
+            Field (Name "tail") $ optional Nothing]])
         ["t0"] (Types.function (Types.var "t0") (Types.apply (TypeVariable testTypeListName) (Types.var "t0")))
 
   H.describe "Record instances of mutually recursive record types" $ do
     H.it "test #1" $
       expectType
         ((lambda "x" $ record testTypeBuddyListAName [
-          Field (FieldName "head") $ var "x",
-          Field (FieldName "tail") $ optional $ Just $ record testTypeBuddyListBName [
-            Field (FieldName "head") $ var "x",
-            Field (FieldName "tail") $ optional Nothing]]) @@ int32 42)
+          Field (Name "head") $ var "x",
+          Field (Name "tail") $ optional $ Just $ record testTypeBuddyListBName [
+            Field (Name "head") $ var "x",
+            Field (Name "tail") $ optional Nothing]]) @@ int32 42)
         (Types.apply (TypeVariable testTypeBuddyListAName) Types.int32)
     H.it "test #2" $
       expectPolytype
         (lambda "x" $ record testTypeBuddyListAName [
-          Field (FieldName "head") $ var "x",
-          Field (FieldName "tail") $ optional $ Just $ record testTypeBuddyListBName [
-            Field (FieldName "head") $ var "x",
-            Field (FieldName "tail") $ optional Nothing]])
+          Field (Name "head") $ var "x",
+          Field (Name "tail") $ optional $ Just $ record testTypeBuddyListBName [
+            Field (Name "head") $ var "x",
+            Field (Name "tail") $ optional Nothing]])
         ["t0"] (Types.function (Types.var "t0") (Types.apply (TypeVariable testTypeBuddyListAName) (Types.var "t0")))
 
   H.it "Unions" $ do
     expectType
-      (inject testTypeTimestampName $ Field (FieldName "unixTimeMillis") $ uint64 1638200308368)
+      (inject testTypeTimestampName $ Field (Name "unixTimeMillis") $ uint64 1638200308368)
       (TypeVariable testTypeTimestampName)
 
   H.describe "Sets" $ do
@@ -536,15 +536,15 @@ checkOtherFunctionTerms = H.describe "Check a few hand-picked function terms" $ 
 
   H.it "Projections" $ do
     expectType
-      (project testTypePersonName (FieldName "firstName"))
+      (project testTypePersonName (Name "firstName"))
       (Types.function (TypeVariable testTypePersonName) Types.string)
 
   H.it "Union eliminations (case statements)" $ do
     expectType
       (match testTypeUnionMonomorphicName Nothing [
-        Field (FieldName "bool") (lambda "x" (boolean True)),
-        Field (FieldName "string") (lambda "x" (boolean False)),
-        Field (FieldName "unit") (lambda "x" (boolean False))])
+        Field (Name "bool") (lambda "x" (boolean True)),
+        Field (Name "string") (lambda "x" (boolean False)),
+        Field (Name "unit") (lambda "x" (boolean False))])
       (Types.function (TypeVariable testTypeUnionMonomorphicName) Types.boolean)
 
 checkPathologicalTerms :: H.SpecWith ()
@@ -817,28 +817,28 @@ checkSums = H.describe "Check a few hand-picked sum terms" $ do
 --    H.describe "Injections" $ do
 --      H.it "test #1" $
 --        expectTypeAnnotation pure
---          (inject testTypeTimestampName $ Field (FieldName "date") $ string "2023-05-11")
+--          (inject testTypeTimestampName $ Field (Name "date") $ string "2023-05-11")
 --          (TypeVariable testTypeTimestampName)
 --      H.it "test #2" $
 --        expectTypeAnnotation pure
---          (lambda "ignored" $ (inject testTypeTimestampName $ Field (FieldName "date") $ string "2023-05-11"))
+--          (lambda "ignored" $ (inject testTypeTimestampName $ Field (Name "date") $ string "2023-05-11"))
 --          (Types.lambda "t0" $ Types.function (Types.var "t0") (TypeVariable testTypeTimestampName))
 --
 --    H.it "Projections" $ do
 --      expectTypeAnnotation pure
---        (project testTypePersonName $ FieldName "firstName")
+--        (project testTypePersonName $ Name "firstName")
 --        (Types.function (TypeVariable testTypePersonName) Types.string)
 --
 --    H.describe "Case statements" $ do
 --      H.it "test #1" $
 --        expectTypeAnnotation pure
 --          (match testTypeNumberName (Just $ string "it's something else") [
---            Field (FieldName "int") $ constant $ string "it's an integer"])
+--            Field (Name "int") $ constant $ string "it's an integer"])
 --          (Types.function (TypeVariable testTypeNumberName) Types.string)
 --      H.describe "test #2" $ do
 --        let  testCase = match testTypeNumberName Nothing [
---                          Field (FieldName "int") $ constant $ string "it's an integer",
---                          Field (FieldName "float") $ constant $ string "it's a float"]
+--                          Field (Name "int") $ constant $ string "it's an integer",
+--                          Field (Name "float") $ constant $ string "it's a float"]
 --        H.it "condition #1" $
 --          expectTypeAnnotation pure testCase
 --            (Types.function (TypeVariable testTypeNumberName) Types.string)
@@ -937,17 +937,17 @@ checkUserProvidedTypes = H.describe "Check that user-provided type annotations a
     H.describe "Type annotations on let-bound terms" $ do
       H.it "test #1" $
         expectPolytype
-          (TermLet $ Let [Field (FieldName "x") pretypedEmptyList] $ var "x")
+          (TermLet $ Let [Field (Name "x") pretypedEmptyList] $ var "x")
           ["p"] (Types.list $ Types.var "p")
       H.it "test #2" $
         expectPolytype
-          (TermLet $ Let [Field (FieldName "y") pretypedEmptyMap] $ var "y")
+          (TermLet $ Let [Field (Name "y") pretypedEmptyMap] $ var "y")
           ["k", "v"] (Types.map (Types.var "k") (Types.var "v"))
       H.it "test #3" $
         expectPolytype
           (TermLet $ Let [
-            Field (FieldName "x") pretypedEmptyList,
-            Field (FieldName "y") pretypedEmptyMap] $ Terms.pair (var "x") (var "y"))
+            Field (Name "x") pretypedEmptyList,
+            Field (Name "y") pretypedEmptyMap] $ Terms.pair (var "x") (var "y"))
           ["p", "k", "v"] (Types.pair (Types.list $ Types.var "p") (Types.map (Types.var "k") (Types.var "v")))
 
     H.describe "Check that type variables in subterm annotations are also preserved" $ do

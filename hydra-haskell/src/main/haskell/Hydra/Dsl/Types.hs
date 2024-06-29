@@ -51,9 +51,9 @@ enum :: [String] -> Type
 enum names = union $ (`field` unit) <$> names
 
 field :: String -> Type -> FieldType
-field fn = FieldType (FieldName fn)
+field fn = FieldType (Name fn)
 
-fieldsToMap :: [FieldType] -> M.Map FieldName Type
+fieldsToMap :: [FieldType] -> M.Map Name Type
 fieldsToMap fields = M.fromList $ (\(FieldType name typ) -> (name, typ)) <$> fields
 
 float32 :: Type

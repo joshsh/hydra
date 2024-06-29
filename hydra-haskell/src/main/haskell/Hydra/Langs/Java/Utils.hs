@@ -39,18 +39,18 @@ addJavaTypeParameter rt t = case t of
 fieldExpression :: Java.Identifier -> Java.Identifier -> Java.ExpressionName
 fieldExpression varId fieldId = Java.ExpressionName (Just $ Java.AmbiguousName [varId]) fieldId
 
-fieldNameToJavaExpression :: FieldName -> Java.Expression
+fieldNameToJavaExpression :: Name -> Java.Expression
 fieldNameToJavaExpression fname = javaPostfixExpressionToJavaExpression $
   Java.PostfixExpressionName $ Java.ExpressionName Nothing (fieldNameToJavaIdentifier fname)
 
-fieldNameToJavaIdentifier :: FieldName -> Java.Identifier
-fieldNameToJavaIdentifier (FieldName name) = javaIdentifier name
+fieldNameToJavaIdentifier :: Name -> Java.Identifier
+fieldNameToJavaIdentifier (Name name) = javaIdentifier name
 
-fieldNameToJavaVariableDeclarator :: FieldName -> Java.VariableDeclarator
-fieldNameToJavaVariableDeclarator (FieldName n) = javaVariableDeclarator (javaIdentifier n) Nothing
+fieldNameToJavaVariableDeclarator :: Name -> Java.VariableDeclarator
+fieldNameToJavaVariableDeclarator (Name n) = javaVariableDeclarator (javaIdentifier n) Nothing
 
-fieldNameToJavaVariableDeclaratorId :: FieldName -> Java.VariableDeclaratorId
-fieldNameToJavaVariableDeclaratorId (FieldName n) = javaVariableDeclaratorId $ javaIdentifier n
+fieldNameToJavaVariableDeclaratorId :: Name -> Java.VariableDeclaratorId
+fieldNameToJavaVariableDeclaratorId (Name n) = javaVariableDeclaratorId $ javaIdentifier n
 
 importAliasesForModule :: Module -> Aliases
 importAliasesForModule mod = Aliases (moduleNamespace mod) M.empty S.empty
@@ -315,7 +315,7 @@ javaTypeName id = Java.TypeName (Java.TypeIdentifier id) Nothing
 javaTypeParameter :: String -> Java.TypeParameter
 javaTypeParameter v = Java.TypeParameter [] (javaTypeIdentifier v) Nothing
 
-javaTypeToJavaFormalParameter :: Java.Type -> FieldName -> Java.FormalParameter
+javaTypeToJavaFormalParameter :: Java.Type -> Name -> Java.FormalParameter
 javaTypeToJavaFormalParameter jt fname = Java.FormalParameterSimple $ Java.FormalParameter_Simple [] argType argId
   where
     argType = Java.UnannType jt
@@ -454,7 +454,7 @@ toAcceptMethod abstract vtparams = methodDeclaration mods tparams anns acceptMet
     anns = if abstract
       then []
       else [overrideAnnotation]
-    param = javaTypeToJavaFormalParameter ref (FieldName varName)
+    param = javaTypeToJavaFormalParameter ref (Name varName)
       where
         ref = javaClassTypeToJavaType $
           Java.ClassType
@@ -471,7 +471,7 @@ toAcceptMethod abstract vtparams = methodDeclaration mods tparams anns acceptMet
     returnExpr = javaMethodInvocationToJavaExpression $
         methodInvocationStatic (Java.Identifier varName) (Java.Identifier visitMethodName) [javaThis]
 
-toAssignStmt :: FieldName -> Java.Statement
+toAssignStmt :: Name -> Java.Statement
 toAssignStmt fname = javaAssignmentStatement lhs rhs
   where
     lhs = Java.LeftHandSideFieldAccess $ thisField id
@@ -515,8 +515,8 @@ variableToJavaIdentifier (Name var) = Java.Identifier $ if var == ignoredVariabl
   then "ignored"
   else var -- TODO: escape
 
-variantClassName :: Bool -> Name -> FieldName -> Name
-variantClassName qualify elName (FieldName fname) = unqualifyName (QualifiedName ns local1)
+variantClassName :: Bool -> Name -> Name -> Name
+variantClassName qualify elName (Name fname) = unqualifyName (QualifiedName ns local1)
   where
     QualifiedName ns local = qualifyNameEager elName
     flocal = capitalize fname

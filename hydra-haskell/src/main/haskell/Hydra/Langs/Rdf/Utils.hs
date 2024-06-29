@@ -64,8 +64,8 @@ nextBlankNode = do
   return $ Rdf.ResourceBnode $ Rdf.BlankNode $ "b" ++ show count
 
 -- Note: these are not "proper" URNs, as they do not use an established URN scheme
-propertyIri :: Name -> FieldName -> Rdf.Iri
-propertyIri rname fname = Rdf.Iri $ "urn:" ++ unNamespace gname ++ "#" ++ decapitalize local ++ capitalize (unFieldName fname)
+propertyIri :: Name -> Name -> Rdf.Iri
+propertyIri rname fname = Rdf.Iri $ "urn:" ++ unNamespace gname ++ "#" ++ decapitalize local ++ capitalize (unName fname)
   where
     QualifiedName (Just gname) local = qualifyNameLazy rname
 

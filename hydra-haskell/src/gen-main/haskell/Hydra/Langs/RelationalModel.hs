@@ -30,11 +30,11 @@ data ColumnSchema t =
 
 _ColumnSchema = (Core.Name "hydra/langs/relationalModel.ColumnSchema")
 
-_ColumnSchema_name = (Core.FieldName "name")
+_ColumnSchema_name = (Core.Name "name")
 
-_ColumnSchema_domain = (Core.FieldName "domain")
+_ColumnSchema_domain = (Core.Name "domain")
 
-_ColumnSchema_isPrimaryKey = (Core.FieldName "isPrimaryKey")
+_ColumnSchema_isPrimaryKey = (Core.Name "isPrimaryKey")
 
 -- | A mapping from certain columns of a source relation to primary key columns of a target relation
 data ForeignKey = 
@@ -46,9 +46,9 @@ data ForeignKey =
 
 _ForeignKey = (Core.Name "hydra/langs/relationalModel.ForeignKey")
 
-_ForeignKey_foreignRelation = (Core.FieldName "foreignRelation")
+_ForeignKey_foreignRelation = (Core.Name "foreignRelation")
 
-_ForeignKey_keys = (Core.FieldName "keys")
+_ForeignKey_keys = (Core.Name "keys")
 
 -- | A primary key of a relation, specified either as a single column, or as a list of columns
 newtype PrimaryKey = 
@@ -91,13 +91,13 @@ data RelationSchema t =
 
 _RelationSchema = (Core.Name "hydra/langs/relationalModel.RelationSchema")
 
-_RelationSchema_name = (Core.FieldName "name")
+_RelationSchema_name = (Core.Name "name")
 
-_RelationSchema_columns = (Core.FieldName "columns")
+_RelationSchema_columns = (Core.Name "columns")
 
-_RelationSchema_primaryKeys = (Core.FieldName "primaryKeys")
+_RelationSchema_primaryKeys = (Core.Name "primaryKeys")
 
-_RelationSchema_foreignKeys = (Core.FieldName "foreignKeys")
+_RelationSchema_foreignKeys = (Core.Name "foreignKeys")
 
 -- | A domain-unordered (string-indexed, rather than position-indexed) relation
 newtype Relationship v = 

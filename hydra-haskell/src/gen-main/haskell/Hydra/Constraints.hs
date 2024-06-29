@@ -18,9 +18,9 @@ data PathEquation =
 
 _PathEquation = (Core.Name "hydra/constraints.PathEquation")
 
-_PathEquation_left = (Core.FieldName "left")
+_PathEquation_left = (Core.Name "left")
 
-_PathEquation_right = (Core.FieldName "right")
+_PathEquation_right = (Core.Name "right")
 
 -- | A pattern which, if it matches in a given graph, implies that another pattern must also match. Query variables are shared between the two patterns.
 data PatternImplication = 
@@ -31,6 +31,6 @@ data PatternImplication =
 
 _PatternImplication = (Core.Name "hydra/constraints.PatternImplication")
 
-_PatternImplication_antecedent = (Core.FieldName "antecedent")
+_PatternImplication_antecedent = (Core.Name "antecedent")
 
-_PatternImplication_consequent = (Core.FieldName "consequent")
+_PatternImplication_consequent = (Core.Name "consequent")

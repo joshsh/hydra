@@ -102,8 +102,8 @@ supportedConstructorsAreUnchanged = H.describe "Verify that supported term const
       stringOrIntType
       stringOrIntType
       False
-      (variant stringOrIntName (FieldName "right") $ int32 int)
-      (variant stringOrIntName (FieldName "right") $ int32 int)
+      (variant stringOrIntName (Name "right") $ int32 int)
+      (variant stringOrIntName (Name "right") $ int32 int)
 
   H.it "Sets (when supported) pass through without change" $
     QC.property $ \strings -> checkDataAdapter

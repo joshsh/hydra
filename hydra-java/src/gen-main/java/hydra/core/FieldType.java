@@ -8,11 +8,11 @@ import java.io.Serializable;
 public class FieldType<A> implements Serializable {
   public static final hydra.core.Name NAME = new hydra.core.Name("hydra/core.FieldType");
   
-  public final hydra.core.FieldName name;
+  public final hydra.core.Name name;
   
   public final hydra.core.Type<A> type;
   
-  public FieldType (hydra.core.FieldName name, hydra.core.Type<A> type) {
+  public FieldType (hydra.core.Name name, hydra.core.Type<A> type) {
     this.name = name;
     this.type = type;
   }
@@ -31,7 +31,7 @@ public class FieldType<A> implements Serializable {
     return 2 * name.hashCode() + 3 * type.hashCode();
   }
   
-  public FieldType withName(hydra.core.FieldName name) {
+  public FieldType withName(hydra.core.Name name) {
     return new FieldType(name, type);
   }
   

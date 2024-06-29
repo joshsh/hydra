@@ -171,7 +171,7 @@ constructModule mod coders els = do
               jdom <- adaptTypeToJavaAndEncode aliases2 dom
               jcod <- adaptTypeToJavaAndEncode aliases2 cod
               let mods = [Java.InterfaceMethodModifierStatic]
-              let param = javaTypeToJavaFormalParameter jdom (FieldName $ unName v)
+              let param = javaTypeToJavaFormalParameter jdom (Name $ unName v)
               let result = javaTypeToJavaResult jcod
               maybeLet aliases2 body $ \aliases3 term3 stmts3 -> do
                 jbody <- encodeTerm aliases3 term3
@@ -219,7 +219,7 @@ declarationForRecordType isInner isSer aliases tparams elName fields = do
 
     toWithMethod field = do
       let mods = [Java.MethodModifierPublic]
-      let methodName = "with" ++ capitalize (unFieldName $ fieldTypeName field)
+      let methodName = "with" ++ capitalize (unName $ fieldTypeName field)
       param <- fieldTypeToFormalParam aliases field
       let anns = [] -- TODO
       let result = referenceTypeToResult $ nameToJavaReferenceType aliases False [] elName Nothing
@@ -235,7 +235,7 @@ declarationForRecordType isInner isSer aliases tparams elName fields = do
       where
         anns = [overrideAnnotation]
         mods = [Java.MethodModifierPublic]
-        param = javaTypeToJavaFormalParameter (javaRefType [] Nothing "Object") (FieldName otherInstanceName)
+        param = javaTypeToJavaFormalParameter (javaRefType [] Nothing "Object") (Name otherInstanceName)
         result = javaTypeToJavaResult javaBooleanType
         tmpName = "o"
 
@@ -266,7 +266,7 @@ declarationForRecordType isInner isSer aliases tparams elName fields = do
             else javaConditionalAndExpressionToJavaExpression $
               Java.ConditionalAndExpression (eqClause . fieldTypeName <$> fields)
           where
-            eqClause (FieldName fname) = javaPostfixExpressionToJavaInclusiveOrExpression $
+            eqClause (Name fname) = javaPostfixExpressionToJavaInclusiveOrExpression $
                 javaMethodInvocationToJavaPostfixExpression $ Java.MethodInvocation header [arg]
               where
                 arg = javaExpressionNameToJavaExpression $
@@ -289,8 +289,8 @@ declarationForRecordType isInner isSer aliases tparams elName fields = do
           where
             returnZero = javaReturnStatement $ Just $ javaIntExpression 0
 
-            multPair :: Int -> FieldName -> Java.MultiplicativeExpression
-            multPair i (FieldName fname) = Java.MultiplicativeExpressionTimes $
+            multPair :: Int -> Name -> Java.MultiplicativeExpression
+            multPair i (Name fname) = Java.MultiplicativeExpressionTimes $
                 Java.MultiplicativeExpression_Binary lhs rhs
               where
                 lhs = Java.MultiplicativeExpressionUnary $ javaPrimaryToJavaUnaryExpression $
@@ -324,7 +324,7 @@ declarationForUnionType isSer aliases tparams elName fields = do
   where
     privateConstructor = makeConstructor aliases elName True [] []
     unionFieldClass (FieldType fname ftype) = do
-      let rtype = Types.record $ if isUnitType ftype then [] else [FieldType (FieldName valueFieldName) ftype]
+      let rtype = Types.record $ if isUnitType ftype then [] else [FieldType (Name valueName) ftype]
       toClassDecl True isSer aliases [] (variantClassName False elName fname) rtype
     augmentVariantClass (Java.ClassDeclarationNormal cd) = Java.ClassDeclarationNormal $ cd {
         Java.normalClassDeclarationModifiers = [Java.ClassModifierPublic, Java.ClassModifierStatic, Java.ClassModifierFinal],
@@ -379,12 +379,12 @@ declarationForUnionType isSer aliases tparams elName fields = do
 
     typeArgs = typeParameterToTypeArgument <$> tparams
 
-    mainInstanceParam = javaTypeToJavaFormalParameter classRef $ FieldName instanceName
+    mainInstanceParam = javaTypeToJavaFormalParameter classRef $ Name instanceName
       where
         classRef = javaClassTypeToJavaType $
           nameToJavaClassType aliases False typeArgs elName Nothing
 
-    variantInstanceParam fname = javaTypeToJavaFormalParameter classRef $ FieldName instanceName
+    variantInstanceParam fname = javaTypeToJavaFormalParameter classRef $ Name instanceName
       where
         classRef = javaClassTypeToJavaType $
           nameToJavaClassType aliases False typeArgs (variantClassName False elName fname) Nothing
@@ -480,8 +480,8 @@ encodeElimination aliases marg dom cod elm = case elm of
         where
           var = Name "r"
           jbody = javaExpressionNameToJavaExpression $
-            fieldExpression (variableToJavaIdentifier var) (javaIdentifier $ unFieldName fname)
-      Just jarg -> pure $ javaFieldAccessToJavaExpression $ Java.FieldAccess qual (javaIdentifier $ unFieldName fname)
+            fieldExpression (variableToJavaIdentifier var) (javaIdentifier $ unName fname)
+      Just jarg -> pure $ javaFieldAccessToJavaExpression $ Java.FieldAccess qual (javaIdentifier $ unName fname)
         where
           qual = Java.FieldAccess_QualifierPrimary $ javaExpressionToJavaPrimary jarg
     return jexp
@@ -530,7 +530,7 @@ encodeElimination aliases marg dom cod elm = case elm of
             let jdom = Java.TypeReference $ nameToJavaReferenceType aliases True targs tname Nothing
             let mods = [Java.MethodModifierPublic]
             let anns = [overrideAnnotation]
-            let param = javaTypeToJavaFormalParameter jdom $ FieldName instanceName
+            let param = javaTypeToJavaFormalParameter jdom $ Name instanceName
             let result = Java.ResultType $ Java.UnannType jcod
             jret <- encodeTerm aliases d
             let returnStmt = Java.BlockStatementStatement $ javaReturnStatement $ Just jret
@@ -538,13 +538,13 @@ encodeElimination aliases marg dom cod elm = case elm of
 
           visitBranch jcod field = do
             targs <- javaTypeArgumentsForNamedType tname
-            let jdom = Java.TypeReference $ nameToJavaReferenceType aliases True targs tname (Just $ capitalize $ unFieldName $ fieldName field)
+            let jdom = Java.TypeReference $ nameToJavaReferenceType aliases True targs tname (Just $ capitalize $ unName $ fieldName field)
             let mods = [Java.MethodModifierPublic]
             let anns = [overrideAnnotation]
-            let param = javaTypeToJavaFormalParameter jdom $ FieldName instanceName
+            let param = javaTypeToJavaFormalParameter jdom $ Name instanceName
             let result = Java.ResultType $ Java.UnannType jcod
             -- Note: the escaping is necessary because the instance.value field reference does not correspond to an actual Hydra projection term
-            let value = Terms.var ("$" ++ instanceName ++ "." ++ valueFieldName)
+            let value = Terms.var ("$" ++ instanceName ++ "." ++ valueName)
             jret <- encodeTerm aliases $ contractTerm $ Terms.apply (fieldTerm field) value
             let returnStmt = Java.BlockStatementStatement $ javaReturnStatement $ Just jret
             return $ noComment $ methodDeclaration mods [] anns visitMethodName [param] result (Just [returnStmt])
@@ -554,7 +554,7 @@ encodeElimination aliases marg dom cod elm = case elm of
         var = Name "w"
         arg = javaIdentifierToJavaExpression $ variableToJavaIdentifier var
         jbody = javaConstructorCall (javaConstructorName (nameToJavaName aliases name) Nothing) [arg] Nothing
-    Just jarg -> pure $ javaFieldAccessToJavaExpression $ Java.FieldAccess qual (javaIdentifier valueFieldName)
+    Just jarg -> pure $ javaFieldAccessToJavaExpression $ Java.FieldAccess qual (javaIdentifier valueName)
       where
         qual = Java.FieldAccess_QualifierPrimary $ javaExpressionToJavaPrimary jarg
   _ -> pure $ encodeLiteral $ LiteralString $
@@ -687,7 +687,7 @@ encodeTerm aliases term0 = encodeInternal [] term0
           return $ javaMethodInvocationToJavaExpression $
             methodInvocation (Just $ Right prim) (Java.Identifier "collect") [coll]
 
-        TermUnion (Injection name (Field (FieldName fname) v)) -> do
+        TermUnion (Injection name (Field (Name fname) v)) -> do
           let (Java.Identifier typeId) = nameToJavaName aliases name
           let consId = Java.Identifier $ typeId ++ "." ++ sanitizeJavaName (capitalize fname)
           args <- if isUnitTerm v
@@ -839,7 +839,7 @@ maybeLet aliases term cons = helper [] term
           maybeLet aliasesWithRecursive env $ \aliases' tm stmts' -> cons aliases' (reannotate anns tm) (stmts ++ stmts')
         where
           aliasesWithRecursive = aliases { aliasesRecursiveVars = recursiveVars }
-          lookupBinding (Name name) = case L.filter (\f -> name == (unFieldName $ fieldName f)) bindings of
+          lookupBinding (Name name) = case L.filter (\f -> name == (unName $ fieldName f)) bindings of
             [f] -> fieldTerm f
 
           toDeclStatements names = do
@@ -877,7 +877,7 @@ maybeLet aliases term cons = helper [] term
               then Java.BlockStatementStatement $ javaMethodInvocationToJavaStatement $
                 methodInvocation (Just $ Left $ Java.ExpressionName Nothing id) (Java.Identifier setMethodName) [rhs]
               else variableDeclarationStatement aliasesWithRecursive jtype id rhs
-          bindingVars = S.fromList (Name . unFieldName . fieldName <$> bindings)
+          bindingVars = S.fromList (Name . unName . fieldName <$> bindings)
           recursiveVars = S.fromList $ L.concat (ifRec <$> sorted)
             where
               ifRec names = case names of
@@ -889,7 +889,7 @@ maybeLet aliases term cons = helper [] term
                 _ -> names
           allDeps = M.fromList (toDeps <$> bindings)
             where
-              toDeps (Field (FieldName key) value) = (Name key, S.filter (\n -> S.member n bindingVars) $ freeVariablesInTerm value)
+              toDeps (Field (Name key) value) = (Name key, S.filter (\n -> S.member n bindingVars) $ freeVariablesInTerm value)
           sorted = topologicalSortComponents (toDeps <$> M.toList allDeps)
             where
               toDeps (key, deps) = (key, S.toList deps)
@@ -915,11 +915,11 @@ toClassDecl isInner isSer aliases tparams elName t = case stripType t of
     TypeUnion rt -> declarationForUnionType isSer aliases tparams elName $ rowTypeFields rt
     TypeLambda ut -> declarationForLambdaType isSer aliases tparams elName ut
     TypeWrap (Nominal tname wt) -> declarationForRecordType isInner isSer aliases tparams elName
-      [FieldType (FieldName "value") wt]
+      [FieldType (Name "value") wt]
     -- Other types are not supported as class declarations, so we wrap them as record types.
     _ -> wrap t -- TODO: wrap and unwrap the corresponding terms as record terms.
   where
-    wrap t' = declarationForRecordType isInner isSer aliases tparams elName [Types.field valueFieldName t']
+    wrap t' = declarationForRecordType isInner isSer aliases tparams elName [Types.field valueName t']
 
 toDataDeclaration :: Aliases -> (a, TypedTerm) -> Flow Graph a
 toDataDeclaration aliases (el, TypedTerm typ term) = do

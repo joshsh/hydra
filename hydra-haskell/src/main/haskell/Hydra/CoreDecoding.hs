@@ -37,12 +37,9 @@ import qualified Data.Maybe as Y
 coreDecodeApplicationType :: Application -> Flow Graph ApplicationType
 coreDecodeApplicationType (Application lhs rhs) = ApplicationType <$> coreDecodeType lhs <*> coreDecodeType rhs
 
-coreDecodeFieldName :: Term -> Flow Graph FieldName
-coreDecodeFieldName term = FieldName <$> (Expect.wrap _FieldName term >>= Expect.string)
-
 coreDecodeFieldType :: Term -> Flow Graph FieldType
 coreDecodeFieldType = matchRecord $ \m -> FieldType
-  <$> getField m _FieldType_name coreDecodeFieldName
+  <$> getField m _FieldType_name coreDecodeName
   <*> getField m _FieldType_type coreDecodeType
 
 coreDecodeFieldTypes :: Term -> Flow Graph [FieldType]
@@ -137,20 +134,20 @@ coreDecodeType dat = case dat of
 --    (_Type_variable, fmap TypeVariable . Expect.variable),
     (_Type_wrap, fmap TypeWrap . (coreDecodeNominal coreDecodeType))] dat
 
-getField :: M.Map FieldName Term -> FieldName -> (Term -> Flow Graph b) -> Flow Graph b
+getField :: M.Map Name Term -> Name -> (Term -> Flow Graph b) -> Flow Graph b
 getField m fname decode = case M.lookup fname m of
   Nothing -> fail $ "expected field " ++ show fname ++ " not found"
   Just val -> decode val
 
-matchEnum :: Name -> [(FieldName, a)] -> Term -> Flow Graph a
+matchEnum :: Name -> [(Name, a)] -> Term -> Flow Graph a
 matchEnum tname = matchUnion tname . fmap (uncurry matchUnitField)
 
-matchRecord :: (M.Map FieldName Term -> Flow Graph a) -> Term -> Flow Graph a
+matchRecord :: (M.Map Name Term -> Flow Graph a) -> Term -> Flow Graph a
 matchRecord decode term = case stripTerm term of
   TermRecord (Record _ fields) -> decode $ M.fromList $ fmap (\(Field fname val) -> (fname, val)) fields
   _ -> unexpected "record" $ show term
 
-matchUnion :: Name -> [(FieldName, Term -> Flow Graph a)] -> Term -> Flow Graph a
+matchUnion :: Name -> [(Name, Term -> Flow Graph a)] -> Term -> Flow Graph a
 matchUnion tname pairs term = case stripTerm term of
     TermVariable name -> do
       el <- requireElement name
@@ -161,9 +158,9 @@ matchUnion tname pairs term = case stripTerm term of
         Just f -> f val
       else unexpected ("injection for type " ++ show tname) $ show term
     t -> unexpected ("union of type " ++ unName tname
-      ++ " with one of {" ++ L.intercalate ", " (unFieldName . fst <$> pairs) ++ "}") $ show t
+      ++ " with one of {" ++ L.intercalate ", " (unName . fst <$> pairs) ++ "}") $ show t
   where
     mapping = M.fromList pairs
 
-matchUnitField :: FieldName -> b -> (FieldName, a -> Flow Graph b)
+matchUnitField :: Name -> b -> (Name, a -> Flow Graph b)
 matchUnitField fname x = (fname, \_ -> pure x)

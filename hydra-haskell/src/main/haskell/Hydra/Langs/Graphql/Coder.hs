@@ -69,11 +69,11 @@ encodeEnumFieldType ft = do
     G.enumValueDefinitionEnumValue = encodeEnumFieldName $ fieldTypeName ft,
     G.enumValueDefinitionDirectives = Nothing}
 
-encodeEnumFieldName :: FieldName -> G.EnumValue
-encodeEnumFieldName = G.EnumValue . G.Name . sanitize . unFieldName
+encodeEnumFieldName :: Name -> G.EnumValue
+encodeEnumFieldName = G.EnumValue . G.Name . sanitize . unName
 
-encodeFieldName :: FieldName -> G.Name
-encodeFieldName = G.Name . sanitize . unFieldName
+encodeFieldName :: Name -> G.Name
+encodeFieldName = G.Name . sanitize . unName
 
 encodeFieldType :: Prefixes -> FieldType -> Flow Graph G.FieldDefinition
 encodeFieldType prefixes ft = do
@@ -127,7 +127,7 @@ encodeNamedType prefixes el typ = do
       t -> unexpected "record or union type" $ show t
   where
     wrapAsRecord = encodeNamedType prefixes el $ TypeRecord $ RowType (elementName el) Nothing [
-      FieldType (FieldName "value") typ]
+      FieldType (Name "value") typ]
 
 encodeTerm :: Term -> Flow Graph ()
 encodeTerm term = fail "not yet implemented"

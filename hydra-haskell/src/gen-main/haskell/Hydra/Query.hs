@@ -20,17 +20,17 @@ data ComparisonConstraint =
 
 _ComparisonConstraint = (Core.Name "hydra/query.ComparisonConstraint")
 
-_ComparisonConstraint_equal = (Core.FieldName "equal")
+_ComparisonConstraint_equal = (Core.Name "equal")
 
-_ComparisonConstraint_notEqual = (Core.FieldName "notEqual")
+_ComparisonConstraint_notEqual = (Core.Name "notEqual")
 
-_ComparisonConstraint_lessThan = (Core.FieldName "lessThan")
+_ComparisonConstraint_lessThan = (Core.Name "lessThan")
 
-_ComparisonConstraint_greaterThan = (Core.FieldName "greaterThan")
+_ComparisonConstraint_greaterThan = (Core.Name "greaterThan")
 
-_ComparisonConstraint_lessThanOrEqual = (Core.FieldName "lessThanOrEqual")
+_ComparisonConstraint_lessThanOrEqual = (Core.Name "lessThanOrEqual")
 
-_ComparisonConstraint_greaterThanOrEqual = (Core.FieldName "greaterThanOrEqual")
+_ComparisonConstraint_greaterThanOrEqual = (Core.Name "greaterThanOrEqual")
 
 -- | An abstract edge based on a record type
 data Edge = 
@@ -38,18 +38,18 @@ data Edge =
     -- | The name of a record type, for which the edge also specifies an out- and an in- projection
     edgeType :: Core.Name,
     -- | The field representing the out-projection of the edge. Defaults to 'out'.
-    edgeOut :: (Maybe Core.FieldName),
+    edgeOut :: (Maybe Core.Name),
     -- | The field representing the in-projection of the edge. Defaults to 'in'.
-    edgeIn :: (Maybe Core.FieldName)}
+    edgeIn :: (Maybe Core.Name)}
   deriving (Eq, Ord, Read, Show)
 
 _Edge = (Core.Name "hydra/query.Edge")
 
-_Edge_type = (Core.FieldName "type")
+_Edge_type = (Core.Name "type")
 
-_Edge_out = (Core.FieldName "out")
+_Edge_out = (Core.Name "out")
 
-_Edge_in = (Core.FieldName "in")
+_Edge_in = (Core.Name "in")
 
 -- | A query pattern which matches within a designated component subgraph
 data GraphPattern = 
@@ -62,9 +62,9 @@ data GraphPattern =
 
 _GraphPattern = (Core.Name "hydra/query.GraphPattern")
 
-_GraphPattern_graph = (Core.FieldName "graph")
+_GraphPattern_graph = (Core.Name "graph")
 
-_GraphPattern_patterns = (Core.FieldName "patterns")
+_GraphPattern_patterns = (Core.Name "patterns")
 
 -- | A node in a query expression; it may be a term, a variable, or a wildcard
 data Node = 
@@ -78,11 +78,11 @@ data Node =
 
 _Node = (Core.Name "hydra/query.Node")
 
-_Node_term = (Core.FieldName "term")
+_Node_term = (Core.Name "term")
 
-_Node_variable = (Core.FieldName "variable")
+_Node_variable = (Core.Name "variable")
 
-_Node_wildcard = (Core.FieldName "wildcard")
+_Node_wildcard = (Core.Name "wildcard")
 
 -- | A query path
 data Path = 
@@ -96,11 +96,11 @@ data Path =
 
 _Path = (Core.Name "hydra/query.Path")
 
-_Path_step = (Core.FieldName "step")
+_Path_step = (Core.Name "step")
 
-_Path_regex = (Core.FieldName "regex")
+_Path_regex = (Core.Name "regex")
 
-_Path_inverse = (Core.FieldName "inverse")
+_Path_inverse = (Core.Name "inverse")
 
 -- | A query pattern
 data Pattern = 
@@ -118,15 +118,15 @@ data Pattern =
 
 _Pattern = (Core.Name "hydra/query.Pattern")
 
-_Pattern_triple = (Core.FieldName "triple")
+_Pattern_triple = (Core.Name "triple")
 
-_Pattern_negation = (Core.FieldName "negation")
+_Pattern_negation = (Core.Name "negation")
 
-_Pattern_conjunction = (Core.FieldName "conjunction")
+_Pattern_conjunction = (Core.Name "conjunction")
 
-_Pattern_disjunction = (Core.FieldName "disjunction")
+_Pattern_disjunction = (Core.Name "disjunction")
 
-_Pattern_graph = (Core.FieldName "graph")
+_Pattern_graph = (Core.Name "graph")
 
 -- | A SELECT-style graph pattern matching query
 data Query = 
@@ -139,9 +139,9 @@ data Query =
 
 _Query = (Core.Name "hydra/query.Query")
 
-_Query_variables = (Core.FieldName "variables")
+_Query_variables = (Core.Name "variables")
 
-_Query_patterns = (Core.FieldName "patterns")
+_Query_patterns = (Core.Name "patterns")
 
 -- | A range from min to max, inclusive
 data Range = 
@@ -152,9 +152,9 @@ data Range =
 
 _Range = (Core.Name "hydra/query.Range")
 
-_Range_min = (Core.FieldName "min")
+_Range_min = (Core.Name "min")
 
-_Range_max = (Core.FieldName "max")
+_Range_max = (Core.Name "max")
 
 -- | A regular expression quantifier
 data RegexQuantifier = 
@@ -176,19 +176,19 @@ data RegexQuantifier =
 
 _RegexQuantifier = (Core.Name "hydra/query.RegexQuantifier")
 
-_RegexQuantifier_one = (Core.FieldName "one")
+_RegexQuantifier_one = (Core.Name "one")
 
-_RegexQuantifier_zeroOrOne = (Core.FieldName "zeroOrOne")
+_RegexQuantifier_zeroOrOne = (Core.Name "zeroOrOne")
 
-_RegexQuantifier_zeroOrMore = (Core.FieldName "zeroOrMore")
+_RegexQuantifier_zeroOrMore = (Core.Name "zeroOrMore")
 
-_RegexQuantifier_oneOrMore = (Core.FieldName "oneOrMore")
+_RegexQuantifier_oneOrMore = (Core.Name "oneOrMore")
 
-_RegexQuantifier_exactly = (Core.FieldName "exactly")
+_RegexQuantifier_exactly = (Core.Name "exactly")
 
-_RegexQuantifier_atLeast = (Core.FieldName "atLeast")
+_RegexQuantifier_atLeast = (Core.Name "atLeast")
 
-_RegexQuantifier_range = (Core.FieldName "range")
+_RegexQuantifier_range = (Core.Name "range")
 
 -- | A path with a regex quantifier
 data RegexSequence = 
@@ -199,9 +199,9 @@ data RegexSequence =
 
 _RegexSequence = (Core.Name "hydra/query.RegexSequence")
 
-_RegexSequence_path = (Core.FieldName "path")
+_RegexSequence_path = (Core.Name "path")
 
-_RegexSequence_quantifier = (Core.FieldName "quantifier")
+_RegexSequence_quantifier = (Core.Name "quantifier")
 
 -- | An atomic function as part of a query. When applied to a graph, steps are typed by function types.
 data Step = 
@@ -215,11 +215,11 @@ data Step =
 
 _Step = (Core.Name "hydra/query.Step")
 
-_Step_edge = (Core.FieldName "edge")
+_Step_edge = (Core.Name "edge")
 
-_Step_project = (Core.FieldName "project")
+_Step_project = (Core.Name "project")
 
-_Step_compare = (Core.FieldName "compare")
+_Step_compare = (Core.Name "compare")
 
 -- | A subject/predicate/object pattern
 data TriplePattern = 
@@ -231,11 +231,11 @@ data TriplePattern =
 
 _TriplePattern = (Core.Name "hydra/query.TriplePattern")
 
-_TriplePattern_subject = (Core.FieldName "subject")
+_TriplePattern_subject = (Core.Name "subject")
 
-_TriplePattern_predicate = (Core.FieldName "predicate")
+_TriplePattern_predicate = (Core.Name "predicate")
 
-_TriplePattern_object = (Core.FieldName "object")
+_TriplePattern_object = (Core.Name "object")
 
 -- | A query variable
 newtype Variable = 

@@ -18,9 +18,9 @@ data Closed =
 
 _Closed = (Core.Name "hydra/langs/shacl/model.Closed")
 
-_Closed_isClosed = (Core.FieldName "isClosed")
+_Closed_isClosed = (Core.Name "isClosed")
 
-_Closed_ignoredProperties = (Core.FieldName "ignoredProperties")
+_Closed_ignoredProperties = (Core.Name "ignoredProperties")
 
 -- | Any of a number of constraint parameters which can be applied either to node or property shapes
 data CommonConstraint = 
@@ -72,49 +72,49 @@ data CommonConstraint =
 
 _CommonConstraint = (Core.Name "hydra/langs/shacl/model.CommonConstraint")
 
-_CommonConstraint_and = (Core.FieldName "and")
+_CommonConstraint_and = (Core.Name "and")
 
-_CommonConstraint_closed = (Core.FieldName "closed")
+_CommonConstraint_closed = (Core.Name "closed")
 
-_CommonConstraint_class = (Core.FieldName "class")
+_CommonConstraint_class = (Core.Name "class")
 
-_CommonConstraint_datatype = (Core.FieldName "datatype")
+_CommonConstraint_datatype = (Core.Name "datatype")
 
-_CommonConstraint_disjoint = (Core.FieldName "disjoint")
+_CommonConstraint_disjoint = (Core.Name "disjoint")
 
-_CommonConstraint_equals = (Core.FieldName "equals")
+_CommonConstraint_equals = (Core.Name "equals")
 
-_CommonConstraint_hasValue = (Core.FieldName "hasValue")
+_CommonConstraint_hasValue = (Core.Name "hasValue")
 
-_CommonConstraint_in = (Core.FieldName "in")
+_CommonConstraint_in = (Core.Name "in")
 
-_CommonConstraint_languageIn = (Core.FieldName "languageIn")
+_CommonConstraint_languageIn = (Core.Name "languageIn")
 
-_CommonConstraint_nodeKind = (Core.FieldName "nodeKind")
+_CommonConstraint_nodeKind = (Core.Name "nodeKind")
 
-_CommonConstraint_node = (Core.FieldName "node")
+_CommonConstraint_node = (Core.Name "node")
 
-_CommonConstraint_not = (Core.FieldName "not")
+_CommonConstraint_not = (Core.Name "not")
 
-_CommonConstraint_maxExclusive = (Core.FieldName "maxExclusive")
+_CommonConstraint_maxExclusive = (Core.Name "maxExclusive")
 
-_CommonConstraint_maxInclusive = (Core.FieldName "maxInclusive")
+_CommonConstraint_maxInclusive = (Core.Name "maxInclusive")
 
-_CommonConstraint_maxLength = (Core.FieldName "maxLength")
+_CommonConstraint_maxLength = (Core.Name "maxLength")
 
-_CommonConstraint_minExclusive = (Core.FieldName "minExclusive")
+_CommonConstraint_minExclusive = (Core.Name "minExclusive")
 
-_CommonConstraint_minInclusive = (Core.FieldName "minInclusive")
+_CommonConstraint_minInclusive = (Core.Name "minInclusive")
 
-_CommonConstraint_minLength = (Core.FieldName "minLength")
+_CommonConstraint_minLength = (Core.Name "minLength")
 
-_CommonConstraint_pattern = (Core.FieldName "pattern")
+_CommonConstraint_pattern = (Core.Name "pattern")
 
-_CommonConstraint_property = (Core.FieldName "property")
+_CommonConstraint_property = (Core.Name "property")
 
-_CommonConstraint_or = (Core.FieldName "or")
+_CommonConstraint_or = (Core.Name "or")
 
-_CommonConstraint_xone = (Core.FieldName "xone")
+_CommonConstraint_xone = (Core.Name "xone")
 
 -- | Common constraint parameters and other properties for SHACL shapes
 data CommonProperties = 
@@ -139,21 +139,21 @@ data CommonProperties =
 
 _CommonProperties = (Core.Name "hydra/langs/shacl/model.CommonProperties")
 
-_CommonProperties_constraints = (Core.FieldName "constraints")
+_CommonProperties_constraints = (Core.Name "constraints")
 
-_CommonProperties_deactivated = (Core.FieldName "deactivated")
+_CommonProperties_deactivated = (Core.Name "deactivated")
 
-_CommonProperties_message = (Core.FieldName "message")
+_CommonProperties_message = (Core.Name "message")
 
-_CommonProperties_severity = (Core.FieldName "severity")
+_CommonProperties_severity = (Core.Name "severity")
 
-_CommonProperties_targetClass = (Core.FieldName "targetClass")
+_CommonProperties_targetClass = (Core.Name "targetClass")
 
-_CommonProperties_targetNode = (Core.FieldName "targetNode")
+_CommonProperties_targetNode = (Core.Name "targetNode")
 
-_CommonProperties_targetObjectsOf = (Core.FieldName "targetObjectsOf")
+_CommonProperties_targetObjectsOf = (Core.Name "targetObjectsOf")
 
-_CommonProperties_targetSubjectsOf = (Core.FieldName "targetSubjectsOf")
+_CommonProperties_targetSubjectsOf = (Core.Name "targetSubjectsOf")
 
 -- | An instance of a type like sh:Shape or sh:NodeShape, together with a unique IRI for that instance
 data Definition a = 
@@ -164,9 +164,9 @@ data Definition a =
 
 _Definition = (Core.Name "hydra/langs/shacl/model.Definition")
 
-_Definition_iri = (Core.FieldName "iri")
+_Definition_iri = (Core.Name "iri")
 
-_Definition_target = (Core.FieldName "target")
+_Definition_target = (Core.Name "target")
 
 data NodeKind = 
   -- | A blank node
@@ -185,17 +185,17 @@ data NodeKind =
 
 _NodeKind = (Core.Name "hydra/langs/shacl/model.NodeKind")
 
-_NodeKind_blankNode = (Core.FieldName "blankNode")
+_NodeKind_blankNode = (Core.Name "blankNode")
 
-_NodeKind_iri = (Core.FieldName "iri")
+_NodeKind_iri = (Core.Name "iri")
 
-_NodeKind_literal = (Core.FieldName "literal")
+_NodeKind_literal = (Core.Name "literal")
 
-_NodeKind_blankNodeOrIri = (Core.FieldName "blankNodeOrIri")
+_NodeKind_blankNodeOrIri = (Core.Name "blankNodeOrIri")
 
-_NodeKind_blankNodeOrLiteral = (Core.FieldName "blankNodeOrLiteral")
+_NodeKind_blankNodeOrLiteral = (Core.Name "blankNodeOrLiteral")
 
-_NodeKind_iriOrLiteral = (Core.FieldName "iriOrLiteral")
+_NodeKind_iriOrLiteral = (Core.Name "iriOrLiteral")
 
 -- | A SHACL node shape. See https://www.w3.org/TR/shacl/#node-shapes
 data NodeShape = 
@@ -205,7 +205,7 @@ data NodeShape =
 
 _NodeShape = (Core.Name "hydra/langs/shacl/model.NodeShape")
 
-_NodeShape_common = (Core.FieldName "common")
+_NodeShape_common = (Core.Name "common")
 
 -- | A SHACL pattern. See https://www.w3.org/TR/shacl/#PatternConstraintComponent
 data Pattern = 
@@ -216,9 +216,9 @@ data Pattern =
 
 _Pattern = (Core.Name "hydra/langs/shacl/model.Pattern")
 
-_Pattern_regex = (Core.FieldName "regex")
+_Pattern_regex = (Core.Name "regex")
 
-_Pattern_flags = (Core.FieldName "flags")
+_Pattern_flags = (Core.Name "flags")
 
 -- | A SHACL property shape. See https://www.w3.org/TR/shacl/#property-shapes
 data PropertyShape = 
@@ -239,19 +239,19 @@ data PropertyShape =
 
 _PropertyShape = (Core.Name "hydra/langs/shacl/model.PropertyShape")
 
-_PropertyShape_common = (Core.FieldName "common")
+_PropertyShape_common = (Core.Name "common")
 
-_PropertyShape_constraints = (Core.FieldName "constraints")
+_PropertyShape_constraints = (Core.Name "constraints")
 
-_PropertyShape_defaultValue = (Core.FieldName "defaultValue")
+_PropertyShape_defaultValue = (Core.Name "defaultValue")
 
-_PropertyShape_description = (Core.FieldName "description")
+_PropertyShape_description = (Core.Name "description")
 
-_PropertyShape_name = (Core.FieldName "name")
+_PropertyShape_name = (Core.Name "name")
 
-_PropertyShape_order = (Core.FieldName "order")
+_PropertyShape_order = (Core.Name "order")
 
-_PropertyShape_path = (Core.FieldName "path")
+_PropertyShape_path = (Core.Name "path")
 
 -- | A number of constraint parameters which are specific to property shapes, and cannot be applied to node shapes
 data PropertyShapeConstraint = 
@@ -271,17 +271,17 @@ data PropertyShapeConstraint =
 
 _PropertyShapeConstraint = (Core.Name "hydra/langs/shacl/model.PropertyShapeConstraint")
 
-_PropertyShapeConstraint_lessThan = (Core.FieldName "lessThan")
+_PropertyShapeConstraint_lessThan = (Core.Name "lessThan")
 
-_PropertyShapeConstraint_lessThanOrEquals = (Core.FieldName "lessThanOrEquals")
+_PropertyShapeConstraint_lessThanOrEquals = (Core.Name "lessThanOrEquals")
 
-_PropertyShapeConstraint_maxCount = (Core.FieldName "maxCount")
+_PropertyShapeConstraint_maxCount = (Core.Name "maxCount")
 
-_PropertyShapeConstraint_minCount = (Core.FieldName "minCount")
+_PropertyShapeConstraint_minCount = (Core.Name "minCount")
 
-_PropertyShapeConstraint_uniqueLang = (Core.FieldName "uniqueLang")
+_PropertyShapeConstraint_uniqueLang = (Core.Name "uniqueLang")
 
-_PropertyShapeConstraint_qualifiedValueShape = (Core.FieldName "qualifiedValueShape")
+_PropertyShapeConstraint_qualifiedValueShape = (Core.Name "qualifiedValueShape")
 
 -- | See https://www.w3.org/TR/shacl/#QualifiedValueShapeConstraintComponent
 data QualifiedValueShape = 
@@ -294,13 +294,13 @@ data QualifiedValueShape =
 
 _QualifiedValueShape = (Core.Name "hydra/langs/shacl/model.QualifiedValueShape")
 
-_QualifiedValueShape_qualifiedValueShape = (Core.FieldName "qualifiedValueShape")
+_QualifiedValueShape_qualifiedValueShape = (Core.Name "qualifiedValueShape")
 
-_QualifiedValueShape_qualifiedMaxCount = (Core.FieldName "qualifiedMaxCount")
+_QualifiedValueShape_qualifiedMaxCount = (Core.Name "qualifiedMaxCount")
 
-_QualifiedValueShape_qualifiedMinCount = (Core.FieldName "qualifiedMinCount")
+_QualifiedValueShape_qualifiedMinCount = (Core.Name "qualifiedMinCount")
 
-_QualifiedValueShape_qualifiedValueShapesDisjoint = (Core.FieldName "qualifiedValueShapesDisjoint")
+_QualifiedValueShape_qualifiedValueShapesDisjoint = (Core.Name "qualifiedValueShapesDisjoint")
 
 -- | Either an instance of a type like sh:Shape or sh:NodeShape, or an IRI which refers to an instance of that type
 data Reference a = 
@@ -313,11 +313,11 @@ data Reference a =
 
 _Reference = (Core.Name "hydra/langs/shacl/model.Reference")
 
-_Reference_named = (Core.FieldName "named")
+_Reference_named = (Core.Name "named")
 
-_Reference_anonymous = (Core.FieldName "anonymous")
+_Reference_anonymous = (Core.Name "anonymous")
 
-_Reference_definition = (Core.FieldName "definition")
+_Reference_definition = (Core.Name "definition")
 
 data Severity = 
   -- | A non-critical constraint violation indicating an informative message
@@ -330,11 +330,11 @@ data Severity =
 
 _Severity = (Core.Name "hydra/langs/shacl/model.Severity")
 
-_Severity_info = (Core.FieldName "info")
+_Severity_info = (Core.Name "info")
 
-_Severity_warning = (Core.FieldName "warning")
+_Severity_warning = (Core.Name "warning")
 
-_Severity_violation = (Core.FieldName "violation")
+_Severity_violation = (Core.Name "violation")
 
 -- | A SHACL node or property shape. See https://www.w3.org/TR/shacl/#shapes
 data Shape = 
@@ -344,9 +344,9 @@ data Shape =
 
 _Shape = (Core.Name "hydra/langs/shacl/model.Shape")
 
-_Shape_node = (Core.FieldName "node")
+_Shape_node = (Core.Name "node")
 
-_Shape_property = (Core.FieldName "property")
+_Shape_property = (Core.Name "property")
 
 -- | An RDF graph containing zero or more shapes that is passed into a SHACL validation process so that a data graph can be validated against the shapes
 newtype ShapesGraph = 

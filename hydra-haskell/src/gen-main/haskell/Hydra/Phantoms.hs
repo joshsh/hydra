@@ -11,7 +11,7 @@ import Data.Set as S
 -- | An association of a field name (as in a case statement) with a phantom type
 newtype Case a = 
   Case {
-    unCase :: Core.FieldName}
+    unCase :: Core.Name}
   deriving (Eq, Ord, Read, Show)
 
 _Case = (Core.Name "hydra/phantoms.Case")
@@ -33,9 +33,9 @@ data Definition a =
 
 _Definition = (Core.Name "hydra/phantoms.Definition")
 
-_Definition_name = (Core.FieldName "name")
+_Definition_name = (Core.Name "name")
 
-_Definition_datum = (Core.FieldName "datum")
+_Definition_datum = (Core.Name "datum")
 
 -- | An association with a term-level field with a phantom type
 newtype Fld a = 

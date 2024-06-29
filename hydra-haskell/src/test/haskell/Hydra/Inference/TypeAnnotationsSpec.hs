@@ -95,28 +95,28 @@ checkSubtermAnnotations = check "additional subterm annotations" $ do
     H.describe "Injections" $ do
       H.it "test #1" $
         expectTypeAnnotation pure
-          (inject testTypeTimestampName $ Field (FieldName "date") $ string "2023-05-11")
+          (inject testTypeTimestampName $ Field (Name "date") $ string "2023-05-11")
           (TypeVariable testTypeTimestampName)
       H.it "test #2" $
         expectTypeAnnotation pure
-          (lambda "ignored" $ (inject testTypeTimestampName $ Field (FieldName "date") $ string "2023-05-11"))
+          (lambda "ignored" $ (inject testTypeTimestampName $ Field (Name "date") $ string "2023-05-11"))
           (Types.lambda "t0" $ Types.function (Types.var "t0") (TypeVariable testTypeTimestampName))
 
     H.it "Projections" $ do
       expectTypeAnnotation pure
-        (project testTypePersonName $ FieldName "firstName")
+        (project testTypePersonName $ Name "firstName")
         (Types.function (TypeVariable testTypePersonName) Types.string)
 
     H.describe "Case statements" $ do
       H.it "test #1" $
         expectTypeAnnotation pure
           (match testTypeNumberName (Just $ string "it's something else") [
-            Field (FieldName "int") $ constant $ string "it's an integer"])
+            Field (Name "int") $ constant $ string "it's an integer"])
           (Types.function (TypeVariable testTypeNumberName) Types.string)
       H.describe "test #2" $ do
         let  testCase = match testTypeNumberName Nothing [
-                          Field (FieldName "int") $ constant $ string "it's an integer",
-                          Field (FieldName "float") $ constant $ string "it's a float"]
+                          Field (Name "int") $ constant $ string "it's an integer",
+                          Field (Name "float") $ constant $ string "it's a float"]
         H.it "condition #1" $
           expectTypeAnnotation pure testCase
             (Types.function (TypeVariable testTypeNumberName) Types.string)
@@ -282,17 +282,17 @@ checkUserProvidedTypes = check "user-provided type annotations" $ do
     H.describe "Type annotations on let-bound terms" $ do
       H.it "test #1" $
         expectPolytype
-          (TermLet $ Let [Field (FieldName "x") pretypedEmptyList] $ var "x")
+          (TermLet $ Let [Field (Name "x") pretypedEmptyList] $ var "x")
           ["p"] (Types.list $ Types.var "p")
       H.it "test #2" $
         expectPolytype
-          (TermLet $ Let [Field (FieldName "y") pretypedEmptyMap] $ var "y")
+          (TermLet $ Let [Field (Name "y") pretypedEmptyMap] $ var "y")
           ["k", "v"] (Types.map (Types.var "k") (Types.var "v"))
       H.it "test #3" $
         expectPolytype
           (TermLet $ Let [
-            Field (FieldName "x") pretypedEmptyList,
-            Field (FieldName "y") pretypedEmptyMap] $ Terms.pair (var "x") (var "y"))
+            Field (Name "x") pretypedEmptyList,
+            Field (Name "y") pretypedEmptyMap] $ Terms.pair (var "x") (var "y"))
           ["p", "k", "v"] (Types.pair (Types.list $ Types.var "p") (Types.map (Types.var "k") (Types.var "v")))
 
     H.describe "Check that type variables in subterm annotations are also preserved" $ do

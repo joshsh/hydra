@@ -17,4 +17,4 @@ data SourceContext =
 
 _SourceContext = (Core.Name "hydra/langs/protobuf/sourceContext.SourceContext")
 
-_SourceContext_fileName = (Core.FieldName "fileName")
+_SourceContext_fileName = (Core.Name "fileName")

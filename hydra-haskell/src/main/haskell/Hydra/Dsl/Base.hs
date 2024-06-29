@@ -35,10 +35,10 @@ el (Definition name (Datum term)) = Element name term
 
 infixr 0 >:
 (>:) :: String -> Datum a -> Field
-n >: d = Field (FieldName n) (unDatum d)
+n >: d = Field (Name n) (unDatum d)
 
 infixr 0 >>:
-(>>:) :: FieldName -> Datum a -> Field
+(>>:) :: Name -> Datum a -> Field
 fname >>: d = Field fname (unDatum d)
 
 (<.>) :: Datum (b -> c) -> Datum (a -> b) -> Datum (a -> c)
@@ -79,13 +79,13 @@ definitionInModule mod lname = Definition $ Tier1.unqualifyName $ QualifiedName 
 doc :: String -> Datum a -> Datum a
 doc s (Datum term) = Datum $ setTermDescription (Just s) term
 
-field :: FieldName -> Datum a -> Field
+field :: Name -> Datum a -> Field
 field fname (Datum val) = Field fname val
 
 first :: Datum ((a, b) -> a)
 first = Datum $ Terms.untuple 2 0
 
-fld :: FieldName -> Datum a -> Fld (M.Map String Term)
+fld :: Name -> Datum a -> Fld (M.Map String Term)
 fld fname (Datum val) = Fld $ Field fname val
 
 fold :: Datum (b -> a -> b) -> Datum (b -> [a] -> b)
@@ -109,10 +109,10 @@ functionWithClasses dom cod classes = typed $ setTypeClasses classes (Types.func
 identity :: Datum (a -> a)
 identity = Datum Terms.identity
 
-inject :: Name -> FieldName -> Datum a -> Datum b
+inject :: Name -> Name -> Datum a -> Datum b
 inject name fname (Datum term) = Datum $ Terms.inject name (Field fname term)
 
-inject2 :: Name -> FieldName -> Datum (a -> b)
+inject2 :: Name -> Name -> Datum (a -> b)
 inject2 name fname = lambda "x2" $ inject name fname $ var "x2"
 
 just :: Datum x -> Datum (Maybe x)
@@ -135,7 +135,7 @@ map = Datum . Terms.map . M.fromList . fmap fromDatum . M.toList
 match :: Name -> Maybe (Datum b) -> [Field] -> Datum (u -> b)
 match name dflt fields = Datum $ Terms.match name (unDatum <$> dflt) fields
 
-matchData :: Name -> Maybe (Datum b) -> [(FieldName, Datum (x -> b))] -> Datum (a -> b)
+matchData :: Name -> Maybe (Datum b) -> [(Name, Datum (x -> b))] -> Datum (a -> b)
 matchData name dflt pairs = Datum $ Terms.match name (unDatum <$> dflt) (toField <$> pairs)
   where
     toField (fname, Datum term) = Field fname term
@@ -143,12 +143,12 @@ matchData name dflt pairs = Datum $ Terms.match name (unDatum <$> dflt) (toField
 matchOpt :: Datum b -> Datum (a -> b) -> Datum (Maybe a -> b)
 matchOpt (Datum n) (Datum j) = Datum $ Terms.matchOpt n j
 
-matchToEnum :: Name -> Name -> Maybe (Datum b) -> [(FieldName, FieldName)] -> Datum (a -> b)
+matchToEnum :: Name -> Name -> Maybe (Datum b) -> [(Name, Name)] -> Datum (a -> b)
 matchToEnum domName codName dflt pairs = matchData domName dflt (toCase <$> pairs)
   where
     toCase (fromName, toName) = (fromName, constant $ unitVariant codName toName)
 
-matchToUnion :: Name -> Name -> Maybe (Datum b) -> [(FieldName, Field)] -> Datum (a -> b)
+matchToUnion :: Name -> Name -> Maybe (Datum b) -> [(Name, Field)] -> Datum (a -> b)
 matchToUnion domName codName dflt pairs = matchData domName dflt (toCase <$> pairs)
   where
     toCase (fromName, fld) = (fromName, constant $ Datum $ Terms.inject codName fld)
@@ -169,7 +169,7 @@ pair (Datum l) (Datum r) = Datum $ Terms.pair l r
 primitive :: Name -> Datum a
 primitive = Datum . Terms.primitive
 
-project :: Name -> FieldName -> Datum (a -> b)
+project :: Name -> Name -> Datum (a -> b)
 project name fname = Datum $ Terms.project name fname
 
 record :: Name -> [Field] -> Datum a
@@ -190,7 +190,7 @@ typed t (Datum term) = Datum $ setTermType (Just t) term
 unit :: Datum a
 unit = Datum Terms.unit
 
-unitVariant :: Name -> FieldName -> Datum a
+unitVariant :: Name -> Name -> Datum a
 unitVariant name fname = Datum $ Terms.inject name $ Field fname Terms.unit
 
 unwrap :: Name -> Datum (a -> b)
@@ -199,7 +199,7 @@ unwrap = Datum . Terms.unwrap
 var :: String -> Datum a
 var v = Datum $ Terms.var v
 
-variant :: Name -> FieldName -> Datum a -> Datum b
+variant :: Name -> Name -> Datum a -> Datum b
 variant name fname (Datum term) = Datum $ Terms.inject name $ Field fname term
 
 with :: Datum a -> [Field] -> Datum a

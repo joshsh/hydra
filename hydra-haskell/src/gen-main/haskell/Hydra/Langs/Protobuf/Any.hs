@@ -19,6 +19,6 @@ data Any =
 
 _Any = (Core.Name "hydra/langs/protobuf/any.Any")
 
-_Any_typeUrl = (Core.FieldName "typeUrl")
+_Any_typeUrl = (Core.Name "typeUrl")
 
-_Any_value = (Core.FieldName "value")
+_Any_value = (Core.Name "value")

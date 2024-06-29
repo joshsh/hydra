@@ -38,11 +38,11 @@ public class TypesTest {
   public void constructedTypesAreAsExpected() {
     assertTrue(latLonType instanceof Type.Record);
     assertEquals(name("LatLon"), ((Type.Record<String>) latLonType).value.typeName);
-    assertEquals(fieldName("lat"), ((Type.Record<String>) latLonType).value.fields.get(0).name);
+    assertEquals(name("lat"), ((Type.Record<String>) latLonType).value.fields.get(0).name);
 
     assertTrue(locationType instanceof Type.Union);
     assertEquals(name("Location"), ((Type.Union<String>) locationType).value.typeName);
-    assertEquals(fieldName("latlon"), ((Type.Union<String>) locationType).value.fields.get(1).name);
+    assertEquals(name("latlon"), ((Type.Union<String>) locationType).value.fields.get(1).name);
 
     assertTrue(stringToIntType instanceof Type.Function);
     assertEquals(string(), ((Type.Function<String>) stringToIntType).value.domain);

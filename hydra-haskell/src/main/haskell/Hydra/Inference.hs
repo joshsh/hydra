@@ -50,9 +50,9 @@ data Inferred = Inferred {
   inferredConstraints :: [Constraint]
 } deriving Show
 
-findMatchingField :: FieldName -> [FieldType] -> Flow Graph FieldType
+findMatchingField :: Name -> [FieldType] -> Flow Graph FieldType
 findMatchingField fname sfields = case L.filter (\f -> fieldTypeName f == fname) sfields of
-  []    -> fail $ "no such field: " ++ unFieldName fname
+  []    -> fail $ "no such field: " ++ unName fname
   (h:_) -> return h
 
 generalizeType :: Graph -> Type -> Type
@@ -218,13 +218,13 @@ inferElementTypes g els = withState g $ do
     case stripTerm term2 of
       TermLet (Let bindings _) -> CM.mapM toElement (elementName <$> els)
         where
-          toElement name = case L.filter (\f -> unName name == (unFieldName $ fieldName f)) bindings of
+          toElement name = case L.filter (\f -> unName name == (unName $ fieldName f)) bindings of
             [] -> fail $ "no inferred term for " ++ unName name
             [field] -> return $ Element name $ fieldTerm field
             _ -> fail $ "multiple inferred terms for " ++ unName name
       _ -> unexpected "let term" $ showTerm term2
   where
-    graphAsLetTerm = TermLet $ Let (fmap (\e -> (Field (FieldName $ unName $ elementName e) $ elementData e)) els)
+    graphAsLetTerm = TermLet $ Let (fmap (\e -> (Field (Name $ unName $ elementName e) $ elementData e)) els)
       $ Terms.boolean False
 
 inferEliminationType :: Elimination -> Flow Graph Inferred
@@ -303,13 +303,13 @@ inferEliminationType e = case e of
             checkCasesAreSufficient = if S.null diff || Y.isJust def
                 then pure ()
                 else fail $ "cases(s) missing with respect to variant of type " ++ unName tname ++ ": "
-                  ++ L.intercalate ", " (unFieldName <$> S.toList diff)
+                  ++ L.intercalate ", " (unName <$> S.toList diff)
               where
                 diff = S.difference fieldNames caseNames
             checkCasesAreNotSuperfluous = if S.null diff
                 then pure ()
                 else fail $ "case(s) in case statement which do not exist in type " ++ unName tname ++ ": "
-                  ++ L.intercalate ", " (unFieldName <$> S.toList diff)
+                  ++ L.intercalate ", " (unName <$> S.toList diff)
               where
                 diff = S.difference caseNames fieldNames
 
@@ -320,7 +320,7 @@ inferEliminationType e = case e of
       let typ = Types.function (toApplicationType tname refType) wt
       return $ yieldElimination elim typ []
 
-inferFieldType :: Field -> Flow Graph (FieldName, Inferred)
+inferFieldType :: Field -> Flow Graph (Name, Inferred)
 inferFieldType (Field fname term) = do
   rterm <- infer term
   return (fname, rterm)
@@ -355,7 +355,7 @@ inferLetType lt@(Let bindings env) = do
     (Inferred envTerm envType constraints, pairs) <- forComponents comps
     return $ yieldTerm (TermLet $ Let (toField <$> pairs) envTerm) envType constraints
   where
-    toField (Name name, term) = Field (FieldName name) term
+    toField (Name name, term) = Field (Name name) term
     forComponents comps = case comps of
       -- No remaining bindings; process the environment
       [] -> do

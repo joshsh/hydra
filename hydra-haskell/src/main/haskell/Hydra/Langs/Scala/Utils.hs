@@ -16,8 +16,8 @@ nameOfType cx t = case stripType t of
   TypeLambda (LambdaType _ body) -> nameOfType cx body
   _ -> Nothing
 
-qualifyUnionFieldName :: String -> Y.Maybe Name -> FieldName -> String
-qualifyUnionFieldName dlft sname (FieldName fname) = (Y.maybe dlft (\n -> scalaTypeName True n ++ ".") sname) ++ fname
+qualifyUnionFieldName :: String -> Y.Maybe Name -> Name -> String
+qualifyUnionFieldName dlft sname (Name fname) = (Y.maybe dlft (\n -> scalaTypeName True n ++ ".") sname) ++ fname
 
 scalaTypeName :: Bool -> Name -> String
 scalaTypeName qualify name@(Name n) = if qualify || S.member local reservedWords

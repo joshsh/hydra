@@ -16,9 +16,9 @@ data Either_ a b =
 
 _Either = (Core.Name "hydra/mantle.Either")
 
-_Either_left = (Core.FieldName "left")
+_Either_left = (Core.Name "left")
 
-_Either_right = (Core.FieldName "right")
+_Either_right = (Core.Name "right")
 
 -- | The identifier of an elimination constructor
 data EliminationVariant = 
@@ -32,17 +32,17 @@ data EliminationVariant =
 
 _EliminationVariant = (Core.Name "hydra/mantle.EliminationVariant")
 
-_EliminationVariant_list = (Core.FieldName "list")
+_EliminationVariant_list = (Core.Name "list")
 
-_EliminationVariant_optional = (Core.FieldName "optional")
+_EliminationVariant_optional = (Core.Name "optional")
 
-_EliminationVariant_product = (Core.FieldName "product")
+_EliminationVariant_product = (Core.Name "product")
 
-_EliminationVariant_record = (Core.FieldName "record")
+_EliminationVariant_record = (Core.Name "record")
 
-_EliminationVariant_union = (Core.FieldName "union")
+_EliminationVariant_union = (Core.Name "union")
 
-_EliminationVariant_wrap = (Core.FieldName "wrap")
+_EliminationVariant_wrap = (Core.Name "wrap")
 
 -- | The identifier of a function constructor
 data FunctionVariant = 
@@ -53,11 +53,11 @@ data FunctionVariant =
 
 _FunctionVariant = (Core.Name "hydra/mantle.FunctionVariant")
 
-_FunctionVariant_elimination = (Core.FieldName "elimination")
+_FunctionVariant_elimination = (Core.Name "elimination")
 
-_FunctionVariant_lambda = (Core.FieldName "lambda")
+_FunctionVariant_lambda = (Core.Name "lambda")
 
-_FunctionVariant_primitive = (Core.FieldName "primitive")
+_FunctionVariant_primitive = (Core.Name "primitive")
 
 -- | The identifier of a literal constructor
 data LiteralVariant = 
@@ -70,15 +70,15 @@ data LiteralVariant =
 
 _LiteralVariant = (Core.Name "hydra/mantle.LiteralVariant")
 
-_LiteralVariant_binary = (Core.FieldName "binary")
+_LiteralVariant_binary = (Core.Name "binary")
 
-_LiteralVariant_boolean = (Core.FieldName "boolean")
+_LiteralVariant_boolean = (Core.Name "boolean")
 
-_LiteralVariant_float = (Core.FieldName "float")
+_LiteralVariant_float = (Core.Name "float")
 
-_LiteralVariant_integer = (Core.FieldName "integer")
+_LiteralVariant_integer = (Core.Name "integer")
 
-_LiteralVariant_string = (Core.FieldName "string")
+_LiteralVariant_string = (Core.Name "string")
 
 -- | Numeric precision: arbitrary precision, or precision to a specified number of bits
 data Precision = 
@@ -88,9 +88,9 @@ data Precision =
 
 _Precision = (Core.Name "hydra/mantle.Precision")
 
-_Precision_arbitrary = (Core.FieldName "arbitrary")
+_Precision_arbitrary = (Core.Name "arbitrary")
 
-_Precision_bits = (Core.FieldName "bits")
+_Precision_bits = (Core.Name "bits")
 
 -- | The identifier of a term expression constructor
 data TermVariant = 
@@ -117,43 +117,43 @@ data TermVariant =
 
 _TermVariant = (Core.Name "hydra/mantle.TermVariant")
 
-_TermVariant_annotated = (Core.FieldName "annotated")
+_TermVariant_annotated = (Core.Name "annotated")
 
-_TermVariant_application = (Core.FieldName "application")
+_TermVariant_application = (Core.Name "application")
 
-_TermVariant_function = (Core.FieldName "function")
+_TermVariant_function = (Core.Name "function")
 
-_TermVariant_let = (Core.FieldName "let")
+_TermVariant_let = (Core.Name "let")
 
-_TermVariant_list = (Core.FieldName "list")
+_TermVariant_list = (Core.Name "list")
 
-_TermVariant_literal = (Core.FieldName "literal")
+_TermVariant_literal = (Core.Name "literal")
 
-_TermVariant_map = (Core.FieldName "map")
+_TermVariant_map = (Core.Name "map")
 
-_TermVariant_optional = (Core.FieldName "optional")
+_TermVariant_optional = (Core.Name "optional")
 
-_TermVariant_product = (Core.FieldName "product")
+_TermVariant_product = (Core.Name "product")
 
-_TermVariant_record = (Core.FieldName "record")
+_TermVariant_record = (Core.Name "record")
 
-_TermVariant_set = (Core.FieldName "set")
+_TermVariant_set = (Core.Name "set")
 
-_TermVariant_stream = (Core.FieldName "stream")
+_TermVariant_stream = (Core.Name "stream")
 
-_TermVariant_sum = (Core.FieldName "sum")
+_TermVariant_sum = (Core.Name "sum")
 
-_TermVariant_typeAbstraction = (Core.FieldName "typeAbstraction")
+_TermVariant_typeAbstraction = (Core.Name "typeAbstraction")
 
-_TermVariant_typeApplication = (Core.FieldName "typeApplication")
+_TermVariant_typeApplication = (Core.Name "typeApplication")
 
-_TermVariant_typed = (Core.FieldName "typed")
+_TermVariant_typed = (Core.Name "typed")
 
-_TermVariant_union = (Core.FieldName "union")
+_TermVariant_union = (Core.Name "union")
 
-_TermVariant_variable = (Core.FieldName "variable")
+_TermVariant_variable = (Core.Name "variable")
 
-_TermVariant_wrap = (Core.FieldName "wrap")
+_TermVariant_wrap = (Core.Name "wrap")
 
 -- | An assertion that two types can be unified into a single type
 data TypeConstraint =
@@ -165,11 +165,11 @@ data TypeConstraint =
 
 _TypeConstraint = (Core.Name "hydra/mantle.TypeConstraint")
 
-_TypeConstraint_left = (Core.FieldName "left")
+_TypeConstraint_left = (Core.Name "left")
 
-_TypeConstraint_right = (Core.FieldName "right")
+_TypeConstraint_right = (Core.Name "right")
 
-_TypeConstraint_context = (Core.FieldName "context")
+_TypeConstraint_context = (Core.Name "context")
 
 -- | A type expression together with free type variables occurring in the expression
 data TypeScheme = 
@@ -180,9 +180,9 @@ data TypeScheme =
 
 _TypeScheme = (Core.Name "hydra/mantle.TypeScheme")
 
-_TypeScheme_variables = (Core.FieldName "variables")
+_TypeScheme_variables = (Core.Name "variables")
 
-_TypeScheme_type = (Core.FieldName "type")
+_TypeScheme_type = (Core.Name "type")
 
 -- | The identifier of a type constructor
 data TypeVariant = 
@@ -206,34 +206,34 @@ data TypeVariant =
 
 _TypeVariant = (Core.Name "hydra/mantle.TypeVariant")
 
-_TypeVariant_annotated = (Core.FieldName "annotated")
+_TypeVariant_annotated = (Core.Name "annotated")
 
-_TypeVariant_application = (Core.FieldName "application")
+_TypeVariant_application = (Core.Name "application")
 
-_TypeVariant_function = (Core.FieldName "function")
+_TypeVariant_function = (Core.Name "function")
 
-_TypeVariant_lambda = (Core.FieldName "lambda")
+_TypeVariant_lambda = (Core.Name "lambda")
 
-_TypeVariant_list = (Core.FieldName "list")
+_TypeVariant_list = (Core.Name "list")
 
-_TypeVariant_literal = (Core.FieldName "literal")
+_TypeVariant_literal = (Core.Name "literal")
 
-_TypeVariant_map = (Core.FieldName "map")
+_TypeVariant_map = (Core.Name "map")
 
-_TypeVariant_optional = (Core.FieldName "optional")
+_TypeVariant_optional = (Core.Name "optional")
 
-_TypeVariant_product = (Core.FieldName "product")
+_TypeVariant_product = (Core.Name "product")
 
-_TypeVariant_record = (Core.FieldName "record")
+_TypeVariant_record = (Core.Name "record")
 
-_TypeVariant_set = (Core.FieldName "set")
+_TypeVariant_set = (Core.Name "set")
 
-_TypeVariant_stream = (Core.FieldName "stream")
+_TypeVariant_stream = (Core.Name "stream")
 
-_TypeVariant_sum = (Core.FieldName "sum")
+_TypeVariant_sum = (Core.Name "sum")
 
-_TypeVariant_union = (Core.FieldName "union")
+_TypeVariant_union = (Core.Name "union")
 
-_TypeVariant_variable = (Core.FieldName "variable")
+_TypeVariant_variable = (Core.Name "variable")
 
-_TypeVariant_wrap = (Core.FieldName "wrap")
+_TypeVariant_wrap = (Core.Name "wrap")

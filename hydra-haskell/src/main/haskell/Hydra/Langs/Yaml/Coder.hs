@@ -43,7 +43,7 @@ recordCoder rt = do
     encode coders term = case stripTerm term of
       TermRecord (Record _ fields) -> YM.NodeMapping . M.fromList . Y.catMaybes <$> CM.zipWithM encodeField coders fields
         where
-          encodeField (ft, coder) (Field (FieldName fn) fv) = case (fieldTypeType ft, fv) of
+          encodeField (ft, coder) (Field (Name fn) fv) = case (fieldTypeType ft, fv) of
             (TypeOptional _, TermOptional Nothing) -> pure Nothing
             _ -> Just <$> ((,) <$> pure (yamlString fn) <*> coderEncode coder fv)
       _ -> unexpected "record" $ show term
@@ -51,7 +51,7 @@ recordCoder rt = do
       YM.NodeMapping m -> Terms.record (rowTypeTypeName rt) <$>
           CM.mapM (decodeField m) coders -- Note: unknown fields are ignored
         where
-          decodeField a (FieldType fname@(FieldName fn) ft, coder) = do
+          decodeField a (FieldType fname@(Name fn) ft, coder) = do
             v <- coderDecode coder $ Y.fromMaybe yamlNull $ M.lookup (yamlString fn) m
             return $ Field fname v
       _ -> unexpected "mapping" $ show n

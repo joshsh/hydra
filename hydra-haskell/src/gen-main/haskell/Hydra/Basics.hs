@@ -259,12 +259,12 @@ mapFirstLetter mapping s =
       list = (Strings.toList s)
   in (Logic.ifElse s (Strings.cat2 firstLetter (Strings.fromList (Lists.tail list))) (Strings.isEmpty s))
 
-fieldMap :: ([Core.Field] -> Map Core.FieldName (Core.Term))
+fieldMap :: ([Core.Field] -> Map Core.Name (Core.Term))
 fieldMap fields = (Maps.fromList (Lists.map toPair fields)) 
   where 
     toPair = (\f -> (Core.fieldName f, (Core.fieldTerm f)))
 
-fieldTypeMap :: ([Core.FieldType] -> Map Core.FieldName (Core.Type))
+fieldTypeMap :: ([Core.FieldType] -> Map Core.Name (Core.Type))
 fieldTypeMap fields = (Maps.fromList (Lists.map toPair fields)) 
   where 
     toPair = (\f -> (Core.fieldTypeName f, (Core.fieldTypeType f)))

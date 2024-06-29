@@ -18,11 +18,11 @@ data Comparison =
 
 _Comparison = (Core.Name "hydra/graph.Comparison")
 
-_Comparison_lessThan = (Core.FieldName "lessThan")
+_Comparison_lessThan = (Core.Name "lessThan")
 
-_Comparison_equalTo = (Core.FieldName "equalTo")
+_Comparison_equalTo = (Core.Name "equalTo")
 
-_Comparison_greaterThan = (Core.FieldName "greaterThan")
+_Comparison_greaterThan = (Core.Name "greaterThan")
 
 -- | A graph, or set of name/term bindings together with parameters (annotations, primitives) and a schema graph
 data Graph = 
@@ -42,19 +42,19 @@ data Graph =
 
 _Graph = (Core.Name "hydra/graph.Graph")
 
-_Graph_elements = (Core.FieldName "elements")
+_Graph_elements = (Core.Name "elements")
 
-_Graph_environment = (Core.FieldName "environment")
+_Graph_environment = (Core.Name "environment")
 
-_Graph_types = (Core.FieldName "types")
+_Graph_types = (Core.Name "types")
 
-_Graph_body = (Core.FieldName "body")
+_Graph_body = (Core.Name "body")
 
-_Graph_primitives = (Core.FieldName "primitives")
+_Graph_primitives = (Core.Name "primitives")
 
-_Graph_annotations = (Core.FieldName "annotations")
+_Graph_annotations = (Core.Name "annotations")
 
-_Graph_schema = (Core.FieldName "schema")
+_Graph_schema = (Core.Name "schema")
 
 -- | A graph element, having a name, data term (value), and schema term (type)
 data Element = 
@@ -65,9 +65,9 @@ data Element =
 
 _Element = (Core.Name "hydra/graph.Element")
 
-_Element_name = (Core.FieldName "name")
+_Element_name = (Core.Name "name")
 
-_Element_data = (Core.FieldName "data")
+_Element_data = (Core.Name "data")
 
 -- | A built-in function
 data Primitive = 
@@ -81,11 +81,11 @@ data Primitive =
 
 _Primitive = (Core.Name "hydra/graph.Primitive")
 
-_Primitive_name = (Core.FieldName "name")
+_Primitive_name = (Core.Name "name")
 
-_Primitive_type = (Core.FieldName "type")
+_Primitive_type = (Core.Name "type")
 
-_Primitive_implementation = (Core.FieldName "implementation")
+_Primitive_implementation = (Core.Name "implementation")
 
 -- | A type together with a coder for mapping terms into arguments for primitive functions, and mapping computed results into terms
 data TermCoder a = 
@@ -95,9 +95,9 @@ data TermCoder a =
 
 _TermCoder = (Core.Name "hydra/graph.TermCoder")
 
-_TermCoder_type = (Core.FieldName "type")
+_TermCoder_type = (Core.Name "type")
 
-_TermCoder_coder = (Core.FieldName "coder")
+_TermCoder_coder = (Core.Name "coder")
 
 -- | Any of a small number of built-in type classes
 data TypeClass = 
@@ -107,6 +107,6 @@ data TypeClass =
 
 _TypeClass = (Core.Name "hydra/graph.TypeClass")
 
-_TypeClass_equality = (Core.FieldName "equality")
+_TypeClass_equality = (Core.Name "equality")
 
-_TypeClass_ordering = (Core.FieldName "ordering")
+_TypeClass_ordering = (Core.Name "ordering")

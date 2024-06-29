@@ -122,11 +122,11 @@ data ApproximateNumericType =
 
 _ApproximateNumericType = (Core.Name "hydra/langs/sql/ansi.ApproximateNumericType")
 
-_ApproximateNumericType_float = (Core.FieldName "float")
+_ApproximateNumericType_float = (Core.Name "float")
 
-_ApproximateNumericType_real = (Core.FieldName "real")
+_ApproximateNumericType_real = (Core.Name "real")
 
-_ApproximateNumericType_double = (Core.FieldName "double")
+_ApproximateNumericType_double = (Core.Name "double")
 
 newtype ArrayElement = 
   ArrayElement {
@@ -143,9 +143,9 @@ data ArrayElementList =
 
 _ArrayElementList = (Core.Name "hydra/langs/sql/ansi.ArrayElementList")
 
-_ArrayElementList_first = (Core.FieldName "first")
+_ArrayElementList_first = (Core.Name "first")
 
-_ArrayElementList_rest = (Core.FieldName "rest")
+_ArrayElementList_rest = (Core.Name "rest")
 
 data ArrayElementReference = 
   ArrayElementReference {}
@@ -166,9 +166,9 @@ data ArrayValueConstructor =
 
 _ArrayValueConstructor = (Core.Name "hydra/langs/sql/ansi.ArrayValueConstructor")
 
-_ArrayValueConstructor_enumeration = (Core.FieldName "enumeration")
+_ArrayValueConstructor_enumeration = (Core.Name "enumeration")
 
-_ArrayValueConstructor_query = (Core.FieldName "query")
+_ArrayValueConstructor_query = (Core.Name "query")
 
 data ArrayValueConstructorByQuery = 
   ArrayValueConstructorByQuery {}
@@ -185,11 +185,11 @@ data ArrayValueConstructorByEnumeration =
 
 _ArrayValueConstructorByEnumeration = (Core.Name "hydra/langs/sql/ansi.ArrayValueConstructorByEnumeration")
 
-_ArrayValueConstructorByEnumeration_leftBracketOrTrigraph = (Core.FieldName "leftBracketOrTrigraph")
+_ArrayValueConstructorByEnumeration_leftBracketOrTrigraph = (Core.Name "leftBracketOrTrigraph")
 
-_ArrayValueConstructorByEnumeration_arrayElementList = (Core.FieldName "arrayElementList")
+_ArrayValueConstructorByEnumeration_arrayElementList = (Core.Name "arrayElementList")
 
-_ArrayValueConstructorByEnumeration_rightBracketOrTrigraph = (Core.FieldName "rightBracketOrTrigraph")
+_ArrayValueConstructorByEnumeration_rightBracketOrTrigraph = (Core.Name "rightBracketOrTrigraph")
 
 data ArrayValueExpression = 
   ArrayValueExpression {}
@@ -216,9 +216,9 @@ data BinaryLargeObjectStringType =
 
 _BinaryLargeObjectStringType = (Core.Name "hydra/langs/sql/ansi.BinaryLargeObjectStringType")
 
-_BinaryLargeObjectStringType_binary = (Core.FieldName "binary")
+_BinaryLargeObjectStringType_binary = (Core.Name "binary")
 
-_BinaryLargeObjectStringType_blob = (Core.FieldName "blob")
+_BinaryLargeObjectStringType_blob = (Core.Name "blob")
 
 data BooleanFactor = 
   BooleanFactor {
@@ -228,9 +228,9 @@ data BooleanFactor =
 
 _BooleanFactor = (Core.Name "hydra/langs/sql/ansi.BooleanFactor")
 
-_BooleanFactor_nOT = (Core.FieldName "nOT")
+_BooleanFactor_nOT = (Core.Name "nOT")
 
-_BooleanFactor_booleanTest = (Core.FieldName "booleanTest")
+_BooleanFactor_booleanTest = (Core.Name "booleanTest")
 
 data BooleanLiteral = 
   BooleanLiteralTRUE  |
@@ -240,11 +240,11 @@ data BooleanLiteral =
 
 _BooleanLiteral = (Core.Name "hydra/langs/sql/ansi.BooleanLiteral")
 
-_BooleanLiteral_tRUE = (Core.FieldName "tRUE")
+_BooleanLiteral_tRUE = (Core.Name "tRUE")
 
-_BooleanLiteral_fALSE = (Core.FieldName "fALSE")
+_BooleanLiteral_fALSE = (Core.Name "fALSE")
 
-_BooleanLiteral_uNKNOWN = (Core.FieldName "uNKNOWN")
+_BooleanLiteral_uNKNOWN = (Core.Name "uNKNOWN")
 
 data BooleanPredicand = 
   BooleanPredicand {}
@@ -259,9 +259,9 @@ data BooleanPrimary =
 
 _BooleanPrimary = (Core.Name "hydra/langs/sql/ansi.BooleanPrimary")
 
-_BooleanPrimary_predicate = (Core.FieldName "predicate")
+_BooleanPrimary_predicate = (Core.Name "predicate")
 
-_BooleanPrimary_predicand = (Core.FieldName "predicand")
+_BooleanPrimary_predicand = (Core.Name "predicand")
 
 data BooleanTerm = 
   BooleanTermFactor BooleanFactor |
@@ -270,9 +270,9 @@ data BooleanTerm =
 
 _BooleanTerm = (Core.Name "hydra/langs/sql/ansi.BooleanTerm")
 
-_BooleanTerm_factor = (Core.FieldName "factor")
+_BooleanTerm_factor = (Core.Name "factor")
 
-_BooleanTerm_and = (Core.FieldName "and")
+_BooleanTerm_and = (Core.Name "and")
 
 data BooleanTerm_And = 
   BooleanTerm_And {
@@ -282,9 +282,9 @@ data BooleanTerm_And =
 
 _BooleanTerm_And = (Core.Name "hydra/langs/sql/ansi.BooleanTerm.And")
 
-_BooleanTerm_And_lhs = (Core.FieldName "lhs")
+_BooleanTerm_And_lhs = (Core.Name "lhs")
 
-_BooleanTerm_And_rhs = (Core.FieldName "rhs")
+_BooleanTerm_And_rhs = (Core.Name "rhs")
 
 data BooleanTest = 
   BooleanTest {
@@ -294,9 +294,9 @@ data BooleanTest =
 
 _BooleanTest = (Core.Name "hydra/langs/sql/ansi.BooleanTest")
 
-_BooleanTest_booleanPrimary = (Core.FieldName "booleanPrimary")
+_BooleanTest_booleanPrimary = (Core.Name "booleanPrimary")
 
-_BooleanTest_sequence = (Core.FieldName "sequence")
+_BooleanTest_sequence = (Core.Name "sequence")
 
 data BooleanTest_Sequence_Option = 
   BooleanTest_Sequence_Option {
@@ -306,9 +306,9 @@ data BooleanTest_Sequence_Option =
 
 _BooleanTest_Sequence_Option = (Core.Name "hydra/langs/sql/ansi.BooleanTest.Sequence.Option")
 
-_BooleanTest_Sequence_Option_nOT = (Core.FieldName "nOT")
+_BooleanTest_Sequence_Option_nOT = (Core.Name "nOT")
 
-_BooleanTest_Sequence_Option_truthValue = (Core.FieldName "truthValue")
+_BooleanTest_Sequence_Option_truthValue = (Core.Name "truthValue")
 
 data BooleanType = 
   BooleanType {}
@@ -323,9 +323,9 @@ data BooleanValueExpression =
 
 _BooleanValueExpression = (Core.Name "hydra/langs/sql/ansi.BooleanValueExpression")
 
-_BooleanValueExpression_term = (Core.FieldName "term")
+_BooleanValueExpression_term = (Core.Name "term")
 
-_BooleanValueExpression_or = (Core.FieldName "or")
+_BooleanValueExpression_or = (Core.Name "or")
 
 data BooleanValueExpression_Or = 
   BooleanValueExpression_Or {
@@ -335,9 +335,9 @@ data BooleanValueExpression_Or =
 
 _BooleanValueExpression_Or = (Core.Name "hydra/langs/sql/ansi.BooleanValueExpression.Or")
 
-_BooleanValueExpression_Or_lhs = (Core.FieldName "lhs")
+_BooleanValueExpression_Or_lhs = (Core.Name "lhs")
 
-_BooleanValueExpression_Or_rhs = (Core.FieldName "rhs")
+_BooleanValueExpression_Or_rhs = (Core.Name "rhs")
 
 data CaseExpression = 
   CaseExpression {}
@@ -370,21 +370,21 @@ data CharacterStringType =
 
 _CharacterStringType = (Core.Name "hydra/langs/sql/ansi.CharacterStringType")
 
-_CharacterStringType_character = (Core.FieldName "character")
+_CharacterStringType_character = (Core.Name "character")
 
-_CharacterStringType_char = (Core.FieldName "char")
+_CharacterStringType_char = (Core.Name "char")
 
-_CharacterStringType_characterVarying = (Core.FieldName "characterVarying")
+_CharacterStringType_characterVarying = (Core.Name "characterVarying")
 
-_CharacterStringType_charVarying = (Core.FieldName "charVarying")
+_CharacterStringType_charVarying = (Core.Name "charVarying")
 
-_CharacterStringType_varchar = (Core.FieldName "varchar")
+_CharacterStringType_varchar = (Core.Name "varchar")
 
-_CharacterStringType_characterLargeObject = (Core.FieldName "characterLargeObject")
+_CharacterStringType_characterLargeObject = (Core.Name "characterLargeObject")
 
-_CharacterStringType_charLargeObject = (Core.FieldName "charLargeObject")
+_CharacterStringType_charLargeObject = (Core.Name "charLargeObject")
 
-_CharacterStringType_clob = (Core.FieldName "clob")
+_CharacterStringType_clob = (Core.Name "clob")
 
 data CollateClause = 
   CollateClause {}
@@ -399,9 +399,9 @@ data CollectionType =
 
 _CollectionType = (Core.Name "hydra/langs/sql/ansi.CollectionType")
 
-_CollectionType_array = (Core.FieldName "array")
+_CollectionType_array = (Core.Name "array")
 
-_CollectionType_multiset = (Core.FieldName "multiset")
+_CollectionType_multiset = (Core.Name "multiset")
 
 data CollectionValueConstructor = 
   CollectionValueConstructorArray ArrayValueConstructor |
@@ -410,9 +410,9 @@ data CollectionValueConstructor =
 
 _CollectionValueConstructor = (Core.Name "hydra/langs/sql/ansi.CollectionValueConstructor")
 
-_CollectionValueConstructor_array = (Core.FieldName "array")
+_CollectionValueConstructor_array = (Core.Name "array")
 
-_CollectionValueConstructor_multiset = (Core.FieldName "multiset")
+_CollectionValueConstructor_multiset = (Core.Name "multiset")
 
 data CollectionValueExpression = 
   CollectionValueExpressionArray ArrayValueExpression |
@@ -421,9 +421,9 @@ data CollectionValueExpression =
 
 _CollectionValueExpression = (Core.Name "hydra/langs/sql/ansi.CollectionValueExpression")
 
-_CollectionValueExpression_array = (Core.FieldName "array")
+_CollectionValueExpression_array = (Core.Name "array")
 
-_CollectionValueExpression_multiset = (Core.FieldName "multiset")
+_CollectionValueExpression_multiset = (Core.Name "multiset")
 
 data ColumnConstraintDefinition = 
   ColumnConstraintDefinition {}
@@ -443,17 +443,17 @@ data ColumnDefinition =
 
 _ColumnDefinition = (Core.Name "hydra/langs/sql/ansi.ColumnDefinition")
 
-_ColumnDefinition_name = (Core.FieldName "name")
+_ColumnDefinition_name = (Core.Name "name")
 
-_ColumnDefinition_typeOrDomain = (Core.FieldName "typeOrDomain")
+_ColumnDefinition_typeOrDomain = (Core.Name "typeOrDomain")
 
-_ColumnDefinition_refScope = (Core.FieldName "refScope")
+_ColumnDefinition_refScope = (Core.Name "refScope")
 
-_ColumnDefinition_defaultOrIdentityOrGeneration = (Core.FieldName "defaultOrIdentityOrGeneration")
+_ColumnDefinition_defaultOrIdentityOrGeneration = (Core.Name "defaultOrIdentityOrGeneration")
 
-_ColumnDefinition_constraints = (Core.FieldName "constraints")
+_ColumnDefinition_constraints = (Core.Name "constraints")
 
-_ColumnDefinition_collate = (Core.FieldName "collate")
+_ColumnDefinition_collate = (Core.Name "collate")
 
 data ColumnDefinition_TypeOrDomain_Option = 
   ColumnDefinition_TypeOrDomain_OptionDataType DataType |
@@ -462,9 +462,9 @@ data ColumnDefinition_TypeOrDomain_Option =
 
 _ColumnDefinition_TypeOrDomain_Option = (Core.Name "hydra/langs/sql/ansi.ColumnDefinition.TypeOrDomain.Option")
 
-_ColumnDefinition_TypeOrDomain_Option_dataType = (Core.FieldName "dataType")
+_ColumnDefinition_TypeOrDomain_Option_dataType = (Core.Name "dataType")
 
-_ColumnDefinition_TypeOrDomain_Option_domainName = (Core.FieldName "domainName")
+_ColumnDefinition_TypeOrDomain_Option_domainName = (Core.Name "domainName")
 
 data ColumnDefinition_DefaultOrIdentityOrGeneration_Option = 
   ColumnDefinition_DefaultOrIdentityOrGeneration_OptionDefaultClause DefaultClause |
@@ -474,11 +474,11 @@ data ColumnDefinition_DefaultOrIdentityOrGeneration_Option =
 
 _ColumnDefinition_DefaultOrIdentityOrGeneration_Option = (Core.Name "hydra/langs/sql/ansi.ColumnDefinition.DefaultOrIdentityOrGeneration.Option")
 
-_ColumnDefinition_DefaultOrIdentityOrGeneration_Option_defaultClause = (Core.FieldName "defaultClause")
+_ColumnDefinition_DefaultOrIdentityOrGeneration_Option_defaultClause = (Core.Name "defaultClause")
 
-_ColumnDefinition_DefaultOrIdentityOrGeneration_Option_identityColumnSpecification = (Core.FieldName "identityColumnSpecification")
+_ColumnDefinition_DefaultOrIdentityOrGeneration_Option_identityColumnSpecification = (Core.Name "identityColumnSpecification")
 
-_ColumnDefinition_DefaultOrIdentityOrGeneration_Option_generationClause = (Core.FieldName "generationClause")
+_ColumnDefinition_DefaultOrIdentityOrGeneration_Option_generationClause = (Core.Name "generationClause")
 
 data ColumnNameList = 
   ColumnNameList {
@@ -488,9 +488,9 @@ data ColumnNameList =
 
 _ColumnNameList = (Core.Name "hydra/langs/sql/ansi.ColumnNameList")
 
-_ColumnNameList_first = (Core.FieldName "first")
+_ColumnNameList_first = (Core.Name "first")
 
-_ColumnNameList_rest = (Core.FieldName "rest")
+_ColumnNameList_rest = (Core.Name "rest")
 
 data ColumnOptions = 
   ColumnOptions {}
@@ -516,19 +516,19 @@ data CommonValueExpression =
 
 _CommonValueExpression = (Core.Name "hydra/langs/sql/ansi.CommonValueExpression")
 
-_CommonValueExpression_numeric = (Core.FieldName "numeric")
+_CommonValueExpression_numeric = (Core.Name "numeric")
 
-_CommonValueExpression_string = (Core.FieldName "string")
+_CommonValueExpression_string = (Core.Name "string")
 
-_CommonValueExpression_datetime = (Core.FieldName "datetime")
+_CommonValueExpression_datetime = (Core.Name "datetime")
 
-_CommonValueExpression_interval = (Core.FieldName "interval")
+_CommonValueExpression_interval = (Core.Name "interval")
 
-_CommonValueExpression_userDefined = (Core.FieldName "userDefined")
+_CommonValueExpression_userDefined = (Core.Name "userDefined")
 
-_CommonValueExpression_reference = (Core.FieldName "reference")
+_CommonValueExpression_reference = (Core.Name "reference")
 
-_CommonValueExpression_collection = (Core.FieldName "collection")
+_CommonValueExpression_collection = (Core.Name "collection")
 
 data ContextuallyTypedRowValueExpression = 
   ContextuallyTypedRowValueExpressionSpecialCase RowValueSpecialCase |
@@ -537,9 +537,9 @@ data ContextuallyTypedRowValueExpression =
 
 _ContextuallyTypedRowValueExpression = (Core.Name "hydra/langs/sql/ansi.ContextuallyTypedRowValueExpression")
 
-_ContextuallyTypedRowValueExpression_specialCase = (Core.FieldName "specialCase")
+_ContextuallyTypedRowValueExpression_specialCase = (Core.Name "specialCase")
 
-_ContextuallyTypedRowValueExpression_constructor = (Core.FieldName "constructor")
+_ContextuallyTypedRowValueExpression_constructor = (Core.Name "constructor")
 
 data ContextuallyTypedRowValueConstructor = 
   ContextuallyTypedRowValueConstructor {}
@@ -555,9 +555,9 @@ data ContextuallyTypedRowValueExpressionList =
 
 _ContextuallyTypedRowValueExpressionList = (Core.Name "hydra/langs/sql/ansi.ContextuallyTypedRowValueExpressionList")
 
-_ContextuallyTypedRowValueExpressionList_first = (Core.FieldName "first")
+_ContextuallyTypedRowValueExpressionList_first = (Core.Name "first")
 
-_ContextuallyTypedRowValueExpressionList_rest = (Core.FieldName "rest")
+_ContextuallyTypedRowValueExpressionList_rest = (Core.Name "rest")
 
 newtype ContextuallyTypedTableValueConstructor = 
   ContextuallyTypedTableValueConstructor {
@@ -576,15 +576,15 @@ data DataType =
 
 _DataType = (Core.Name "hydra/langs/sql/ansi.DataType")
 
-_DataType_predefined = (Core.FieldName "predefined")
+_DataType_predefined = (Core.Name "predefined")
 
-_DataType_row = (Core.FieldName "row")
+_DataType_row = (Core.Name "row")
 
-_DataType_named = (Core.FieldName "named")
+_DataType_named = (Core.Name "named")
 
-_DataType_reference = (Core.FieldName "reference")
+_DataType_reference = (Core.Name "reference")
 
-_DataType_collection = (Core.FieldName "collection")
+_DataType_collection = (Core.Name "collection")
 
 newtype DateLiteral = 
   DateLiteral {
@@ -601,11 +601,11 @@ data DatetimeLiteral =
 
 _DatetimeLiteral = (Core.Name "hydra/langs/sql/ansi.DatetimeLiteral")
 
-_DatetimeLiteral_date = (Core.FieldName "date")
+_DatetimeLiteral_date = (Core.Name "date")
 
-_DatetimeLiteral_time = (Core.FieldName "time")
+_DatetimeLiteral_time = (Core.Name "time")
 
-_DatetimeLiteral_timestamp = (Core.FieldName "timestamp")
+_DatetimeLiteral_timestamp = (Core.Name "timestamp")
 
 data DatetimeType = 
   DatetimeType {}
@@ -637,19 +637,19 @@ data ExactNumericType =
 
 _ExactNumericType = (Core.Name "hydra/langs/sql/ansi.ExactNumericType")
 
-_ExactNumericType_numeric = (Core.FieldName "numeric")
+_ExactNumericType_numeric = (Core.Name "numeric")
 
-_ExactNumericType_decimal = (Core.FieldName "decimal")
+_ExactNumericType_decimal = (Core.Name "decimal")
 
-_ExactNumericType_dec = (Core.FieldName "dec")
+_ExactNumericType_dec = (Core.Name "dec")
 
-_ExactNumericType_smallint = (Core.FieldName "smallint")
+_ExactNumericType_smallint = (Core.Name "smallint")
 
-_ExactNumericType_integer = (Core.FieldName "integer")
+_ExactNumericType_integer = (Core.Name "integer")
 
-_ExactNumericType_int = (Core.FieldName "int")
+_ExactNumericType_int = (Core.Name "int")
 
-_ExactNumericType_bigint = (Core.FieldName "bigint")
+_ExactNumericType_bigint = (Core.Name "bigint")
 
 data ExactNumericType_Numeric_Option = 
   ExactNumericType_Numeric_Option {
@@ -659,9 +659,9 @@ data ExactNumericType_Numeric_Option =
 
 _ExactNumericType_Numeric_Option = (Core.Name "hydra/langs/sql/ansi.ExactNumericType.Numeric.Option")
 
-_ExactNumericType_Numeric_Option_precision = (Core.FieldName "precision")
+_ExactNumericType_Numeric_Option_precision = (Core.Name "precision")
 
-_ExactNumericType_Numeric_Option_sequence = (Core.FieldName "sequence")
+_ExactNumericType_Numeric_Option_sequence = (Core.Name "sequence")
 
 data ExactNumericType_Decimal_Option = 
   ExactNumericType_Decimal_Option {
@@ -671,9 +671,9 @@ data ExactNumericType_Decimal_Option =
 
 _ExactNumericType_Decimal_Option = (Core.Name "hydra/langs/sql/ansi.ExactNumericType.Decimal.Option")
 
-_ExactNumericType_Decimal_Option_precision = (Core.FieldName "precision")
+_ExactNumericType_Decimal_Option_precision = (Core.Name "precision")
 
-_ExactNumericType_Decimal_Option_sequence = (Core.FieldName "sequence")
+_ExactNumericType_Decimal_Option_sequence = (Core.Name "sequence")
 
 data ExactNumericType_Dec_Option = 
   ExactNumericType_Dec_Option {
@@ -683,9 +683,9 @@ data ExactNumericType_Dec_Option =
 
 _ExactNumericType_Dec_Option = (Core.Name "hydra/langs/sql/ansi.ExactNumericType.Dec.Option")
 
-_ExactNumericType_Dec_Option_precision = (Core.FieldName "precision")
+_ExactNumericType_Dec_Option_precision = (Core.Name "precision")
 
-_ExactNumericType_Dec_Option_sequence = (Core.FieldName "sequence")
+_ExactNumericType_Dec_Option_sequence = (Core.Name "sequence")
 
 data FieldReference = 
   FieldReference {}
@@ -702,11 +702,11 @@ data FromConstructor =
 
 _FromConstructor = (Core.Name "hydra/langs/sql/ansi.FromConstructor")
 
-_FromConstructor_columns = (Core.FieldName "columns")
+_FromConstructor_columns = (Core.Name "columns")
 
-_FromConstructor_override = (Core.FieldName "override")
+_FromConstructor_override = (Core.Name "override")
 
-_FromConstructor_values = (Core.FieldName "values")
+_FromConstructor_values = (Core.Name "values")
 
 data FromDefault = 
   FromDefault {}
@@ -732,19 +732,19 @@ data GeneralLiteral =
 
 _GeneralLiteral = (Core.Name "hydra/langs/sql/ansi.GeneralLiteral")
 
-_GeneralLiteral_string = (Core.FieldName "string")
+_GeneralLiteral_string = (Core.Name "string")
 
-_GeneralLiteral_nationalString = (Core.FieldName "nationalString")
+_GeneralLiteral_nationalString = (Core.Name "nationalString")
 
-_GeneralLiteral_unicode = (Core.FieldName "unicode")
+_GeneralLiteral_unicode = (Core.Name "unicode")
 
-_GeneralLiteral_binary = (Core.FieldName "binary")
+_GeneralLiteral_binary = (Core.Name "binary")
 
-_GeneralLiteral_dateTime = (Core.FieldName "dateTime")
+_GeneralLiteral_dateTime = (Core.Name "dateTime")
 
-_GeneralLiteral_interval = (Core.FieldName "interval")
+_GeneralLiteral_interval = (Core.Name "interval")
 
-_GeneralLiteral_boolean = (Core.FieldName "boolean")
+_GeneralLiteral_boolean = (Core.Name "boolean")
 
 data GeneralValueSpecification = 
   GeneralValueSpecification {}
@@ -765,9 +765,9 @@ data GlobalOrLocal =
 
 _GlobalOrLocal = (Core.Name "hydra/langs/sql/ansi.GlobalOrLocal")
 
-_GlobalOrLocal_global = (Core.FieldName "global")
+_GlobalOrLocal_global = (Core.Name "global")
 
-_GlobalOrLocal_local = (Core.FieldName "local")
+_GlobalOrLocal_local = (Core.Name "local")
 
 data IdentityColumnSpecification = 
   IdentityColumnSpecification {}
@@ -790,11 +790,11 @@ data InsertColumnsAndSource =
 
 _InsertColumnsAndSource = (Core.Name "hydra/langs/sql/ansi.InsertColumnsAndSource")
 
-_InsertColumnsAndSource_subquery = (Core.FieldName "subquery")
+_InsertColumnsAndSource_subquery = (Core.Name "subquery")
 
-_InsertColumnsAndSource_constructor = (Core.FieldName "constructor")
+_InsertColumnsAndSource_constructor = (Core.Name "constructor")
 
-_InsertColumnsAndSource_default = (Core.FieldName "default")
+_InsertColumnsAndSource_default = (Core.Name "default")
 
 data InsertStatement = 
   InsertStatement {
@@ -804,9 +804,9 @@ data InsertStatement =
 
 _InsertStatement = (Core.Name "hydra/langs/sql/ansi.InsertStatement")
 
-_InsertStatement_target = (Core.FieldName "target")
+_InsertStatement_target = (Core.Name "target")
 
-_InsertStatement_columnsAndSource = (Core.FieldName "columnsAndSource")
+_InsertStatement_columnsAndSource = (Core.Name "columnsAndSource")
 
 newtype InsertionTarget = 
   InsertionTarget {
@@ -908,9 +908,9 @@ data NumericType =
 
 _NumericType = (Core.Name "hydra/langs/sql/ansi.NumericType")
 
-_NumericType_exact = (Core.FieldName "exact")
+_NumericType_exact = (Core.Name "exact")
 
-_NumericType_approximate = (Core.FieldName "approximate")
+_NumericType_approximate = (Core.Name "approximate")
 
 data NumericValueExpression = 
   NumericValueExpression {}
@@ -925,9 +925,9 @@ data OverrideClause =
 
 _OverrideClause = (Core.Name "hydra/langs/sql/ansi.OverrideClause")
 
-_OverrideClause_oVERRIDINGSpUSERSpVALUE = (Core.FieldName "oVERRIDINGSpUSERSpVALUE")
+_OverrideClause_oVERRIDINGSpUSERSpVALUE = (Core.Name "oVERRIDINGSpUSERSpVALUE")
 
-_OverrideClause_oVERRIDINGSpSYSTEMSpVALUE = (Core.FieldName "oVERRIDINGSpSYSTEMSpVALUE")
+_OverrideClause_oVERRIDINGSpSYSTEMSpVALUE = (Core.Name "oVERRIDINGSpSYSTEMSpVALUE")
 
 newtype ParenthesizedValueExpression = 
   ParenthesizedValueExpression {
@@ -955,19 +955,19 @@ data PredefinedType =
 
 _PredefinedType = (Core.Name "hydra/langs/sql/ansi.PredefinedType")
 
-_PredefinedType_string = (Core.FieldName "string")
+_PredefinedType_string = (Core.Name "string")
 
-_PredefinedType_nationalString = (Core.FieldName "nationalString")
+_PredefinedType_nationalString = (Core.Name "nationalString")
 
-_PredefinedType_blob = (Core.FieldName "blob")
+_PredefinedType_blob = (Core.Name "blob")
 
-_PredefinedType_numeric = (Core.FieldName "numeric")
+_PredefinedType_numeric = (Core.Name "numeric")
 
-_PredefinedType_boolean = (Core.FieldName "boolean")
+_PredefinedType_boolean = (Core.Name "boolean")
 
-_PredefinedType_datetime = (Core.FieldName "datetime")
+_PredefinedType_datetime = (Core.Name "datetime")
 
-_PredefinedType_interval = (Core.FieldName "interval")
+_PredefinedType_interval = (Core.Name "interval")
 
 data PredefinedType_String = 
   PredefinedType_String {
@@ -978,11 +978,11 @@ data PredefinedType_String =
 
 _PredefinedType_String = (Core.Name "hydra/langs/sql/ansi.PredefinedType.String")
 
-_PredefinedType_String_type = (Core.FieldName "type")
+_PredefinedType_String_type = (Core.Name "type")
 
-_PredefinedType_String_characters = (Core.FieldName "characters")
+_PredefinedType_String_characters = (Core.Name "characters")
 
-_PredefinedType_String_collate = (Core.FieldName "collate")
+_PredefinedType_String_collate = (Core.Name "collate")
 
 data PredefinedType_NationalString = 
   PredefinedType_NationalString {
@@ -992,9 +992,9 @@ data PredefinedType_NationalString =
 
 _PredefinedType_NationalString = (Core.Name "hydra/langs/sql/ansi.PredefinedType.NationalString")
 
-_PredefinedType_NationalString_type = (Core.FieldName "type")
+_PredefinedType_NationalString_type = (Core.Name "type")
 
-_PredefinedType_NationalString_collate = (Core.FieldName "collate")
+_PredefinedType_NationalString_collate = (Core.Name "collate")
 
 data Predicate = 
   Predicate {}
@@ -1057,43 +1057,43 @@ data NonparenthesizedValueExpressionPrimary =
 
 _NonparenthesizedValueExpressionPrimary = (Core.Name "hydra/langs/sql/ansi.NonparenthesizedValueExpressionPrimary")
 
-_NonparenthesizedValueExpressionPrimary_unsigned = (Core.FieldName "unsigned")
+_NonparenthesizedValueExpressionPrimary_unsigned = (Core.Name "unsigned")
 
-_NonparenthesizedValueExpressionPrimary_column = (Core.FieldName "column")
+_NonparenthesizedValueExpressionPrimary_column = (Core.Name "column")
 
-_NonparenthesizedValueExpressionPrimary_setFunction = (Core.FieldName "setFunction")
+_NonparenthesizedValueExpressionPrimary_setFunction = (Core.Name "setFunction")
 
-_NonparenthesizedValueExpressionPrimary_windowFunction = (Core.FieldName "windowFunction")
+_NonparenthesizedValueExpressionPrimary_windowFunction = (Core.Name "windowFunction")
 
-_NonparenthesizedValueExpressionPrimary_scalarSubquery = (Core.FieldName "scalarSubquery")
+_NonparenthesizedValueExpressionPrimary_scalarSubquery = (Core.Name "scalarSubquery")
 
-_NonparenthesizedValueExpressionPrimary_cases = (Core.FieldName "cases")
+_NonparenthesizedValueExpressionPrimary_cases = (Core.Name "cases")
 
-_NonparenthesizedValueExpressionPrimary_cast = (Core.FieldName "cast")
+_NonparenthesizedValueExpressionPrimary_cast = (Core.Name "cast")
 
-_NonparenthesizedValueExpressionPrimary_field = (Core.FieldName "field")
+_NonparenthesizedValueExpressionPrimary_field = (Core.Name "field")
 
-_NonparenthesizedValueExpressionPrimary_subtype = (Core.FieldName "subtype")
+_NonparenthesizedValueExpressionPrimary_subtype = (Core.Name "subtype")
 
-_NonparenthesizedValueExpressionPrimary_method = (Core.FieldName "method")
+_NonparenthesizedValueExpressionPrimary_method = (Core.Name "method")
 
-_NonparenthesizedValueExpressionPrimary_staticMethod = (Core.FieldName "staticMethod")
+_NonparenthesizedValueExpressionPrimary_staticMethod = (Core.Name "staticMethod")
 
-_NonparenthesizedValueExpressionPrimary_new = (Core.FieldName "new")
+_NonparenthesizedValueExpressionPrimary_new = (Core.Name "new")
 
-_NonparenthesizedValueExpressionPrimary_attributeOrMethod = (Core.FieldName "attributeOrMethod")
+_NonparenthesizedValueExpressionPrimary_attributeOrMethod = (Core.Name "attributeOrMethod")
 
-_NonparenthesizedValueExpressionPrimary_reference = (Core.FieldName "reference")
+_NonparenthesizedValueExpressionPrimary_reference = (Core.Name "reference")
 
-_NonparenthesizedValueExpressionPrimary_collection = (Core.FieldName "collection")
+_NonparenthesizedValueExpressionPrimary_collection = (Core.Name "collection")
 
-_NonparenthesizedValueExpressionPrimary_arrayElement = (Core.FieldName "arrayElement")
+_NonparenthesizedValueExpressionPrimary_arrayElement = (Core.Name "arrayElement")
 
-_NonparenthesizedValueExpressionPrimary_multisetElement = (Core.FieldName "multisetElement")
+_NonparenthesizedValueExpressionPrimary_multisetElement = (Core.Name "multisetElement")
 
-_NonparenthesizedValueExpressionPrimary_routine = (Core.FieldName "routine")
+_NonparenthesizedValueExpressionPrimary_routine = (Core.Name "routine")
 
-_NonparenthesizedValueExpressionPrimary_next = (Core.FieldName "next")
+_NonparenthesizedValueExpressionPrimary_next = (Core.Name "next")
 
 data ReferenceResolution = 
   ReferenceResolution {}
@@ -1184,9 +1184,9 @@ data TableCommitAction =
 
 _TableCommitAction = (Core.Name "hydra/langs/sql/ansi.TableCommitAction")
 
-_TableCommitAction_preserve = (Core.FieldName "preserve")
+_TableCommitAction_preserve = (Core.Name "preserve")
 
-_TableCommitAction_delete = (Core.FieldName "delete")
+_TableCommitAction_delete = (Core.Name "delete")
 
 data TableConstraintDefinition = 
   TableConstraintDefinition {}
@@ -1202,11 +1202,11 @@ data TableContentsSource =
 
 _TableContentsSource = (Core.Name "hydra/langs/sql/ansi.TableContentsSource")
 
-_TableContentsSource_list = (Core.FieldName "list")
+_TableContentsSource_list = (Core.Name "list")
 
-_TableContentsSource_subtable = (Core.FieldName "subtable")
+_TableContentsSource_subtable = (Core.Name "subtable")
 
-_TableContentsSource_subquery = (Core.FieldName "subquery")
+_TableContentsSource_subquery = (Core.Name "subquery")
 
 data TableContentsSource_Subtable = 
   TableContentsSource_Subtable {
@@ -1217,11 +1217,11 @@ data TableContentsSource_Subtable =
 
 _TableContentsSource_Subtable = (Core.Name "hydra/langs/sql/ansi.TableContentsSource.Subtable")
 
-_TableContentsSource_Subtable_type = (Core.FieldName "type")
+_TableContentsSource_Subtable_type = (Core.Name "type")
 
-_TableContentsSource_Subtable_subtable = (Core.FieldName "subtable")
+_TableContentsSource_Subtable_subtable = (Core.Name "subtable")
 
-_TableContentsSource_Subtable_elements = (Core.FieldName "elements")
+_TableContentsSource_Subtable_elements = (Core.Name "elements")
 
 data TableDefinition = 
   TableDefinition {
@@ -1233,13 +1233,13 @@ data TableDefinition =
 
 _TableDefinition = (Core.Name "hydra/langs/sql/ansi.TableDefinition")
 
-_TableDefinition_scope = (Core.FieldName "scope")
+_TableDefinition_scope = (Core.Name "scope")
 
-_TableDefinition_name = (Core.FieldName "name")
+_TableDefinition_name = (Core.Name "name")
 
-_TableDefinition_source = (Core.FieldName "source")
+_TableDefinition_source = (Core.Name "source")
 
-_TableDefinition_commitActions = (Core.FieldName "commitActions")
+_TableDefinition_commitActions = (Core.Name "commitActions")
 
 data TableElement = 
   TableElementColumn ColumnDefinition |
@@ -1251,15 +1251,15 @@ data TableElement =
 
 _TableElement = (Core.Name "hydra/langs/sql/ansi.TableElement")
 
-_TableElement_column = (Core.FieldName "column")
+_TableElement_column = (Core.Name "column")
 
-_TableElement_tableConstraint = (Core.FieldName "tableConstraint")
+_TableElement_tableConstraint = (Core.Name "tableConstraint")
 
-_TableElement_like = (Core.FieldName "like")
+_TableElement_like = (Core.Name "like")
 
-_TableElement_selfReferencingColumn = (Core.FieldName "selfReferencingColumn")
+_TableElement_selfReferencingColumn = (Core.Name "selfReferencingColumn")
 
-_TableElement_columOptions = (Core.FieldName "columOptions")
+_TableElement_columOptions = (Core.Name "columOptions")
 
 data TableElementList = 
   TableElementList {
@@ -1269,9 +1269,9 @@ data TableElementList =
 
 _TableElementList = (Core.Name "hydra/langs/sql/ansi.TableElementList")
 
-_TableElementList_first = (Core.FieldName "first")
+_TableElementList_first = (Core.Name "first")
 
-_TableElementList_rest = (Core.FieldName "rest")
+_TableElementList_rest = (Core.Name "rest")
 
 newtype TableScope = 
   TableScope {
@@ -1295,11 +1295,11 @@ data TruthValue =
 
 _TruthValue = (Core.Name "hydra/langs/sql/ansi.TruthValue")
 
-_TruthValue_tRUE = (Core.FieldName "tRUE")
+_TruthValue_tRUE = (Core.Name "tRUE")
 
-_TruthValue_fALSE = (Core.FieldName "fALSE")
+_TruthValue_fALSE = (Core.Name "fALSE")
 
-_TruthValue_uNKNOWN = (Core.FieldName "uNKNOWN")
+_TruthValue_uNKNOWN = (Core.Name "uNKNOWN")
 
 data UnsignedLiteral = 
   UnsignedLiteralNumeric UnsignedNumericLiteral |
@@ -1308,9 +1308,9 @@ data UnsignedLiteral =
 
 _UnsignedLiteral = (Core.Name "hydra/langs/sql/ansi.UnsignedLiteral")
 
-_UnsignedLiteral_numeric = (Core.FieldName "numeric")
+_UnsignedLiteral_numeric = (Core.Name "numeric")
 
-_UnsignedLiteral_general = (Core.FieldName "general")
+_UnsignedLiteral_general = (Core.Name "general")
 
 data UnsignedNumericLiteral = 
   UnsignedNumericLiteralExact ExactNumericLiteral |
@@ -1319,9 +1319,9 @@ data UnsignedNumericLiteral =
 
 _UnsignedNumericLiteral = (Core.Name "hydra/langs/sql/ansi.UnsignedNumericLiteral")
 
-_UnsignedNumericLiteral_exact = (Core.FieldName "exact")
+_UnsignedNumericLiteral_exact = (Core.Name "exact")
 
-_UnsignedNumericLiteral_approximate = (Core.FieldName "approximate")
+_UnsignedNumericLiteral_approximate = (Core.Name "approximate")
 
 data UnsignedValueSpecification = 
   UnsignedValueSpecificationLiteral UnsignedLiteral |
@@ -1330,9 +1330,9 @@ data UnsignedValueSpecification =
 
 _UnsignedValueSpecification = (Core.Name "hydra/langs/sql/ansi.UnsignedValueSpecification")
 
-_UnsignedValueSpecification_literal = (Core.FieldName "literal")
+_UnsignedValueSpecification_literal = (Core.Name "literal")
 
-_UnsignedValueSpecification_general = (Core.FieldName "general")
+_UnsignedValueSpecification_general = (Core.Name "general")
 
 newtype UserDefinedTypeValueExpression = 
   UserDefinedTypeValueExpression {
@@ -1349,11 +1349,11 @@ data ValueExpression =
 
 _ValueExpression = (Core.Name "hydra/langs/sql/ansi.ValueExpression")
 
-_ValueExpression_common = (Core.FieldName "common")
+_ValueExpression_common = (Core.Name "common")
 
-_ValueExpression_boolean = (Core.FieldName "boolean")
+_ValueExpression_boolean = (Core.Name "boolean")
 
-_ValueExpression_row = (Core.FieldName "row")
+_ValueExpression_row = (Core.Name "row")
 
 data ValueExpressionPrimary = 
   ValueExpressionPrimaryParens ParenthesizedValueExpression |
@@ -1362,9 +1362,9 @@ data ValueExpressionPrimary =
 
 _ValueExpressionPrimary = (Core.Name "hydra/langs/sql/ansi.ValueExpressionPrimary")
 
-_ValueExpressionPrimary_parens = (Core.FieldName "parens")
+_ValueExpressionPrimary_parens = (Core.Name "parens")
 
-_ValueExpressionPrimary_noparens = (Core.FieldName "noparens")
+_ValueExpressionPrimary_noparens = (Core.Name "noparens")
 
 data WindowFunction = 
   WindowFunction {}

@@ -16,14 +16,14 @@ public class Edge implements Serializable {
   /**
    * The field representing the out-projection of the edge. Defaults to 'out'.
    */
-  public final java.util.Optional<hydra.core.FieldName> out;
+  public final java.util.Optional<hydra.core.Name> out;
   
   /**
    * The field representing the in-projection of the edge. Defaults to 'in'.
    */
-  public final java.util.Optional<hydra.core.FieldName> in;
+  public final java.util.Optional<hydra.core.Name> in;
   
-  public Edge (hydra.core.Name type, java.util.Optional<hydra.core.FieldName> out, java.util.Optional<hydra.core.FieldName> in) {
+  public Edge (hydra.core.Name type, java.util.Optional<hydra.core.Name> out, java.util.Optional<hydra.core.Name> in) {
     this.type = type;
     this.out = out;
     this.in = in;
@@ -47,11 +47,11 @@ public class Edge implements Serializable {
     return new Edge(type, out, in);
   }
   
-  public Edge withOut(java.util.Optional<hydra.core.FieldName> out) {
+  public Edge withOut(java.util.Optional<hydra.core.Name> out) {
     return new Edge(type, out, in);
   }
   
-  public Edge withIn(java.util.Optional<hydra.core.FieldName> in) {
+  public Edge withIn(java.util.Optional<hydra.core.Name> in) {
     return new Edge(type, out, in);
   }
 }

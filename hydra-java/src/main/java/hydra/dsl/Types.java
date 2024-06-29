@@ -2,7 +2,7 @@ package hydra.dsl;
 
 import hydra.core.Annotated;
 import hydra.core.ApplicationType;
-import hydra.core.FieldName;
+import hydra.core.Name;
 import hydra.core.FieldType;
 import hydra.core.FloatType;
 import hydra.core.FunctionType;
@@ -67,7 +67,7 @@ public interface Types {
     }
 
     static <A> FieldType<A> field(final String name, final Type<A> t) {
-        return new FieldType<>(new FieldName(name), t);
+        return new FieldType<>(new Name(name), t);
     }
 
     static <A> Type<A> float32() {

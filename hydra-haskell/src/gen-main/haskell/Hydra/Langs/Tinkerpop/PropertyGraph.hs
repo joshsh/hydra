@@ -17,11 +17,11 @@ data Direction =
 
 _Direction = (Core.Name "hydra/langs/tinkerpop/propertyGraph.Direction")
 
-_Direction_out = (Core.FieldName "out")
+_Direction_out = (Core.Name "out")
 
-_Direction_in = (Core.FieldName "in")
+_Direction_in = (Core.Name "in")
 
-_Direction_both = (Core.FieldName "both")
+_Direction_both = (Core.Name "both")
 
 -- | An edge
 data Edge v = 
@@ -40,15 +40,15 @@ data Edge v =
 
 _Edge = (Core.Name "hydra/langs/tinkerpop/propertyGraph.Edge")
 
-_Edge_label = (Core.FieldName "label")
+_Edge_label = (Core.Name "label")
 
-_Edge_id = (Core.FieldName "id")
+_Edge_id = (Core.Name "id")
 
-_Edge_out = (Core.FieldName "out")
+_Edge_out = (Core.Name "out")
 
-_Edge_in = (Core.FieldName "in")
+_Edge_in = (Core.Name "in")
 
-_Edge_properties = (Core.FieldName "properties")
+_Edge_properties = (Core.Name "properties")
 
 -- | The label of an edge
 newtype EdgeLabel = 
@@ -76,15 +76,15 @@ data EdgeType t =
 
 _EdgeType = (Core.Name "hydra/langs/tinkerpop/propertyGraph.EdgeType")
 
-_EdgeType_label = (Core.FieldName "label")
+_EdgeType_label = (Core.Name "label")
 
-_EdgeType_id = (Core.FieldName "id")
+_EdgeType_id = (Core.Name "id")
 
-_EdgeType_out = (Core.FieldName "out")
+_EdgeType_out = (Core.Name "out")
 
-_EdgeType_in = (Core.FieldName "in")
+_EdgeType_in = (Core.Name "in")
 
-_EdgeType_properties = (Core.FieldName "properties")
+_EdgeType_properties = (Core.Name "properties")
 
 -- | Either a vertex or an edge
 data Element v = 
@@ -94,9 +94,9 @@ data Element v =
 
 _Element = (Core.Name "hydra/langs/tinkerpop/propertyGraph.Element")
 
-_Element_vertex = (Core.FieldName "vertex")
+_Element_vertex = (Core.Name "vertex")
 
-_Element_edge = (Core.FieldName "edge")
+_Element_edge = (Core.Name "edge")
 
 -- | The kind of an element: vertex or edge
 data ElementKind = 
@@ -106,9 +106,9 @@ data ElementKind =
 
 _ElementKind = (Core.Name "hydra/langs/tinkerpop/propertyGraph.ElementKind")
 
-_ElementKind_vertex = (Core.FieldName "vertex")
+_ElementKind_vertex = (Core.Name "vertex")
 
-_ElementKind_edge = (Core.FieldName "edge")
+_ElementKind_edge = (Core.Name "edge")
 
 -- | An element together with its dependencies in some context
 data ElementTree v = 
@@ -119,9 +119,9 @@ data ElementTree v =
 
 _ElementTree = (Core.Name "hydra/langs/tinkerpop/propertyGraph.ElementTree")
 
-_ElementTree_self = (Core.FieldName "self")
+_ElementTree_self = (Core.Name "self")
 
-_ElementTree_dependencies = (Core.FieldName "dependencies")
+_ElementTree_dependencies = (Core.Name "dependencies")
 
 -- | The type of a vertex or edge
 data ElementType t = 
@@ -131,9 +131,9 @@ data ElementType t =
 
 _ElementType = (Core.Name "hydra/langs/tinkerpop/propertyGraph.ElementType")
 
-_ElementType_vertex = (Core.FieldName "vertex")
+_ElementType_vertex = (Core.Name "vertex")
 
-_ElementType_edge = (Core.FieldName "edge")
+_ElementType_edge = (Core.Name "edge")
 
 -- | An element type together with its dependencies in some context
 data ElementTypeTree t = 
@@ -144,9 +144,9 @@ data ElementTypeTree t =
 
 _ElementTypeTree = (Core.Name "hydra/langs/tinkerpop/propertyGraph.ElementTypeTree")
 
-_ElementTypeTree_self = (Core.FieldName "self")
+_ElementTypeTree_self = (Core.Name "self")
 
-_ElementTypeTree_dependencies = (Core.FieldName "dependencies")
+_ElementTypeTree_dependencies = (Core.Name "dependencies")
 
 -- | A graph; a self-contained collection of vertices and edges
 data Graph v = 
@@ -157,9 +157,9 @@ data Graph v =
 
 _Graph = (Core.Name "hydra/langs/tinkerpop/propertyGraph.Graph")
 
-_Graph_vertices = (Core.FieldName "vertices")
+_Graph_vertices = (Core.Name "vertices")
 
-_Graph_edges = (Core.FieldName "edges")
+_Graph_edges = (Core.Name "edges")
 
 -- | A graph schema; a vertex and edge types for the vertices and edges of a graph conforming to the schema
 data GraphSchema t = 
@@ -172,9 +172,9 @@ data GraphSchema t =
 
 _GraphSchema = (Core.Name "hydra/langs/tinkerpop/propertyGraph.GraphSchema")
 
-_GraphSchema_vertices = (Core.FieldName "vertices")
+_GraphSchema_vertices = (Core.Name "vertices")
 
-_GraphSchema_edges = (Core.FieldName "edges")
+_GraphSchema_edges = (Core.Name "edges")
 
 -- | Either a vertex or edge label
 data Label = 
@@ -184,9 +184,9 @@ data Label =
 
 _Label = (Core.Name "hydra/langs/tinkerpop/propertyGraph.Label")
 
-_Label_vertex = (Core.FieldName "vertex")
+_Label_vertex = (Core.Name "vertex")
 
-_Label_edge = (Core.FieldName "edge")
+_Label_edge = (Core.Name "edge")
 
 -- | A key/value property
 data Property v = 
@@ -199,9 +199,9 @@ data Property v =
 
 _Property = (Core.Name "hydra/langs/tinkerpop/propertyGraph.Property")
 
-_Property_key = (Core.FieldName "key")
+_Property_key = (Core.Name "key")
 
-_Property_value = (Core.FieldName "value")
+_Property_value = (Core.Name "value")
 
 -- | A property key
 newtype PropertyKey = 
@@ -223,9 +223,9 @@ data PropertyType t =
 
 _PropertyType = (Core.Name "hydra/langs/tinkerpop/propertyGraph.PropertyType")
 
-_PropertyType_key = (Core.FieldName "key")
+_PropertyType_key = (Core.Name "key")
 
-_PropertyType_value = (Core.FieldName "value")
+_PropertyType_value = (Core.Name "value")
 
 -- | A vertex
 data Vertex v = 
@@ -240,11 +240,11 @@ data Vertex v =
 
 _Vertex = (Core.Name "hydra/langs/tinkerpop/propertyGraph.Vertex")
 
-_Vertex_label = (Core.FieldName "label")
+_Vertex_label = (Core.Name "label")
 
-_Vertex_id = (Core.FieldName "id")
+_Vertex_id = (Core.Name "id")
 
-_Vertex_properties = (Core.FieldName "properties")
+_Vertex_properties = (Core.Name "properties")
 
 -- | The label of a vertex. The default (null) vertex is represented by the empty string
 newtype VertexLabel = 
@@ -268,8 +268,8 @@ data VertexType t =
 
 _VertexType = (Core.Name "hydra/langs/tinkerpop/propertyGraph.VertexType")
 
-_VertexType_label = (Core.FieldName "label")
+_VertexType_label = (Core.Name "label")
 
-_VertexType_id = (Core.FieldName "id")
+_VertexType_id = (Core.Name "id")
 
-_VertexType_properties = (Core.FieldName "properties")
+_VertexType_properties = (Core.Name "properties")

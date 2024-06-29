@@ -236,4 +236,4 @@ transformAvroJsonDirectory lastMile schemaPath srcDir destDir = do
 
 emptyEnv = emptyAvroEnvironment createAnn
   where
-    createAnn = Kv
+    createAnn = id

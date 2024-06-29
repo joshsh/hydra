@@ -37,10 +37,10 @@ hydraQueryModule = Module ns elements [hydraCoreModule] $
             core "Name",
           "out">:
             doc "The field representing the out-projection of the edge. Defaults to 'out'." $
-            optional $ core "FieldName",
+            optional $ core "Name",
           "in">:
             doc "The field representing the in-projection of the edge. Defaults to 'in'." $
-            optional $ core "FieldName"],
+            optional $ core "Name"],
 
       def "GraphPattern" $
         doc "A query pattern which matches within a designated component subgraph" $

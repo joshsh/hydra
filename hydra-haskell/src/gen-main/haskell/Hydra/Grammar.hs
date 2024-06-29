@@ -44,9 +44,9 @@ data LabeledPattern =
 
 _LabeledPattern = (Core.Name "hydra/grammar.LabeledPattern")
 
-_LabeledPattern_label = (Core.FieldName "label")
+_LabeledPattern_label = (Core.Name "label")
 
-_LabeledPattern_pattern = (Core.FieldName "pattern")
+_LabeledPattern_pattern = (Core.Name "pattern")
 
 -- | A pattern which matches valid expressions in the language
 data Pattern = 
@@ -65,27 +65,27 @@ data Pattern =
 
 _Pattern = (Core.Name "hydra/grammar.Pattern")
 
-_Pattern_nil = (Core.FieldName "nil")
+_Pattern_nil = (Core.Name "nil")
 
-_Pattern_ignored = (Core.FieldName "ignored")
+_Pattern_ignored = (Core.Name "ignored")
 
-_Pattern_labeled = (Core.FieldName "labeled")
+_Pattern_labeled = (Core.Name "labeled")
 
-_Pattern_constant = (Core.FieldName "constant")
+_Pattern_constant = (Core.Name "constant")
 
-_Pattern_regex = (Core.FieldName "regex")
+_Pattern_regex = (Core.Name "regex")
 
-_Pattern_nonterminal = (Core.FieldName "nonterminal")
+_Pattern_nonterminal = (Core.Name "nonterminal")
 
-_Pattern_sequence = (Core.FieldName "sequence")
+_Pattern_sequence = (Core.Name "sequence")
 
-_Pattern_alternatives = (Core.FieldName "alternatives")
+_Pattern_alternatives = (Core.Name "alternatives")
 
-_Pattern_option = (Core.FieldName "option")
+_Pattern_option = (Core.Name "option")
 
-_Pattern_star = (Core.FieldName "star")
+_Pattern_star = (Core.Name "star")
 
-_Pattern_plus = (Core.FieldName "plus")
+_Pattern_plus = (Core.Name "plus")
 
 -- | A BNF production
 data Production = 
@@ -96,9 +96,9 @@ data Production =
 
 _Production = (Core.Name "hydra/grammar.Production")
 
-_Production_symbol = (Core.FieldName "symbol")
+_Production_symbol = (Core.Name "symbol")
 
-_Production_pattern = (Core.FieldName "pattern")
+_Production_pattern = (Core.Name "pattern")
 
 -- | A regular expression
 newtype Regex = 

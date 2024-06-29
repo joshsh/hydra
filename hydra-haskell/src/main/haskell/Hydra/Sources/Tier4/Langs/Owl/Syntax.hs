@@ -36,7 +36,7 @@ owlSyntaxModule = Module ns elements [rdfSyntaxModule, xmlSchemaModule] $
       "annotations">: list $ owl "Annotation",
       "property">: owl "ObjectPropertyExpression"]
 
-    simpleUnion names = union $ (\n -> FieldType (FieldName $ decapitalize n) $ owl n) <$> names
+    simpleUnion names = union $ (\n -> FieldType (Name $ decapitalize n) $ owl n) <$> names
 
     withAnns fields = record $
       ("annotations">: list (owl "Annotation")):fields

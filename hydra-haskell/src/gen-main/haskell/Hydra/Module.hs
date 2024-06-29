@@ -31,13 +31,13 @@ data Module =
 
 _Module = (Core.Name "hydra/module.Module")
 
-_Module_namespace = (Core.FieldName "namespace")
+_Module_namespace = (Core.Name "namespace")
 
-_Module_elements = (Core.FieldName "elements")
+_Module_elements = (Core.Name "elements")
 
-_Module_dependencies = (Core.FieldName "dependencies")
+_Module_dependencies = (Core.Name "dependencies")
 
-_Module_description = (Core.FieldName "description")
+_Module_description = (Core.Name "description")
 
 -- | A prefix for element names
 newtype Namespace = 
@@ -57,6 +57,6 @@ data QualifiedName =
 
 _QualifiedName = (Core.Name "hydra/module.QualifiedName")
 
-_QualifiedName_namespace = (Core.FieldName "namespace")
+_QualifiedName_namespace = (Core.Name "namespace")
 
-_QualifiedName_local = (Core.FieldName "local")
+_QualifiedName_local = (Core.Name "local")

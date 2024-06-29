@@ -128,7 +128,7 @@ encodeType aliases typ = case typ of
         case res of
           Left schema -> pure schema
           Right _ -> fail $ "type resolved to an unsupported nested named schema: " ++ show t
-    encodeRecordField (FieldType (FieldName name) typ) = do
+    encodeRecordField (FieldType (Name name) typ) = do
       anns <- getAnns typ
       (schema, optional) <- encodePossiblyOptionalType typ
       return PDL.RecordField {
@@ -137,7 +137,7 @@ encodeType aliases typ = case typ of
         PDL.recordFieldOptional = optional,
         PDL.recordFieldDefault = Nothing,
         PDL.recordFieldAnnotations = anns}
-    encodeUnionField (FieldType (FieldName name) typ) = do
+    encodeUnionField (FieldType (Name name) typ) = do
       anns <- getAnns typ
       (s, optional) <- encodePossiblyOptionalType typ
       let schema = if optional
@@ -147,7 +147,7 @@ encodeType aliases typ = case typ of
         PDL.unionMemberAlias = Just $ PDL.FieldName name,
         PDL.unionMemberValue = schema,
         PDL.unionMemberAnnotations = anns}
-    encodeEnumField (FieldType (FieldName name) typ) = do
+    encodeEnumField (FieldType (Name name) typ) = do
       anns <- getAnns typ
       return PDL.EnumField {
         PDL.enumFieldName = PDL.EnumFieldName $ convertCase CaseConventionCamel CaseConventionUpperSnake name,

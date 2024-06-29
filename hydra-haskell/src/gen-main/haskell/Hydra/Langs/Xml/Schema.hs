@@ -376,90 +376,90 @@ data Datatype =
 
 _Datatype = (Core.Name "hydra/langs/xml/schema.Datatype")
 
-_Datatype_anySimpleType = (Core.FieldName "anySimpleType")
+_Datatype_anySimpleType = (Core.Name "anySimpleType")
 
-_Datatype_anyType = (Core.FieldName "anyType")
+_Datatype_anyType = (Core.Name "anyType")
 
-_Datatype_anyURI = (Core.FieldName "anyURI")
+_Datatype_anyURI = (Core.Name "anyURI")
 
-_Datatype_base64Binary = (Core.FieldName "base64Binary")
+_Datatype_base64Binary = (Core.Name "base64Binary")
 
-_Datatype_boolean = (Core.FieldName "boolean")
+_Datatype_boolean = (Core.Name "boolean")
 
-_Datatype_byte = (Core.FieldName "byte")
+_Datatype_byte = (Core.Name "byte")
 
-_Datatype_date = (Core.FieldName "date")
+_Datatype_date = (Core.Name "date")
 
-_Datatype_dateTime = (Core.FieldName "dateTime")
+_Datatype_dateTime = (Core.Name "dateTime")
 
-_Datatype_decimal = (Core.FieldName "decimal")
+_Datatype_decimal = (Core.Name "decimal")
 
-_Datatype_double = (Core.FieldName "double")
+_Datatype_double = (Core.Name "double")
 
-_Datatype_duration = (Core.FieldName "duration")
+_Datatype_duration = (Core.Name "duration")
 
-_Datatype_ENTITIES = (Core.FieldName "ENTITIES")
+_Datatype_ENTITIES = (Core.Name "ENTITIES")
 
-_Datatype_ENTITY = (Core.FieldName "ENTITY")
+_Datatype_ENTITY = (Core.Name "ENTITY")
 
-_Datatype_float = (Core.FieldName "float")
+_Datatype_float = (Core.Name "float")
 
-_Datatype_gDay = (Core.FieldName "gDay")
+_Datatype_gDay = (Core.Name "gDay")
 
-_Datatype_gMonth = (Core.FieldName "gMonth")
+_Datatype_gMonth = (Core.Name "gMonth")
 
-_Datatype_gMonthDay = (Core.FieldName "gMonthDay")
+_Datatype_gMonthDay = (Core.Name "gMonthDay")
 
-_Datatype_gYear = (Core.FieldName "gYear")
+_Datatype_gYear = (Core.Name "gYear")
 
-_Datatype_gYearMonth = (Core.FieldName "gYearMonth")
+_Datatype_gYearMonth = (Core.Name "gYearMonth")
 
-_Datatype_hexBinary = (Core.FieldName "hexBinary")
+_Datatype_hexBinary = (Core.Name "hexBinary")
 
-_Datatype_ID = (Core.FieldName "ID")
+_Datatype_ID = (Core.Name "ID")
 
-_Datatype_IDREF = (Core.FieldName "IDREF")
+_Datatype_IDREF = (Core.Name "IDREF")
 
-_Datatype_IDREFS = (Core.FieldName "IDREFS")
+_Datatype_IDREFS = (Core.Name "IDREFS")
 
-_Datatype_int = (Core.FieldName "int")
+_Datatype_int = (Core.Name "int")
 
-_Datatype_integer = (Core.FieldName "integer")
+_Datatype_integer = (Core.Name "integer")
 
-_Datatype_language = (Core.FieldName "language")
+_Datatype_language = (Core.Name "language")
 
-_Datatype_long = (Core.FieldName "long")
+_Datatype_long = (Core.Name "long")
 
-_Datatype_NMTOKEN = (Core.FieldName "NMTOKEN")
+_Datatype_NMTOKEN = (Core.Name "NMTOKEN")
 
-_Datatype_NOTATION = (Core.FieldName "NOTATION")
+_Datatype_NOTATION = (Core.Name "NOTATION")
 
-_Datatype_name = (Core.FieldName "name")
+_Datatype_name = (Core.Name "name")
 
-_Datatype_negativeInteger = (Core.FieldName "negativeInteger")
+_Datatype_negativeInteger = (Core.Name "negativeInteger")
 
-_Datatype_nonNegativeInteger = (Core.FieldName "nonNegativeInteger")
+_Datatype_nonNegativeInteger = (Core.Name "nonNegativeInteger")
 
-_Datatype_nonPositiveInteger = (Core.FieldName "nonPositiveInteger")
+_Datatype_nonPositiveInteger = (Core.Name "nonPositiveInteger")
 
-_Datatype_normalizedString = (Core.FieldName "normalizedString")
+_Datatype_normalizedString = (Core.Name "normalizedString")
 
-_Datatype_positiveInteger = (Core.FieldName "positiveInteger")
+_Datatype_positiveInteger = (Core.Name "positiveInteger")
 
-_Datatype_qName = (Core.FieldName "qName")
+_Datatype_qName = (Core.Name "qName")
 
-_Datatype_short = (Core.FieldName "short")
+_Datatype_short = (Core.Name "short")
 
-_Datatype_string = (Core.FieldName "string")
+_Datatype_string = (Core.Name "string")
 
-_Datatype_time = (Core.FieldName "time")
+_Datatype_time = (Core.Name "time")
 
-_Datatype_token = (Core.FieldName "token")
+_Datatype_token = (Core.Name "token")
 
-_Datatype_unsignedByte = (Core.FieldName "unsignedByte")
+_Datatype_unsignedByte = (Core.Name "unsignedByte")
 
-_Datatype_unsignedInt = (Core.FieldName "unsignedInt")
+_Datatype_unsignedInt = (Core.Name "unsignedInt")
 
-_Datatype_unsignedLong = (Core.FieldName "unsignedLong")
+_Datatype_unsignedLong = (Core.Name "unsignedLong")
 
-_Datatype_unsignedShort = (Core.FieldName "unsignedShort")
+_Datatype_unsignedShort = (Core.Name "unsignedShort")
