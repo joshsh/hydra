@@ -4,6 +4,7 @@ import Hydra.Basics
 import Hydra.Core
 import Hydra.Compute
 import Hydra.Mantle
+import qualified Hydra.Flows as F
 import qualified Hydra.Tier1 as Tier1
 import qualified Hydra.Lib.Flows as Flows
 import qualified Hydra.Dsl.Types as Types
@@ -137,14 +138,6 @@ sSubstituteTypeVariablesInScheme subst (TypeScheme vars typ) = TypeScheme vars $
 
 
 --------------------------------------------------------------------------------
--- Flows
-
-fromEither :: Show e => Either e a -> Flow c a
-fromEither x = case x of
-  Left e -> Flows.fail $ show e
-  Right a -> Flows.pure a
-
---------------------------------------------------------------------------------
 -- Inference
 
 data SInferenceContext
@@ -162,17 +155,11 @@ data SInferenceResult
 instance Show SInferenceResult where
   show (SInferenceResult scheme constraints) = "{type= " ++ showTypeScheme scheme ++ ", constraints= " ++ show constraints ++ "}"
 
-data TypeInferenceError
-  = TypeInferenceErrorNoSuchPrimitive Name
-  | TypeInferenceErrorNotYetSupported
-  | TypeInferenceErrorVariableNotBoundToType Name
-  deriving (Eq, Ord, Show)
-
 sInferType :: Term -> Flow SInferenceContext TypeScheme
 sInferType term = Flows.bind (sInferTypeInternal term) unifyAndSubst
   where
     unifyAndSubst :: SInferenceResult -> Flow SInferenceContext TypeScheme
-    unifyAndSubst result = Flows.bind (fromEither $ uUnify $ sInferenceResultConstraints result) doSubst
+    unifyAndSubst result = Flows.bind (F.fromEither $ uUnify $ sInferenceResultConstraints result) doSubst
       where
         doSubst :: SSubst -> Flow SInferenceContext TypeScheme
         doSubst subst = sInstantiateAndNormalize $ sSubstituteTypeVariablesInScheme subst $ sInferenceResultScheme result
@@ -220,7 +207,7 @@ sInferTypeInternal term = case term of
               where
                 -- Unify and substitute over the value constraints
                 -- TODO: save the substitution and pass it along, instead of the original set of constraints
-                withValueType (SInferenceResult rawValueScheme valueConstraints) = Flows.bind (fromEither $ uUnify kvConstraints) afterUnification
+                withValueType (SInferenceResult rawValueScheme valueConstraints) = Flows.bind (F.fromEither $ uUnify kvConstraints) afterUnification
                   where
                     rawValueVars = typeSchemeVariables rawValueScheme
                     kvConstraints = keyConstraint:valueConstraints
@@ -274,7 +261,7 @@ sInferTypeInternal term = case term of
 
     TermFunction (FunctionPrimitive name) -> Flow $ \ctx t -> case M.lookup name (sInferenceContextLexicon ctx) of
       Just scheme -> unFlow (Flows.map withoutConstraints $ sInstantiate scheme) ctx t
-      Nothing -> unFlow (Flows.fail $ show $ TypeInferenceErrorNoSuchPrimitive name) ctx t
+      Nothing -> unFlow (Flows.fail $ "No such primitive: " ++ unName name) ctx t
 
     TermProduct els -> if L.null els
       then Flows.pure $ yield (Types.mono $ Types.product []) []
@@ -288,10 +275,10 @@ sInferTypeInternal term = case term of
 
     TermVariable var -> Flow $ \ctx t -> case M.lookup var (sInferenceContextTypingEnvironment ctx) of
       Just scheme -> unFlow (Flows.map withoutConstraints $ sInstantiate scheme) ctx t
-      Nothing -> unFlow (Flows.fail $ show $ TypeInferenceErrorVariableNotBoundToType var) ctx t
+      Nothing -> unFlow (Flows.fail $ "Variable not bound to type: " ++ unName var) ctx t
 
   where
-    unsupported = Flows.fail $ show TypeInferenceErrorNotYetSupported
+    unsupported = Flows.fail "Not yet supported"
     yield = SInferenceResult
     yieldWithoutConstraints scheme = yield scheme []
     withoutConstraints scheme = SInferenceResult scheme []
