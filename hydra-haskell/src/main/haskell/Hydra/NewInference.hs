@@ -49,11 +49,37 @@ sOccursIn var typ = case typ of
   TypeProduct types -> any (sOccursIn var) types
   TypeVariable name -> var == name
 
-----------------------------------------
--- Robinson's algorithm, following https://www.cs.cornell.edu/courses/cs6110/2017sp/lectures/lec23.pdf
 
+sComposeSubst :: SSubst -> SSubst -> SSubst
+sComposeSubst s1 s2 = ...
+
+{-
+Robinson's algorithm, following https://www.cs.cornell.edu/courses/cs6110/2017sp/lectures/lec23.pdf
+Specifically this is an implementation of the following rules:
+ * Unify({(x, t)} ∪ E) = {t/x} Unify(E{t/x}) if x ∉ FV(t)
+ * Unify(∅) = I (the identity substitution x ↦ x)
+ * Unify({(x, x)} ∪ E) = Unify(E)
+ * Unify({(f(s1, ..., sn), f(t1, ..., tn))} ∪ E) = Unify({(s1, t1), ..., (sn, tn)} ∪ E)
+-}
 uUnify :: [TypeConstraint] -> Either SUnificationError SSubst
-uUnify constraints = case constraints of
+uUnify = L.foldl helper sEmptySubst
+  where
+    helper s (TypeConstraint t1 t2 ctx) = case t1 of
+      TypeVariable v1 -> case t2 of
+        TypeVariable v2 -> if v1 == v2
+          then Right s
+          else uBind v1 t2
+        _ -> unifyVar s v1 t2
+      _ -> case t2 of
+        TypeVariable v2 -> unifyVar v2 t1
+        _ -> unifyOther s t1 t2
+    unifyVar s v t = if sOccursIn v t -- TODO: expensive occurs check
+      then Left $ SUnificationErrorOccursCheckFailed v t ctx
+      else Right $ M.singleton v t
+    unifyOther s t1 t2 = ...
+
+
+case constraints of
     [] -> Right sEmptySubst
     ((TypeConstraint t1 t2 ctx):rest) -> case t1 of
         TypeVariable v1 -> case t2 of
