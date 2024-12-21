@@ -1,4 +1,4 @@
-module Hydra.Sources.Langs.Go.Go where
+module Hydra.Sources.Tier4.Ext.Go.Syntax where
 
 import Hydra.Kernel
 import Hydra.Dsl.Grammars
@@ -7,12 +7,12 @@ import qualified Data.List as L
 import qualified Hydra.Dsl.Annotations as Ann
 import qualified Hydra.Grammar as G
 
-goModule :: Module Kv
+goModule :: Module
 goModule = grammarToModule ns goGrammar $
     Just ("A Go syntax module. Based on the Go Programming Language Specification Extended BNF variant, as of December 15, 2022:\n" ++
       "  https://go.dev/ref/spec.")
   where
-    ns = Namespace "hydra/langs/go/syntax"
+    ns = Namespace "hydra/ext/go/syntax"
 
 goGrammar :: G.Grammar
 goGrammar = G.Grammar $ productions
