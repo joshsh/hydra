@@ -1,4 +1,4 @@
--- | Hydra's core data model, defining types, terms, and their dependencies
+-- | Hydra's core data model of type and term expressions
 
 module Hydra.Core where
 
@@ -418,32 +418,6 @@ newtype Name =
 
 _Name = (Name "hydra/core.Name")
 
--- | A term wrapped in a type name
-data WrappedTerm = 
-  WrappedTerm {
-    wrappedTermTypeName :: Name,
-    wrappedTermObject :: Term}
-  deriving (Eq, Ord, Read, Show)
-
-_WrappedTerm = (Name "hydra/core.WrappedTerm")
-
-_WrappedTerm_typeName = (Name "typeName")
-
-_WrappedTerm_object = (Name "object")
-
--- | A type wrapped in a type name
-data WrappedType = 
-  WrappedType {
-    wrappedTypeTypeName :: Name,
-    wrappedTypeObject :: Type}
-  deriving (Eq, Ord, Read, Show)
-
-_WrappedType = (Name "hydra/core.WrappedType")
-
-_WrappedType_typeName = (Name "typeName")
-
-_WrappedType_object = (Name "object")
-
 -- | A case statement for matching optional terms
 data OptionalCases = 
   OptionalCases {
@@ -707,3 +681,29 @@ data Unit =
   deriving (Eq, Ord, Read, Show)
 
 _Unit = (Name "hydra/core.Unit")
+
+-- | A term wrapped in a type name
+data WrappedTerm = 
+  WrappedTerm {
+    wrappedTermTypeName :: Name,
+    wrappedTermObject :: Term}
+  deriving (Eq, Ord, Read, Show)
+
+_WrappedTerm = (Name "hydra/core.WrappedTerm")
+
+_WrappedTerm_typeName = (Name "typeName")
+
+_WrappedTerm_object = (Name "object")
+
+-- | A type wrapped in a type name
+data WrappedType = 
+  WrappedType {
+    wrappedTypeTypeName :: Name,
+    wrappedTypeObject :: Type}
+  deriving (Eq, Ord, Read, Show)
+
+_WrappedType = (Name "hydra/core.WrappedType")
+
+_WrappedType_typeName = (Name "typeName")
+
+_WrappedType_object = (Name "object")

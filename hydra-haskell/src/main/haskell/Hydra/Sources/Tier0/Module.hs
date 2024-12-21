@@ -18,7 +18,7 @@ import Hydra.Sources.Tier0.Graph
 
 hydraModuleModule :: Module
 hydraModuleModule = Module ns elements [hydraGraphModule] [hydraCoreModule] $
-    Just "A model for Hydra namespaces and modules (collections of elements in the same namespace)"
+    Just "A model for Hydra namespaces and modules"
   where
     ns = Namespace "hydra/module"
     graph = typeref $ moduleNamespace hydraGraphModule

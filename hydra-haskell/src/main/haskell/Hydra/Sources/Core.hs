@@ -16,7 +16,7 @@ hydraCore = elementsToGraph bootstrapGraph Nothing (moduleElements hydraCoreModu
 
 hydraCoreModule :: Module
 hydraCoreModule = Module ns elements [] [] $
-    Just "Hydra's core data model, defining types, terms, and their dependencies"
+    Just "Hydra's core data model of type and term expressions"
   where
     ns = Namespace "hydra/core"
     core = typeref ns
@@ -245,18 +245,6 @@ hydraCoreModule = Module ns elements [] [] $
         doc "A unique identifier in some context; a string-valued key"
         $ wrap string,
 
-      def "WrappedTerm" $
-        doc "A term wrapped in a type name" $
-        record [
-          "typeName">: core "Name",
-          "object">: core "Term"],
-
-      def "WrappedType" $
-        doc "A type wrapped in a type name" $
-        record [
-          "typeName">: core "Name",
-          "object">: core "Type"],
-
       def "OptionalCases" $
         doc "A case statement for matching optional terms" $
         record [
@@ -410,4 +398,16 @@ hydraCoreModule = Module ns elements [] [] $
 
       def "Unit" $
         doc "An empty record as a canonical unit value" $
-        record []]
+        record [],
+
+      def "WrappedTerm" $
+        doc "A term wrapped in a type name" $
+        record [
+          "typeName">: core "Name",
+          "object">: core "Term"],
+
+      def "WrappedType" $
+        doc "A type wrapped in a type name" $
+        record [
+          "typeName">: core "Name",
+          "object">: core "Type"]]

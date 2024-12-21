@@ -1,4 +1,4 @@
--- | A model for Hydra namespaces and modules (collections of elements in the same namespace)
+-- | A model for Hydra namespaces and modules
 
 module Hydra.Module where
 
