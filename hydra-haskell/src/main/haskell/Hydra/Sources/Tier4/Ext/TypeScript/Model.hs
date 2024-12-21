@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Hydra.Sources.Tier4.Langs.TypeScript.Model where
+module Hydra.Sources.Tier4.Ext.TypeScript.Model where
 
 import Hydra.Sources.Tier3.All
 import Hydra.Dsl.Annotations
@@ -8,11 +8,11 @@ import Hydra.Dsl.Bootstrap
 import Hydra.Dsl.Types as Types
 
 
-typeScriptNs = Namespace "hydra/langs/typeScript/model"
+typeScriptNs = Namespace "hydra/ext/typeScript/model"
 ts = typeref typeScriptNs
 
-typeScriptModule :: Module Kv
-typeScriptModule = Module typeScriptNs elements [hydraCoreModule] [hydraCoreModule] $
+typeScriptModelModule :: Module
+typeScriptModelModule = Module typeScriptNs elements [hydraCoreModule] [hydraCoreModule] $
     Just ("A basic TypeScript model, constructed on the basis of the typescriptlang.org documentation")
   where
     def = datatype typeScriptNs

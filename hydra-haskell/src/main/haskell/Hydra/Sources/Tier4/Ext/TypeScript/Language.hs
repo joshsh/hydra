@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Hydra.Sources.Tier4.Langs.TypeScript.Language (typeScriptLanguageModule) where
+module Hydra.Sources.Tier4.Ext.TypeScript.Language (typeScriptLanguageModule) where
 
 -- Standard Tier-4 imports
 import           Prelude hiding ((++))
@@ -28,22 +28,23 @@ import qualified Hydra.Dsl.Types           as Types
 import           Hydra.Sources.Tier3.All
 
 
-typeScriptLanguageDefinition :: String -> Datum a -> Definition a
+typeScriptLanguageDefinition :: String -> TTerm a -> TElement a
 typeScriptLanguageDefinition = definitionInModule typeScriptLanguageModule
 
-typeScriptLanguageModule :: Module Kv
-typeScriptLanguageModule = Module ns elements [hydraCodersModule, hydraBasicsModule, hydraStripModule] [] $
+typeScriptLanguageModule :: Module
+typeScriptLanguageModule = Module ns elements [hydraCodersModule, hydraBasicsModule, hydraStripModule]
+    [hydraModuleModule, hydraCodersModule] $
     Just "Language constraints for TypeScript"
   where
-    ns = Namespace "hydra/langs/typeScript/language"
+    ns = Namespace "hydra/ext/typeScript/language"
     elements = [
       el typeScriptLanguageDef,
       el typeScriptReservedWordsDef]
 
-typeScriptLanguageDef :: Definition (Language a)
+typeScriptLanguageDef :: TElement Language
 typeScriptLanguageDef = typeScriptLanguageDefinition "typeScriptLanguage" $
   doc "Language constraints for Protocol Buffers v3" $
-  typed (Types.apply (TypeVariable _Language) (Types.var "a")) $
+  typed languageT $
   record _Language [
     _Language_name>>: wrap _LanguageName "hydra/langs/typeScript",
     _Language_constraints>>: record _LanguageConstraints [
@@ -78,9 +79,10 @@ typeScriptLanguageDef = typeScriptLanguageDefinition "typeScriptLanguage" $
         _Type_map>>: lambda "mt" (match _Type (Just true) [
           _Type_optional>>: constant false] @@ (ref stripTypeDef @@ (Core.mapTypeValues @@ var "mt")))]]]
 
-typeScriptReservedWordsDef :: Definition (S.Set String)
+typeScriptReservedWordsDef :: TElement (S.Set String)
 typeScriptReservedWordsDef = typeScriptLanguageDefinition "typeScriptReservedWords" $
   doc "A set of reserved words in TypeScript. Taken directly from https://github.com/microsoft/TypeScript/issues/2536" $
+  typed (setT stringT) $
   (Sets.fromList @@ (Lists.concat @@
     list [var "reservedWords", var "strictModeReservedWords", var "contextuallKeywords"]))
   `with` [
