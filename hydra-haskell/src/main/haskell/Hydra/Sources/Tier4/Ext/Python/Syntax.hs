@@ -17,14 +17,19 @@ pythonModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
       ++ " from https://docs.python.org/3/reference/grammar.html")
   where
     def = datatype pythonNs
-    elements = [
 
+    elements = terminals ++ nonterminals
+
+    terminals = [
       def "Name" string, -- NAME in the grammar
 
-      def "Number" $ union [
-        "integer">: integer,
-        "float">: float],
+      def "Number" $ union [ -- NUMBER in the grammar
+        "integer">: bigint,
+        "float">: bigfloat],
 
+      def "TypeComment" string] -- TYPE_COMMENT in the grammar
+
+    nonterminals = [
 -- # General grammatical elements and rules:
 -- #
 -- # * Strings with double quotes (") denote SOFT KEYWORDS
@@ -98,13 +103,17 @@ pythonModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 
 -- func_type: '(' [type_expressions] ')' '->' expression NEWLINE* ENDMARKER
 
-      -- TODO
+      def "FuncType" $ record [ -- TODO: func_type is defined in the official BNF grammar, but never used
+        "type">: optional $ python "TypeExpressions",
+        "body">: python "Expression"],
 
 -- # GENERAL STATEMENTS
 -- # ==================
 --
 -- statements: statement+
---
+
+      def "Statements" $ nonemptyList $ python "Statement",
+
 -- statement: compound_stmt  | simple_stmts
 
       def "Statement" $ union [
@@ -153,7 +162,7 @@ pythonModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
         "yield">: python "YieldStatement",
         "assert">: python "AssertStatement",
         "break">: unit,
-        "continue">: continue,
+        "continue">: unit,
         "global">: python "GlobalStatement",
         "nonlocal">: python "NonlocalStatement"],
 
@@ -168,9 +177,9 @@ pythonModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 --     | match_stmt
 
       def "CompoundStatement" $ union [
-        "functionDef">: python "FunctionDef",
+        "functionDef">: python "FunctionDefinition",
         "if">: python "IfStatement",
-        "classDef">: python "ClassDef",
+        "classDef">: python "ClassDefinition",
         "with">: python "WithStatement",
         "for">: python "ForStatement",
         "try">: python "TryStatement",
@@ -190,8 +199,9 @@ pythonModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 
       def "Assignment" $ union [
         "colon">: python "ColonAssignment",
-        -- TODO: the other two alternatives
-      ],
+        "singleTargetOrSubscript">: python "SingleTargetOrSubscriptAssignment",
+        "starTargets">: python "StarTargetsAssignment",
+        "singleTarget">: python "SingleTargetAssignment"],
 
       def "ColonAssignment" $ record [
         "lhs">: python "ColonAssignmentLhs",
@@ -203,10 +213,33 @@ pythonModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
         "singleTarget">: python "SingleTarget",
         "singleSubscriptAttributeTarget">: python "SingleSubscriptAttributeTarget"],
 
+      def "SingleTargetOrSubscriptAssignment" $ record [
+        "lhs">: python "SingleTargetOrSubscriptAttributeTarget",
+        "rhs">: python "Expression",
+        "annotation">: optional $ python "AnnotatedRhs"],
+
+      def "SingleTargetOrSubscriptAttributeTarget" $ union [
+        "singleTarget">: python "SingleTarget",
+        "singleSubscriptAttributeTarget">: python "SingleSubscriptAttributeTarget"],
+
+      def "StarTargetsAssignment" $ record [
+        "targets">: nonemptyList $ python "StarTarget",
+        "rhs">: python "YieldExpressionOrStarExpressions",
+        "typeComment">: optional $ python "TypeComment"],
+
+      def "YieldExpressionOrStarExpressions" $ union [
+        "yield">: python "YieldExpression",
+        "star">: python "StarExpressions"],
+
+      def "SingleTargetAssignment" $ record [
+        "lhs">: python "SingleTarget",
+        "augassign">: python "Augassign",
+        "rhs">: python "YieldExpressionOrStarExpressions"],
+
 -- annotated_rhs: yield_expr | star_expressions
 
         def "AnnotatedRhs" $ union [
-            "yield">: python "YieldExpr",
+            "yield">: python "YieldExpression",
             "star">: python "StarExpressions"],
 
 -- augassign:
@@ -269,7 +302,7 @@ pythonModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 
 -- yield_stmt: yield_expr
 
-      def "YieldStatement" $ python "YieldExpr",
+      def "YieldStatement" $ python "YieldExpression",
 
 -- assert_stmt: 'assert' expression [',' expression ]
 
@@ -324,7 +357,7 @@ pythonModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 -- import_from_as_name:
 --     | NAME ['as' NAME ]
 
-      def "ImportName" $ record [
+      def "ImportFromAsName" $ record [
         "name">: python "Name",
         "as">: optional $ python "Name"],
 
@@ -382,7 +415,7 @@ pythonModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 
       def "ClassDefRaw" $ record [
         "name">: python "Name",
-        "typeParams">: optional $ python "TypeParams",
+        "typeParams">: optional $ python "TypeParameters",
         "arguments">: optional $ python "Arguments",
         "block">: python "Block"],
 
@@ -404,7 +437,7 @@ pythonModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
       def "FunctionDefRaw" $ record [
         "async">: boolean,
         "name">: python "Name",
-        "typeParams">: optional $ python "TypeParams",
+        "typeParams">: optional $ python "TypeParameters",
         "params">: optional $ python "Params",
         "returnType">: optional $ python "Expression",
         "funcTypeComment">: optional $ python "FuncTypeComment",
@@ -570,8 +603,8 @@ pythonModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 -- default: '=' expression  | invalid_default
 
       def "Default" $ union [
-        "expression">: python "Expression",
-        "invalidDefault">: python "InvalidDefault"],
+        "expression">: python "Expression"],
+        -- "invalidDefault">: python "InvalidDefault"], -- TODO: this is not defined in the official BNF grammar
             
 -- # If statement
 -- # ------------
@@ -918,51 +951,107 @@ pythonModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 --     | '{' double_star_pattern ','? '}'
 --     | '{' items_pattern ',' double_star_pattern ','? '}'
 --     | '{' items_pattern ','? '}'
---
+
+      def "MappingPattern" $ record [
+        "items">: optional $ python "ItemsPattern",
+        "doubleStar">: optional $ python "DoubleStarPattern"],
+
 -- items_pattern:
 --     | ','.key_value_pattern+
---
+
+      def "ItemsPattern" $ nonemptyList $ python "KeyValuePattern",
+
 -- key_value_pattern:
 --     | (literal_expr | attr) ':' pattern
---
+
+      def "KeyValuePattern" $ record [
+        "key">: python "LiteralExpressionOrAttribute",
+        "value">: python "Pattern"],
+
+      def "LiteralExpressionOrAttribute" $ union [
+        "literal">: python "LiteralExpression",
+        "attribute">: python "Attribute"],
+
 -- double_star_pattern:
 --     | '**' pattern_capture_target
---
+
+      def "DoubleStarPattern" $ python "PatternCaptureTarget",
+
 -- class_pattern:
 --     | name_or_attr '(' ')'
 --     | name_or_attr '(' positional_patterns ','? ')'
 --     | name_or_attr '(' keyword_patterns ','? ')'
 --     | name_or_attr '(' positional_patterns ',' keyword_patterns ','? ')'
---
+
+      def "ClassPattern" $ record [
+        "nameOrAttribute">: python "NameOrAttribute",
+        "positionalPatterns">: optional $ python "PositionalPatterns",
+        "keywordPatterns">: optional $ python "KeywordPatterns"],
+
 -- positional_patterns:
 --     | ','.pattern+
---
+
+      def "PositionalPatterns" $ nonemptyList $ python "Pattern",
+
 -- keyword_patterns:
 --     | ','.keyword_pattern+
---
+
+      def "KeywordPatterns" $ nonemptyList $ python "KeywordPattern",
+
 -- keyword_pattern:
 --     | NAME '=' pattern
---
+
+      def "KeywordPattern" $ record [
+        "name">: python "Name",
+        "pattern">: python "Pattern"],
+
 -- # Type statement
 -- # ---------------
 --
 -- type_alias:
 --     | "type" NAME [type_params] '=' expression
---
+
+      def "TypeAlias" $ record [
+        "name">: python "Name",
+        "typeParams">: optional $ python "TypeParameters",
+        "expression">: python "Expression"],
+
 -- # Type parameter declaration
 -- # --------------------------
 --
 -- type_params:
 --     | invalid_type_params
 --     | '[' type_param_seq ']'
---
+
+      def "TypeParameters" $ union [
+        -- "invalid">: python "InvalidTypeParameters", -- TODO: this is not defined in the official BNF grammar
+        "valid">: nonemptyList $ python "TypeParameter"],
+
 -- type_param_seq: ','.type_param+ [',']
 --
 -- type_param:
 --     | NAME [type_param_bound] [type_param_default]
 --     | '*' NAME [type_param_starred_default]
 --     | '**' NAME [type_param_default]
---
+
+      def "TypeParameter" $ union [
+        "simple">: python "SimpleTypeParameter",
+        "star">: python "StarTypeParameter",
+        "doubleStar">: python "DoubleStarTypeParameter"],
+
+      def "SimpleTypeParameter" $ record [
+        "name">: python "Name",
+        "bound">: optional $ python "Expression",
+        "default">: optional $ python "Expression"],
+
+      def "StarTypeParameter" $ record [
+        "name">: python "Name",
+        "default">: optional $ python "StarExpression"],
+
+      def "DoubleStarTypeParameter" $ record [
+        "name">: python "Name",
+        "default">: optional $ python "Expression"],
+
 -- type_param_bound: ':' expression
 -- type_param_default: '=' expression
 -- type_param_starred_default: '=' star_expression
@@ -981,52 +1070,98 @@ pythonModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 --     | disjunction 'if' disjunction 'else' expression
 --     | disjunction
 --     | lambdef
---
+
+      def "Expression" $ union [
+        "conditional">: python "Conditional",
+        "simple">: python "Disjunction",
+        "lambda">: python "Lambda"],
+
+      def "Conditional" $ record [
+        "body">: python "Disjunction",
+        "if">: python "Disjunction",
+        "else">: python "Expression"],
+
 -- yield_expr:
 --     | 'yield' 'from' expression
 --     | 'yield' [star_expressions]
---
+
+      def "YieldExpression" $ union [
+        "from">: python "Expression",
+        "simple">: optional $ python "StarExpressions"],
+
 -- star_expressions:
 --     | star_expression (',' star_expression )+ [',']
 --     | star_expression ','
 --     | star_expression
---
+
+      def "StarExpressions" $ nonemptyList $ python "StarExpression",
+
 -- star_expression:
 --     | '*' bitwise_or
 --     | expression
---
+
+      def "StarExpression" $ union [
+        "star">: python "BitwiseOr",
+        "simple">: python "Expression"],
+
 -- star_named_expressions: ','.star_named_expression+ [',']
---
+
+      def "StarNamedExpressions" $ nonemptyList $ python "StarNamedExpression",
+
 -- star_named_expression:
 --     | '*' bitwise_or
 --     | named_expression
---
+
+      def "StarNamedExpression" $ union [
+        "star">: python "BitwiseOr",
+        "simple">: python "NamedExpression"],
+
 -- assignment_expression:
 --     | NAME ':=' ~ expression
---
+
+      def "AssignmentExpression" $ record [
+        "name">: python "Name",
+        "expression">: python "Expression"],
+
 -- named_expression:
 --     | assignment_expression
 --     | expression !':='
---
+
+      def "NamedExpression" $ union [
+        "assignment">: python "AssignmentExpression",
+        "simple">: python "Expression"],
+
 -- disjunction:
 --     | conjunction ('or' conjunction )+
 --     | conjunction
---
+
+      def "Disjunction" $ nonemptyList $ python "Conjunction",
+
 -- conjunction:
 --     | inversion ('and' inversion )+
 --     | inversion
---
+
+      def "Conjunction" $ nonemptyList $ python "Inversion",
+
 -- inversion:
 --     | 'not' inversion
 --     | comparison
---
+
+      def "Inversion" $ union [
+        "not">: python "Inversion",
+        "simple">: python "Comparison"],
+
 -- # Comparison operators
 -- # --------------------
 --
 -- comparison:
 --     | bitwise_or compare_op_bitwise_or_pair+
 --     | bitwise_or
---
+
+      def "Comparison" $ union [
+        "lhs">: python "BitwiseOr",
+        "rhs">: list $ python "CompareOpBitwiseOrPair"],
+
 -- compare_op_bitwise_or_pair:
 --     | eq_bitwise_or
 --     | noteq_bitwise_or
@@ -1038,7 +1173,14 @@ pythonModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 --     | in_bitwise_or
 --     | isnot_bitwise_or
 --     | is_bitwise_or
---
+
+      def "CompareOpBitwiseOrPair" $ record [
+        "operator">: python "CompareOp",
+        "rhs">: python "BitwiseOr"],
+
+      def "CompareOp" $ enum [
+        "eq", "noteq", "lte", "lt", "gte", "gt", "notin", "in", "isnot", "is"],
+
 -- eq_bitwise_or: '==' bitwise_or
 -- noteq_bitwise_or:
 --     | ('!=' ) bitwise_or
@@ -1057,20 +1199,43 @@ pythonModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 -- bitwise_or:
 --     | bitwise_or '|' bitwise_xor
 --     | bitwise_xor
---
+
+      def "BitwiseOr" $ union [
+        "lhs">: optional $ python "BitwiseOr",
+        "rhs">: python "BitwiseXor"],
+
 -- bitwise_xor:
 --     | bitwise_xor '^' bitwise_and
 --     | bitwise_and
---
+
+      def "BitwiseXor" $ union [
+        "lhs">: optional $ python "BitwiseXor",
+        "rhs">: python "BitwiseAnd"],
+
 -- bitwise_and:
 --     | bitwise_and '&' shift_expr
 --     | shift_expr
---
+
+      def "BitwiseAnd" $ union [
+        "lhs">: optional $ python "BitwiseAnd",
+        "rhs">: python "ShiftExpression"],
+
 -- shift_expr:
 --     | shift_expr '<<' sum
 --     | shift_expr '>>' sum
 --     | sum
---
+
+      def "ShiftExpression" $ record [
+        "lhs">: optional $ python "ShiftLhs",
+        "rhs">: python "Sum"],
+
+      def "ShiftLhs" $ record [
+        "operand">: python "ShiftExpression",
+        "operator">: python "ShiftOp"],
+
+      def "ShiftOp" $ enum [
+        "left", "right"],
+
 -- # Arithmetic operators
 -- # --------------------
 --
@@ -1078,7 +1243,18 @@ pythonModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 --     | sum '+' term
 --     | sum '-' term
 --     | term
---
+
+      def "Sum" $ record [
+        "lhs">: optional $ python "SumLhs",
+        "rhs">: python "Term"],
+
+      def "SumLhs" $ record [
+        "operand">: python "Sum",
+        "operator">: python "SumOp"],
+
+      def "SumOp" $ enum [
+        "add", "sub"],
+
 -- term:
 --     | term '*' factor
 --     | term '/' factor
@@ -1086,17 +1262,38 @@ pythonModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 --     | term '%' factor
 --     | term '@' factor
 --     | factor
---
+
+      def "Term" $ record [
+        "lhs">: optional $ python "TermLhs",
+        "rhs">: python "Factor"],
+
+      def "TermLhs" $ record [
+        "operand">: python "Term",
+        "operator">: python "TermOp"],
+
+      def "TermOp" $ enum [
+        "mul", "div", "floordiv", "mod", "matmul"],
+
 -- factor:
 --     | '+' factor
 --     | '-' factor
 --     | '~' factor
 --     | power
---
+
+      def "Factor" $ union [
+        "positive">: python "Factor",
+        "negative">: python "Factor",
+        "complement">: python "Factor",
+        "simple">: python "Power"],
+
 -- power:
 --     | await_primary '**' factor
 --     | await_primary
---
+
+      def "Power" $ record [
+        "lhs">: python "AwaitPrimary",
+        "rhs">: optional $ python "Factor"],
+
 -- # Primary elements
 -- # ----------------
 --
@@ -1105,22 +1302,57 @@ pythonModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 -- await_primary:
 --     | 'await' primary
 --     | primary
---
+
+      def "AwaitPrimary" $ record [
+        "await">: boolean,
+        "primary">: python "Primary"],
+
 -- primary:
 --     | primary '.' NAME
 --     | primary genexp
 --     | primary '(' [arguments] ')'
 --     | primary '[' slices ']'
 --     | atom
---
+
+      def "Primary" $ union [
+        "ordinary">: python "PrimaryWithRhs",
+        "atom">: python "Atom"],
+
+      def "PrimaryWithRhs" $ record [
+        "primary">: python "Primary",
+        "rhs">: python "PrimaryRhs"],
+
+      def "PrimaryRhs" $ union [
+        "project">: python "Name",
+        "genexp">: python "Genexp",
+        "call">: python "Arguments",
+        "slices">: python "Slices"],
+
 -- slices:
 --     | slice !','
 --     | ','.(slice | starred_expression)+ [',']
---
+
+      def "Slices" $ record [
+        "head">: python "Slice",
+        "tail">: list $ python "SliceOrStarredExpression"],
+
+      def "SliceOrStarredExpression" $ union [
+        "slice">: python "Slice",
+        "starred">: python "StarredExpression"],
+
 -- slice:
 --     | [expression] ':' [expression] [':' [expression] ]
 --     | named_expression
---
+
+      def "Slice" $ union [
+        "named">: python "NamedExpression",
+        "slice">: python "SliceExpression"],
+
+      def "SliceExpression" $ record [
+        "start">: optional $ python "Expression",
+        "stop">: optional $ python "Expression",
+        "step">: optional $ python "Expression"],
+
 -- atom:
 --     | NAME
 --     | 'True'
@@ -1132,16 +1364,42 @@ pythonModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 --     | (list | listcomp)
 --     | (dict | set | dictcomp | setcomp)
 --     | '...'
---
+
+      def "Atom" $ union [
+        "name">: python "Name",
+        "true">: unit,
+        "false">: unit,
+        "none">: unit,
+        "string">: python "String",
+        "number">: python "Number",
+        "tuple">: python "Tuple",
+        "group">: python "Group",
+        "genexp">: python "Genexp",
+        "list">: python "List",
+        "listcomp">: python "Listcomp",
+        "dict">: python "Dict",
+        "set">: python "Set",
+        "dictcomp">: python "Dictcomp",
+        "setcomp">: python "Setcomp",
+        "ellipsis">: unit],
+
 -- group:
 --     | '(' (yield_expr | named_expression) ')'
---
+
+      def "Group" $ union [
+        "yield">: python "YieldExpression",
+        "expression">: python "NamedExpression"],
+
 -- # Lambda functions
 -- # ----------------
 --
 -- lambdef:
 --     | 'lambda' [lambda_params] ':' expression
---
+
+      def "Lambda" $ record [
+        "params">: python "LambdaParameters",
+        "body">: python "Expression"],
+
 -- lambda_params:
 --     | lambda_parameters
 --
@@ -1155,32 +1413,66 @@ pythonModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 --     | lambda_param_no_default+ lambda_param_with_default* [lambda_star_etc]
 --     | lambda_param_with_default+ [lambda_star_etc]
 --     | lambda_star_etc
---
+
+        def "LambdaParameters" $ record [
+          "slashNoDefault">: optional $ python "LambdaSlashNoDefault",
+          "paramNoDefault">: list $ python "LambdaParamNoDefault",
+          "paramWithDefault">: list $ python "LambdaParamWithDefault",
+          "starEtc">: optional $ python "LambdaStarEtc"],
+
 -- lambda_slash_no_default:
 --     | lambda_param_no_default+ '/' ','
 --     | lambda_param_no_default+ '/' &':'
---
+
+        def "LambdaSlashNoDefault" $ record [
+            "parameters">: list $ python "LambdaParamNoDefault"],
+
 -- lambda_slash_with_default:
 --     | lambda_param_no_default* lambda_param_with_default+ '/' ','
 --     | lambda_param_no_default* lambda_param_with_default+ '/' &':'
---
+
+        def "LambdaSlashWithDefault" $ record [
+            "paramNoDefault">: list $ python "LambdaParamNoDefault",
+            "paramWithDefault">: nonemptyList $ python "LambdaParamWithDefault"],
+
 -- lambda_star_etc:
 --     | '*' lambda_param_no_default lambda_param_maybe_default* [lambda_kwds]
 --     | '*' ',' lambda_param_maybe_default+ [lambda_kwds]
 --     | lambda_kwds
---
+
+        def "LambdaStarEtc" $ union [
+            "star">: boolean,
+            "paramNoDefault">: optional $ python "LambdaParamNoDefault",
+            "paramMaybeDefault">: list $ python "LambdaParamMaybeDefault",
+            "kwds">: python "LambdaKwds"],
+
 -- lambda_kwds:
 --     | '**' lambda_param_no_default
---
+
+        def "LambdaKwds" $ python "LambdaParamNoDefault",
+
 -- lambda_param_no_default:
 --     | lambda_param ','
 --     | lambda_param &':'
+
+      def "LambdaParamNoDefault" $ python "Name",
+
 -- lambda_param_with_default:
 --     | lambda_param default ','
 --     | lambda_param default &':'
+
+      def "LambdaParamWithDefault" $ record [
+        "param">: python "Name",
+        "default">: python "Default"],
+
 -- lambda_param_maybe_default:
 --     | lambda_param default? ','
 --     | lambda_param default? &':'
+
+      def "LambdaParamMaybeDefault" $ record [
+        "param">: python "Name",
+        "default">: optional $ python "Default"],
+
 -- lambda_param: NAME
 --
 -- # LITERALS
@@ -1203,77 +1495,155 @@ pythonModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 --
 -- string: STRING
 -- strings: (fstring|string)+
---
+
+      def "String" string,
+      def "Strings" string,
+
 -- list:
 --     | '[' [star_named_expressions] ']'
---
+
+      def "List" $ list $ python "StarNamedExpression",
+
 -- tuple:
 --     | '(' [star_named_expression ',' [star_named_expressions]  ] ')'
---
+
+      def "Tuple" $ list $ python "StarNamedExpression",
+
 -- set: '{' star_named_expressions '}'
---
+
+      def "Set" $ nonemptyList $ python "StarNamedExpression",
+
 -- # Dicts
 -- # -----
 --
 -- dict:
 --     | '{' [double_starred_kvpairs] '}'
---
+
+      def "Dict" $ list $ python "DoubleStarredKvpairs",
+
 -- double_starred_kvpairs: ','.double_starred_kvpair+ [',']
---
+
+      def "DoubleStarredKvpairs" $ nonemptyList $ python "DoubleStarredKvpair",
+
 -- double_starred_kvpair:
 --     | '**' bitwise_or
 --     | kvpair
---
+
+      def "DoubleStarredKvpair" $ union [
+        "starred">: python "BitwiseOr",
+        "kvpair">: python "Kvpair"],
+
 -- kvpair: expression ':' expression
---
+
+      def "Kvpair" $ record [
+        "key">: python "Expression",
+        "value">: python "Expression"],
+
 -- # Comprehensions & Generators
 -- # ---------------------------
 --
 -- for_if_clauses:
 --     | for_if_clause+
---
+
+      def "ForIfClauses" $ nonemptyList $ python "ForIfClause",
+
 -- for_if_clause:
 --     | 'async' 'for' star_targets 'in' ~ disjunction ('if' disjunction )*
 --     | 'for' star_targets 'in' ~ disjunction ('if' disjunction )*
---
+
+      def "ForIfClause" $ record [
+        "async">: boolean,
+        "targets">: python "StarTargets",
+        "in">: python "Disjunction",
+        "ifs">: list $ python "Disjunction"],
+
 -- listcomp:
 --     | '[' named_expression for_if_clauses ']'
---
+
+      def "Listcomp" $ record [
+        "expression">: python "NamedExpression",
+        "forIfClauses">: python "ForIfClauses"],
+
 -- setcomp:
 --     | '{' named_expression for_if_clauses '}'
---
+
+      def "Setcomp" $ record [
+        "expression">: python "NamedExpression",
+        "forIfClauses">: python "ForIfClauses"],
+
 -- genexp:
 --     | '(' ( assignment_expression | expression !':=') for_if_clauses ')'
---
+
+      def "Genexp" $ record [
+        "head">: python "GenexpHead",
+        "tail">: python "ForIfClauses"],
+
+      def "GenexpHead" $ union [
+        "assignment">: python "AssignmentExpression",
+        "expression">: python "Expression"],
+
 -- dictcomp:
 --     | '{' kvpair for_if_clauses '}'
---
+
+      def "Dictcomp" $ record [
+        "kvpair">: python "Kvpair",
+        "forIfClauses">: python "ForIfClauses"],
+
 -- # FUNCTION CALL ARGUMENTS
 -- # =======================
 --
 -- arguments:
 --     | args [','] &')'
---
+
+      def "Arguments" $ python "Args",
+
 -- args:
 --     | ','.(starred_expression | ( assignment_expression | expression !':=') !'=')+ [',' kwargs ]
 --     | kwargs
---
+
+      def "Args" $ record [
+        "positional">: list $ python "PosArg",
+        "kwargs">: optional $ python "Kwargs"],
+
+      def "PosArg" $ union [
+        "starred">: python "StarredExpression",
+        "assignment">: python "AssignmentExpression",
+        "expression">: python "Expression"],
+
 -- kwargs:
 --     | ','.kwarg_or_starred+ ',' ','.kwarg_or_double_starred+
 --     | ','.kwarg_or_starred+
 --     | ','.kwarg_or_double_starred+
---
+
+      def "Kwargs" $ record [
+        "kwargOrStarred">: list $ python "KwargOrStarred",
+        "kwargOrDoubleStarred">: list $ python "KwargOrDoubleStarred"],
+
 -- starred_expression:
 --     | '*' expression
---
+
+      def "StarredExpression" $ python "Expression",
+
 -- kwarg_or_starred:
 --     | NAME '=' expression
 --     | starred_expression
---
+
+      def "KwargOrStarred" $ union [
+        "kwarg">: python "Kwarg",
+        "starred">: python "StarredExpression"],
+
+      def "Kwarg" $ record [
+        "name">: python "Name",
+        "value">: python "Expression"],
+
 -- kwarg_or_double_starred:
 --     | NAME '=' expression
 --     | '**' expression
---
+
+      def "KwargOrDoubleStarred" $ union [
+        "kwarg">: python "Kwarg",
+        "doubleStarred">: python "Expression"],
+
 -- # ASSIGNMENT TARGETS
 -- # ==================
 --
@@ -1284,62 +1654,127 @@ pythonModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 -- star_targets:
 --     | star_target !','
 --     | star_target (',' star_target )* [',']
---
+
+      def "StarTargets" $ nonemptyList $ python "StarTarget",
+
 -- star_targets_list_seq: ','.star_target+ [',']
---
+
+      def "StarTargetsListSeq" $ nonemptyList $ python "StarTarget",
+
 -- star_targets_tuple_seq:
 --     | star_target (',' star_target )+ [',']
 --     | star_target ','
---
+
+      def "StarTargetsTupleSeq" $ nonemptyList $ python "StarTarget",
+
 -- star_target:
 --     | '*' (!'*' star_target)
 --     | target_with_star_atom
---
+
+      def "StarTarget" $ union [
+        "star">: python "StarTarget",
+        "target">: python "TargetWithStarAtom"],
+
 -- target_with_star_atom:
 --     | t_primary '.' NAME !t_lookahead
 --     | t_primary '[' slices ']' !t_lookahead
 --     | star_atom
---
+
+      def "TargetWithStarAtom" $ union [
+        "primaryAndName">: python "TPrimaryAndName",
+        "primaryAndSlices">: python "TPrimaryAndSlices",
+        "starAtom">: python "StarAtom"],
+
+      def "TPrimaryAndName" $ record [
+        "primary">: python "TPrimary",
+        "name">: python "Name"],
+
+      def "TPrimaryAndSlices" $ record [
+        "primary">: python "TPrimary",
+        "slices">: python "Slices"],
+
 -- star_atom:
 --     | NAME
 --     | '(' target_with_star_atom ')'
 --     | '(' [star_targets_tuple_seq] ')'
 --     | '[' [star_targets_list_seq] ']'
---
+
+      def "StarAtom" $ union [
+        "name">: python "Name",
+        "targetWithStarAtom">: python "TargetWithStarAtom",
+        "starTargetsTupleSeq">: optional $ python "StarTargetsTupleSeq",
+        "starTargetsListSeq">: optional $ python "StarTargetsListSeq"],
+
 -- single_target:
 --     | single_subscript_attribute_target
 --     | NAME
 --     | '(' single_target ')'
---
+
+      def "SingleTarget" $ union [
+        "subscriptAttributeTarget">: python "SingleSubscriptAttributeTarget",
+        "name">: python "Name",
+        "singleTarget">: python "SingleTarget"],
+
 -- single_subscript_attribute_target:
 --     | t_primary '.' NAME !t_lookahead
 --     | t_primary '[' slices ']' !t_lookahead
---
+
+      def "SingleSubscriptAttributeTarget" $ union [
+        "primaryAndName">: python "TPrimaryAndName",
+        "primaryAndSlices">: python "TPrimaryAndSlices"],
+
 -- t_primary:
 --     | t_primary '.' NAME &t_lookahead
 --     | t_primary '[' slices ']' &t_lookahead
 --     | t_primary genexp &t_lookahead
 --     | t_primary '(' [arguments] ')' &t_lookahead
 --     | atom &t_lookahead
---
+
+      def "TPrimary" $ union [
+        "primaryAndName">: python "TPrimaryAndName",
+        "primaryAndSlices">: python "TPrimaryAndSlices",
+        "primaryAndGenexp">: python "TPrimaryAndGenexp",
+        "primaryAndArguments">: python "TPrimaryAndArguments",
+        "atom">: python "Atom"],
+
+      def "TPrimaryAndGenexp" $ record [
+        "primary">: python "TPrimary",
+        "genexp">: python "Genexp"],
+
+      def "TPrimaryAndArguments" $ record [
+        "primary">: python "TPrimary",
+        "arguments">: optional $ python "Arguments"],
+
 -- t_lookahead: '(' | '[' | '.'
 --
 -- # Targets for del statements
 -- # --------------------------
 --
 -- del_targets: ','.del_target+ [',']
---
+
+      def "DelTargets" $ nonemptyList $ python "DelTarget",
+
 -- del_target:
 --     | t_primary '.' NAME !t_lookahead
 --     | t_primary '[' slices ']' !t_lookahead
 --     | del_t_atom
---
+
+      def "DelTarget" $ union [
+        "primaryAndName">: python "TPrimaryAndName",
+        "primaryAndSlices">: python "TPrimaryAndSlices",
+        "delTAtom">: python "DelTAtom"],
+
 -- del_t_atom:
 --     | NAME
 --     | '(' del_target ')'
 --     | '(' [del_targets] ')'
 --     | '[' [del_targets] ']'
---
+
+      def "DelTAtom" $ union [
+        "name">: python "Name",
+        "target">: python "DelTarget",
+        "targets">: python "DelTargets"],
+
 -- # TYPING ELEMENTS
 -- # ---------------
 --
@@ -1352,7 +1787,16 @@ pythonModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 --     | '*' expression
 --     | '**' expression
 --     | ','.expression+
---
+
+      def "TypeExpressions" $ nonemptyList $ python "TypeExpression",
+
+      def "TypeExpression" $ union [
+        "expression">: python "Expression",
+        "starredExpression">: python "Expression",
+        "doubleStarredExpression">: python "Expression"],
+
 -- func_type_comment:
 --     | NEWLINE TYPE_COMMENT &(NEWLINE INDENT)   # Must be followed by indented block
 --     | TYPE_COMMENT
+
+      def "FuncTypeComment" $ python "TypeComment"]
