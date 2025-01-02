@@ -99,21 +99,19 @@ pythonModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 
 -- eval: expressions NEWLINE* ENDMARKER
 
-      def "Eval" $ python "Expressions",
+      def "Eval" $ nonemptyList $ python "Expression",
 
 -- func_type: '(' [type_expressions] ')' '->' expression NEWLINE* ENDMARKER
 
       def "FuncType" $ record [ -- TODO: func_type is defined in the official BNF grammar, but never used
-        "type">: optional $ python "TypeExpressions",
+        "type">: list $ python "TypeExpression",
         "body">: python "Expression"],
 
 -- # GENERAL STATEMENTS
 -- # ==================
 --
 -- statements: statement+
-
-      def "Statements" $ nonemptyList $ python "Statement",
-
+--
 -- statement: compound_stmt  | simple_stmts
 
       def "Statement" $ union [
@@ -153,7 +151,7 @@ pythonModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
       def "SimpleStatement" $ union [
         "assignment">: python "Assignment",
         "typeAlias">: python "TypeAlias",
-        "starExpressions">: python "StarExpressions",
+        "starExpressions">: nonemptyList $ python "StarExpression",
         "return">: python "ReturnStatement",
         "import">: python "ImportStatement",
         "raise">: python "RaiseStatement",
@@ -229,7 +227,7 @@ pythonModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 
       def "YieldExpressionOrStarExpressions" $ union [
         "yield">: python "YieldExpression",
-        "star">: python "StarExpressions"],
+        "star">: nonemptyList $ python "StarExpression"],
 
       def "SingleTargetAssignment" $ record [
         "lhs">: python "SingleTarget",
@@ -240,7 +238,7 @@ pythonModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 
         def "AnnotatedRhs" $ union [
             "yield">: python "YieldExpression",
-            "star">: python "StarExpressions"],
+            "star">: nonemptyList $ python "StarExpression"],
 
 -- augassign:
 --     | '+='
@@ -275,7 +273,7 @@ pythonModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 -- return_stmt:
 --     | 'return' [star_expressions]
 
-      def "ReturnStatement" $ optional $ python "StarExpressions",
+      def "ReturnStatement" $ list $ python "StarExpression",
 
 -- raise_stmt:
 --     | 'raise' expression ['from' expression ]
@@ -390,9 +388,8 @@ pythonModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 --     | NEWLINE INDENT statements DEDENT
 --     | simple_stmts
 
-
       def "Block" $ union [
-        "indented">: python "Statements",
+        "indented">: nonemptyList $ python "Statement",
         "simple">: python "SimpleStatements"],
 
 -- decorators: ('@' named_expression NEWLINE )+
@@ -648,7 +645,7 @@ pythonModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
       def "ForStatement" $ record [
         "async">: boolean,
         "targets">: python "StarTargets",
-        "expressions">: python "StarExpressions",
+        "expressions">: nonemptyList $ python "StarExpression",
         "typeComment">: optional $ python "TypeComment",
         "body">: python "Block",
         "else">: optional $ python "Block"],
@@ -1059,9 +1056,7 @@ pythonModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 --     | expression (',' expression )+ [',']
 --     | expression ','
 --     | expression
-
-      def "Expressions" $ nonemptyList $ python "Expression",
-
+--
 -- expression:
 --     | disjunction 'if' disjunction 'else' expression
 --     | disjunction
@@ -1083,15 +1078,13 @@ pythonModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 
       def "YieldExpression" $ union [
         "from">: python "Expression",
-        "simple">: optional $ python "StarExpressions"],
+        "simple">: list $ python "StarExpression"],
 
 -- star_expressions:
 --     | star_expression (',' star_expression )+ [',']
 --     | star_expression ','
 --     | star_expression
-
-      def "StarExpressions" $ nonemptyList $ python "StarExpression",
-
+--
 -- star_expression:
 --     | '*' bitwise_or
 --     | expression
@@ -1783,8 +1776,6 @@ pythonModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 --     | '*' expression
 --     | '**' expression
 --     | ','.expression+
-
-      def "TypeExpressions" $ nonemptyList $ python "TypeExpression",
 
       def "TypeExpression" $ union [
         "expression">: python "Expression",
