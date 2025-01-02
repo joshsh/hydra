@@ -602,9 +602,7 @@ pythonModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
         
 -- default: '=' expression  | invalid_default
 
-      def "Default" $ union [
-        "expression">: python "Expression"],
-        -- "invalidDefault">: python "InvalidDefault"], -- TODO: this is not defined in the official BNF grammar
+      def "Default" $ python "Expression",
             
 -- # If statement
 -- # ------------
@@ -1023,9 +1021,7 @@ pythonModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 --     | invalid_type_params
 --     | '[' type_param_seq ']'
 
-      def "TypeParameters" $ union [
-        -- "invalid">: python "InvalidTypeParameters", -- TODO: this is not defined in the official BNF grammar
-        "valid">: nonemptyList $ python "TypeParameter"],
+      def "TypeParameters" $ nonemptyList $ python "TypeParameter",
 
 -- type_param_seq: ','.type_param+ [',']
 --
