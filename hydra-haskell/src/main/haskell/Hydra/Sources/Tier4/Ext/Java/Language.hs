@@ -4,6 +4,7 @@ module Hydra.Sources.Tier4.Ext.Java.Language where
 
 import Hydra.Sources.Tier3.All
 import Hydra.Dsl.Base as Base
+import Hydra.Dsl.Coders as Coders
 import Hydra.Dsl.Lib.Equality as Equality
 import Hydra.Dsl.Lib.Flows as Flows
 import Hydra.Dsl.Lib.Lists as Lists
@@ -22,14 +23,13 @@ javaLanguageDefinition = definitionInModule javaLanguageModule
 
 javaLanguageModule :: Module
 javaLanguageModule = Module ns elements [hydraCodersModule, hydraBasicsModule] tier0Modules $
-    Just "Language constraints for Java"
+    Just "Language constraints and reserved words for Java"
   where
     ns = Namespace "hydra/ext/java/language"
     elements = [
       el javaMaxTupleLengthDef,
       el javaLanguageDef,
-      el reservedWordsDef
-      ]
+      el reservedWordsDef]
 
 javaMaxTupleLengthDef :: TElement Int
 javaMaxTupleLengthDef = javaLanguageDefinition "javaMaxTupleLength" $
@@ -39,61 +39,76 @@ javaMaxTupleLengthDef = javaLanguageDefinition "javaMaxTupleLength" $
 
 javaLanguageDef :: TElement (Language)
 javaLanguageDef = javaLanguageDefinition "javaLanguage" $
-  doc "Language constraints for Java" $
-  typed languageT $
-  record _Language [
-    _Language_name>>: wrap _LanguageName "hydra/ext/java",
-    _Language_constraints>>: record _LanguageConstraints [
-      _LanguageConstraints_eliminationVariants>>: Sets.fromList @@ ref eliminationVariantsDef,
-      _LanguageConstraints_literalVariants>>: Sets.fromList @@ list (unitVariant _LiteralVariant <$> [
-        _LiteralVariant_boolean, -- boolean
-        _LiteralVariant_float, -- (see float types)
-        _LiteralVariant_integer, -- (see integer types)
-        _LiteralVariant_string]), -- string
-      _LanguageConstraints_floatTypes>>: Sets.fromList @@ list (unitVariant _FloatType <$> [
-         -- Bigfloat (e.g. as Java's BigDecimal) is excluded for now
-        _FloatType_float32, -- float
-        _FloatType_float64]), -- double
-      _LanguageConstraints_functionVariants>>: Sets.fromList @@ ref functionVariantsDef,
-      _LanguageConstraints_integerTypes>>: Sets.fromList @@ list (unitVariant _IntegerType <$> [
-        _IntegerType_bigint, -- BigInteger
-        _IntegerType_int8, -- byte (signed, 8-bit)
-        _IntegerType_int16, -- short (signed, 16-bit)
-        _IntegerType_int32, -- int (signed, 32-bit)
-        _IntegerType_int64, -- long (signed, 64-bit)
-        _IntegerType_uint16]), -- char (unsigned, 16-bit)
-      _LanguageConstraints_termVariants>>: Sets.fromList @@ list (unitVariant _TermVariant <$> [
-        _TermVariant_application,
-        _TermVariant_function,
-        _TermVariant_let,
-        _TermVariant_list,
-        _TermVariant_literal,
-        _TermVariant_map,
-        _TermVariant_optional,
-        _TermVariant_product,
-        _TermVariant_record,
-        _TermVariant_set,
-        _TermVariant_union,
-        _TermVariant_variable,
-        _TermVariant_wrap]),
-      _LanguageConstraints_typeVariants>>: Sets.fromList @@ list (unitVariant _TypeVariant <$> [
-        _TypeVariant_annotated,
-        _TypeVariant_application,
-        _TypeVariant_function,
-        _TypeVariant_lambda,
-        _TypeVariant_list,
-        _TypeVariant_literal,
-        _TypeVariant_map,
-        _TypeVariant_optional,
-        _TypeVariant_product,
-        _TypeVariant_record,
-        _TypeVariant_set,
-        _TypeVariant_union,
-        _TypeVariant_variable,
-        _TypeVariant_wrap]),
-      _LanguageConstraints_types>>: match _Type (Just true) [
-        _Type_product>>: lambda "types" $ Equality.ltInt32 @@ (Lists.length @@ var "types") @@ (ref javaMaxTupleLengthDef)
-      ]]]
+    doc "Language constraints for Java" $
+    typed languageT $
+    Coders.language "hydra/ext/java"
+      eliminationVariants
+      literalVariants
+      floatTypes
+      functionVariants
+      integerTypes
+      termVariants
+      typeVariants
+      typePredicate
+  where
+      eliminationVariants = [
+        EliminationVariantList,
+        EliminationVariantOptional,
+        EliminationVariantProduct,
+        EliminationVariantRecord,
+        EliminationVariantUnion,
+        EliminationVariantWrap]
+      literalVariants = [
+        LiteralVariantBoolean, -- boolean
+        LiteralVariantFloat, -- (see float types)
+        LiteralVariantInteger, -- (see integer types)
+        LiteralVariantString] -- string
+      floatTypes = [
+        -- Bigfloat (e.g. as Java's BigDecimal) is excluded for now
+        FloatTypeFloat32, -- float
+        FloatTypeFloat64] -- double
+      functionVariants = [
+        FunctionVariantElimination,
+        FunctionVariantLambda,
+        FunctionVariantPrimitive]
+      integerTypes = [
+        IntegerTypeBigint, -- BigInteger
+        IntegerTypeInt8, -- byte (signed, 8-bit)
+        IntegerTypeInt16, -- short (signed, 16-bit)
+        IntegerTypeInt32, -- int (signed, 32-bit)
+        IntegerTypeInt64, -- long (signed, 64-bit)
+        IntegerTypeUint16] -- char (unsigned, 16-bit)
+      termVariants = [
+        TermVariantApplication,
+        TermVariantFunction,
+        TermVariantLet,
+        TermVariantList,
+        TermVariantLiteral,
+        TermVariantMap,
+        TermVariantOptional,
+        TermVariantProduct,
+        TermVariantRecord,
+        TermVariantSet,
+        TermVariantUnion,
+        TermVariantVariable,
+        TermVariantWrap]
+      typeVariants = [
+        TypeVariantAnnotated,
+        TypeVariantApplication,
+        TypeVariantFunction,
+        TypeVariantLambda,
+        TypeVariantList,
+        TypeVariantLiteral,
+        TypeVariantMap,
+        TypeVariantOptional,
+        TypeVariantProduct,
+        TypeVariantRecord,
+        TypeVariantSet,
+        TypeVariantUnion,
+        TypeVariantVariable,
+        TypeVariantWrap]
+      typePredicate = match _Type (Just true) [
+        _Type_product>>: lambda "types" $ Equality.ltInt32 @@ (Lists.length @@ var "types") @@ (ref javaMaxTupleLengthDef)]
 
 reservedWordsDef :: TElement (S.Set String)
 reservedWordsDef = javaLanguageDefinition "reservedWords" $

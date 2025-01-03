@@ -139,3 +139,4 @@ typeVariant v = unitVariant _TypeVariant $ case v of
   TypeVariantSet -> _TypeVariant_set
   TypeVariantUnion -> _TypeVariant_union
   TypeVariantVariable -> _TypeVariant_variable
+  TypeVariantWrap -> _TypeVariant_wrap

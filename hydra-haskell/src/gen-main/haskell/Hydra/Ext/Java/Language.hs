@@ -1,8 +1,7 @@
--- | Language constraints for Java
+-- | Language constraints and reserved words for Java
 
 module Hydra.Ext.Java.Language where
 
-import qualified Hydra.Basics as Basics
 import qualified Hydra.Coders as Coders
 import qualified Hydra.Core as Core
 import qualified Hydra.Lib.Equality as Equality
@@ -23,7 +22,13 @@ javaLanguage :: Coders.Language
 javaLanguage = Coders.Language {
   Coders.languageName = (Coders.LanguageName "hydra/ext/java"),
   Coders.languageConstraints = Coders.LanguageConstraints {
-    Coders.languageConstraintsEliminationVariants = (Sets.fromList Basics.eliminationVariants),
+    Coders.languageConstraintsEliminationVariants = (Sets.fromList [
+      Mantle.EliminationVariantList,
+      Mantle.EliminationVariantOptional,
+      Mantle.EliminationVariantProduct,
+      Mantle.EliminationVariantRecord,
+      Mantle.EliminationVariantUnion,
+      Mantle.EliminationVariantWrap]),
     Coders.languageConstraintsLiteralVariants = (Sets.fromList [
       Mantle.LiteralVariantBoolean,
       Mantle.LiteralVariantFloat,
@@ -32,7 +37,10 @@ javaLanguage = Coders.Language {
     Coders.languageConstraintsFloatTypes = (Sets.fromList [
       Core.FloatTypeFloat32,
       Core.FloatTypeFloat64]),
-    Coders.languageConstraintsFunctionVariants = (Sets.fromList Basics.functionVariants),
+    Coders.languageConstraintsFunctionVariants = (Sets.fromList [
+      Mantle.FunctionVariantElimination,
+      Mantle.FunctionVariantLambda,
+      Mantle.FunctionVariantPrimitive]),
     Coders.languageConstraintsIntegerTypes = (Sets.fromList [
       Core.IntegerTypeBigint,
       Core.IntegerTypeInt8,
@@ -70,7 +78,7 @@ javaLanguage = Coders.Language {
       Mantle.TypeVariantVariable,
       Mantle.TypeVariantWrap]),
     Coders.languageConstraintsTypes = (\x -> case x of
-      Core.TypeProduct v319 -> (Equality.ltInt32 (Lists.length v319) javaMaxTupleLength)
+      Core.TypeProduct v0 -> (Equality.ltInt32 (Lists.length v0) javaMaxTupleLength)
       _ -> True)}}
 
 -- | A set of reserved words in Java
