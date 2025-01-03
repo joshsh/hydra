@@ -11,8 +11,8 @@ import Hydra.Dsl.Types as Types
 pythonNs = Namespace "hydra/ext/python/syntax"
 python = typeref pythonNs
 
-pythonModule :: Module
-pythonModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
+pythonSyntaxModule :: Module
+pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
     Just ("A Python syntax model, based on the Python v3 PEG grammar retrieved on 2024-12-22"
       ++ " from https://docs.python.org/3/reference/grammar.html")
   where
