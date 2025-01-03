@@ -77,7 +77,7 @@ fieldName = project _Field _Field_name
 fieldTerm :: TTerm (Field -> Term)
 fieldTerm = project _Field _Field_term
 
-fieldType :: TTerm Name -> TTerm Type -> TTerm (FieldType)
+fieldType :: TTerm Name -> TTerm Type -> TTerm FieldType
 fieldType name typ = Base.record _FieldType [
     _FieldType_name>>: name,
     _FieldType_type>>: typ]
@@ -88,7 +88,13 @@ fieldTypeName = project _FieldType _FieldType_name
 fieldTypeType :: TTerm (FieldType -> Type)
 fieldTypeType = project _FieldType _FieldType_type
 
-functionType :: TTerm Type -> TTerm Type -> TTerm (FunctionType)
+floatType :: FloatType -> TTerm FloatType
+floatType t = unitVariant _FloatType $ case t of
+  FloatTypeBigfloat -> _FloatType_bigfloat
+  FloatTypeFloat32 -> _FloatType_float32
+  FloatTypeFloat64 -> _FloatType_float64
+
+functionType :: TTerm Type -> TTerm Type -> TTerm FunctionType
 functionType domain codomain = Base.record _FunctionType [
     _FunctionType_domain>>: domain,
     _FunctionType_codomain>>: codomain]
@@ -109,6 +115,18 @@ injectionTypeName = project _Injection _Injection_typeName
 
 injectionField :: TTerm (Injection -> Field)
 injectionField = project _Injection _Injection_field
+
+integerType :: IntegerType -> TTerm IntegerType
+integerType t = unitVariant _IntegerType $ case t of
+  IntegerTypeBigint -> _IntegerType_bigint
+  IntegerTypeInt8 -> _IntegerType_int8
+  IntegerTypeInt16 -> _IntegerType_int16
+  IntegerTypeInt32 -> _IntegerType_int32
+  IntegerTypeInt64 -> _IntegerType_int64
+  IntegerTypeUint8 -> _IntegerType_uint8
+  IntegerTypeUint16 -> _IntegerType_uint16
+  IntegerTypeUint32 -> _IntegerType_uint32
+  IntegerTypeUint64 -> _IntegerType_uint64
 
 lambda :: TTerm Name -> TTerm Term -> TTerm Lambda
 lambda parameter body = Base.record _Lambda [

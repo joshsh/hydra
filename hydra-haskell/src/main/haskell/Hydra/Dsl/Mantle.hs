@@ -8,6 +8,29 @@ import qualified Data.Map as M
 import qualified Data.Maybe as Y
 
 
+eliminationVariant :: EliminationVariant -> TTerm EliminationVariant
+eliminationVariant v = unitVariant _EliminationVariant $ case v of
+  EliminationVariantList -> _EliminationVariant_list
+  EliminationVariantOptional -> _EliminationVariant_optional
+  EliminationVariantProduct -> _EliminationVariant_product
+  EliminationVariantRecord -> _EliminationVariant_record
+  EliminationVariantUnion -> _EliminationVariant_union
+  EliminationVariantWrap -> _EliminationVariant_wrap
+
+functionVariant :: FunctionVariant -> TTerm FunctionVariant
+functionVariant v = unitVariant _FunctionVariant $ case v of
+  FunctionVariantElimination -> _FunctionVariant_elimination
+  FunctionVariantLambda -> _FunctionVariant_lambda
+  FunctionVariantPrimitive -> _FunctionVariant_primitive
+
+literalVariant :: LiteralVariant -> TTerm LiteralVariant
+literalVariant v = unitVariant _LiteralVariant $ case v of
+  LiteralVariantBinary -> _LiteralVariant_binary
+  LiteralVariantBoolean -> _LiteralVariant_boolean
+  LiteralVariantFloat -> _LiteralVariant_float
+  LiteralVariantInteger -> _LiteralVariant_integer
+  LiteralVariantString -> _LiteralVariant_string
+
 termAccessorAnnotatedSubject :: TTerm TermAccessor
 termAccessorAnnotatedSubject = unitVariant _TermAccessor _TermAccessor_annotatedSubject
 
@@ -79,3 +102,40 @@ termAccessorInjectionTerm = unitVariant _TermAccessor _TermAccessor_injectionTer
 
 termAccessorWrappedTerm :: TTerm TermAccessor
 termAccessorWrappedTerm = unitVariant _TermAccessor _TermAccessor_wrappedTerm
+
+termVariant :: TermVariant -> TTerm TermVariant
+termVariant v = unitVariant _TermVariant $ case v of
+  TermVariantAnnotated -> _TermVariant_annotated
+  TermVariantApplication -> _TermVariant_application
+  TermVariantFunction -> _TermVariant_function
+  TermVariantLet -> _TermVariant_let
+  TermVariantList -> _TermVariant_list
+  TermVariantLiteral -> _TermVariant_literal
+  TermVariantMap -> _TermVariant_map
+  TermVariantOptional -> _TermVariant_optional
+  TermVariantProduct -> _TermVariant_product
+  TermVariantRecord -> _TermVariant_record
+  TermVariantSet -> _TermVariant_set
+  TermVariantSum -> _TermVariant_sum
+  TermVariantTypeAbstraction -> _TermVariant_typeAbstraction
+  TermVariantTypeApplication -> _TermVariant_typeApplication
+  TermVariantTyped -> _TermVariant_typed
+  TermVariantUnion -> _TermVariant_union
+  TermVariantVariable -> _TermVariant_variable
+  TermVariantWrap -> _TermVariant_wrap
+
+typeVariant :: TypeVariant -> TTerm TypeVariant
+typeVariant v = unitVariant _TypeVariant $ case v of
+  TypeVariantAnnotated -> _TypeVariant_annotated
+  TypeVariantApplication -> _TypeVariant_application
+  TypeVariantFunction -> _TypeVariant_function
+  TypeVariantLambda -> _TypeVariant_lambda
+  TypeVariantList -> _TypeVariant_list
+  TypeVariantLiteral -> _TypeVariant_literal
+  TypeVariantMap -> _TypeVariant_map
+  TypeVariantOptional -> _TypeVariant_optional
+  TypeVariantProduct -> _TypeVariant_product
+  TypeVariantRecord -> _TypeVariant_record
+  TypeVariantSet -> _TypeVariant_set
+  TypeVariantUnion -> _TypeVariant_union
+  TypeVariantVariable -> _TypeVariant_variable
