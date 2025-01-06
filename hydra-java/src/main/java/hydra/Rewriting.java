@@ -19,6 +19,7 @@ import hydra.core.Term;
 import hydra.core.TypedTerm;
 import hydra.core.Unit;
 import hydra.core.WrappedTerm;
+import hydra.dsl.Flows;
 import hydra.dsl.Terms;
 import hydra.util.Opt;
 import java.util.List;
@@ -27,7 +28,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
-import static hydra.Flows.*;
+import static hydra.dsl.Flows.*;
 
 
 /**

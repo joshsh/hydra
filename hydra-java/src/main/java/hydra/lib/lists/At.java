@@ -1,6 +1,6 @@
 package hydra.lib.lists;
 
-import hydra.Flows;
+import hydra.dsl.Flows;
 import hydra.compute.Flow;
 import hydra.core.Name;
 import hydra.core.Term;
@@ -12,7 +12,7 @@ import hydra.tools.PrimitiveFunction;
 import java.util.List;
 import java.util.function.Function;
 
-import static hydra.Flows.map2;
+import static hydra.dsl.Flows.map2;
 import static hydra.dsl.Types.function;
 import static hydra.dsl.Types.int32;
 import static hydra.dsl.Types.list;

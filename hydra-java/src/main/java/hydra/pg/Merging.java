@@ -1,6 +1,6 @@
 package hydra.pg;
 
-import hydra.Flows;
+import hydra.dsl.Flows;
 import hydra.basics.Basics;
 import hydra.compute.Flow;
 import hydra.compute.StatelessAdapter;

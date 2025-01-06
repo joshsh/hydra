@@ -5,9 +5,9 @@ import hydra.compute.Flow;
 import hydra.compute.FlowState;
 import hydra.core.Name;
 import hydra.core.Term;
-import hydra.core.Type;
 import hydra.core.TypeScheme;
 import hydra.core.Unit;
+import hydra.dsl.Flows;
 import hydra.dsl.Terms;
 import hydra.graph.Element;
 import hydra.graph.Graph;
@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import static hydra.Coders.*;
-import static hydra.Flows.*;
+import static hydra.dsl.Flows.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 

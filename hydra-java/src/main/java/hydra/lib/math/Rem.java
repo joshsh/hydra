@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import static hydra.Flows.bind2;
-import static hydra.Flows.fail;
-import static hydra.Flows.pure;
+import static hydra.dsl.Flows.bind2;
+import static hydra.dsl.Flows.fail;
+import static hydra.dsl.Flows.pure;
 import static hydra.dsl.Types.function;
 import static hydra.dsl.Types.int32;
 import static hydra.dsl.Types.scheme;

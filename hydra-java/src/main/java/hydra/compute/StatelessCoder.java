@@ -1,6 +1,6 @@
 package hydra.compute;
 
-import hydra.Flows;
+import hydra.dsl.Flows;
 import hydra.core.Unit;
 
 /**

@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Test;
 
 import static hydra.Coders.composeStateless;
 import static hydra.Coders.inverseStateless;
-import static hydra.Flows.fail;
-import static hydra.Flows.pure;
+import static hydra.dsl.Flows.fail;
+import static hydra.dsl.Flows.pure;
 
 
 /**

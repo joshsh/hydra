@@ -1,6 +1,6 @@
 package hydra.lib.optionals;
 
-import hydra.Flows;
+import hydra.dsl.Flows;
 import hydra.compute.Flow;
 import hydra.core.Name;
 import hydra.core.Term;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import static hydra.Flows.map2;
+import static hydra.dsl.Flows.map2;
 import static hydra.dsl.Types.function;
 import static hydra.dsl.Types.optional;
 import static hydra.dsl.Types.scheme;

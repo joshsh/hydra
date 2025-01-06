@@ -16,7 +16,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.ArrayList;
 import java.util.List;
 
-import static hydra.Flows.EMPTY_TRACE;
+import static hydra.dsl.Flows.EMPTY_TRACE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 

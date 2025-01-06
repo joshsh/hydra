@@ -2,7 +2,7 @@
 
 package hydra.tier2;
 
-import hydra.Flows;
+import hydra.dsl.Flows;
 
 
 /**

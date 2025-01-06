@@ -1,6 +1,6 @@
 package hydra.lib.lists;
 
-import hydra.Flows;
+import hydra.dsl.Flows;
 import hydra.compute.Flow;
 import hydra.core.Name;
 import hydra.core.Term;
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static hydra.Flows.pure;
+import static hydra.dsl.Flows.pure;
 import static hydra.dsl.Types.function;
 import static hydra.dsl.Types.list;
 import static hydra.dsl.Types.scheme;

@@ -41,7 +41,7 @@ public class JsonCodingTest {
 
     @Test
     public void testSetOrderingIsPreserved() {
-        Set<String> decoded = JsonDecoding.decodeSet(value -> value.accept(new Value.PartialVisitor<>() {
+        Set<String> decoded = JsonDecoding.decodeSet(value -> value.accept(new Value.PartialVisitor<String>() {
             @Override
             public String otherwise(Value instance) {
                 fail("unexpected value");

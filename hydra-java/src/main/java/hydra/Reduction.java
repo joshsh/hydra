@@ -11,6 +11,7 @@ import hydra.core.Name;
 import hydra.core.Projection;
 import hydra.core.Record;
 import hydra.core.Term;
+import hydra.dsl.Flows;
 import hydra.dsl.Terms;
 import hydra.graph.Graph;
 import hydra.tools.LList;
@@ -20,11 +21,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import static hydra.Flows.bind;
-import static hydra.Flows.fail;
-import static hydra.Flows.mapM;
-import static hydra.Flows.pure;
-import static hydra.Flows.unexpected;
+import static hydra.dsl.Flows.bind;
+import static hydra.dsl.Flows.fail;
+import static hydra.dsl.Flows.mapM;
+import static hydra.dsl.Flows.pure;
+import static hydra.dsl.Flows.unexpected;
 import static hydra.extras.Extras.primitiveArity;
 import static hydra.strip.Strip.stripTerm;
 

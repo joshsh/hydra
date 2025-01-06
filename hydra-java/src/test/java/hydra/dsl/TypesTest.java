@@ -1,6 +1,5 @@
 package hydra.dsl;
 
-import hydra.Flows;
 import hydra.core.Name;
 import hydra.core.Term;
 import hydra.core.Type;

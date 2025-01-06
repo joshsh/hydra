@@ -1,6 +1,5 @@
 package hydra.dsl;
 
-import hydra.Flows;
 import hydra.core.Elimination;
 import hydra.core.Function;
 import hydra.core.Term;

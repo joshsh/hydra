@@ -1,6 +1,6 @@
 package hydra.lib.io;
 
-import hydra.Flows;
+import hydra.dsl.Flows;
 import hydra.compute.Flow;
 import hydra.core.Name;
 import hydra.core.Term;

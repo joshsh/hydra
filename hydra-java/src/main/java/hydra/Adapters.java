@@ -5,6 +5,7 @@ import hydra.compute.Flow;
 import hydra.compute.StatelessAdapter;
 import hydra.core.Unit;
 
+import hydra.dsl.Flows;
 import java.util.function.Function;
 
 /**

@@ -1,4 +1,4 @@
-package hydra;
+package hydra.dsl;
 
 import hydra.compute.Flow;
 import hydra.compute.FlowState;

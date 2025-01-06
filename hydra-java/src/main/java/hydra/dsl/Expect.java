@@ -1,6 +1,5 @@
 package hydra.dsl;
 
-import hydra.Flows;
 import hydra.Reduction;
 import hydra.compute.Flow;
 import hydra.core.Field;
@@ -23,11 +22,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-import static hydra.Flows.bind;
-import static hydra.Flows.fail;
-import static hydra.Flows.mapM;
-import static hydra.Flows.pure;
-import static hydra.Flows.unexpected;
+import static hydra.dsl.Flows.bind;
+import static hydra.dsl.Flows.fail;
+import static hydra.dsl.Flows.mapM;
+import static hydra.dsl.Flows.pure;
+import static hydra.dsl.Flows.unexpected;
 
 
 /**
@@ -41,7 +40,7 @@ public class Expect {
      * Decode a bigfloat value.
      */
     public static <S> Flow<S, Double> bigfloat(final Term term) {
-        return bind(float_(term), floatValue -> floatValue.accept(new FloatValue.PartialVisitor<>() {
+        return bind(float_(term), floatValue -> floatValue.accept(new FloatValue.PartialVisitor<Flow<S, Double>>() {
             @Override
             public Flow<S, Double> otherwise(FloatValue instance) {
                 return wrongType("bigfloat", term);
@@ -59,7 +58,7 @@ public class Expect {
      */
     public static <S> Flow<S, BigInteger> bigint(final Term term) {
         return bind(integer(term),
-                integerValue -> integerValue.accept(new IntegerValue.PartialVisitor<>() {
+                integerValue -> integerValue.accept(new IntegerValue.PartialVisitor<Flow<S, BigInteger>>() {
                     @Override
                     public Flow<S, BigInteger> otherwise(IntegerValue instance) {
                         return wrongType("bigint", term);
@@ -76,7 +75,7 @@ public class Expect {
      * Decode a binary value.
      */
     public static <S> Flow<S, String> binary(final Term term) {
-        return bind(literal(term), literal -> literal.accept(new Literal.PartialVisitor<>() {
+        return bind(literal(term), literal -> literal.accept(new Literal.PartialVisitor<Flow<S, String>>() {
             @Override
             public Flow<S, String> otherwise(Literal instance) {
                 return wrongType("binary", term);
@@ -93,7 +92,7 @@ public class Expect {
      * Decode a boolean value.
      */
     public static <S> Flow<S, Boolean> boolean_(final Term term) {
-        return bind(literal(term), literal -> literal.accept(new Literal.PartialVisitor<>() {
+        return bind(literal(term), literal -> literal.accept(new Literal.PartialVisitor<Flow<S, Boolean>>() {
             @Override
             public Flow<S, Boolean> otherwise(Literal instance) {
                 return wrongType("boolean", term);
@@ -124,7 +123,7 @@ public class Expect {
      * Decode a floating point value.
      */
     public static <S> Flow<S, FloatValue> float_(final Term term) {
-        return bind(literal(term), literal -> literal.accept(new Literal.PartialVisitor<>() {
+        return bind(literal(term), literal -> literal.accept(new Literal.PartialVisitor<Flow<S, FloatValue>>() {
             @Override
             public Flow<S, FloatValue> otherwise(Literal instance) {
                 return wrongType("float", term);
@@ -141,7 +140,7 @@ public class Expect {
      * Decode a float32 value.
      */
     public static <S> Flow<S, Float> float32(final Term term) {
-        return bind(float_(term), floatValue -> floatValue.accept(new FloatValue.PartialVisitor<>() {
+        return bind(float_(term), floatValue -> floatValue.accept(new FloatValue.PartialVisitor<Flow<S, Float>>() {
             @Override
             public Flow<S, Float> otherwise(FloatValue instance) {
                 return wrongType("float32", term);
@@ -158,7 +157,7 @@ public class Expect {
      * Decode a float64 value.
      */
     public static <S> Flow<S, Double> float64(final Term term) {
-        return bind(float_(term), floatValue -> floatValue.accept(new FloatValue.PartialVisitor<>() {
+        return bind(float_(term), floatValue -> floatValue.accept(new FloatValue.PartialVisitor<Flow<S, Double>>() {
             @Override
             public Flow<S, Double> otherwise(FloatValue instance) {
                 return wrongType("float64", term);
@@ -186,7 +185,7 @@ public class Expect {
      */
     public static <S> Flow<S, Byte> int8(final Term term) {
         return bind(integer(term),
-                integerValue -> integerValue.accept(new IntegerValue.PartialVisitor<>() {
+                integerValue -> integerValue.accept(new IntegerValue.PartialVisitor<Flow<S, Byte>>() {
                     @Override
                     public Flow<S, Byte> otherwise(IntegerValue instance) {
                         return wrongType("int8", term);
@@ -204,7 +203,7 @@ public class Expect {
      */
     public static <S> Flow<S, Short> int16(final Term term) {
         return bind(integer(term),
-                integerValue -> integerValue.accept(new IntegerValue.PartialVisitor<>() {
+                integerValue -> integerValue.accept(new IntegerValue.PartialVisitor<Flow<S, Short>>() {
                     @Override
                     public Flow<S, Short> otherwise(IntegerValue instance) {
                         return wrongType("int16", term);
@@ -222,7 +221,7 @@ public class Expect {
      */
     public static <S> Flow<S, Integer> int32(final Term term) {
         return bind(integer(term),
-                integerValue -> integerValue.accept(new IntegerValue.PartialVisitor<>() {
+                integerValue -> integerValue.accept(new IntegerValue.PartialVisitor<Flow<S, Integer>>() {
                     @Override
                     public Flow<S, Integer> otherwise(IntegerValue instance) {
                         return wrongType("int32", term);
@@ -240,7 +239,7 @@ public class Expect {
      */
     public static <S> Flow<S, Long> int64(final Term term) {
         return bind(integer(term),
-                integerValue -> integerValue.accept(new IntegerValue.PartialVisitor<>() {
+                integerValue -> integerValue.accept(new IntegerValue.PartialVisitor<Flow<S, Long>>() {
                     @Override
                     public Flow<S, Long> otherwise(IntegerValue instance) {
                         return wrongType("int64", term);
@@ -257,7 +256,7 @@ public class Expect {
      * Decode an integer value.
      */
     public static <S> Flow<S, IntegerValue> integer(final Term term) {
-        return bind(literal(term), literal -> literal.accept(new Literal.PartialVisitor<>() {
+        return bind(literal(term), literal -> literal.accept(new Literal.PartialVisitor<Flow<S, IntegerValue>>() {
             @Override
             public Flow<S, IntegerValue> otherwise(Literal instance) {
                 return wrongType("float", term);
@@ -274,7 +273,7 @@ public class Expect {
      * Decode a list of values.
      */
     public static <S, X> Flow<S, List<X>> list(final Function<Term, Flow<S, X>> elems, final Term term) {
-        return term.accept(new Term.PartialVisitor<>() {
+        return term.accept(new Term.PartialVisitor<Flow<S, List<X>>>() {
             @Override
             public Flow<S, List<X>> otherwise(Term instance) {
                 return wrongType("list", term);
@@ -291,7 +290,7 @@ public class Expect {
      * Decode a literal value.
      */
     public static <S> Flow<S, Literal> literal(final Term term) {
-        return term.accept(new Term.PartialVisitor<>() {
+        return term.accept(new Term.PartialVisitor<Flow<S, Literal>>() {
             @Override
             public Flow<S, Literal> otherwise(Term instance) {
                 return wrongType("literal", term);
@@ -311,7 +310,7 @@ public class Expect {
             final Function<Term, Flow<S, K>> keys,
             final Function<Term, Flow<S, V>> values,
             final Term term) {
-        return term.accept(new Term.PartialVisitor<>() {
+        return term.accept(new Term.PartialVisitor<Flow<S, Map<K, V>>>() {
             @Override
             public Flow<S, Map<K, V>> otherwise(Term instance) {
                 return wrongType("map", term);
@@ -340,7 +339,7 @@ public class Expect {
      */
     public static <S, X> Flow<S, Opt<X>> optional(final Function<Term, Flow<S, X>> elems,
                                                   final Term term) {
-        return term.accept(new Term.PartialVisitor<>() {
+        return term.accept(new Term.PartialVisitor<Flow<S, Opt<X>>>() {
             @Override
             public Flow<S, Opt<X>> otherwise(Term instance) {
                 return wrongType("optional", term);
@@ -361,7 +360,7 @@ public class Expect {
             final Function<Term, Flow<S, T1>> first,
             final Function<Term, Flow<S, T2>> second,
             final Term term) {
-        return term.accept(new Term.PartialVisitor<>() {
+        return term.accept(new Term.PartialVisitor<Flow<S, Tuple.Tuple2<T1, T2>>>() {
             @Override
             public Flow<S, Tuple.Tuple2<T1, T2>> otherwise(Term instance) {
                 return wrongType("tuple", term);
@@ -382,7 +381,7 @@ public class Expect {
      * Decode a record.
      */
     public static <S> Flow<S, List<Field>> record(final Name tname, final Term term) {
-        return term.accept(new Term.PartialVisitor<>() {
+        return term.accept(new Term.PartialVisitor<Flow<S, List<Field>>>() {
             @Override
             public Flow<S, List<Field>> otherwise(Term instance) {
                 return wrongType("record", term);
@@ -416,7 +415,7 @@ public class Expect {
      * Decode a set of values.
      */
     public static <S, X> Flow<S, Set<X>> set(final Function<Term, Flow<S, X>> elems, final Term term) {
-        return term.accept(new Term.PartialVisitor<>() {
+        return term.accept(new Term.PartialVisitor<Flow<S, Set<X>>>() {
             @Override
             public Flow<S, Set<X>> otherwise(Term instance) {
                 return wrongType("set", term);
@@ -433,7 +432,7 @@ public class Expect {
      * Decode a string value.
      */
     public static <S> Flow<S, String> string(final Term term) {
-        return bind(literal(term), literal -> literal.accept(new Literal.PartialVisitor<>() {
+        return bind(literal(term), literal -> literal.accept(new Literal.PartialVisitor<Flow<S, String>>() {
             @Override
             public Flow<S, String> otherwise(Literal instance) {
                 return wrongType("string", term);
@@ -465,7 +464,7 @@ public class Expect {
      */
     public static <S> Flow<S, Character> uint8(final Term term) {
         return bind(integer(term),
-                integerValue -> integerValue.accept(new IntegerValue.PartialVisitor<>() {
+                integerValue -> integerValue.accept(new IntegerValue.PartialVisitor<Flow<S, Character>>() {
                     @Override
                     public Flow<S, Character> otherwise(IntegerValue instance) {
                         return wrongType("uint8", term);
@@ -483,7 +482,7 @@ public class Expect {
      */
     public static <S> Flow<S, Character> uint16(final Term term) {
         return bind(integer(term),
-                integerValue -> integerValue.accept(new IntegerValue.PartialVisitor<>() {
+                integerValue -> integerValue.accept(new IntegerValue.PartialVisitor<Flow<S, Character>>() {
                     @Override
                     public Flow<S, Character> otherwise(IntegerValue instance) {
                         return wrongType("uint16", term);
@@ -501,7 +500,7 @@ public class Expect {
      */
     public static <S> Flow<S, Long> uint32(final Term term) {
         return bind(integer(term),
-                integerValue -> integerValue.accept(new IntegerValue.PartialVisitor<>() {
+                integerValue -> integerValue.accept(new IntegerValue.PartialVisitor<Flow<S, Long>>() {
                     @Override
                     public Flow<S, Long> otherwise(IntegerValue instance) {
                         return wrongType("uint32", term);
@@ -519,7 +518,7 @@ public class Expect {
      */
     public static <S> Flow<S, BigInteger> uint64(final Term term) {
         return bind(integer(term),
-                integerValue -> integerValue.accept(new IntegerValue.PartialVisitor<>() {
+                integerValue -> integerValue.accept(new IntegerValue.PartialVisitor<Flow<S, BigInteger>>() {
                     @Override
                     public Flow<S, BigInteger> otherwise(IntegerValue instance) {
                         return wrongType("uint64", term);

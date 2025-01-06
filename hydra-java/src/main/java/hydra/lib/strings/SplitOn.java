@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import static hydra.Flows.map2;
+import static hydra.dsl.Flows.map2;
 import static hydra.dsl.Types.function;
 import static hydra.dsl.Types.list;
 import static hydra.dsl.Types.scheme;

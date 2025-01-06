@@ -13,8 +13,8 @@ import hydra.util.Opt;
 import java.util.List;
 import java.util.function.Function;
 
-import static hydra.Flows.bind;
-import static hydra.Flows.pure;
+import static hydra.dsl.Flows.bind;
+import static hydra.dsl.Flows.pure;
 import static hydra.dsl.Types.function;
 import static hydra.dsl.Types.optional;
 import static hydra.dsl.Types.scheme;

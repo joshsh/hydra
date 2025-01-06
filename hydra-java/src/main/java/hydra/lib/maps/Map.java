@@ -1,6 +1,6 @@
 package hydra.lib.maps;
 
-import hydra.Flows;
+import hydra.dsl.Flows;
 import hydra.compute.Flow;
 import hydra.core.Name;
 import hydra.core.Term;
@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
 
-import static hydra.Flows.pure;
+import static hydra.dsl.Flows.pure;
 import static hydra.dsl.Types.function;
 import static hydra.dsl.Types.lambda;
 import static hydra.dsl.Types.map;

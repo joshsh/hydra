@@ -12,7 +12,7 @@ import hydra.tools.PrimitiveFunction;
 import java.util.List;
 import java.util.function.Function;
 
-import static hydra.Flows.map;
+import static hydra.dsl.Flows.map;
 import static hydra.dsl.Types.boolean_;
 import static hydra.dsl.Types.function;
 import static hydra.dsl.Types.scheme;

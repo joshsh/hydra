@@ -2,14 +2,15 @@ package hydra;
 
 import hydra.compute.Flow;
 import hydra.core.Name;
+import hydra.dsl.Flows;
 import hydra.graph.Graph;
 import hydra.graph.Primitive;
 
 import hydra.util.Opt;
 
-import static hydra.Flows.bind;
-import static hydra.Flows.fail;
-import static hydra.Flows.getState;
+import static hydra.dsl.Flows.bind;
+import static hydra.dsl.Flows.fail;
+import static hydra.dsl.Flows.getState;
 
 
 /**

@@ -7,6 +7,7 @@ import hydra.core.Name;
 import hydra.core.Record;
 import hydra.core.Term;
 
+import hydra.dsl.Flows;
 import java.util.List;
 
 import hydra.dsl.Terms;
@@ -17,12 +18,12 @@ import java.util.function.Function;
 
 import org.junit.jupiter.api.Test;
 
-import static hydra.Flows.EMPTY_TRACE;
-import static hydra.Flows.bind;
-import static hydra.Flows.getState;
-import static hydra.Flows.map;
-import static hydra.Flows.mapM;
-import static hydra.Flows.putState;
+import static hydra.dsl.Flows.EMPTY_TRACE;
+import static hydra.dsl.Flows.bind;
+import static hydra.dsl.Flows.getState;
+import static hydra.dsl.Flows.map;
+import static hydra.dsl.Flows.mapM;
+import static hydra.dsl.Flows.putState;
 import static hydra.Rewriting.rewriteTermM;
 import static hydra.dsl.Terms.annot;
 import static hydra.dsl.Terms.field;

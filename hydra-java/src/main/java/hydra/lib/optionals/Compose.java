@@ -1,6 +1,6 @@
 package hydra.lib.optionals;
 
-import hydra.Flows;
+import hydra.dsl.Flows;
 import hydra.compute.Flow;
 import hydra.core.Name;
 import hydra.core.Term;
@@ -42,7 +42,7 @@ public class Compose extends PrimitiveFunction {
     public static <A, B, C> Function<Function<B, Opt<C>>, Function<A, Opt<C>>> apply(Function<A, Opt<B>> left) {
         return right -> apply(left, right);
     }
-    
+
     public static <A, B, C> Function<A, Opt<C>> apply(Function<A, Opt<B>> left, Function<B, Opt<C>> right) {
         return a -> {
             Opt<B> ob = left.apply(a);

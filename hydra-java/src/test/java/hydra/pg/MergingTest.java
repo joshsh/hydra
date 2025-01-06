@@ -1,6 +1,6 @@
 package hydra.pg;
 
-import hydra.Flows;
+import hydra.dsl.Flows;
 import hydra.compute.Flow;
 import hydra.compute.StatelessAdapter;
 import hydra.core.Literal;
@@ -8,7 +8,6 @@ import hydra.core.LiteralType;
 import hydra.core.Unit;
 import hydra.dsl.LiteralTypes;
 import hydra.dsl.Literals;
-import hydra.pg.Merging;
 import hydra.pg.model.Edge;
 import hydra.pg.model.EdgeType;
 import hydra.pg.model.PropertyKey;
