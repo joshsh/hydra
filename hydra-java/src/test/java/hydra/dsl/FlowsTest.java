@@ -1,9 +1,8 @@
-package hydra;
+package hydra.dsl;
 
 import hydra.compute.Flow;
 import hydra.compute.FlowState;
 import hydra.core.Unit;
-import hydra.dsl.Flows;
 import hydra.util.Opt;
 import org.junit.jupiter.api.Test;
 
