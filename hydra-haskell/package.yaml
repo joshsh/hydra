@@ -1,5 +1,5 @@
 name:         hydra
-version:      0.8.2
+version:      0.9.0
 author:       Joshua Shinavier <josh@fortytwo.net>
 license:      Apache-2.0
 license-file: LICENSE
