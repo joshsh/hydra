@@ -28,6 +28,10 @@ import qualified Data.Map as M
 import qualified Data.Set as S
 
 
+data Namespaces n = Namespaces {
+  namespacesFocus :: (Namespace, n),
+  namespacesMapping :: M.Map Namespace n} deriving Show
+
 adaptAndEncodeType :: Language -> (Type -> Flow Graph t) -> Type -> Flow Graph t
 adaptAndEncodeType lang enc typ = case stripType typ of
   TypeVariable _ -> enc typ

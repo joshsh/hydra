@@ -32,13 +32,13 @@ key_haskellVar = Name "haskellVar"
 -- TODO: make these settings configurable
 defaultHaskellGenerationOptions = HaskellGenerationOptions False
 
-adaptTypeToHaskellAndEncode :: Namespaces -> Type -> Flow Graph H.Type
+adaptTypeToHaskellAndEncode :: HaskellNamespaces -> Type -> Flow Graph H.Type
 adaptTypeToHaskellAndEncode namespaces = adaptAndEncodeType haskellLanguage (encodeType namespaces)
 
 constantForFieldName tname fname = "_" ++ localNameOfEager tname ++ "_" ++ unName fname
 constantForTypeName tname = "_" ++ localNameOfEager tname
 
-constructModule :: Namespaces
+constructModule :: HaskellNamespaces
   -> Module
   -> M.Map Type (Coder Graph Graph Term H.Expression)
   -> [(Element, TypedTerm)] -> Flow Graph H.Module
@@ -71,7 +71,7 @@ constructModule namespaces mod coders pairs = do
           where
             toImport (name, alias) = H.Import False (H.ModuleName name) (H.ModuleName <$> alias) Nothing
 
-encodeFunction :: Namespaces -> Function -> Flow Graph H.Expression
+encodeFunction :: HaskellNamespaces -> Function -> Flow Graph H.Expression
 encodeFunction namespaces fun = case fun of
     FunctionElimination e -> case e of
       EliminationList fun -> do
@@ -140,7 +140,7 @@ encodeLiteral av = case av of
     LiteralString s -> pure $ hslit $ H.LiteralString s
     _ -> unexpected "literal value" $ show av
 
-encodeTerm :: Namespaces -> Term -> Flow Graph H.Expression
+encodeTerm :: HaskellNamespaces -> Term -> Flow Graph H.Expression
 encodeTerm namespaces term = do
    case fullyStripTerm term of
     TermApplication (Application fun arg) -> hsapp <$> encode fun <*> encode arg
@@ -182,7 +182,7 @@ encodeTerm namespaces term = do
   where
     encode = encodeTerm namespaces
 
-encodeType :: Namespaces -> Type -> Flow Graph H.Type
+encodeType :: HaskellNamespaces -> Type -> Flow Graph H.Type
 encodeType namespaces typ = withTrace "encode type" $ case stripType typ of
     TypeApplication (ApplicationType lhs rhs) -> toTypeApplication <$> CM.sequence [encode lhs, encode rhs]
     TypeFunction (FunctionType dom cod) -> H.TypeFunction <$> (H.Type_Function <$> encode dom <*> encode cod)
@@ -228,7 +228,7 @@ encodeType namespaces typ = withTrace "encode type" $ case stripType typ of
     encode = encodeType namespaces
     ref name = pure $ H.TypeVariable $ elementReference namespaces name
 
-encodeTypeWithClassAssertions :: Namespaces -> M.Map Name (S.Set TypeClass) -> Type -> Flow Graph H.Type
+encodeTypeWithClassAssertions :: HaskellNamespaces -> M.Map Name (S.Set TypeClass) -> Type -> Flow Graph H.Type
 encodeTypeWithClassAssertions namespaces classes typ = withTrace "encode with assertions" $ do
   htyp <- adaptTypeToHaskellAndEncode namespaces typ
   if L.null assertPairs
@@ -262,7 +262,7 @@ moduleToHaskell mod = do
   let s = printExpr $ parenthesize $ toTree hsmod
   return $ M.fromList [(namespaceToFilePath True (FileExtension "hs") $ moduleNamespace mod, s)]
 
-nameDecls :: Graph -> Namespaces -> Name -> Type -> [H.DeclarationWithComments]
+nameDecls :: Graph -> HaskellNamespaces -> Name -> Type -> [H.DeclarationWithComments]
 nameDecls g namespaces name@(Name nm) typ = if useCoreImport
     then (toDecl _Name nameDecl):(toDecl _Name <$> fieldDecls)
     else []
@@ -278,7 +278,7 @@ nameDecls g namespaces name@(Name nm) typ = if useCoreImport
     fieldDecls = toConstant <$> fieldsOf typ
     toConstant (FieldType fname _) = (constantForFieldName name fname, unName fname)
 
-toDataDeclaration :: M.Map Type (Coder Graph Graph Term H.Expression) -> Namespaces
+toDataDeclaration :: M.Map Type (Coder Graph Graph Term H.Expression) -> HaskellNamespaces
   -> (Element, TypedTerm) -> Flow Graph H.DeclarationWithComments
 toDataDeclaration coders namespaces (el, TypedTerm term typ) = do
   comments <- getTermDescription term
@@ -315,7 +315,7 @@ toDataDeclaration coders namespaces (el, TypedTerm term typ) = do
         let decl = H.DeclarationTypedBinding $ H.TypedBinding (H.TypeSignature hname htype) (rewriteValueBinding vb)
         return $ H.DeclarationWithComments decl comments
 
-toTypeDeclarations :: Namespaces -> Element -> Term -> Flow Graph [H.DeclarationWithComments]
+toTypeDeclarations :: HaskellNamespaces -> Element -> Term -> Flow Graph [H.DeclarationWithComments]
 toTypeDeclarations namespaces el term = withTrace ("type element " ++ unName (elementName el)) $ do
     g <- getState
     let lname = localNameOfEager $ elementName el
@@ -388,7 +388,7 @@ toTypeDeclarations namespaces el term = withTrace ("type element " ++ unName (el
       return $ H.ConstructorWithComments (H.ConstructorOrdinary $ H.Constructor_Ordinary (simpleName nm) typeList) comments
 
 -- | Constructs a Hydra Type definition which can be included along with the nativized Haskell type definition
-typeDecl :: Namespaces -> Name -> Type -> Flow Graph H.DeclarationWithComments
+typeDecl :: HaskellNamespaces -> Name -> Type -> Flow Graph H.DeclarationWithComments
 typeDecl namespaces name typ = do
     -- Note: consider constructing this coder just once, then reusing it
     coder <- constructCoder haskellLanguage (encodeTerm namespaces) typeT

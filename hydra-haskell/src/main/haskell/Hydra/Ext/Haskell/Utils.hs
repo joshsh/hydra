@@ -1,6 +1,7 @@
 module Hydra.Ext.Haskell.Utils where
 
 import Hydra.Kernel
+import Hydra.Adapters
 import Hydra.Ext.Haskell.Language
 import qualified Hydra.Ext.Haskell.Ast as H
 import qualified Hydra.Lib.Strings as Strings
@@ -10,13 +11,11 @@ import qualified Data.Map as M
 import qualified Data.Set as S
 
 
-data Namespaces = Namespaces {
-  namespacesFocus :: (Namespace, H.ModuleName),
-  namespacesMapping :: M.Map Namespace H.ModuleName} deriving Show
+type HaskellNamespaces = Namespaces H.ModuleName
 
 applicationPattern name args = H.PatternApplication $ H.Pattern_Application name args
 
-elementReference :: Namespaces -> Name -> H.Name
+elementReference :: HaskellNamespaces -> Name -> H.Name
 elementReference (Namespaces (gname, H.ModuleName gmod) namespaces) name = case (qualifiedNameNamespace qname) of
     Nothing -> simpleName local
     Just ns -> case M.lookup ns namespaces of
@@ -48,7 +47,7 @@ hsPrimitiveReference name = H.NameNormal $ H.QualifiedName [prefix] $ H.NamePart
 hsvar :: String -> H.Expression
 hsvar s = H.ExpressionVariable $ rawName s
 
-namespacesForModule :: Module -> Flow (Graph) Namespaces
+namespacesForModule :: Module -> Flow Graph HaskellNamespaces
 namespacesForModule mod = do
     nss <- moduleDependencyNamespaces True True True True mod
     return $ Namespaces focusPair $ fst $ L.foldl addPair (M.empty, S.empty) (toPair <$> S.toList nss)
@@ -67,7 +66,7 @@ newtypeAccessorName name = "un" ++ localNameOfEager name
 rawName :: String -> H.Name
 rawName n = H.NameNormal $ H.QualifiedName [] $ H.NamePart n
 
-recordFieldReference :: Namespaces -> Name -> Name -> H.Name
+recordFieldReference :: HaskellNamespaces -> Name -> Name -> H.Name
 recordFieldReference namespaces sname (Name fname) = elementReference namespaces $
     unqualifyName $ QualifiedName (qualifiedNameNamespace $ qualifyNameEager sname) nm
   where
@@ -94,7 +93,7 @@ toTypeApplication = app . L.reverse
 typeNameForRecord :: Name -> String
 typeNameForRecord (Name sname) = L.last (Strings.splitOn "." sname)
 
-unionFieldReference :: Namespaces -> Name -> Name -> H.Name
+unionFieldReference :: HaskellNamespaces -> Name -> Name -> H.Name
 unionFieldReference namespaces sname (Name fname) = elementReference namespaces $
     unqualifyName $ QualifiedName ns nm
   where
