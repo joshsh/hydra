@@ -16,7 +16,7 @@ import java.util.function.Function;
 
 /**
  * A convenient wrapper for a stateless Flow, providing fluent-style methods.
- * @param <A> the result type of the Possible, e.g. <code>Possible<String></code> provides a <code>String</code>,
+ * @param <A> the result type of the Possible, e.g. <code>Possible&lt;String&gt;</code> provides a <code>String</code>,
  *           unless there is an evaluation error.
  */
 public class Possible<A> {

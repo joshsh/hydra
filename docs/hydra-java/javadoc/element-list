@@ -13,6 +13,7 @@ hydra.dsl.prims
 hydra.ext.cypher
 hydra.ext.cypher.features
 hydra.ext.cypher.openCypher
+hydra.ext.gql
 hydra.ext.graphql.syntax
 hydra.ext.haskell.ast
 hydra.ext.java.language
