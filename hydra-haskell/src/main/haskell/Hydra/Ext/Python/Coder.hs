@@ -6,13 +6,14 @@ import Hydra.Ext.Python.Language
 import Hydra.Dsl.Terms
 import Hydra.Tools.Serialization
 import qualified Hydra.Ext.Python.Syntax as Py
+import Hydra.Ext.Python.Utils
+import Hydra.Ext.Python.Serde hiding (encodeTerm)
 import qualified Hydra.Lib.Strings as Strings
 import qualified Hydra.Dsl.Types as Types
 import Hydra.Dsl.ShorthandTypes
 import Hydra.Lib.Io
 import Hydra.Tools.Formatting
 import qualified Hydra.Decode as Decode
-import Hydra.Ext.Python.Serde
 
 import qualified Control.Monad as CM
 import qualified Data.List as L
@@ -34,7 +35,8 @@ constructModule :: PythonNamespaces
   -> [(Element, TypedTerm)] -> Flow Graph Py.File
 constructModule namespaces mod coders pairs = do
     g <- getState
-    stmts <- L.concat <$> CM.mapM (createDeclarations g) pairs
+    declStmts <- L.concat <$> CM.mapM (createDeclarations g) pairs
+    let stmts = importStmts ++ declStmts
     let mc = moduleDescription mod
     return $ Py.File stmts mc
   where
@@ -47,30 +49,46 @@ constructModule namespaces mod coders pairs = do
         domainImports = [] -- TODO
         standardImports = [] -- TODO
 
-encodeLiteralType :: LiteralType -> Py.Expression
-encodeLiteralType lt = Py.ExpressionSimple $ Py.Disjunction [Py.Conjunction [
-    Py.InversionSimple $ Py.Comparison (Py.BitwiseOr Nothing $ Py.BitwiseXor Nothing $
-      Py.BitwiseAnd Nothing (Py.ShiftExpression Nothing $ Py.Sum Nothing $ Py.Term Nothing $ Py.FactorSimple $
-        Py.Power (Py.AwaitPrimary False $ Py.PrimaryAtom $ Py.AtomName name) Nothing)) []]]
+    importStmts = simpleStatementNoComment <$> [Py.SimpleStatementImport $ Py.ImportStatementFrom $
+      Py.ImportFrom [] (Just $ Py.DottedName [Py.Name "typing"]) $
+        Py.ImportFromTargetsSimple [Py.ImportFromAsName (Py.Name "NewType") Nothing]]
+
+encodeLiteralType :: LiteralType -> Flow Graph Py.Expression
+encodeLiteralType lt = do
+    name <- Py.Name <$> findName
+    return $ pyNameToPyExpression name
   where
-    name = Py.Name $ show lt -- TODO
+    findName = case lt of
+      LiteralTypeBinary -> pure "bytes"
+      LiteralTypeBoolean -> pure "bool"
+      LiteralTypeFloat ft -> case ft of
+        FloatTypeBigfloat -> pure "float"
+        _ -> fail $ "unsupported floating-point type: " ++ show ft
+      LiteralTypeInteger it -> case it of
+        IntegerTypeBigint -> pure "int"
+        _ -> fail $ "unsupported integer type: " ++ show it
+      LiteralTypeString -> pure "str"
 
 encodeTerm :: PythonNamespaces -> Term -> Flow Graph Py.Expression
 encodeTerm namespaces term = fail "not yet implemented"
 
 encodeTypeAssignment :: PythonNamespaces -> Name -> Type -> Flow Graph Py.Statement
 encodeTypeAssignment namespaces name typ = case stripType typ of
-    TypeLiteral lt -> pure $ simpleAssignment $ encodeLiteralType lt
+    TypeLiteral lt -> newtypeDeclaration <$> encodeLiteralType lt
     TypeRecord _ -> pure dflt
     TypeUnion _ -> pure dflt
     t -> unexpected "Python-supported type" $ show (typeVariant t)
   where
     dflt = Py.StatementSimple [Py.SimpleStatementBreak] -- TODO
-    simpleAssignment expr = Py.StatementSimple [Py.SimpleStatementAssignment $ Py.AssignmentUntyped $
-      Py.UntypedAssignment
-        [Py.StarTargetUnstarred $ Py.TargetWithStarAtomAtom $ Py.StarAtomName $ Py.Name (localNameOfEager name)]
-        (Py.AnnotatedRhsStar [Py.StarExpressionSimple expr])
-        Nothing]
+    newtypeDeclaration expr = Py.StatementSimple [Py.SimpleStatementAssignment $ Py.AssignmentUntyped $
+        Py.UntypedAssignment
+          [Py.StarTargetUnstarred $ Py.TargetWithStarAtomAtom $ Py.StarAtomName $ Py.Name lname]
+          rhs
+          Nothing]
+      where
+        lname = localNameOfEager name
+        rhs = Py.AnnotatedRhsStar [Py.StarExpressionSimple $
+          functionCall (pyNameToPyPrimary $ Py.Name "NewType") [stringToPyExpression lname, expr]]
 
 moduleToPythonModule :: Module -> Flow Graph Py.File
 moduleToPythonModule mod = do
@@ -81,9 +99,7 @@ moduleToPython :: Module -> Flow Graph (M.Map FilePath String)
 moduleToPython mod = do
   file <- moduleToPythonModule mod
   let s = printExpr $ parenthesize $ encodeFile file
---  fail $ "namespace = " ++ show (moduleNamespace mod)
   let path = namespaceToFilePath False (FileExtension "py") $ moduleNamespace mod
---  fail $ "path = " ++ path
   return $ M.fromList [(path, s)]
 
 toDataDeclarations :: M.Map Type (Coder Graph Graph Term Py.Expression) -> PythonNamespaces -> (Element, TypedTerm)

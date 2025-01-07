@@ -294,8 +294,8 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 --     | import_from
 
       def "ImportStatement" $ union [
-        "importName">: python "ImportName",
-        "importFrom">: python "ImportFrom"],
+        "name">: python "ImportName",
+        "from">: python "ImportFrom"],
 
 -- # Import statements
 -- # -----------------
@@ -311,7 +311,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 
       def "ImportFrom" $ record [
         "prefixes">: list $ python "RelativeImportPrefix",
-        "dottedName">: python "DottedName",
+        "dottedName">: optional $ python "DottedName",
         "targets">: python "ImportFromTargets"],
 
       def "RelativeImportPrefix" $ enum ["dot", "ellipsis"],
@@ -321,18 +321,14 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 --     | import_from_as_names !','
 --     | '*'
 
-        def "ImportFromTargets" $ union [
-            "parenthesized">: python "ParenthesizedImportFromAsNames",
-            "importFromAsNames">: python "ImportFromAsNames",
-            "star">: unit],
-
-        def "ParenthesizedImportFromAsNames" $ python "ImportFromAsNames",
+      def "ImportFromTargets" $ union [
+        "simple">: nonemptyList $ python "ImportFromAsName",
+        "parens">: nonemptyList $ python "ImportFromAsName",
+        "star">: unit],
 
 -- import_from_as_names:
 --     | ','.import_from_as_name+
-
-      def "ImportFromAsNames" $ nonemptyList $ python "ImportFromAsName",
-
+--
 -- import_from_as_name:
 --     | NAME ['as' NAME ]
 
@@ -394,7 +390,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
       def "ClassDefRaw" $ record [
         "name">: python "Name",
         "typeParams">: optional $ python "TypeParameters",
-        "arguments">: optional $ python "Arguments",
+        "arguments">: optional $ python "Args",
         "block">: python "Block"],
 
 -- # Function definitions
@@ -496,21 +492,21 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
         "paramNoDefault">: python "ParamNoDefault",
         "paramMaybeDefault">: list $ python "ParamMaybeDefault",
         "keywords">: optional $ python "Keywords"],
-        
+
       def "NoDefaultStarAnnotationStarEtc" $ record [
         "paramNoDefaultStarAnnotation">: python "ParamNoDefaultStarAnnotation",
         "paramMaybeDefault">: list $ python "ParamMaybeDefault",
         "keywords">: optional $ python "Keywords"],
-        
+
       def "CommaStarEtc" $ record [
         "paramMaybeDefault">: nonemptyList $ python "ParamMaybeDefault",
         "keywords">: optional $ python "Keywords"],
-        
+
 -- kwds:
 --     | '**' param_no_default
 
       def "Keywords" $ python "ParamNoDefault",
-      
+
 -- # One parameter.  This *includes* a following comma and type comment.
 -- #
 -- # There are three styles:
@@ -531,7 +527,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
       def "ParamNoDefault" $ record [
         "param">: python "Param",
         "typeComment">: optional $ python "TypeComment"],
-        
+
 -- param_no_default_star_annotation:
 --     | param_star_annotation ',' TYPE_COMMENT?
 --     | param_star_annotation TYPE_COMMENT? &')'
@@ -548,7 +544,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
         "param">: python "Param",
         "default">: python "Default",
         "typeComment">: optional $ python "TypeComment"],
-        
+
 -- param_maybe_default:
 --     | param default? ',' TYPE_COMMENT?
 --     | param default? TYPE_COMMENT? &')'
@@ -557,31 +553,31 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
         "param">: python "Param",
         "default">: optional $ python "Default",
         "typeComment">: optional $ python "TypeComment"],
-            
+
 -- param: NAME annotation?
 
       def "Param" $ record [
         "name">: python "Name",
         "annotation">: optional $ python "Annotation"],
-            
+
 -- param_star_annotation: NAME star_annotation
 
       def "ParamStarAnnotation" $ record [
         "name">: python "Name",
         "annotation">: python "StarAnnotation"],
-            
+
 -- annotation: ':' expression
 
       def "Annotation" $ python "Expression",
-        
+
 -- star_annotation: ':' star_expression
 
       def "StarAnnotation" $ python "StarExpression",
-        
+
 -- default: '=' expression  | invalid_default
 
       def "Default" $ python "Expression",
-            
+
 -- # If statement
 -- # ------------
 --
@@ -593,7 +589,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
         "condition">: python "NamedExpression",
         "body">: python "Block",
         "continuation">: optional $ python "IfTail"],
-            
+
       def "IfTail" $ union [
         "elif">: python "IfStatement",
         "else">: python "Block"],
@@ -615,7 +611,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
         "condition">: python "NamedExpression",
         "body">: python "Block",
         "else">: optional $ python "Block"],
-        
+
 -- # For statement
 -- # -------------
 --
@@ -630,7 +626,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
         "typeComment">: optional $ python "TypeComment",
         "body">: python "Block",
         "else">: optional $ python "Block"],
-        
+
 -- # With statement
 -- # --------------
 --
@@ -645,7 +641,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
         "items">: nonemptyList $ python "WithItem",
         "typeComment">: optional $ python "TypeComment",
         "body">: python "Block"],
-        
+
 -- with_item:
 --     | expression 'as' star_target &(',' | ')' | ':')
 --     | expression
@@ -653,7 +649,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
       def "WithItem" $ record [
         "expression">: python "Expression",
         "as">: optional $ python "StarTarget"],
-            
+
 -- # Try statement
 -- # -------------
 --
@@ -810,7 +806,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
       def "LiteralExpression" $ union [
         "number">: python "SignedNumber",
         "complex">: python "ComplexNumber",
-        "string">: python "Strings",
+        "string">: string,
         "none">: unit,
         "true">: unit,
         "false">: unit],
@@ -1285,8 +1281,8 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 --     | atom
 
       def "Primary" $ union [
-        "ordinary">: python "PrimaryWithRhs",
-        "atom">: python "Atom"],
+        "simple">: python "Atom",
+        "compound">: python "PrimaryWithRhs"],
 
       def "PrimaryWithRhs" $ record [
         "primary">: python "Primary",
@@ -1295,7 +1291,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
       def "PrimaryRhs" $ union [
         "project">: python "Name",
         "genexp">: python "Genexp",
-        "call">: python "Arguments",
+        "call">: python "Args",
         "slices">: python "Slices"],
 
 -- slices:
@@ -1340,7 +1336,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
         "true">: unit,
         "false">: unit,
         "none">: unit,
-        "string">: python "String",
+        "string">: string,
         "number">: python "Number",
         "tuple">: python "Tuple",
         "group">: python "Group",
@@ -1465,10 +1461,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 --
 -- string: STRING
 -- strings: (fstring|string)+
-
-      def "String" string,
-      def "Strings" string,
-
+--
 -- list:
 --     | '[' [star_named_expressions] ']'
 
@@ -1564,16 +1557,15 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 --
 -- arguments:
 --     | args [','] &')'
-
-      def "Arguments" $ python "Args",
-
+--
 -- args:
 --     | ','.(starred_expression | ( assignment_expression | expression !':=') !'=')+ [',' kwargs ]
 --     | kwargs
 
       def "Args" $ record [
         "positional">: list $ python "PosArg",
-        "kwargs">: optional $ python "Kwargs"],
+        "kwargOrStarred">: list $ python "KwargOrStarred",
+        "kwargOrDoubleStarred">: list $ python "KwargOrDoubleStarred"],
 
       def "PosArg" $ union [
         "starred">: python "StarredExpression",
@@ -1584,11 +1576,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 --     | ','.kwarg_or_starred+ ',' ','.kwarg_or_double_starred+
 --     | ','.kwarg_or_starred+
 --     | ','.kwarg_or_double_starred+
-
-      def "Kwargs" $ record [
-        "kwargOrStarred">: list $ python "KwargOrStarred",
-        "kwargOrDoubleStarred">: list $ python "KwargOrDoubleStarred"],
-
+--
 -- starred_expression:
 --     | '*' expression
 
@@ -1711,7 +1699,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 
       def "TPrimaryAndArguments" $ record [
         "primary">: python "TPrimary",
-        "arguments">: optional $ python "Arguments"],
+        "arguments">: optional $ python "Args"],
 
 -- t_lookahead: '(' | '[' | '.'
 --

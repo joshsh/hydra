@@ -337,15 +337,15 @@ _AssertStatement_expression1 = (Core.Name "expression1")
 _AssertStatement_expression2 = (Core.Name "expression2")
 
 data ImportStatement = 
-  ImportStatementImportName ImportName |
-  ImportStatementImportFrom ImportFrom
+  ImportStatementName ImportName |
+  ImportStatementFrom ImportFrom
   deriving (Eq, Ord, Read, Show)
 
 _ImportStatement = (Core.Name "hydra/ext/python/syntax.ImportStatement")
 
-_ImportStatement_importName = (Core.Name "importName")
+_ImportStatement_name = (Core.Name "name")
 
-_ImportStatement_importFrom = (Core.Name "importFrom")
+_ImportStatement_from = (Core.Name "from")
 
 newtype ImportName = 
   ImportName {
@@ -357,7 +357,7 @@ _ImportName = (Core.Name "hydra/ext/python/syntax.ImportName")
 data ImportFrom = 
   ImportFrom {
     importFromPrefixes :: [RelativeImportPrefix],
-    importFromDottedName :: DottedName,
+    importFromDottedName :: (Maybe DottedName),
     importFromTargets :: ImportFromTargets}
   deriving (Eq, Ord, Read, Show)
 
@@ -381,32 +381,18 @@ _RelativeImportPrefix_dot = (Core.Name "dot")
 _RelativeImportPrefix_ellipsis = (Core.Name "ellipsis")
 
 data ImportFromTargets = 
-  ImportFromTargetsParenthesized ParenthesizedImportFromAsNames |
-  ImportFromTargetsImportFromAsNames ImportFromAsNames |
+  ImportFromTargetsSimple [ImportFromAsName] |
+  ImportFromTargetsParens [ImportFromAsName] |
   ImportFromTargetsStar 
   deriving (Eq, Ord, Read, Show)
 
 _ImportFromTargets = (Core.Name "hydra/ext/python/syntax.ImportFromTargets")
 
-_ImportFromTargets_parenthesized = (Core.Name "parenthesized")
+_ImportFromTargets_simple = (Core.Name "simple")
 
-_ImportFromTargets_importFromAsNames = (Core.Name "importFromAsNames")
+_ImportFromTargets_parens = (Core.Name "parens")
 
 _ImportFromTargets_star = (Core.Name "star")
-
-newtype ParenthesizedImportFromAsNames = 
-  ParenthesizedImportFromAsNames {
-    unParenthesizedImportFromAsNames :: ImportFromAsNames}
-  deriving (Eq, Ord, Read, Show)
-
-_ParenthesizedImportFromAsNames = (Core.Name "hydra/ext/python/syntax.ParenthesizedImportFromAsNames")
-
-newtype ImportFromAsNames = 
-  ImportFromAsNames {
-    unImportFromAsNames :: [ImportFromAsName]}
-  deriving (Eq, Ord, Read, Show)
-
-_ImportFromAsNames = (Core.Name "hydra/ext/python/syntax.ImportFromAsNames")
 
 data ImportFromAsName = 
   ImportFromAsName {
@@ -480,7 +466,7 @@ data ClassDefRaw =
   ClassDefRaw {
     classDefRawName :: Name,
     classDefRawTypeParams :: (Maybe TypeParameters),
-    classDefRawArguments :: (Maybe Arguments),
+    classDefRawArguments :: (Maybe Args),
     classDefRawBlock :: Block}
   deriving (Eq, Ord, Read, Show)
 
@@ -1118,7 +1104,7 @@ _ClosedPattern_class = (Core.Name "class")
 data LiteralExpression = 
   LiteralExpressionNumber SignedNumber |
   LiteralExpressionComplex ComplexNumber |
-  LiteralExpressionString Strings |
+  LiteralExpressionString String |
   LiteralExpressionNone  |
   LiteralExpressionTrue  |
   LiteralExpressionFalse 
@@ -1827,15 +1813,15 @@ _AwaitPrimary_await = (Core.Name "await")
 _AwaitPrimary_primary = (Core.Name "primary")
 
 data Primary = 
-  PrimaryOrdinary PrimaryWithRhs |
-  PrimaryAtom Atom
+  PrimarySimple Atom |
+  PrimaryCompound PrimaryWithRhs
   deriving (Eq, Ord, Read, Show)
 
 _Primary = (Core.Name "hydra/ext/python/syntax.Primary")
 
-_Primary_ordinary = (Core.Name "ordinary")
+_Primary_simple = (Core.Name "simple")
 
-_Primary_atom = (Core.Name "atom")
+_Primary_compound = (Core.Name "compound")
 
 data PrimaryWithRhs = 
   PrimaryWithRhs {
@@ -1852,7 +1838,7 @@ _PrimaryWithRhs_rhs = (Core.Name "rhs")
 data PrimaryRhs = 
   PrimaryRhsProject Name |
   PrimaryRhsGenexp Genexp |
-  PrimaryRhsCall Arguments |
+  PrimaryRhsCall Args |
   PrimaryRhsSlices Slices
   deriving (Eq, Ord, Read, Show)
 
@@ -1920,7 +1906,7 @@ data Atom =
   AtomTrue  |
   AtomFalse  |
   AtomNone  |
-  AtomString String_ |
+  AtomString String |
   AtomNumber Number |
   AtomTuple Tuple |
   AtomGroup Group |
@@ -2085,20 +2071,6 @@ _LambdaParamMaybeDefault_param = (Core.Name "param")
 
 _LambdaParamMaybeDefault_default = (Core.Name "default")
 
-newtype String_ = 
-  String_ {
-    unString :: String}
-  deriving (Eq, Ord, Read, Show)
-
-_String = (Core.Name "hydra/ext/python/syntax.String")
-
-newtype Strings = 
-  Strings {
-    unStrings :: String}
-  deriving (Eq, Ord, Read, Show)
-
-_Strings = (Core.Name "hydra/ext/python/syntax.Strings")
-
 newtype List = 
   List {
     unList :: [StarNamedExpression]}
@@ -2241,24 +2213,20 @@ _Dictcomp_kvpair = (Core.Name "kvpair")
 
 _Dictcomp_forIfClauses = (Core.Name "forIfClauses")
 
-newtype Arguments = 
-  Arguments {
-    unArguments :: Args}
-  deriving (Eq, Ord, Read, Show)
-
-_Arguments = (Core.Name "hydra/ext/python/syntax.Arguments")
-
 data Args = 
   Args {
     argsPositional :: [PosArg],
-    argsKwargs :: (Maybe Kwargs)}
+    argsKwargOrStarred :: [KwargOrStarred],
+    argsKwargOrDoubleStarred :: [KwargOrDoubleStarred]}
   deriving (Eq, Ord, Read, Show)
 
 _Args = (Core.Name "hydra/ext/python/syntax.Args")
 
 _Args_positional = (Core.Name "positional")
 
-_Args_kwargs = (Core.Name "kwargs")
+_Args_kwargOrStarred = (Core.Name "kwargOrStarred")
+
+_Args_kwargOrDoubleStarred = (Core.Name "kwargOrDoubleStarred")
 
 data PosArg = 
   PosArgStarred StarredExpression |
@@ -2273,18 +2241,6 @@ _PosArg_starred = (Core.Name "starred")
 _PosArg_assignment = (Core.Name "assignment")
 
 _PosArg_expression = (Core.Name "expression")
-
-data Kwargs = 
-  Kwargs {
-    kwargsKwargOrStarred :: [KwargOrStarred],
-    kwargsKwargOrDoubleStarred :: [KwargOrDoubleStarred]}
-  deriving (Eq, Ord, Read, Show)
-
-_Kwargs = (Core.Name "hydra/ext/python/syntax.Kwargs")
-
-_Kwargs_kwargOrStarred = (Core.Name "kwargOrStarred")
-
-_Kwargs_kwargOrDoubleStarred = (Core.Name "kwargOrDoubleStarred")
 
 newtype StarredExpression = 
   StarredExpression {
@@ -2467,7 +2423,7 @@ _TPrimaryAndGenexp_genexp = (Core.Name "genexp")
 data TPrimaryAndArguments = 
   TPrimaryAndArguments {
     tPrimaryAndArgumentsPrimary :: TPrimary,
-    tPrimaryAndArgumentsArguments :: (Maybe Arguments)}
+    tPrimaryAndArgumentsArguments :: (Maybe Args)}
   deriving (Eq, Ord, Read, Show)
 
 _TPrimaryAndArguments = (Core.Name "hydra/ext/python/syntax.TPrimaryAndArguments")
