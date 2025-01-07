@@ -8,6 +8,7 @@ module Hydra.Codegen (
   writeJsonSchema,
   writePdl,
   writeProtobuf,
+  writePython,
   writeScala,
   writeYaml,
   module Hydra.Sources.Tier4.All

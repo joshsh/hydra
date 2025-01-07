@@ -33,16 +33,21 @@ newtype TypeComment =
 
 _TypeComment = (Core.Name "hydra/ext/python/syntax.TypeComment")
 
-newtype File = 
+data File = 
   File {
-    unFile :: [Statement]}
+    fileStatements :: [StatementWithComment],
+    fileComment :: (Maybe String)}
   deriving (Eq, Ord, Read, Show)
 
 _File = (Core.Name "hydra/ext/python/syntax.File")
 
+_File_statements = (Core.Name "statements")
+
+_File_comment = (Core.Name "comment")
+
 newtype Interactive = 
   Interactive {
-    unInteractive :: Statement}
+    unInteractive :: StatementWithComment}
   deriving (Eq, Ord, Read, Show)
 
 _Interactive = (Core.Name "hydra/ext/python/syntax.Interactive")
@@ -77,6 +82,18 @@ _Statement_compound = (Core.Name "compound")
 
 _Statement_simple = (Core.Name "simple")
 
+data StatementWithComment = 
+  StatementWithComment {
+    statementWithCommentStatement :: Statement,
+    statementWithCommentComment :: (Maybe String)}
+  deriving (Eq, Ord, Read, Show)
+
+_StatementWithComment = (Core.Name "hydra/ext/python/syntax.StatementWithComment")
+
+_StatementWithComment_statement = (Core.Name "statement")
+
+_StatementWithComment_comment = (Core.Name "comment")
+
 data SimpleStatement = 
   SimpleStatementAssignment Assignment |
   SimpleStatementTypeAlias TypeAlias |
@@ -90,8 +107,8 @@ data SimpleStatement =
   SimpleStatementAssert AssertStatement |
   SimpleStatementBreak  |
   SimpleStatementContinue  |
-  SimpleStatementGlobal GlobalStatement |
-  SimpleStatementNonlocal NonlocalStatement
+  SimpleStatementGlobal [Name] |
+  SimpleStatementNonlocal [Name]
   deriving (Eq, Ord, Read, Show)
 
 _SimpleStatement = (Core.Name "hydra/ext/python/syntax.SimpleStatement")
@@ -154,117 +171,63 @@ _CompoundStatement_while = (Core.Name "while")
 _CompoundStatement_match = (Core.Name "match")
 
 data Assignment = 
-  AssignmentColon ColonAssignment |
-  AssignmentSingleTargetOrSubscript SingleTargetOrSubscriptAssignment |
-  AssignmentStarTargets StarTargetsAssignment |
-  AssignmentSingleTarget SingleTargetAssignment
+  AssignmentTyped TypedAssignment |
+  AssignmentUntyped UntypedAssignment |
+  AssignmentAug AugAssignment
   deriving (Eq, Ord, Read, Show)
 
 _Assignment = (Core.Name "hydra/ext/python/syntax.Assignment")
 
-_Assignment_colon = (Core.Name "colon")
+_Assignment_typed = (Core.Name "typed")
 
-_Assignment_singleTargetOrSubscript = (Core.Name "singleTargetOrSubscript")
+_Assignment_untyped = (Core.Name "untyped")
 
-_Assignment_starTargets = (Core.Name "starTargets")
+_Assignment_aug = (Core.Name "aug")
 
-_Assignment_singleTarget = (Core.Name "singleTarget")
-
-data ColonAssignment = 
-  ColonAssignment {
-    colonAssignmentLhs :: ColonAssignmentLhs,
-    colonAssignmentRhs :: Expression,
-    colonAssignmentAnnotatedRhs :: (Maybe AnnotatedRhs)}
+data TypedAssignment = 
+  TypedAssignment {
+    typedAssignmentLhs :: SingleTarget,
+    typedAssignmentType :: Expression,
+    typedAssignmentRhs :: (Maybe AnnotatedRhs)}
   deriving (Eq, Ord, Read, Show)
 
-_ColonAssignment = (Core.Name "hydra/ext/python/syntax.ColonAssignment")
+_TypedAssignment = (Core.Name "hydra/ext/python/syntax.TypedAssignment")
 
-_ColonAssignment_lhs = (Core.Name "lhs")
+_TypedAssignment_lhs = (Core.Name "lhs")
 
-_ColonAssignment_rhs = (Core.Name "rhs")
+_TypedAssignment_type = (Core.Name "type")
 
-_ColonAssignment_annotatedRhs = (Core.Name "annotatedRhs")
+_TypedAssignment_rhs = (Core.Name "rhs")
 
-data ColonAssignmentLhs = 
-  ColonAssignmentLhsName Name |
-  ColonAssignmentLhsSingleTarget SingleTarget |
-  ColonAssignmentLhsSingleSubscriptAttributeTarget SingleSubscriptAttributeTarget
+data UntypedAssignment = 
+  UntypedAssignment {
+    untypedAssignmentTargets :: [StarTarget],
+    untypedAssignmentRhs :: AnnotatedRhs,
+    untypedAssignmentTypeComment :: (Maybe TypeComment)}
   deriving (Eq, Ord, Read, Show)
 
-_ColonAssignmentLhs = (Core.Name "hydra/ext/python/syntax.ColonAssignmentLhs")
+_UntypedAssignment = (Core.Name "hydra/ext/python/syntax.UntypedAssignment")
 
-_ColonAssignmentLhs_name = (Core.Name "name")
+_UntypedAssignment_targets = (Core.Name "targets")
 
-_ColonAssignmentLhs_singleTarget = (Core.Name "singleTarget")
+_UntypedAssignment_rhs = (Core.Name "rhs")
 
-_ColonAssignmentLhs_singleSubscriptAttributeTarget = (Core.Name "singleSubscriptAttributeTarget")
+_UntypedAssignment_typeComment = (Core.Name "typeComment")
 
-data SingleTargetOrSubscriptAssignment = 
-  SingleTargetOrSubscriptAssignment {
-    singleTargetOrSubscriptAssignmentLhs :: SingleTargetOrSubscriptAttributeTarget,
-    singleTargetOrSubscriptAssignmentRhs :: Expression,
-    singleTargetOrSubscriptAssignmentAnnotation :: (Maybe AnnotatedRhs)}
+data AugAssignment = 
+  AugAssignment {
+    augAssignmentLhs :: SingleTarget,
+    augAssignmentAugassign :: AugAssign,
+    augAssignmentRhs :: AnnotatedRhs}
   deriving (Eq, Ord, Read, Show)
 
-_SingleTargetOrSubscriptAssignment = (Core.Name "hydra/ext/python/syntax.SingleTargetOrSubscriptAssignment")
+_AugAssignment = (Core.Name "hydra/ext/python/syntax.AugAssignment")
 
-_SingleTargetOrSubscriptAssignment_lhs = (Core.Name "lhs")
+_AugAssignment_lhs = (Core.Name "lhs")
 
-_SingleTargetOrSubscriptAssignment_rhs = (Core.Name "rhs")
+_AugAssignment_augassign = (Core.Name "augassign")
 
-_SingleTargetOrSubscriptAssignment_annotation = (Core.Name "annotation")
-
-data SingleTargetOrSubscriptAttributeTarget = 
-  SingleTargetOrSubscriptAttributeTargetSingleTarget SingleTarget |
-  SingleTargetOrSubscriptAttributeTargetSingleSubscriptAttributeTarget SingleSubscriptAttributeTarget
-  deriving (Eq, Ord, Read, Show)
-
-_SingleTargetOrSubscriptAttributeTarget = (Core.Name "hydra/ext/python/syntax.SingleTargetOrSubscriptAttributeTarget")
-
-_SingleTargetOrSubscriptAttributeTarget_singleTarget = (Core.Name "singleTarget")
-
-_SingleTargetOrSubscriptAttributeTarget_singleSubscriptAttributeTarget = (Core.Name "singleSubscriptAttributeTarget")
-
-data StarTargetsAssignment = 
-  StarTargetsAssignment {
-    starTargetsAssignmentTargets :: [StarTarget],
-    starTargetsAssignmentRhs :: YieldExpressionOrStarExpressions,
-    starTargetsAssignmentTypeComment :: (Maybe TypeComment)}
-  deriving (Eq, Ord, Read, Show)
-
-_StarTargetsAssignment = (Core.Name "hydra/ext/python/syntax.StarTargetsAssignment")
-
-_StarTargetsAssignment_targets = (Core.Name "targets")
-
-_StarTargetsAssignment_rhs = (Core.Name "rhs")
-
-_StarTargetsAssignment_typeComment = (Core.Name "typeComment")
-
-data YieldExpressionOrStarExpressions = 
-  YieldExpressionOrStarExpressionsYield YieldExpression |
-  YieldExpressionOrStarExpressionsStar [StarExpression]
-  deriving (Eq, Ord, Read, Show)
-
-_YieldExpressionOrStarExpressions = (Core.Name "hydra/ext/python/syntax.YieldExpressionOrStarExpressions")
-
-_YieldExpressionOrStarExpressions_yield = (Core.Name "yield")
-
-_YieldExpressionOrStarExpressions_star = (Core.Name "star")
-
-data SingleTargetAssignment = 
-  SingleTargetAssignment {
-    singleTargetAssignmentLhs :: SingleTarget,
-    singleTargetAssignmentAugassign :: Augassign,
-    singleTargetAssignmentRhs :: YieldExpressionOrStarExpressions}
-  deriving (Eq, Ord, Read, Show)
-
-_SingleTargetAssignment = (Core.Name "hydra/ext/python/syntax.SingleTargetAssignment")
-
-_SingleTargetAssignment_lhs = (Core.Name "lhs")
-
-_SingleTargetAssignment_augassign = (Core.Name "augassign")
-
-_SingleTargetAssignment_rhs = (Core.Name "rhs")
+_AugAssignment_rhs = (Core.Name "rhs")
 
 data AnnotatedRhs = 
   AnnotatedRhsYield YieldExpression |
@@ -277,49 +240,49 @@ _AnnotatedRhs_yield = (Core.Name "yield")
 
 _AnnotatedRhs_star = (Core.Name "star")
 
-data Augassign = 
-  AugassignPlusEqual  |
-  AugassignMinusEqual  |
-  AugassignTimesEqual  |
-  AugassignAtEqual  |
-  AugassignSlashEqual  |
-  AugassignPercentEqual  |
-  AugassignAmpersandEqual  |
-  AugassignBarEqual  |
-  AugassignCaretEqual  |
-  AugassignLeftShiftEqual  |
-  AugassignRightShiftEqual  |
-  AugassignStarStarEqual  |
-  AugassignDoubleSlashEqual 
+data AugAssign = 
+  AugAssignPlusEqual  |
+  AugAssignMinusEqual  |
+  AugAssignTimesEqual  |
+  AugAssignAtEqual  |
+  AugAssignSlashEqual  |
+  AugAssignPercentEqual  |
+  AugAssignAmpersandEqual  |
+  AugAssignBarEqual  |
+  AugAssignCaretEqual  |
+  AugAssignLeftShiftEqual  |
+  AugAssignRightShiftEqual  |
+  AugAssignStarStarEqual  |
+  AugAssignDoubleSlashEqual 
   deriving (Eq, Ord, Read, Show)
 
-_Augassign = (Core.Name "hydra/ext/python/syntax.Augassign")
+_AugAssign = (Core.Name "hydra/ext/python/syntax.AugAssign")
 
-_Augassign_plusEqual = (Core.Name "plusEqual")
+_AugAssign_plusEqual = (Core.Name "plusEqual")
 
-_Augassign_minusEqual = (Core.Name "minusEqual")
+_AugAssign_minusEqual = (Core.Name "minusEqual")
 
-_Augassign_timesEqual = (Core.Name "timesEqual")
+_AugAssign_timesEqual = (Core.Name "timesEqual")
 
-_Augassign_atEqual = (Core.Name "atEqual")
+_AugAssign_atEqual = (Core.Name "atEqual")
 
-_Augassign_slashEqual = (Core.Name "slashEqual")
+_AugAssign_slashEqual = (Core.Name "slashEqual")
 
-_Augassign_percentEqual = (Core.Name "percentEqual")
+_AugAssign_percentEqual = (Core.Name "percentEqual")
 
-_Augassign_ampersandEqual = (Core.Name "ampersandEqual")
+_AugAssign_ampersandEqual = (Core.Name "ampersandEqual")
 
-_Augassign_barEqual = (Core.Name "barEqual")
+_AugAssign_barEqual = (Core.Name "barEqual")
 
-_Augassign_caretEqual = (Core.Name "caretEqual")
+_AugAssign_caretEqual = (Core.Name "caretEqual")
 
-_Augassign_leftShiftEqual = (Core.Name "leftShiftEqual")
+_AugAssign_leftShiftEqual = (Core.Name "leftShiftEqual")
 
-_Augassign_rightShiftEqual = (Core.Name "rightShiftEqual")
+_AugAssign_rightShiftEqual = (Core.Name "rightShiftEqual")
 
-_Augassign_starStarEqual = (Core.Name "starStarEqual")
+_AugAssign_starStarEqual = (Core.Name "starStarEqual")
 
-_Augassign_doubleSlashEqual = (Core.Name "doubleSlashEqual")
+_AugAssign_doubleSlashEqual = (Core.Name "doubleSlashEqual")
 
 newtype ReturnStatement = 
   ReturnStatement {
@@ -346,20 +309,6 @@ _RaiseExpression = (Core.Name "hydra/ext/python/syntax.RaiseExpression")
 _RaiseExpression_expression = (Core.Name "expression")
 
 _RaiseExpression_from = (Core.Name "from")
-
-newtype GlobalStatement = 
-  GlobalStatement {
-    unGlobalStatement :: [Name]}
-  deriving (Eq, Ord, Read, Show)
-
-_GlobalStatement = (Core.Name "hydra/ext/python/syntax.GlobalStatement")
-
-newtype NonlocalStatement = 
-  NonlocalStatement {
-    unNonlocalStatement :: [Name]}
-  deriving (Eq, Ord, Read, Show)
-
-_NonlocalStatement = (Core.Name "hydra/ext/python/syntax.NonlocalStatement")
 
 newtype DelStatement = 
   DelStatement {
@@ -498,7 +447,7 @@ newtype DottedName =
 _DottedName = (Core.Name "hydra/ext/python/syntax.DottedName")
 
 data Block = 
-  BlockIndented [Statement] |
+  BlockIndented [StatementWithComment] |
   BlockSimple [SimpleStatement]
   deriving (Eq, Ord, Read, Show)
 
@@ -899,7 +848,7 @@ _WhileStatement_else = (Core.Name "else")
 data ForStatement = 
   ForStatement {
     forStatementAsync :: Bool,
-    forStatementTargets :: StarTargets,
+    forStatementTargets :: [StarTarget],
     forStatementExpressions :: [StarExpression],
     forStatementTypeComment :: (Maybe TypeComment),
     forStatementBody :: Block,
@@ -1628,8 +1577,9 @@ _Inversion_not = (Core.Name "not")
 _Inversion_simple = (Core.Name "simple")
 
 data Comparison = 
-  ComparisonLhs BitwiseOr |
-  ComparisonRhs [CompareOpBitwiseOrPair]
+  Comparison {
+    comparisonLhs :: BitwiseOr,
+    comparisonRhs :: [CompareOpBitwiseOrPair]}
   deriving (Eq, Ord, Read, Show)
 
 _Comparison = (Core.Name "hydra/ext/python/syntax.Comparison")
@@ -1686,8 +1636,9 @@ _CompareOp_isnot = (Core.Name "isnot")
 _CompareOp_is = (Core.Name "is")
 
 data BitwiseOr = 
-  BitwiseOrLhs (Maybe BitwiseOr) |
-  BitwiseOrRhs BitwiseXor
+  BitwiseOr {
+    bitwiseOrLhs :: (Maybe BitwiseOr),
+    bitwiseOrRhs :: BitwiseXor}
   deriving (Eq, Ord, Read, Show)
 
 _BitwiseOr = (Core.Name "hydra/ext/python/syntax.BitwiseOr")
@@ -1697,8 +1648,9 @@ _BitwiseOr_lhs = (Core.Name "lhs")
 _BitwiseOr_rhs = (Core.Name "rhs")
 
 data BitwiseXor = 
-  BitwiseXorLhs (Maybe BitwiseXor) |
-  BitwiseXorRhs BitwiseAnd
+  BitwiseXor {
+    bitwiseXorLhs :: (Maybe BitwiseXor),
+    bitwiseXorRhs :: BitwiseAnd}
   deriving (Eq, Ord, Read, Show)
 
 _BitwiseXor = (Core.Name "hydra/ext/python/syntax.BitwiseXor")
@@ -1708,8 +1660,9 @@ _BitwiseXor_lhs = (Core.Name "lhs")
 _BitwiseXor_rhs = (Core.Name "rhs")
 
 data BitwiseAnd = 
-  BitwiseAndLhs (Maybe BitwiseAnd) |
-  BitwiseAndRhs ShiftExpression
+  BitwiseAnd {
+    bitwiseAndLhs :: (Maybe BitwiseAnd),
+    bitwiseAndRhs :: ShiftExpression}
   deriving (Eq, Ord, Read, Show)
 
 _BitwiseAnd = (Core.Name "hydra/ext/python/syntax.BitwiseAnd")
@@ -2214,7 +2167,7 @@ _ForIfClauses = (Core.Name "hydra/ext/python/syntax.ForIfClauses")
 data ForIfClause = 
   ForIfClause {
     forIfClauseAsync :: Bool,
-    forIfClauseTargets :: StarTargets,
+    forIfClauseTargets :: [StarTarget],
     forIfClauseIn :: Disjunction,
     forIfClauseIfs :: [Disjunction]}
   deriving (Eq, Ord, Read, Show)
@@ -2374,13 +2327,6 @@ _KwargOrDoubleStarred_kwarg = (Core.Name "kwarg")
 
 _KwargOrDoubleStarred_doubleStarred = (Core.Name "doubleStarred")
 
-newtype StarTargets = 
-  StarTargets {
-    unStarTargets :: [StarTarget]}
-  deriving (Eq, Ord, Read, Show)
-
-_StarTargets = (Core.Name "hydra/ext/python/syntax.StarTargets")
-
 newtype StarTargetsListSeq = 
   StarTargetsListSeq {
     unStarTargetsListSeq :: [StarTarget]}
@@ -2396,29 +2342,29 @@ newtype StarTargetsTupleSeq =
 _StarTargetsTupleSeq = (Core.Name "hydra/ext/python/syntax.StarTargetsTupleSeq")
 
 data StarTarget = 
-  StarTargetStar StarTarget |
-  StarTargetTarget TargetWithStarAtom
+  StarTargetStarred StarTarget |
+  StarTargetUnstarred TargetWithStarAtom
   deriving (Eq, Ord, Read, Show)
 
 _StarTarget = (Core.Name "hydra/ext/python/syntax.StarTarget")
 
-_StarTarget_star = (Core.Name "star")
+_StarTarget_starred = (Core.Name "starred")
 
-_StarTarget_target = (Core.Name "target")
+_StarTarget_unstarred = (Core.Name "unstarred")
 
 data TargetWithStarAtom = 
-  TargetWithStarAtomPrimaryAndName TPrimaryAndName |
-  TargetWithStarAtomPrimaryAndSlices TPrimaryAndSlices |
-  TargetWithStarAtomStarAtom StarAtom
+  TargetWithStarAtomProject TPrimaryAndName |
+  TargetWithStarAtomSlices TPrimaryAndSlices |
+  TargetWithStarAtomAtom StarAtom
   deriving (Eq, Ord, Read, Show)
 
 _TargetWithStarAtom = (Core.Name "hydra/ext/python/syntax.TargetWithStarAtom")
 
-_TargetWithStarAtom_primaryAndName = (Core.Name "primaryAndName")
+_TargetWithStarAtom_project = (Core.Name "project")
 
-_TargetWithStarAtom_primaryAndSlices = (Core.Name "primaryAndSlices")
+_TargetWithStarAtom_slices = (Core.Name "slices")
 
-_TargetWithStarAtom_starAtom = (Core.Name "starAtom")
+_TargetWithStarAtom_atom = (Core.Name "atom")
 
 data TPrimaryAndName = 
   TPrimaryAndName {

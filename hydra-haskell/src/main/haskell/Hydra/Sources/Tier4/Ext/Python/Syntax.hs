@@ -91,11 +91,13 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 --
 -- file: [statements] ENDMARKER
 
-      def "File" $ list $ python "Statement",
+      def "File" $ record [
+        "statements">: list $ python "StatementWithComment",
+        "comment">: optional string], -- Note: added for Hydra-Python
 
 -- interactive: statement_newline
 
-      def "Interactive" $ python "Statement",
+      def "Interactive" $ python "StatementWithComment",
 
 -- eval: expressions NEWLINE* ENDMARKER
 
@@ -117,6 +119,10 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
       def "Statement" $ union [
         "compound">: python "CompoundStatement",
         "simple">: nonemptyList $ python "SimpleStatement"],
+
+      def "StatementWithComment" $ record [ -- Note: added for Hydra-Python
+        "statement">: python "Statement",
+        "comment">: optional string],
 
 -- statement_newline:
 --     | compound_stmt NEWLINE
@@ -159,8 +165,8 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
         "assert">: python "AssertStatement",
         "break">: unit,
         "continue">: unit,
-        "global">: python "GlobalStatement",
-        "nonlocal">: python "NonlocalStatement"],
+        "global">: nonemptyList $ python "Name",
+        "nonlocal">: nonemptyList $ python "Name"],
 
 -- compound_stmt:
 --     | function_def
@@ -194,49 +200,30 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 --     | single_target augassign ~ (yield_expr | star_expressions)
 
       def "Assignment" $ union [
-        "colon">: python "ColonAssignment",
-        "singleTargetOrSubscript">: python "SingleTargetOrSubscriptAssignment",
-        "starTargets">: python "StarTargetsAssignment",
-        "singleTarget">: python "SingleTargetAssignment"],
+        "typed">: python "TypedAssignment",
+        "untyped">: python "UntypedAssignment",
+        "aug">: python "AugAssignment"],
 
-      def "ColonAssignment" $ record [
-        "lhs">: python "ColonAssignmentLhs",
-        "rhs">: python "Expression",
-        "annotatedRhs">: optional $ python "AnnotatedRhs"],
+      def "TypedAssignment" $ record [
+        "lhs">: python "SingleTarget",
+        "type">: python "Expression",
+        "rhs">: optional $ python "AnnotatedRhs"],
 
-      def "ColonAssignmentLhs" $ union [
-        "name">: python "Name",
-        "singleTarget">: python "SingleTarget",
-        "singleSubscriptAttributeTarget">: python "SingleSubscriptAttributeTarget"],
-
-      def "SingleTargetOrSubscriptAssignment" $ record [
-        "lhs">: python "SingleTargetOrSubscriptAttributeTarget",
-        "rhs">: python "Expression",
-        "annotation">: optional $ python "AnnotatedRhs"],
-
-      def "SingleTargetOrSubscriptAttributeTarget" $ union [
-        "singleTarget">: python "SingleTarget",
-        "singleSubscriptAttributeTarget">: python "SingleSubscriptAttributeTarget"],
-
-      def "StarTargetsAssignment" $ record [
+      def "UntypedAssignment" $ record [
         "targets">: nonemptyList $ python "StarTarget",
-        "rhs">: python "YieldExpressionOrStarExpressions",
+        "rhs">: python "AnnotatedRhs",
         "typeComment">: optional $ python "TypeComment"],
 
-      def "YieldExpressionOrStarExpressions" $ union [
-        "yield">: python "YieldExpression",
-        "star">: nonemptyList $ python "StarExpression"],
-
-      def "SingleTargetAssignment" $ record [
+      def "AugAssignment" $ record [
         "lhs">: python "SingleTarget",
-        "augassign">: python "Augassign",
-        "rhs">: python "YieldExpressionOrStarExpressions"],
+        "augassign">: python "AugAssign",
+        "rhs">: python "AnnotatedRhs"],
 
 -- annotated_rhs: yield_expr | star_expressions
 
-        def "AnnotatedRhs" $ union [
-            "yield">: python "YieldExpression",
-            "star">: nonemptyList $ python "StarExpression"],
+      def "AnnotatedRhs" $ union [
+        "yield">: python "YieldExpression",
+        "star">: nonemptyList $ python "StarExpression"],
 
 -- augassign:
 --     | '+='
@@ -253,7 +240,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 --     | '**='
 --     | '//='
 
-      def "Augassign" $ enum [
+      def "AugAssign" $ enum [
         "plusEqual",
         "minusEqual",
         "timesEqual",
@@ -284,13 +271,9 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
         "from">: optional $ python "Expression"],
 
 -- global_stmt: 'global' ','.NAME+
-
-      def "GlobalStatement" $ nonemptyList $ python "Name",
-
+--
 -- nonlocal_stmt: 'nonlocal' ','.NAME+
-
-      def "NonlocalStatement" $ nonemptyList $ python "Name",
-
+--
 -- del_stmt:
 --     | 'del' del_targets &(';' | NEWLINE)
 
@@ -387,7 +370,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 --     | simple_stmts
 
       def "Block" $ union [
-        "indented">: nonemptyList $ python "Statement",
+        "indented">: nonemptyList $ python "StatementWithComment",
         "simple">: nonemptyList $ python "SimpleStatement"],
 
 -- decorators: ('@' named_expression NEWLINE )+
@@ -642,7 +625,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 
       def "ForStatement" $ record [
         "async">: boolean,
-        "targets">: python "StarTargets",
+        "targets">: nonemptyList $ python "StarTarget",
         "expressions">: nonemptyList $ python "StarExpression",
         "typeComment">: optional $ python "TypeComment",
         "body">: python "Block",
@@ -1145,7 +1128,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 --     | bitwise_or compare_op_bitwise_or_pair+
 --     | bitwise_or
 
-      def "Comparison" $ union [
+      def "Comparison" $ record [
         "lhs">: python "BitwiseOr",
         "rhs">: list $ python "CompareOpBitwiseOrPair"],
 
@@ -1187,7 +1170,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 --     | bitwise_or '|' bitwise_xor
 --     | bitwise_xor
 
-      def "BitwiseOr" $ union [
+      def "BitwiseOr" $ record [
         "lhs">: optional $ python "BitwiseOr",
         "rhs">: python "BitwiseXor"],
 
@@ -1195,7 +1178,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 --     | bitwise_xor '^' bitwise_and
 --     | bitwise_and
 
-      def "BitwiseXor" $ union [
+      def "BitwiseXor" $ record [
         "lhs">: optional $ python "BitwiseXor",
         "rhs">: python "BitwiseAnd"],
 
@@ -1203,7 +1186,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 --     | bitwise_and '&' shift_expr
 --     | shift_expr
 
-      def "BitwiseAnd" $ union [
+      def "BitwiseAnd" $ record [
         "lhs">: optional $ python "BitwiseAnd",
         "rhs">: python "ShiftExpression"],
 
@@ -1540,7 +1523,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 
       def "ForIfClause" $ record [
         "async">: boolean,
-        "targets">: python "StarTargets",
+        "targets">: nonemptyList $ python "StarTarget",
         "in">: python "Disjunction",
         "ifs">: list $ python "Disjunction"],
 
@@ -1641,9 +1624,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 -- star_targets:
 --     | star_target !','
 --     | star_target (',' star_target )* [',']
-
-      def "StarTargets" $ nonemptyList $ python "StarTarget",
-
+--
 -- star_targets_list_seq: ','.star_target+ [',']
 
       def "StarTargetsListSeq" $ nonemptyList $ python "StarTarget",
@@ -1659,8 +1640,8 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 --     | target_with_star_atom
 
       def "StarTarget" $ union [
-        "star">: python "StarTarget",
-        "target">: python "TargetWithStarAtom"],
+        "starred">: python "StarTarget",
+        "unstarred">: python "TargetWithStarAtom"],
 
 -- target_with_star_atom:
 --     | t_primary '.' NAME !t_lookahead
@@ -1668,9 +1649,9 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 --     | star_atom
 
       def "TargetWithStarAtom" $ union [
-        "primaryAndName">: python "TPrimaryAndName",
-        "primaryAndSlices">: python "TPrimaryAndSlices",
-        "starAtom">: python "StarAtom"],
+        "project">: python "TPrimaryAndName",
+        "slices">: python "TPrimaryAndSlices",
+        "atom">: python "StarAtom"],
 
       def "TPrimaryAndName" $ record [
         "primary">: python "TPrimary",
