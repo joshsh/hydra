@@ -66,6 +66,12 @@ nonAlnumToUnderscores = L.reverse . fst . L.foldl replace ([], False)
 sanitizeWithUnderscores :: S.Set String -> String -> String
 sanitizeWithUnderscores reserved = escapeWithUnderscore reserved . nonAlnumToUnderscores
 
+toLowerCase :: String -> String
+toLowerCase = fmap C.toLower
+
+toUpperCase :: String -> String
+toUpperCase = fmap C.toUpper
+
 withCharacterAliases :: String -> String
 withCharacterAliases original = L.filter C.isAlphaNum $ L.concat $ alias <$> original
   where

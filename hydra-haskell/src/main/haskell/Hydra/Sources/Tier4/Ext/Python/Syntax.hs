@@ -116,7 +116,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 
       def "Statement" $ union [
         "compound">: python "CompoundStatement",
-        "simple">: python "SimpleStatements"],
+        "simple">: nonemptyList $ python "SimpleStatement"],
 
 -- statement_newline:
 --     | compound_stmt NEWLINE
@@ -127,9 +127,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 -- simple_stmts:
 --     | simple_stmt !';' NEWLINE  # Not needed, there for speedup
 --     | ';'.simple_stmt+ [';'] NEWLINE
-
-      def "SimpleStatements" $ nonemptyList $ python "SimpleStatement",
-
+--
 -- # NOTE: assignment MUST precede expression, else parsing a simple assignment
 -- # will throw a SyntaxError.
 -- simple_stmt:
@@ -390,7 +388,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 
       def "Block" $ union [
         "indented">: nonemptyList $ python "Statement",
-        "simple">: python "SimpleStatements"],
+        "simple">: nonemptyList $ python "SimpleStatement"],
 
 -- decorators: ('@' named_expression NEWLINE )+
 

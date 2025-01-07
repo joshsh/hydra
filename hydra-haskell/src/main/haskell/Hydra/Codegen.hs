@@ -23,6 +23,7 @@ import Hydra.Ext.Json.Coder
 import Hydra.Ext.Json.Schema.Coder
 import Hydra.Ext.Pegasus.Coder
 import Hydra.Ext.Protobuf.Coder
+import Hydra.Ext.Python.Coder
 import Hydra.Ext.Scala.Coder
 import Hydra.Ext.Yaml.Modules
 
@@ -104,6 +105,9 @@ writePdl = generateSources moduleToPdl
 
 writeProtobuf :: FP.FilePath -> [Module] -> IO ()
 writeProtobuf = generateSources moduleToProtobuf
+
+writePython :: FP.FilePath -> [Module] -> IO ()
+writePython = generateSources moduleToPython
 
 writeScala :: FP.FilePath -> [Module] -> IO ()
 writeScala = generateSources moduleToScala
