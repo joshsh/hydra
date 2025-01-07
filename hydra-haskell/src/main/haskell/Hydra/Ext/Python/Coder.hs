@@ -68,7 +68,7 @@ encodeTypeAssignment namespaces name typ = case stripType typ of
     dflt = Py.StatementSimple [Py.SimpleStatementBreak] -- TODO
     simpleAssignment expr = Py.StatementSimple [Py.SimpleStatementAssignment $ Py.AssignmentUntyped $
       Py.UntypedAssignment
-        [Py.StarTargetUnstarred $ Py.TargetWithStarAtomAtom $ Py.StarAtomName $ Py.Name (unName name)]
+        [Py.StarTargetUnstarred $ Py.TargetWithStarAtomAtom $ Py.StarAtomName $ Py.Name (localNameOfEager name)]
         (Py.AnnotatedRhsStar [Py.StarExpressionSimple expr])
         Nothing]
 
