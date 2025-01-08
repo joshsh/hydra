@@ -88,7 +88,12 @@ encodeLiteralType lt = do
       LiteralTypeString -> pure "str"
 
 encodeName :: PythonNamespaces -> Name -> Flow Graph Py.Name
-encodeName namespaces name = pure $ Py.Name $ localNameOfEager name -- TODO: qualified names
+encodeName namespaces name = pure $ Py.Name $ if ns == Just focusNs
+    then local
+    else L.intercalate "." $ Strings.splitOn "/" $ unName name
+  where
+    focusNs = fst $ namespacesFocus namespaces
+    QualifiedName ns local = qualifyNameEager name
 
 encodeNamespace :: Namespace -> Py.DottedName
 encodeNamespace ns = Py.DottedName (Py.Name <$> (Strings.splitOn "/" $ unNamespace ns))
