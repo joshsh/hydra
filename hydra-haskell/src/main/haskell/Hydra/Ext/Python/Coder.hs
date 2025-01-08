@@ -52,7 +52,7 @@ constructModule namespaces mod coders pairs = do
         standardImports = toImport <$> pairs
           where
             pairs = [
-              ("typing", ["List", "NewType", "Optional"]),
+              ("typing", ["NewType"]),
               ("dataclasses", ["dataclass"])]
             toImport (modName, symbols) = Py.ImportStatementFrom $
               Py.ImportFrom [] (Just $ Py.DottedName [Py.Name modName]) $
@@ -110,11 +110,11 @@ encodeTerm namespaces term = fail "not yet implemented"
 
 encodeType :: PythonNamespaces -> Type -> Flow Graph Py.Expression
 encodeType namespaces typ = case stripType typ of
-  TypeList et -> singleParamType (Py.Name "list") <$> encodeType namespaces et
-  TypeLiteral lt -> encodeLiteralType lt
-  TypeOptional et -> singleParamType (Py.Name "Optional") <$> encodeType namespaces et
-  TypeVariable name -> pyNameToPyExpression <$> encodeName namespaces name
-  t -> pure $ stringToPyExpression $ "type = " ++ show t
+    TypeList et -> singleParamType (Py.Name "list") <$> encodeType namespaces et
+    TypeLiteral lt -> encodeLiteralType lt
+    TypeOptional et -> orNull <$> encodeType namespaces et
+    TypeVariable name -> pyNameToPyExpression <$> encodeName namespaces name
+    t -> pure $ stringToPyExpression $ "type = " ++ show t
   where
     singleParamType pyName param = pyPrimaryToPyExpression $
       primaryWithSlice (pyNameToPyPrimary pyName) $ Py.SliceNamed $ Py.NamedExpressionSimple param
