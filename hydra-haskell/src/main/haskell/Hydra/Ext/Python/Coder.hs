@@ -60,10 +60,13 @@ constructModule namespaces mod coders pairs = do
               where
                 forSymbol s = Py.ImportFromAsName (Py.Name s) Nothing
 
+encodeFieldName :: Name -> Py.Name
+encodeFieldName fname = Py.Name $ convertCase CaseConventionCamel CaseConventionLowerSnake $ unName fname
+
 encodeFieldType :: PythonNamespaces -> FieldType -> Flow Graph Py.StatementWithComment
 encodeFieldType namespaces (FieldType fname ftype) = do
   comments <- getTypeDescription ftype
-  let pyName = Py.SingleTargetName $ Py.Name $ unName fname
+  let pyName = Py.SingleTargetName $ encodeFieldName fname
   pyType <- encodeType namespaces ftype
   let stmt = pyAssignmentToPyStatement $ Py.AssignmentTyped $ Py.TypedAssignment pyName pyType Nothing
   return $ Py.StatementWithComment stmt comments
