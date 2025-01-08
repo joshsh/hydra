@@ -8,6 +8,33 @@ import Data.List as L
 import Data.Map as M
 import Data.Set as S
 
+data Module = 
+  Module {
+    moduleImports :: [ImportStatement],
+    moduleBody :: [StatementWithComment],
+    moduleComment :: (Maybe String)}
+  deriving (Eq, Ord, Read, Show)
+
+_Module = (Core.Name "hydra/ext/python/syntax.Module")
+
+_Module_imports = (Core.Name "imports")
+
+_Module_body = (Core.Name "body")
+
+_Module_comment = (Core.Name "comment")
+
+data StatementWithComment = 
+  StatementWithComment {
+    statementWithCommentStatement :: Statement,
+    statementWithCommentComment :: (Maybe String)}
+  deriving (Eq, Ord, Read, Show)
+
+_StatementWithComment = (Core.Name "hydra/ext/python/syntax.StatementWithComment")
+
+_StatementWithComment_statement = (Core.Name "statement")
+
+_StatementWithComment_comment = (Core.Name "comment")
+
 newtype Name = 
   Name {
     unName :: String}
@@ -33,21 +60,16 @@ newtype TypeComment =
 
 _TypeComment = (Core.Name "hydra/ext/python/syntax.TypeComment")
 
-data File = 
+newtype File = 
   File {
-    fileStatements :: [StatementWithComment],
-    fileComment :: (Maybe String)}
+    unFile :: [Statement]}
   deriving (Eq, Ord, Read, Show)
 
 _File = (Core.Name "hydra/ext/python/syntax.File")
 
-_File_statements = (Core.Name "statements")
-
-_File_comment = (Core.Name "comment")
-
 newtype Interactive = 
   Interactive {
-    unInteractive :: StatementWithComment}
+    unInteractive :: Statement}
   deriving (Eq, Ord, Read, Show)
 
 _Interactive = (Core.Name "hydra/ext/python/syntax.Interactive")
@@ -81,18 +103,6 @@ _Statement = (Core.Name "hydra/ext/python/syntax.Statement")
 _Statement_compound = (Core.Name "compound")
 
 _Statement_simple = (Core.Name "simple")
-
-data StatementWithComment = 
-  StatementWithComment {
-    statementWithCommentStatement :: Statement,
-    statementWithCommentComment :: (Maybe String)}
-  deriving (Eq, Ord, Read, Show)
-
-_StatementWithComment = (Core.Name "hydra/ext/python/syntax.StatementWithComment")
-
-_StatementWithComment_statement = (Core.Name "statement")
-
-_StatementWithComment_comment = (Core.Name "comment")
 
 data SimpleStatement = 
   SimpleStatementAssignment Assignment |
@@ -349,7 +359,7 @@ _ImportStatement_from = (Core.Name "from")
 
 newtype ImportName = 
   ImportName {
-    unImportName :: DottedAsNames}
+    unImportName :: [DottedAsName]}
   deriving (Eq, Ord, Read, Show)
 
 _ImportName = (Core.Name "hydra/ext/python/syntax.ImportName")
@@ -405,13 +415,6 @@ _ImportFromAsName = (Core.Name "hydra/ext/python/syntax.ImportFromAsName")
 _ImportFromAsName_name = (Core.Name "name")
 
 _ImportFromAsName_as = (Core.Name "as")
-
-newtype DottedAsNames = 
-  DottedAsNames {
-    unDottedAsNames :: [DottedAsName]}
-  deriving (Eq, Ord, Read, Show)
-
-_DottedAsNames = (Core.Name "hydra/ext/python/syntax.DottedAsNames")
 
 data DottedAsName = 
   DottedAsName {
@@ -2366,7 +2369,7 @@ _StarAtom_starTargetsListSeq = (Core.Name "starTargetsListSeq")
 data SingleTarget = 
   SingleTargetSubscriptAttributeTarget SingleSubscriptAttributeTarget |
   SingleTargetName Name |
-  SingleTargetSingleTarget SingleTarget
+  SingleTargetParens SingleTarget
   deriving (Eq, Ord, Read, Show)
 
 _SingleTarget = (Core.Name "hydra/ext/python/syntax.SingleTarget")
@@ -2375,7 +2378,7 @@ _SingleTarget_subscriptAttributeTarget = (Core.Name "subscriptAttributeTarget")
 
 _SingleTarget_name = (Core.Name "name")
 
-_SingleTarget_singleTarget = (Core.Name "singleTarget")
+_SingleTarget_parens = (Core.Name "parens")
 
 data SingleSubscriptAttributeTarget = 
   SingleSubscriptAttributeTargetPrimaryAndName TPrimaryAndName |

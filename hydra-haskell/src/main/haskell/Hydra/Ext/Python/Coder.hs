@@ -23,7 +23,7 @@ import qualified Data.Maybe as Y
 import Hydra.Rewriting (removeTypeAnnotations, removeTermAnnotations)
 
 
-type PythonNamespaces = Namespaces String
+type PythonNamespaces = Namespaces Py.DottedName
 
 -- TODO: use these
 constantForFieldName tname fname = toUpperCase (localNameOfEager tname) ++ "_" ++ toUpperCase (unName fname)
@@ -32,33 +32,33 @@ constantForTypeName tname = toUpperCase $ localNameOfEager tname
 constructModule :: PythonNamespaces
   -> Module
   -> M.Map Type (Coder Graph Graph Term Py.Expression)
-  -> [(Element, TypedTerm)] -> Flow Graph Py.File
+  -> [(Element, TypedTerm)] -> Flow Graph Py.Module
 constructModule namespaces mod coders pairs = do
     g <- getState
-    declStmts <- L.concat <$> CM.mapM (createDeclarations g) pairs
-    let stmts = importStmts ++ declStmts
+    stmts <- L.concat <$> CM.mapM (createDeclarations g) pairs
     let mc = moduleDescription mod
-    return $ Py.File stmts mc
+    return $ Py.Module imports stmts mc
   where
     createDeclarations g pair@(el, TypedTerm term typ) = if isType typ
       then toTypeDeclarations namespaces el term
       else toDataDeclarations coders namespaces pair
 
-    imports = domainImports ++ standardImports
+    imports = standardImports ++ domainImports
       where
-        domainImports = [] -- TODO
-        standardImports = [] -- TODO
-
-    importStmts = simpleStatementNoComment . toImport <$> pairs
-      where
-        pairs = [
-          ("typing", ["List", "NewType", "Optional"]),
-          ("dataclasses", ["dataclass"])]
-        toImport (modName, symbols) = Py.SimpleStatementImport $ Py.ImportStatementFrom $
-          Py.ImportFrom [] (Just $ Py.DottedName [Py.Name modName]) $
-            Py.ImportFromTargetsSimple (forSymbol <$> symbols)
+        domainImports = toImport <$> names
           where
-            forSymbol s = Py.ImportFromAsName (Py.Name s) Nothing
+            names = L.sort $ M.elems $ namespacesMapping namespaces
+            toImport ns = Py.ImportStatementName $ Py.ImportName [Py.DottedAsName ns Nothing]
+        standardImports = toImport <$> pairs
+          where
+            pairs = [
+              ("typing", ["List", "NewType", "Optional"]),
+              ("dataclasses", ["dataclass"])]
+            toImport (modName, symbols) = Py.ImportStatementFrom $
+              Py.ImportFrom [] (Just $ Py.DottedName [Py.Name modName]) $
+                Py.ImportFromTargetsSimple (forSymbol <$> symbols)
+              where
+                forSymbol s = Py.ImportFromAsName (Py.Name s) Nothing
 
 encodeFieldType :: PythonNamespaces -> FieldType -> Flow Graph Py.StatementWithComment
 encodeFieldType namespaces (FieldType fname ftype) = do
@@ -86,6 +86,9 @@ encodeLiteralType lt = do
 
 encodeName :: PythonNamespaces -> Name -> Flow Graph Py.Name
 encodeName namespaces name = pure $ Py.Name $ localNameOfEager name -- TODO: qualified names
+
+encodeNamespace :: Namespace -> Py.DottedName
+encodeNamespace ns = Py.DottedName (Py.Name <$> (Strings.splitOn "/" $ unNamespace ns))
 
 encodeRecordType :: PythonNamespaces -> Name -> RowType -> Flow Graph Py.Statement
 encodeRecordType namespaces name (RowType tname tfields) = do
@@ -130,7 +133,7 @@ encodeTypeAssignment namespaces name typ = case stripType typ of
         rhs = Py.AnnotatedRhsStar [Py.StarExpressionSimple $
           functionCall (pyNameToPyPrimary $ Py.Name "NewType") [stringToPyExpression lname, expr]]
 
-moduleToPythonModule :: Module -> Flow Graph Py.File
+moduleToPythonModule :: Module -> Flow Graph Py.Module
 moduleToPythonModule mod = do
   namespaces <- namespacesForModule mod
   transformModule pythonLanguage (encodeTerm namespaces) (constructModule namespaces) mod
@@ -138,9 +141,17 @@ moduleToPythonModule mod = do
 moduleToPython :: Module -> Flow Graph (M.Map FilePath String)
 moduleToPython mod = do
   file <- moduleToPythonModule mod
-  let s = printExpr $ parenthesize $ encodeFile file
+  let s = printExpr $ parenthesize $ encodeModule file
   let path = namespaceToFilePath False (FileExtension "py") $ moduleNamespace mod
   return $ M.fromList [(path, s)]
+
+namespacesForModule :: Module -> Flow Graph PythonNamespaces
+namespacesForModule mod = do
+    nss <- moduleDependencyNamespaces True True True True mod
+    return $ Namespaces (toPair focusNs) $ M.fromList (toPair <$> S.toList nss)
+  where
+    focusNs = moduleNamespace mod
+    toPair ns = (ns, encodeNamespace ns)
 
 toDataDeclarations :: M.Map Type (Coder Graph Graph Term Py.Expression) -> PythonNamespaces -> (Element, TypedTerm)
   -> Flow Graph [Py.StatementWithComment]
@@ -148,9 +159,6 @@ toDataDeclarations coders namespaces (el, TypedTerm term typ) = withTrace ("data
   comments <- getTermDescription term
   let stmt = Py.StatementSimple [Py.SimpleStatementContinue] -- TODO
   return [Py.StatementWithComment stmt comments]
-
-namespacesForModule :: Module -> Flow Graph PythonNamespaces
-namespacesForModule mod = pure $ Namespaces (moduleNamespace mod, "unknown namespace") M.empty -- TODO
 
 toTypeDeclarations :: PythonNamespaces -> Element -> Term
   -> Flow Graph [Py.StatementWithComment]

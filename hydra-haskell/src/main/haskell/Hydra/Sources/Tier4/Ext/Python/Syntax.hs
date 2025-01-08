@@ -18,8 +18,20 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
   where
     def = datatype pythonNs
 
-    elements = terminals ++ nonterminals
+    elements = constructs ++ terminals ++ nonterminals
 
+    -- These definitions are not based on the grammar, but are convenient for working with Python sources in Hydra.
+    constructs = [
+      def "Module" $ record [
+        "imports">: list $ python "ImportStatement",
+        "body">: list $ python "StatementWithComment",
+        "comment">: optional string],
+
+      def "StatementWithComment" $ record [ -- Note: added for Hydra-Python
+        "statement">: python "Statement",
+        "comment">: optional string]]
+
+    -- Terminals from the PEG grammar (see below)
     terminals = [
       def "Name" string, -- NAME in the grammar
 
@@ -29,6 +41,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 
       def "TypeComment" string] -- TYPE_COMMENT in the grammar
 
+    -- Nonterminal productions from the PEG grammar (inline)
     nonterminals = [
 -- # General grammatical elements and rules:
 -- #
@@ -91,13 +104,11 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 --
 -- file: [statements] ENDMARKER
 
-      def "File" $ record [
-        "statements">: list $ python "StatementWithComment",
-        "comment">: optional string], -- Note: added for Hydra-Python
+      def "File" $ list $ python "Statement",
 
 -- interactive: statement_newline
 
-      def "Interactive" $ python "StatementWithComment",
+      def "Interactive" $ python "Statement",
 
 -- eval: expressions NEWLINE* ENDMARKER
 
@@ -119,10 +130,6 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
       def "Statement" $ union [
         "compound">: python "CompoundStatement",
         "simple">: nonemptyList $ python "SimpleStatement"],
-
-      def "StatementWithComment" $ record [ -- Note: added for Hydra-Python
-        "statement">: python "Statement",
-        "comment">: optional string],
 
 -- statement_newline:
 --     | compound_stmt NEWLINE
@@ -302,7 +309,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 --
 -- import_name: 'import' dotted_as_names
 
-      def "ImportName" $ python "DottedAsNames",
+      def "ImportName" $ nonemptyList $ python "DottedAsName",
 
 -- # note below: the ('.' | '...') is necessary because '...' is tokenized as ELLIPSIS
 -- import_from:
@@ -338,9 +345,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 
 -- dotted_as_names:
 --     | ','.dotted_as_name+
-
-      def "DottedAsNames" $ nonemptyList $ python "DottedAsName",
-
+--
 -- dotted_as_name:
 --     | dotted_name ['as' NAME ]
 

@@ -58,7 +58,7 @@ encodeBitwiseXor (Py.BitwiseXor lhs rhs) = spaceSep $ Y.catMaybes [encodeLhs <$>
 
 encodeBlock :: Py.Block -> A.Expr
 encodeBlock b = case b of
-  Py.BlockIndented sc -> indentLines (encodeStatementWithComment <$> sc)
+  Py.BlockIndented sc -> indentLines True (encodeStatementWithComment <$> sc)
   Py.BlockSimple ss -> newlineSep (encodeSimpleStatement <$> ss)
 
 encodeClassDefRaw :: Py.ClassDefRaw -> A.Expr
@@ -92,8 +92,13 @@ encodeDecorators (Py.Decorators exprs) = newlineSep (encodeDec <$> exprs)
 encodeDisjunction :: Py.Disjunction -> A.Expr
 encodeDisjunction (Py.Disjunction cs) = symbolSep "or" inlineStyle (encodeConjunction <$> cs)
 
+encodeDottedAsName :: Py.DottedAsName -> A.Expr
+encodeDottedAsName (Py.DottedAsName name mas) = spaceSep $ Y.catMaybes [Just $ encodeDottedName name, encodeName <$> mas]
+  where
+    encodeAs a = spaceSep [cst "as", encodeName a]
+
 encodeDottedName :: Py.DottedName -> A.Expr
-encodeDottedName (Py.DottedName names) = symbolSep "." inlineStyle (encodeName <$> names)
+encodeDottedName (Py.DottedName names) = cst $ L.intercalate "." (Py.unName <$> names)
 
 encodeExpression :: Py.Expression -> A.Expr
 encodeExpression e = case e of
@@ -106,12 +111,6 @@ encodeFactor f = case f of
   Py.FactorNegative f -> noSep [cst "-", encodeFactor f]
   Py.FactorComplement f -> noSep [cst "~", encodeFactor f]
   Py.FactorSimple p -> encodePower p
-
-encodeFile :: Py.File -> A.Expr
-encodeFile (Py.File stmts mdoc) = doubleNewlineSep $ Y.catMaybes $
-   [cst . toPythonComments <$> mdoc] ++ stmtExprs
-  where
-    stmtExprs = Just . encodeStatementWithComment <$> stmts
 
 encodeImportFrom :: Py.ImportFrom -> A.Expr
 encodeImportFrom (Py.ImportFrom prefixes name targets) = spaceSep [cst "from", lhs, cst "import", rhs]
@@ -133,10 +132,13 @@ encodeImportFromTargets i = case i of
     names :: [Py.ImportFromAsName] -> A.Expr
     names t = commaSep inlineStyle (encodeImportFromAsName <$> t)
 
+encodeImportName :: Py.ImportName -> A.Expr
+encodeImportName (Py.ImportName dans) = spaceSep [cst "import", commaSep inlineStyle (encodeDottedAsName <$> dans)]
+
 encodeImportStatement :: Py.ImportStatement -> A.Expr
 encodeImportStatement s = case s of
+  Py.ImportStatementName n -> encodeImportName n
   Py.ImportStatementFrom i -> encodeImportFrom i
-  _ -> unsupportedVariant "import statement" s
 
 encodeInversion :: Py.Inversion -> A.Expr
 encodeInversion i = case i of
@@ -155,6 +157,15 @@ encodeKwargOrStarred :: Py.KwargOrStarred -> A.Expr
 encodeKwargOrStarred k = case k of
   Py.KwargOrStarredKwarg kw -> encodeKwarg kw
   Py.KwargOrStarredStarred se -> encodeStarredExpression se
+
+encodeModule :: Py.Module -> A.Expr
+encodeModule (Py.Module imports body mdoc) = doubleNewlineSep $ Y.catMaybes $
+   [cst . toPythonComments <$> mdoc, importsSec] ++ bodyExprs
+  where
+    bodyExprs = Just . encodeStatementWithComment <$> body
+    importsSec = if L.null exprs then Nothing else Just $ newlineSep exprs
+      where
+        exprs = encodeImportStatement <$> imports
 
 encodeName :: Py.Name -> A.Expr
 encodeName (Py.Name n) = cst n
