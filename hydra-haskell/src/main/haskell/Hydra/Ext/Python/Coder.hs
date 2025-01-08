@@ -63,11 +63,11 @@ constructModule namespaces mod coders pairs = do
 encodeFieldName :: Name -> Py.Name
 encodeFieldName fname = Py.Name $ convertCase CaseConventionCamel CaseConventionLowerSnake $ unName fname
 
-encodeFieldType :: PythonNamespaces -> FieldType -> Flow Graph Py.StatementWithComment
-encodeFieldType namespaces (FieldType fname ftype) = do
+encodeFieldType :: PythonNamespaces -> Y.Maybe Name -> FieldType -> Flow Graph Py.StatementWithComment
+encodeFieldType namespaces relName (FieldType fname ftype) = do
   comments <- getTypeDescription ftype
   let pyName = Py.SingleTargetName $ encodeFieldName fname
-  pyType <- encodeType namespaces ftype
+  pyType <- encodeType namespaces relName ftype
   let stmt = pyAssignmentToPyStatement $ Py.AssignmentTyped $ Py.TypedAssignment pyName pyType Nothing
   return $ Py.StatementWithComment stmt comments
 
@@ -87,9 +87,13 @@ encodeLiteralType lt = do
         _ -> fail $ "unsupported integer type: " ++ show it
       LiteralTypeString -> pure "str"
 
-encodeName :: PythonNamespaces -> Name -> Flow Graph Py.Name
-encodeName namespaces name = pure $ Py.Name $ if ns == Just focusNs
-    then local
+encodeName :: PythonNamespaces -> Y.Maybe Name -> Name -> Flow Graph Py.Name
+encodeName namespaces relName name = pure $ Py.Name $ if ns == Just focusNs
+    then case relName of
+      Just n -> if n == name
+        then show local
+        else local
+      Nothing -> local
     else L.intercalate "." $ Strings.splitOn "/" $ unName name
   where
     focusNs = fst $ namespacesFocus namespaces
@@ -100,7 +104,7 @@ encodeNamespace ns = Py.DottedName (Py.Name <$> (Strings.splitOn "/" $ unNamespa
 
 encodeRecordType :: PythonNamespaces -> Name -> RowType -> Flow Graph Py.Statement
 encodeRecordType namespaces name (RowType tname tfields) = do
-    pyFields <- CM.mapM (encodeFieldType namespaces) tfields
+    pyFields <- CM.mapM (encodeFieldType namespaces $ Just name) tfields
     let body = Py.BlockIndented pyFields
     return $ Py.StatementCompound $ Py.CompoundStatementClassDef $ Py.ClassDefinition (Just decs) $
       Py.ClassDefRaw (Py.Name lname) tparams args body
@@ -113,14 +117,15 @@ encodeRecordType namespaces name (RowType tname tfields) = do
 encodeTerm :: PythonNamespaces -> Term -> Flow Graph Py.Expression
 encodeTerm namespaces term = fail "not yet implemented"
 
-encodeType :: PythonNamespaces -> Type -> Flow Graph Py.Expression
-encodeType namespaces typ = case stripType typ of
-    TypeList et -> singleParamType (Py.Name "list") <$> encodeType namespaces et
+encodeType :: PythonNamespaces -> Maybe Name -> Type -> Flow Graph Py.Expression
+encodeType namespaces relName typ = case stripType typ of
+    TypeList et -> singleParamType (Py.Name "list") <$> encode et
     TypeLiteral lt -> encodeLiteralType lt
-    TypeOptional et -> orNull <$> encodeType namespaces et
-    TypeVariable name -> pyNameToPyExpression <$> encodeName namespaces name
+    TypeOptional et -> orNull <$> encode et
+    TypeVariable name -> pyNameToPyExpression <$> encodeName namespaces relName name
     t -> pure $ stringToPyExpression $ "type = " ++ show t
   where
+    encode = encodeType namespaces relName
     singleParamType pyName param = pyPrimaryToPyExpression $
       primaryWithSlice (pyNameToPyPrimary pyName) $ Py.SliceNamed $ Py.NamedExpressionSimple param
 
