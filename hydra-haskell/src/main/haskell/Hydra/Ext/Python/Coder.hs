@@ -7,7 +7,7 @@ import Hydra.Dsl.Terms
 import Hydra.Tools.Serialization
 import qualified Hydra.Ext.Python.Syntax as Py
 import Hydra.Ext.Python.Utils
-import Hydra.Ext.Python.Serde hiding (encodeTerm)
+import Hydra.Ext.Python.Serde hiding (encodeName, encodeTerm)
 import qualified Hydra.Lib.Strings as Strings
 import qualified Hydra.Dsl.Types as Types
 import Hydra.Dsl.ShorthandTypes
@@ -49,9 +49,24 @@ constructModule namespaces mod coders pairs = do
         domainImports = [] -- TODO
         standardImports = [] -- TODO
 
-    importStmts = simpleStatementNoComment <$> [Py.SimpleStatementImport $ Py.ImportStatementFrom $
-      Py.ImportFrom [] (Just $ Py.DottedName [Py.Name "typing"]) $
-        Py.ImportFromTargetsSimple [Py.ImportFromAsName (Py.Name "NewType") Nothing]]
+    importStmts = simpleStatementNoComment . toImport <$> pairs
+      where
+        pairs = [
+          ("typing", ["List", "NewType", "Optional"]),
+          ("dataclasses", ["dataclass"])]
+        toImport (modName, symbols) = Py.SimpleStatementImport $ Py.ImportStatementFrom $
+          Py.ImportFrom [] (Just $ Py.DottedName [Py.Name modName]) $
+            Py.ImportFromTargetsSimple (forSymbol <$> symbols)
+          where
+            forSymbol s = Py.ImportFromAsName (Py.Name s) Nothing
+
+encodeFieldType :: PythonNamespaces -> FieldType -> Flow Graph Py.StatementWithComment
+encodeFieldType namespaces (FieldType fname ftype) = do
+  comments <- getTypeDescription ftype
+  let pyName = Py.SingleTargetName $ Py.Name $ unName fname
+  pyType <- encodeType namespaces ftype
+  let stmt = pyAssignmentToPyStatement $ Py.AssignmentTyped $ Py.TypedAssignment pyName pyType Nothing
+  return $ Py.StatementWithComment stmt comments
 
 encodeLiteralType :: LiteralType -> Flow Graph Py.Expression
 encodeLiteralType lt = do
@@ -69,22 +84,47 @@ encodeLiteralType lt = do
         _ -> fail $ "unsupported integer type: " ++ show it
       LiteralTypeString -> pure "str"
 
+encodeName :: PythonNamespaces -> Name -> Flow Graph Py.Name
+encodeName namespaces name = pure $ Py.Name $ localNameOfEager name -- TODO: qualified names
+
+encodeRecordType :: PythonNamespaces -> Name -> RowType -> Flow Graph Py.Statement
+encodeRecordType namespaces name (RowType tname tfields) = do
+    pyFields <- CM.mapM (encodeFieldType namespaces) tfields
+    let body = Py.BlockIndented pyFields
+    return $ Py.StatementCompound $ Py.CompoundStatementClassDef $ Py.ClassDefinition (Just decs) $
+      Py.ClassDefRaw (Py.Name lname) tparams args body
+  where
+    lname = localNameOfEager name
+    tparams = Nothing
+    args = Nothing
+    decs = Py.Decorators [pyNameToPyNamedExpression $ Py.Name "dataclass"]
+
 encodeTerm :: PythonNamespaces -> Term -> Flow Graph Py.Expression
 encodeTerm namespaces term = fail "not yet implemented"
+
+encodeType :: PythonNamespaces -> Type -> Flow Graph Py.Expression
+encodeType namespaces typ = case stripType typ of
+  TypeList et -> singleParamType (Py.Name "list") <$> encodeType namespaces et
+  TypeLiteral lt -> encodeLiteralType lt
+  TypeOptional et -> singleParamType (Py.Name "Optional") <$> encodeType namespaces et
+  TypeVariable name -> pyNameToPyExpression <$> encodeName namespaces name
+  t -> pure $ stringToPyExpression $ "type = " ++ show t
+  where
+    singleParamType pyName param = pyPrimaryToPyExpression $
+      primaryWithSlice (pyNameToPyPrimary pyName) $ Py.SliceNamed $ Py.NamedExpressionSimple param
 
 encodeTypeAssignment :: PythonNamespaces -> Name -> Type -> Flow Graph Py.Statement
 encodeTypeAssignment namespaces name typ = case stripType typ of
     TypeLiteral lt -> newtypeDeclaration <$> encodeLiteralType lt
-    TypeRecord _ -> pure dflt
+    TypeRecord rt -> encodeRecordType namespaces name rt
     TypeUnion _ -> pure dflt
     t -> unexpected "Python-supported type" $ show (typeVariant t)
   where
     dflt = Py.StatementSimple [Py.SimpleStatementBreak] -- TODO
-    newtypeDeclaration expr = Py.StatementSimple [Py.SimpleStatementAssignment $ Py.AssignmentUntyped $
-        Py.UntypedAssignment
-          [Py.StarTargetUnstarred $ Py.TargetWithStarAtomAtom $ Py.StarAtomName $ Py.Name lname]
-          rhs
-          Nothing]
+    newtypeDeclaration expr = pyAssignmentToPyStatement $ Py.AssignmentUntyped $ Py.UntypedAssignment
+        [Py.StarTargetUnstarred $ Py.TargetWithStarAtomAtom $ Py.StarAtomName $ Py.Name lname]
+        rhs
+        Nothing
       where
         lname = localNameOfEager name
         rhs = Py.AnnotatedRhsStar [Py.StarExpressionSimple $

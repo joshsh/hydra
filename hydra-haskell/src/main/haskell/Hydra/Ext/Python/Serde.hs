@@ -11,7 +11,7 @@ import qualified Data.Maybe as Y
 encodeAnnotatedRhs :: Py.AnnotatedRhs -> A.Expr
 encodeAnnotatedRhs a = case a of
   Py.AnnotatedRhsStar s -> commaSep inlineStyle (encodeStarExpression <$> s)
-  _ -> unsupportedVariant "annotated rhs"
+  _ -> unsupportedVariant "annotated rhs" a
 
 encodeArgs :: Py.Args -> A.Expr
 encodeArgs (Py.Args positional kwargStarred kwargDoubleStarred) = commaSep inlineStyle $ ps ++ ks ++ kss
@@ -22,8 +22,9 @@ encodeArgs (Py.Args positional kwargStarred kwargDoubleStarred) = commaSep inlin
 
 encodeAssignment :: Py.Assignment -> A.Expr
 encodeAssignment a = case a of
+  Py.AssignmentTyped t -> encodeTypedAssignment t
   Py.AssignmentUntyped u -> encodeUntypedAssignment u
-  _ -> unsupportedVariant "assignment"
+  _ -> unsupportedVariant "assignment" a
 
 encodeAssignmentExpression :: Py.AssignmentExpression -> A.Expr
 encodeAssignmentExpression (Py.AssignmentExpression name expr)
@@ -33,7 +34,7 @@ encodeAtom :: Py.Atom -> A.Expr
 encodeAtom a = case a of
   Py.AtomName n -> encodeName n
   Py.AtomString s -> cst $ "'" ++ s ++ "'" -- TODO: string escaping
-  _ -> unsupportedVariant "atom"
+  _ -> unsupportedVariant "atom" a
 
 encodeAwaitPrimary :: Py.AwaitPrimary -> A.Expr
 encodeAwaitPrimary (Py.AwaitPrimary await primary) = if await
@@ -55,6 +56,20 @@ encodeBitwiseXor (Py.BitwiseXor lhs rhs) = spaceSep $ Y.catMaybes [encodeLhs <$>
   where
     encodeLhs l = spaceSep [encodeBitwiseXor l, cst "^"]
 
+encodeBlock :: Py.Block -> A.Expr
+encodeBlock b = case b of
+  Py.BlockIndented sc -> indentLines (encodeStatementWithComment <$> sc)
+  Py.BlockSimple ss -> newlineSep (encodeSimpleStatement <$> ss)
+
+encodeClassDefRaw :: Py.ClassDefRaw -> A.Expr
+encodeClassDefRaw (Py.ClassDefRaw name tparams args body) = noSep [
+    noSep [spaceSep [cst "class", encodeName name], cst ":"],
+    encodeBlock body] -- TODO: tparams, args
+
+encodeClassDefinition :: Py.ClassDefinition -> A.Expr
+encodeClassDefinition (Py.ClassDefinition mdecs raw) = newlineSep $
+  Y.catMaybes [encodeDecorators <$> mdecs, Just $ encodeClassDefRaw raw]
+
 encodeCompareOpBitwiseOrPair :: Py.CompareOpBitwiseOrPair -> A.Expr
 encodeCompareOpBitwiseOrPair p = unsupportedType "compare op bitwise or pair"
 
@@ -62,10 +77,17 @@ encodeComparison :: Py.Comparison -> A.Expr
 encodeComparison (Py.Comparison lhs rhs) = spaceSep $ [encodeBitwiseOr lhs] ++ (encodeCompareOpBitwiseOrPair <$> rhs)
 
 encodeCompoundStatement :: Py.CompoundStatement -> A.Expr
-encodeCompoundStatement c = unsupportedType "compound statement"
+encodeCompoundStatement c = case c of
+  Py.CompoundStatementClassDef d -> encodeClassDefinition d
+  _ -> unsupportedVariant "compound statement" c
 
 encodeConjunction :: Py.Conjunction -> A.Expr
 encodeConjunction (Py.Conjunction is) = symbolSep "and" inlineStyle (encodeInversion <$> is)
+
+encodeDecorators :: Py.Decorators -> A.Expr
+encodeDecorators (Py.Decorators exprs) = newlineSep (encodeDec <$> exprs)
+  where
+    encodeDec ne = noSep [cst "@", encodeNamedExpression ne]
 
 encodeDisjunction :: Py.Disjunction -> A.Expr
 encodeDisjunction (Py.Disjunction cs) = symbolSep "or" inlineStyle (encodeConjunction <$> cs)
@@ -76,7 +98,7 @@ encodeDottedName (Py.DottedName names) = symbolSep "." inlineStyle (encodeName <
 encodeExpression :: Py.Expression -> A.Expr
 encodeExpression e = case e of
   Py.ExpressionSimple d -> encodeDisjunction d
-  _ -> unsupportedVariant "expression"
+  _ -> unsupportedVariant "expression" e
 
 encodeFactor :: Py.Factor -> A.Expr
 encodeFactor f = case f of
@@ -114,7 +136,7 @@ encodeImportFromTargets i = case i of
 encodeImportStatement :: Py.ImportStatement -> A.Expr
 encodeImportStatement s = case s of
   Py.ImportStatementFrom i -> encodeImportFrom i
-  _ -> unsupportedVariant "import statement"
+  _ -> unsupportedVariant "import statement" s
 
 encodeInversion :: Py.Inversion -> A.Expr
 encodeInversion i = case i of
@@ -137,6 +159,11 @@ encodeKwargOrStarred k = case k of
 encodeName :: Py.Name -> A.Expr
 encodeName (Py.Name n) = cst n
 
+encodeNamedExpression :: Py.NamedExpression -> A.Expr
+encodeNamedExpression ne = case ne of
+  Py.NamedExpressionSimple e -> encodeExpression e
+  _ -> unsupportedVariant "named expression" ne
+
 encodePosArg :: Py.PosArg -> A.Expr
 encodePosArg a = case a of
   Py.PosArgStarred se -> encodeStarredExpression se
@@ -156,7 +183,8 @@ encodePrimary p = case p of
 encodePrimaryRhs :: Py.PrimaryRhs -> A.Expr
 encodePrimaryRhs p = case p of
   Py.PrimaryRhsCall args -> noSep [cst "(", encodeArgs args, cst ")"]
-  _ -> unsupportedVariant "primary rhs"
+  Py.PrimaryRhsSlices slices -> noSep [cst "[", encodeSlices slices, cst "]"]
+  _ -> unsupportedVariant "primary rhs" p
 
 encodePrimaryWithRhs :: Py.PrimaryWithRhs -> A.Expr
 encodePrimaryWithRhs (Py.PrimaryWithRhs primary rhs) = noSep [encodePrimary primary, encodePrimaryRhs rhs]
@@ -176,22 +204,43 @@ encodeSimpleStatement :: Py.SimpleStatement -> A.Expr
 encodeSimpleStatement s = case s of
   Py.SimpleStatementAssignment a -> encodeAssignment a
   Py.SimpleStatementImport i -> encodeImportStatement i
-  _ -> unsupportedVariant "simple statement"
+  _ -> unsupportedVariant "simple statement" s
+
+encodeSingleTarget :: Py.SingleTarget -> A.Expr
+encodeSingleTarget s = case s of
+  Py.SingleTargetName n -> encodeName n
+  _ -> unsupportedVariant "single target" s
+
+encodeSlice :: Py.Slice -> A.Expr
+encodeSlice s = case s of
+  Py.SliceNamed n -> encodeNamedExpression n
+  _ -> unsupportedVariant "slice" s
+
+encodeSliceOrStarredExpression :: Py.SliceOrStarredExpression -> A.Expr
+encodeSliceOrStarredExpression s = case s of
+  Py.SliceOrStarredExpressionSlice s -> encodeSlice s
+  Py.SliceOrStarredExpressionStarred e -> encodeStarredExpression e
+
+encodeSlices :: Py.Slices -> A.Expr
+encodeSlices (Py.Slices head tail) = commaSep inlineStyle (ehead:etail)
+  where
+    ehead = encodeSlice head
+    etail = encodeSliceOrStarredExpression <$> tail
 
 encodeStarAtom :: Py.StarAtom -> A.Expr
 encodeStarAtom a = case a of
   Py.StarAtomName n -> encodeName n
-  _ -> unsupportedVariant "star atom"
+  _ -> unsupportedVariant "star atom" a
 
 encodeStarExpression :: Py.StarExpression -> A.Expr
 encodeStarExpression s = case s of
   Py.StarExpressionSimple e -> encodeExpression e
-  _ -> unsupportedVariant "star expression"
+  _ -> unsupportedVariant "star expression" s
 
 encodeStarTarget :: Py.StarTarget -> A.Expr
 encodeStarTarget s = case s of
   Py.StarTargetUnstarred t -> encodeTargetWithStarAtom t
-  _ -> unsupportedVariant "star target"
+  _ -> unsupportedVariant "star target" s
 
 encodeStarredExpression :: Py.StarredExpression -> A.Expr
 encodeStarredExpression (Py.StarredExpression expr) = noSep [cst "*", encodeExpression expr]
@@ -220,7 +269,12 @@ encodeTermLhs l = unsupportedType "term lhs"
 encodeTargetWithStarAtom :: Py.TargetWithStarAtom -> A.Expr
 encodeTargetWithStarAtom t = case t of
   Py.TargetWithStarAtomAtom a -> encodeStarAtom a
-  _ -> unsupportedVariant "target with star atom"
+  _ -> unsupportedVariant "target with star atom" t
+
+encodeTypedAssignment :: Py.TypedAssignment -> A.Expr
+encodeTypedAssignment (Py.TypedAssignment lhs typ rhs) = spaceSep [head, encodeExpression typ] -- TODO: rhs
+  where
+    head = noSep [encodeSingleTarget lhs, cst ":"]
 
 encodeUntypedAssignment :: Py.UntypedAssignment -> A.Expr
 encodeUntypedAssignment (Py.UntypedAssignment targets rhs _) = spaceSep $ lefts ++ [right]
@@ -235,5 +289,5 @@ toPythonComments c = L.intercalate "\n" $ ("# " ++) <$> L.lines c
 unsupportedType :: String -> A.Expr
 unsupportedType label = cst $ "[" ++ label ++ "]"
 
-unsupportedVariant :: String -> A.Expr
-unsupportedVariant label = cst $ "[unsupported " ++ label ++ "]"
+unsupportedVariant :: Show a => String -> a -> A.Expr
+unsupportedVariant label obj = cst $ "[unsupported " ++ label ++ ": " ++ show obj ++ "]"

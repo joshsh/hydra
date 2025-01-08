@@ -1669,7 +1669,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
       def "SingleTarget" $ union [
         "subscriptAttributeTarget">: python "SingleSubscriptAttributeTarget",
         "name">: python "Name",
-        "singleTarget">: python "SingleTarget"],
+        "parens">: python "SingleTarget"],
 
 -- single_subscript_attribute_target:
 --     | t_primary '.' NAME !t_lookahead
