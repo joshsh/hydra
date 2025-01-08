@@ -32,6 +32,7 @@ encodeAssignmentExpression (Py.AssignmentExpression name expr)
 
 encodeAtom :: Py.Atom -> A.Expr
 encodeAtom a = case a of
+  Py.AtomList l -> encodeList l
   Py.AtomName n -> encodeName n
   Py.AtomString s -> cst $ "'" ++ s ++ "'" -- TODO: string escaping
   _ -> unsupportedVariant "atom" a
@@ -158,6 +159,9 @@ encodeKwargOrStarred k = case k of
   Py.KwargOrStarredKwarg kw -> encodeKwarg kw
   Py.KwargOrStarredStarred se -> encodeStarredExpression se
 
+encodeList :: Py.List -> A.Expr
+encodeList (Py.List es) = noSep [cst "[", commaSep inlineStyle (encodeStarNamedExpression <$> es), cst "]"]
+
 encodeModule :: Py.Module -> A.Expr
 encodeModule (Py.Module imports body mdoc) = doubleNewlineSep $ Y.catMaybes $
    [cst . toPythonComments <$> mdoc, importsSec] ++ bodyExprs
@@ -247,6 +251,11 @@ encodeStarExpression :: Py.StarExpression -> A.Expr
 encodeStarExpression s = case s of
   Py.StarExpressionSimple e -> encodeExpression e
   _ -> unsupportedVariant "star expression" s
+
+encodeStarNamedExpression :: Py.StarNamedExpression -> A.Expr
+encodeStarNamedExpression s = case s of
+  Py.StarNamedExpressionStar bor -> noSep [cst "*", encodeBitwiseOr bor]
+  Py.StarNamedExpressionSimple ne -> encodeNamedExpression ne
 
 encodeStarTarget :: Py.StarTarget -> A.Expr
 encodeStarTarget s = case s of

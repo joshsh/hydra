@@ -51,7 +51,7 @@ constructModule namespaces mod coders pairs = do
         standardImports = toImport <$> pairs
           where
             pairs = [
-              ("typing", ["NewType"]),
+              ("typing", ["Callable", "NewType"]),
               ("dataclasses", ["dataclass"])]
             toImport (modName, symbols) = Py.ImportStatementFrom $
               Py.ImportFrom [] (Just $ Py.DottedName [Py.Name modName]) $
@@ -69,6 +69,15 @@ encodeFieldType namespaces relName (FieldType fname ftype) = do
   pyType <- encodeType namespaces relName ftype
   let stmt = pyAssignmentToPyStatement $ Py.AssignmentTyped $ Py.TypedAssignment pyName pyType Nothing
   return $ Py.StatementWithComment stmt comments
+
+encodeFunctionType :: PythonNamespaces -> Y.Maybe Name -> FunctionType -> Flow Graph Py.Expression
+encodeFunctionType namespaces relName (FunctionType dom cod) = do
+  pydom <- encodeType namespaces relName dom
+  pycod <- encodeType namespaces relName cod
+  return $ pyPrimaryToPyExpression $ primaryWithSlices (pyNameToPyPrimary $ Py.Name "Callable")
+    (pyPrimaryToPySlice $ Py.PrimarySimple $ Py.AtomList $
+      Py.List [Py.StarNamedExpressionSimple $ Py.NamedExpressionSimple pydom])
+    [Py.SliceOrStarredExpressionSlice $ pyExpressionToPySlice pycod]
 
 encodeLiteralType :: LiteralType -> Flow Graph Py.Expression
 encodeLiteralType lt = do
@@ -118,6 +127,7 @@ encodeTerm namespaces term = fail "not yet implemented"
 
 encodeType :: PythonNamespaces -> Maybe Name -> Type -> Flow Graph Py.Expression
 encodeType namespaces relName typ = case stripType typ of
+    TypeFunction ft -> encodeFunctionType namespaces relName ft
     TypeList et -> singleParamType (Py.Name "list") <$> encode et
     TypeLiteral lt -> encodeLiteralType lt
     TypeOptional et -> orNull <$> encode et
@@ -127,7 +137,7 @@ encodeType namespaces relName typ = case stripType typ of
   where
     encode = encodeType namespaces relName
     singleParamType pyName param = pyPrimaryToPyExpression $
-      primaryWithSlice (pyNameToPyPrimary pyName) $ Py.SliceNamed $ Py.NamedExpressionSimple param
+      primaryWithSlices (pyNameToPyPrimary pyName) (pyExpressionToPySlice param) []
 
 encodeTypeAssignment :: PythonNamespaces -> Name -> Type -> Flow Graph Py.Statement
 encodeTypeAssignment namespaces name typ = case stripType typ of

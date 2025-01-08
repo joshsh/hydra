@@ -47,6 +47,9 @@ pyExpressionToPyPrimary e = case decodePyExpressionToPyPrimary e of
   Just prim -> prim
   Nothing -> Py.PrimarySimple $ Py.AtomGroup $ Py.GroupExpression $ Py.NamedExpressionSimple e
 
+pyExpressionToPySlice :: Py.Expression -> Py.Slice
+pyExpressionToPySlice = Py.SliceNamed . Py.NamedExpressionSimple
+
 pyNameToPyExpression :: Py.Name -> Py.Expression
 pyNameToPyExpression =  pyPrimaryToPyExpression . pyNameToPyPrimary
 
@@ -69,6 +72,9 @@ pyPrimaryToPyConjunction = pyBitwiseOrToPyConjunction . pyPrimaryToPyBitwiseOr
 pyPrimaryToPyExpression :: Py.Primary -> Py.Expression
 pyPrimaryToPyExpression = pyConjunctionToPyExpression . pyPrimaryToPyConjunction
 
+pyPrimaryToPySlice :: Py.Primary -> Py.Slice
+pyPrimaryToPySlice = pyExpressionToPySlice . pyPrimaryToPyExpression
+
 functionCall :: Py.Primary -> [Py.Expression] -> Py.Expression
 functionCall func args = pyPrimaryToPyExpression $ primaryWithRhs func $
   Py.PrimaryRhsCall $ Py.Args (Py.PosArgExpression <$> args) [] []
@@ -82,8 +88,8 @@ orNull lhs = pyBitwiseOrToPyExpression $
 primaryWithRhs :: Py.Primary -> Py.PrimaryRhs -> Py.Primary
 primaryWithRhs prim rhs = Py.PrimaryCompound $ Py.PrimaryWithRhs prim rhs
 
-primaryWithSlice :: Py.Primary -> Py.Slice -> Py.Primary
-primaryWithSlice prim slice = primaryWithRhs prim $ Py.PrimaryRhsSlices $ Py.Slices slice []
+primaryWithSlices :: Py.Primary -> Py.Slice -> [Py.SliceOrStarredExpression] -> Py.Primary
+primaryWithSlices prim first rest = primaryWithRhs prim $ Py.PrimaryRhsSlices $ Py.Slices first rest
 
 simpleStatementNoComment :: Py.SimpleStatement -> Py.StatementWithComment
 simpleStatementNoComment s = Py.StatementWithComment (Py.StatementSimple [s]) Nothing
