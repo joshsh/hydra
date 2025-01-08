@@ -20,7 +20,6 @@ import qualified Data.List as L
 import qualified Data.Map as M
 import qualified Data.Set as S
 import qualified Data.Maybe as Y
-import Hydra.Rewriting (removeTypeAnnotations, removeTermAnnotations)
 
 
 type PythonNamespaces = Namespaces Py.DottedName
@@ -122,6 +121,7 @@ encodeType namespaces relName typ = case stripType typ of
     TypeList et -> singleParamType (Py.Name "list") <$> encode et
     TypeLiteral lt -> encodeLiteralType lt
     TypeOptional et -> orNull <$> encode et
+    TypeSet et -> singleParamType (Py.Name "set") <$> encode et
     TypeVariable name -> pyNameToPyExpression <$> encodeName namespaces relName name
     t -> pure $ stringToPyExpression $ "type = " ++ show t
   where
