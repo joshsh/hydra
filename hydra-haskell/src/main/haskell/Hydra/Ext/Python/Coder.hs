@@ -79,6 +79,27 @@ encodeFunctionType namespaces relName (FunctionType dom cod) = do
       Py.List [Py.StarNamedExpressionSimple $ Py.NamedExpressionSimple pydom])
     [Py.SliceOrStarredExpressionSlice $ pyExpressionToPySlice pycod]
 
+encodeApplicationType :: PythonNamespaces -> Y.Maybe Name -> ApplicationType -> Flow Graph Py.Expression
+encodeApplicationType namespaces relName at = do
+    pybody <- encodeType namespaces relName body
+    pyargs <- CM.mapM (encodeType namespaces relName) args
+    return $ primaryAndParams (pyExpressionToPyPrimary pybody) pyargs
+  where
+    (body, args) = gatherParams (TypeApplication at) []
+    gatherParams t ps = case stripType t of
+      TypeApplication (ApplicationType lhs rhs) -> gatherParams lhs (rhs:ps)
+      _ -> (t, ps)
+
+encodeLambdaType :: PythonNamespaces -> Y.Maybe Name -> LambdaType -> Flow Graph Py.Expression
+encodeLambdaType namespaces relName lt = do
+    pybody <- encodeType namespaces relName body
+    return $ primaryAndParams (pyExpressionToPyPrimary pybody) (pyNameToPyExpression . Py.Name . unName <$> params)
+  where
+    (body, params) = gatherParams (TypeLambda lt) []
+    gatherParams t ps = case stripType t of
+      TypeLambda (LambdaType name body) -> gatherParams body (name:ps)
+      _ -> (t, L.reverse ps)
+
 encodeLiteralType :: LiteralType -> Flow Graph Py.Expression
 encodeLiteralType lt = do
     name <- Py.Name <$> findName
@@ -127,20 +148,21 @@ encodeTerm namespaces term = fail "not yet implemented"
 
 encodeType :: PythonNamespaces -> Maybe Name -> Type -> Flow Graph Py.Expression
 encodeType namespaces relName typ = case stripType typ of
+    TypeApplication at -> encodeApplicationType namespaces relName at
     TypeFunction ft -> encodeFunctionType namespaces relName ft
-    TypeList et -> paramType (Py.Name "list") . L.singleton <$> encode et
+    TypeLambda lt -> encodeLambdaType namespaces relName lt
+    TypeList et -> nameAndParams (Py.Name "list") . L.singleton <$> encode et
     TypeMap (MapType kt vt) -> do
       pykt <- encodeType namespaces relName kt
       pyvt <- encodeType namespaces relName vt
-      return $ paramType (Py.Name "dict") [pykt, pyvt]
+      return $ nameAndParams (Py.Name "dict") [pykt, pyvt]
     TypeLiteral lt -> encodeLiteralType lt
     TypeOptional et -> orNull <$> encode et
-    TypeSet et -> paramType (Py.Name "set") . L.singleton <$> encode et
+    TypeSet et -> nameAndParams (Py.Name "set") . L.singleton <$> encode et
     TypeVariable name -> pyNameToPyExpression <$> encodeName namespaces relName name
     t -> pure $ stringToPyExpression $ "type = " ++ show t
   where
     encode = encodeType namespaces relName
-    paramType pyName params = pyPrimaryToPyExpression $ primaryWithExpressionSlices (pyNameToPyPrimary pyName) params
 
 encodeTypeAssignment :: PythonNamespaces -> Name -> Type -> Flow Graph Py.Statement
 encodeTypeAssignment namespaces name typ = case stripType typ of
@@ -178,6 +200,12 @@ namespacesForModule mod = do
   where
     focusNs = moduleNamespace mod
     toPair ns = (ns, encodeNamespace ns)
+
+nameAndParams :: Py.Name -> [Py.Expression] -> Py.Expression
+nameAndParams pyName params = primaryAndParams (pyNameToPyPrimary pyName) params
+
+primaryAndParams :: Py.Primary -> [Py.Expression] -> Py.Expression
+primaryAndParams prim params = pyPrimaryToPyExpression $ primaryWithExpressionSlices prim params
 
 toDataDeclarations :: M.Map Type (Coder Graph Graph Term Py.Expression) -> PythonNamespaces -> (Element, TypedTerm)
   -> Flow Graph [Py.StatementWithComment]
