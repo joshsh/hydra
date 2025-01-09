@@ -59,11 +59,12 @@ encodeBitwiseXor (Py.BitwiseXor lhs rhs) = spaceSep $ Y.catMaybes [encodeLhs <$>
 
 encodeBlock :: Py.Block -> A.Expr
 encodeBlock b = case b of
-  Py.BlockIndented sc -> indentLines True (encodeStatementWithComment <$> sc)
+--  Py.BlockIndented sc -> indentLines True (encodeStatementWithComment <$> sc)
+  Py.BlockIndented sc -> tabIndentDoubleSpace (encodeStatementWithComment <$> sc)
   Py.BlockSimple ss -> newlineSep (encodeSimpleStatement <$> ss)
 
 encodeClassDefRaw :: Py.ClassDefRaw -> A.Expr
-encodeClassDefRaw (Py.ClassDefRaw name tparams args body) = noSep [
+encodeClassDefRaw (Py.ClassDefRaw name tparams args body) = newlineSep [
     noSep [spaceSep [cst "class", encodeName name], cst ":"],
     encodeBlock body] -- TODO: tparams, args
 

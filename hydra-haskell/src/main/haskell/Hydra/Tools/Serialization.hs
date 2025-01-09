@@ -47,7 +47,6 @@ customIndent idt s = L.intercalate "\n" $ (idt ++) <$> lines s
 customIndentBlock :: String -> [Expr] -> Expr
 customIndentBlock idt els = case els of
   [x] -> x
---  (head:rest) -> ifx idtOp head $ indentSep idt rest
   (head:rest) -> ifx idtOp head $ newlineSep rest
     where
       idtOp = Op (sym "") (Padding WsSpace $ WsBreakAndIndent idt) (Precedence 0) AssociativityNone
@@ -227,3 +226,9 @@ symbolSep symb style l = case l of
       1 -> WsBreak
       2 -> WsDoubleBreak
     commaOp = Op (sym symb) (Padding WsNone break) (Precedence 0) AssociativityNone -- No source
+
+tabIndent :: Expr -> Expr
+tabIndent e = ExprIndent $ IndentedExpression (IndentStyleAllLines "    ") e
+
+tabIndentDoubleSpace :: [Expr] -> Expr
+tabIndentDoubleSpace = tabIndent . doubleNewlineSep
