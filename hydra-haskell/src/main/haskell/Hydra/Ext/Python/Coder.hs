@@ -39,12 +39,14 @@ constructModule namespaces mod coders pairs = do
     pairs <- CM.mapM (createDeclarations g) pairs
     let defStmts = L.concat (fst <$> pairs)
     let tvars = S.toList $ L.foldl S.union S.empty (snd <$> pairs)
+
+    -- TODO: this may be more than we need, as the TypeVar statements may only be needed for NewType declarations, not for dataclasses
     let tvarStmts = tvarStmt <$> tvars
+
     let stmts = tvarStmts ++ defStmts
     let mc = moduleDescription mod
     return $ Py.Module imports stmts mc
   where
-    -- S = TypeVar('S')
     tvarStmt name = statementNoComment $ assignmentStatement name $ functionCall (pyNameToPyPrimary $ Py.Name "TypeVar")
       [stringToPyExpression $ Py.unName name]
 
