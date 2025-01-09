@@ -468,7 +468,7 @@ _ClassDefinition_raw = (Core.Name "raw")
 data ClassDefRaw = 
   ClassDefRaw {
     classDefRawName :: Name,
-    classDefRawTypeParams :: (Maybe TypeParameters),
+    classDefRawTypeParams :: [TypeParameter],
     classDefRawArguments :: (Maybe Args),
     classDefRawBlock :: Block}
   deriving (Eq, Ord, Read, Show)
@@ -499,7 +499,7 @@ data FunctionDefRaw =
   FunctionDefRaw {
     functionDefRawAsync :: Bool,
     functionDefRawName :: Name,
-    functionDefRawTypeParams :: (Maybe TypeParameters),
+    functionDefRawTypeParams :: [TypeParameter],
     functionDefRawParams :: (Maybe Params),
     functionDefRawReturnType :: (Maybe Expression),
     functionDefRawFuncTypeComment :: (Maybe FuncTypeComment),
@@ -1376,7 +1376,7 @@ _KeywordPattern_pattern = (Core.Name "pattern")
 data TypeAlias = 
   TypeAlias {
     typeAliasName :: Name,
-    typeAliasTypeParams :: (Maybe TypeParameters),
+    typeAliasTypeParams :: [TypeParameter],
     typeAliasExpression :: Expression}
   deriving (Eq, Ord, Read, Show)
 
@@ -1387,13 +1387,6 @@ _TypeAlias_name = (Core.Name "name")
 _TypeAlias_typeParams = (Core.Name "typeParams")
 
 _TypeAlias_expression = (Core.Name "expression")
-
-newtype TypeParameters = 
-  TypeParameters {
-    unTypeParameters :: [TypeParameter]}
-  deriving (Eq, Ord, Read, Show)
-
-_TypeParameters = (Core.Name "hydra/ext/python/syntax.TypeParameters")
 
 data TypeParameter = 
   TypeParameterSimple SimpleTypeParameter |

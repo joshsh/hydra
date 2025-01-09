@@ -394,7 +394,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 
       def "ClassDefRaw" $ record [
         "name">: python "Name",
-        "typeParams">: optional $ python "TypeParameters",
+        "typeParams">: list $ python "TypeParameter",
         "arguments">: optional $ python "Args",
         "block">: python "Block"],
 
@@ -416,7 +416,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
       def "FunctionDefRaw" $ record [
         "async">: boolean,
         "name">: python "Name",
-        "typeParams">: optional $ python "TypeParameters",
+        "typeParams">: list $ python "TypeParameter",
         "params">: optional $ python "Params",
         "returnType">: optional $ python "Expression",
         "funcTypeComment">: optional $ python "FuncTypeComment",
@@ -990,7 +990,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 
       def "TypeAlias" $ record [
         "name">: python "Name",
-        "typeParams">: optional $ python "TypeParameters",
+        "typeParams">: list $ python "TypeParameter",
         "expression">: python "Expression"],
 
 -- # Type parameter declaration
@@ -999,9 +999,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 -- type_params:
 --     | invalid_type_params
 --     | '[' type_param_seq ']'
-
-      def "TypeParameters" $ nonemptyList $ python "TypeParameter",
-
+--
 -- type_param_seq: ','.type_param+ [',']
 --
 -- type_param:

@@ -64,8 +64,10 @@ encodeBlock b = case b of
 
 encodeClassDefRaw :: Py.ClassDefRaw -> A.Expr
 encodeClassDefRaw (Py.ClassDefRaw name tparams args body) = newlineSep [
-    noSep [spaceSep [cst "class", encodeName name], cst ":"],
+    noSep [spaceSep $ Y.catMaybes [Just $ cst "class", Just $ encodeName name, (argExp <$> args)], cst ":"],
     encodeBlock body] -- TODO: tparams, args
+  where
+    argExp a = noSep [cst "(", encodeArgs a, cst ")"]
 
 encodeClassDefinition :: Py.ClassDefinition -> A.Expr
 encodeClassDefinition (Py.ClassDefinition mdecs raw) = newlineSep $

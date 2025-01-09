@@ -24,6 +24,8 @@ import qualified Data.Maybe as Y
 
 type PythonNamespaces = Namespaces Py.DottedName
 
+type TypeParams = ([(Name, Py.Name)], M.Map Name Py.Name)
+
 -- TODO: use these
 constantForFieldName tname fname = toUpperCase (localNameOfEager tname) ++ "_" ++ toUpperCase (unName fname)
 constantForTypeName tname = toUpperCase $ localNameOfEager tname
@@ -34,13 +36,18 @@ constructModule :: PythonNamespaces
   -> [(Element, TypedTerm)] -> Flow Graph Py.Module
 constructModule namespaces mod coders pairs = do
     g <- getState
-    stmts <- L.concat <$> CM.mapM (createDeclarations g) pairs
+    pairs <- CM.mapM (createDeclarations g) pairs
+    let stmts = L.concat (fst <$> pairs)
+    let tvars = S.toList $ L.foldl S.union S.empty (snd <$> pairs)
+    -- TODO: decide whether tvars is needed; simplify the type encoding functions if not
     let mc = moduleDescription mod
     return $ Py.Module imports stmts mc
   where
     createDeclarations g pair@(el, TypedTerm term typ) = if isType typ
       then toTypeDeclarations namespaces el term
-      else toDataDeclarations coders namespaces pair
+      else do
+        st <- toDataDeclarations coders namespaces pair
+        return (st, S.empty)
 
     imports = standardImports ++ domainImports
       where
@@ -62,27 +69,27 @@ constructModule namespaces mod coders pairs = do
 encodeFieldName :: Name -> Py.Name
 encodeFieldName fname = Py.Name $ convertCase CaseConventionCamel CaseConventionLowerSnake $ unName fname
 
-encodeFieldType :: PythonNamespaces -> Y.Maybe Name -> FieldType -> Flow Graph Py.StatementWithComment
-encodeFieldType namespaces relName (FieldType fname ftype) = do
+encodeFieldType :: PythonNamespaces -> Y.Maybe Name -> TypeParams -> FieldType -> Flow Graph Py.StatementWithComment
+encodeFieldType namespaces relName tparams (FieldType fname ftype) = do
   comments <- getTypeDescription ftype
   let pyName = Py.SingleTargetName $ encodeFieldName fname
-  pyType <- encodeType namespaces relName ftype
+  pyType <- encodeType namespaces relName tparams ftype
   let stmt = pyAssignmentToPyStatement $ Py.AssignmentTyped $ Py.TypedAssignment pyName pyType Nothing
   return $ Py.StatementWithComment stmt comments
 
-encodeFunctionType :: PythonNamespaces -> Y.Maybe Name -> FunctionType -> Flow Graph Py.Expression
-encodeFunctionType namespaces relName (FunctionType dom cod) = do
-  pydom <- encodeType namespaces relName dom
-  pycod <- encodeType namespaces relName cod
+encodeFunctionType :: PythonNamespaces -> Y.Maybe Name -> TypeParams -> FunctionType -> Flow Graph Py.Expression
+encodeFunctionType namespaces relName tparams (FunctionType dom cod) = do
+  pydom <- encodeType namespaces relName tparams dom
+  pycod <- encodeType namespaces relName tparams cod
   return $ pyPrimaryToPyExpression $ primaryWithSlices (pyNameToPyPrimary $ Py.Name "Callable")
     (pyPrimaryToPySlice $ Py.PrimarySimple $ Py.AtomList $
       Py.List [Py.StarNamedExpressionSimple $ Py.NamedExpressionSimple pydom])
     [Py.SliceOrStarredExpressionSlice $ pyExpressionToPySlice pycod]
 
-encodeApplicationType :: PythonNamespaces -> Y.Maybe Name -> ApplicationType -> Flow Graph Py.Expression
-encodeApplicationType namespaces relName at = do
-    pybody <- encodeType namespaces relName body
-    pyargs <- CM.mapM (encodeType namespaces relName) args
+encodeApplicationType :: PythonNamespaces -> Y.Maybe Name -> TypeParams -> ApplicationType -> Flow Graph Py.Expression
+encodeApplicationType namespaces relName tparams at = do
+    pybody <- encodeType namespaces relName tparams body
+    pyargs <- CM.mapM (encodeType namespaces relName tparams) args
     return $ primaryAndParams (pyExpressionToPyPrimary pybody) pyargs
   where
     (body, args) = gatherParams (TypeApplication at) []
@@ -90,9 +97,9 @@ encodeApplicationType namespaces relName at = do
       TypeApplication (ApplicationType lhs rhs) -> gatherParams lhs (rhs:ps)
       _ -> (t, ps)
 
-encodeLambdaType :: PythonNamespaces -> Y.Maybe Name -> LambdaType -> Flow Graph Py.Expression
-encodeLambdaType namespaces relName lt = do
-    pybody <- encodeType namespaces relName body
+encodeLambdaType :: PythonNamespaces -> Y.Maybe Name -> TypeParams -> LambdaType -> Flow Graph Py.Expression
+encodeLambdaType namespaces relName tparams lt = do
+    pybody <- encodeType namespaces relName tparams body
     return $ primaryAndParams (pyExpressionToPyPrimary pybody) (pyNameToPyExpression . Py.Name . unName <$> params)
   where
     (body, params) = gatherParams (TypeLambda lt) []
@@ -109,21 +116,23 @@ encodeLiteralType lt = do
       LiteralTypeBinary -> pure "bytes"
       LiteralTypeBoolean -> pure "bool"
       LiteralTypeFloat ft -> case ft of
-        FloatTypeBigfloat -> pure "float"
+        FloatTypeFloat64 -> pure "float"
         _ -> fail $ "unsupported floating-point type: " ++ show ft
       LiteralTypeInteger it -> case it of
         IntegerTypeBigint -> pure "int"
         _ -> fail $ "unsupported integer type: " ++ show it
       LiteralTypeString -> pure "str"
 
-encodeName :: PythonNamespaces -> Y.Maybe Name -> Name -> Flow Graph Py.Name
-encodeName namespaces relName name = pure $ Py.Name $ if ns == Just focusNs
-    then case relName of
-      Just n -> if n == name
-        then show local
-        else local
-      Nothing -> local
-    else L.intercalate "." $ Strings.splitOn "/" $ unName name
+encodeName :: PythonNamespaces -> Y.Maybe Name -> TypeParams -> Name -> Py.Name
+encodeName namespaces relName tparams name = case M.lookup name (snd tparams) of
+    Just n -> n
+    Nothing -> if ns == Just focusNs
+      then Py.Name $ case relName of
+        Just n -> if n == name
+          then show local
+          else local
+        Nothing -> local
+      else Py.Name $ L.intercalate "." $ Strings.splitOn "/" $ unName name
   where
     focusNs = fst $ namespacesFocus namespaces
     QualifiedName ns local = qualifyNameEager name
@@ -131,61 +140,77 @@ encodeName namespaces relName name = pure $ Py.Name $ if ns == Just focusNs
 encodeNamespace :: Namespace -> Py.DottedName
 encodeNamespace ns = Py.DottedName (Py.Name <$> (Strings.splitOn "/" $ unNamespace ns))
 
-encodeRecordType :: PythonNamespaces -> Name -> RowType -> Flow Graph Py.Statement
-encodeRecordType namespaces name (RowType _ tfields) = do
-    pyFields <- CM.mapM (encodeFieldType namespaces $ Just name) tfields
+encodeRecordType :: PythonNamespaces -> Name -> RowType -> TypeParams -> Flow Graph Py.Statement
+encodeRecordType namespaces name (RowType _ tfields) tparams = do
+    pyFields <- CM.mapM (encodeFieldType namespaces (Just name) tparams) tfields
     let body = Py.BlockIndented pyFields
     return $ Py.StatementCompound $ Py.CompoundStatementClassDef $ Py.ClassDefinition (Just decs) $
-      Py.ClassDefRaw (Py.Name lname) tparams args body
+      Py.ClassDefRaw (Py.Name lname) [] args body
   where
     lname = localNameOfEager name
-    tparams = Nothing
-    args = Nothing
+    pytparams = snd <$> fst tparams
+    args = if L.null pytparams
+      then Nothing
+      else Just $ Py.Args [Py.PosArgExpression $ pyPrimaryToPyExpression $
+        primaryWithExpressionSlices (pyNameToPyPrimary $ Py.Name "Generic") (pyNameToPyExpression <$> pytparams)] [] []
     decs = Py.Decorators [pyNameToPyNamedExpression $ Py.Name "dataclass"]
 
 encodeTerm :: PythonNamespaces -> Term -> Flow Graph Py.Expression
 encodeTerm namespaces term = fail "not yet implemented"
 
-encodeType :: PythonNamespaces -> Maybe Name -> Type -> Flow Graph Py.Expression
-encodeType namespaces relName typ = case stripType typ of
-    TypeApplication at -> encodeApplicationType namespaces relName at
-    TypeFunction ft -> encodeFunctionType namespaces relName ft
-    TypeLambda lt -> encodeLambdaType namespaces relName lt
+encodeType :: PythonNamespaces -> Maybe Name -> TypeParams -> Type -> Flow Graph Py.Expression
+encodeType namespaces relName tparams typ = case stripType typ of
+    TypeApplication at -> encodeApplicationType namespaces relName tparams at
+    TypeFunction ft -> encodeFunctionType namespaces relName tparams ft
+    TypeLambda lt -> encodeLambdaType namespaces relName tparams lt
     TypeList et -> nameAndParams (Py.Name "list") . L.singleton <$> encode et
     TypeMap (MapType kt vt) -> do
-      pykt <- encodeType namespaces relName kt
-      pyvt <- encodeType namespaces relName vt
+      pykt <- encode kt
+      pyvt <- encode vt
       return $ nameAndParams (Py.Name "dict") [pykt, pyvt]
     TypeLiteral lt -> encodeLiteralType lt
     TypeOptional et -> orNull <$> encode et
     TypeRecord rt -> if isUnitType (TypeRecord rt)
       then pure $ pyNameToPyExpression $ Py.Name "None"
-      else dflt
+      else variableReference $ rowTypeTypeName rt
     TypeSet et -> nameAndParams (Py.Name "set") . L.singleton <$> encode et
-    TypeVariable name -> pyNameToPyExpression <$> encodeName namespaces relName name
+    TypeUnion rt -> variableReference $ rowTypeTypeName rt
+    TypeVariable name -> variableReference name
     _ -> dflt
   where
-    encode = encodeType namespaces relName
+    encode = encodeType namespaces relName tparams
     dflt = pure $ stringToPyExpression $ "type = " ++ show (stripType typ)
+    variableReference name = pure $ pyNameToPyExpression $ encodeName namespaces relName tparams name
 
-encodeTypeAssignment :: PythonNamespaces -> Name -> Type -> Maybe String -> Flow Graph [Py.StatementWithComment]
-encodeTypeAssignment namespaces name typ comment = case stripType typ of
-    TypeLiteral lt -> single <$> (newtypeStatement (Py.Name $ localNameOfEager name) <$> encodeLiteralType lt)
-    TypeRecord rt -> single <$> (encodeRecordType namespaces name rt)
-    TypeUnion rt -> encodeUnionType namespaces name rt comment
-    t -> unexpected "Python-supported type" $ show (typeVariant t)
+encodeTypeAssignment :: PythonNamespaces -> Name -> Type -> TypeParams -> Maybe String
+  -> Flow Graph ([Py.StatementWithComment], S.Set Py.Name)
+encodeTypeAssignment namespaces name typ tparams@(tnames, tmap) comment = case stripType typ of
+    TypeLambda (LambdaType var body) -> encodeTypeAssignment namespaces name body tparams2 comment
+      where
+        tparams2 = (tnames ++ [(var, pyvar)], M.insert var pyvar tmap)
+          where
+            pyvar = Py.Name $ capitalize $ unName var
+    TypeLiteral lt -> singleNewtype <$> encodeLiteralType lt
+    TypeRecord rt -> single <$> (encodeRecordType namespaces name rt tparams)
+    TypeUnion rt -> do
+      st <- encodeUnionType namespaces name rt tparams comment
+      return (st, tvars)
+    TypeWrap (WrappedType _ t) -> singleNewtype <$> encodeType namespaces (Just name) tparams t
+    t -> singleNewtype <$> encodeType namespaces (Just name) tparams t
   where
-    dflt = Py.StatementSimple [Py.SimpleStatementBreak] -- TODO
-    single st = [Py.StatementWithComment st comment]
+    single st = ([Py.StatementWithComment st comment], tvars)
+    singleNewtype e = single $ newtypeStatement (Py.Name $ localNameOfEager name) e
+    tvars = S.fromList (snd <$> (fst tparams))
 
-encodeUnionType :: PythonNamespaces -> Name -> RowType -> Maybe String -> Flow Graph [Py.StatementWithComment]
-encodeUnionType namespaces name (RowType _ tfields) comment = do
+-- TODO: consider producing Python enums where appropriate
+encodeUnionType :: PythonNamespaces -> Name -> RowType -> TypeParams -> Maybe String -> Flow Graph [Py.StatementWithComment]
+encodeUnionType namespaces name (RowType _ tfields) tparams comment = do
     fieldStmts <- CM.mapM toFieldStmt tfields
     return $ fieldStmts ++ [unionStmt]
   where
     toFieldStmt (FieldType fname ftype) = do
         fcomment <- getTypeDescription ftype
-        pytype <- encodeType namespaces (Just name) ftype
+        pytype <- encodeType namespaces (Just name) tparams ftype
         return $ Py.StatementWithComment (newtypeStatement (variantName fname) pytype) fcomment
     unionStmt = Py.StatementWithComment (assignmentStatement (Py.Name $ localNameOfEager name) $
         primaryAndParams
@@ -220,11 +245,10 @@ toDataDeclarations coders namespaces (el, TypedTerm term typ) = withTrace ("data
   let stmt = Py.StatementSimple [Py.SimpleStatementContinue] -- TODO
   return [Py.StatementWithComment stmt comments]
 
-toTypeDeclarations :: PythonNamespaces -> Element -> Term
-  -> Flow Graph [Py.StatementWithComment]
+toTypeDeclarations :: PythonNamespaces -> Element -> Term -> Flow Graph ([Py.StatementWithComment], S.Set Py.Name)
 toTypeDeclarations namespaces el term = withTrace ("type element " ++ unName name) $ do
-    typ <- coreDecodeType term
+    typ <- coreDecodeType term >>= adaptType pythonLanguage
     comment <- getTypeDescription typ
-    encodeTypeAssignment namespaces name typ comment
+    encodeTypeAssignment namespaces name typ ([], M.empty) comment
   where
     name = elementName el

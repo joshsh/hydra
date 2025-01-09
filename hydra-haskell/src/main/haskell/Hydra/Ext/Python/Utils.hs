@@ -82,6 +82,9 @@ pyNameToPyPrimary = Py.PrimarySimple . Py.AtomName
 pyNameToPyStarTarget :: Py.Name -> Py.StarTarget
 pyNameToPyStarTarget = Py.StarTargetUnstarred . Py.TargetWithStarAtomAtom . Py.StarAtomName
 
+pyNameToPyTypeParameter :: Py.Name -> Py.TypeParameter
+pyNameToPyTypeParameter name = Py.TypeParameterSimple $ Py.SimpleTypeParameter name Nothing Nothing
+
 pyPrimaryToPyBitwiseOr :: Py.Primary -> Py.BitwiseOr
 pyPrimaryToPyBitwiseOr = Py.BitwiseOr Nothing . pyPrimaryToPyBitwiseXor
 
