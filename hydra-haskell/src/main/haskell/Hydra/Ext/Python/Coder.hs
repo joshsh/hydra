@@ -128,16 +128,19 @@ encodeTerm namespaces term = fail "not yet implemented"
 encodeType :: PythonNamespaces -> Maybe Name -> Type -> Flow Graph Py.Expression
 encodeType namespaces relName typ = case stripType typ of
     TypeFunction ft -> encodeFunctionType namespaces relName ft
-    TypeList et -> singleParamType (Py.Name "list") <$> encode et
+    TypeList et -> paramType (Py.Name "list") . L.singleton <$> encode et
+    TypeMap (MapType kt vt) -> do
+      pykt <- encodeType namespaces relName kt
+      pyvt <- encodeType namespaces relName vt
+      return $ paramType (Py.Name "dict") [pykt, pyvt]
     TypeLiteral lt -> encodeLiteralType lt
     TypeOptional et -> orNull <$> encode et
-    TypeSet et -> singleParamType (Py.Name "set") <$> encode et
+    TypeSet et -> paramType (Py.Name "set") . L.singleton <$> encode et
     TypeVariable name -> pyNameToPyExpression <$> encodeName namespaces relName name
     t -> pure $ stringToPyExpression $ "type = " ++ show t
   where
     encode = encodeType namespaces relName
-    singleParamType pyName param = pyPrimaryToPyExpression $
-      primaryWithSlices (pyNameToPyPrimary pyName) (pyExpressionToPySlice param) []
+    paramType pyName params = pyPrimaryToPyExpression $ primaryWithExpressionSlices (pyNameToPyPrimary pyName) params
 
 encodeTypeAssignment :: PythonNamespaces -> Name -> Type -> Flow Graph Py.Statement
 encodeTypeAssignment namespaces name typ = case stripType typ of

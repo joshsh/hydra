@@ -59,7 +59,6 @@ encodeBitwiseXor (Py.BitwiseXor lhs rhs) = spaceSep $ Y.catMaybes [encodeLhs <$>
 
 encodeBlock :: Py.Block -> A.Expr
 encodeBlock b = case b of
---  Py.BlockIndented sc -> indentLines True (encodeStatementWithComment <$> sc)
   Py.BlockIndented sc -> tabIndentDoubleSpace (encodeStatementWithComment <$> sc)
   Py.BlockSimple ss -> newlineSep (encodeSimpleStatement <$> ss)
 

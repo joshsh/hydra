@@ -88,6 +88,11 @@ orNull lhs = pyBitwiseOrToPyExpression $
 primaryWithRhs :: Py.Primary -> Py.PrimaryRhs -> Py.Primary
 primaryWithRhs prim rhs = Py.PrimaryCompound $ Py.PrimaryWithRhs prim rhs
 
+primaryWithExpressionSlices :: Py.Primary -> [Py.Expression] -> Py.Primary
+primaryWithExpressionSlices prim exprs = primaryWithSlices prim
+  (pyExpressionToPySlice $ head exprs)
+  (Py.SliceOrStarredExpressionSlice . pyExpressionToPySlice <$> tail exprs)
+
 primaryWithSlices :: Py.Primary -> Py.Slice -> [Py.SliceOrStarredExpression] -> Py.Primary
 primaryWithSlices prim first rest = primaryWithRhs prim $ Py.PrimaryRhsSlices $ Py.Slices first rest
 
