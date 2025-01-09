@@ -3,6 +3,12 @@ module Hydra.Ext.Python.Utils where
 import qualified Hydra.Ext.Python.Syntax as Py
 
 
+assignmentStatement :: Py.Name -> Py.Expression -> Py.Statement
+assignmentStatement name expr = pyAssignmentToPyStatement $ Py.AssignmentUntyped $ Py.UntypedAssignment
+    [pyNameToPyStarTarget name]
+    (Py.AnnotatedRhsStar [Py.StarExpressionSimple expr])
+    Nothing
+
 decodePyExpressionToPyPrimary :: Py.Expression -> Maybe Py.Primary
 decodePyExpressionToPyPrimary e = case e of
   Py.ExpressionSimple (Py.Disjunction [conjunction]) -> decodePyConjunctionToPyPrimary conjunction
@@ -28,6 +34,20 @@ decodePyPowerToPyPrimary :: Py.Power -> Maybe Py.Primary
 decodePyPowerToPyPrimary p = case p of
   Py.Power (Py.AwaitPrimary False prim) _ -> Just prim
   _ -> Nothing
+
+functionCall :: Py.Primary -> [Py.Expression] -> Py.Expression
+functionCall func args = pyPrimaryToPyExpression $ primaryWithRhs func $
+  Py.PrimaryRhsCall $ Py.Args (Py.PosArgExpression <$> args) [] []
+
+nameAndParams :: Py.Name -> [Py.Expression] -> Py.Expression
+nameAndParams pyName params = primaryAndParams (pyNameToPyPrimary pyName) params
+
+newtypeStatement :: Py.Name -> Py.Expression -> Py.Statement
+newtypeStatement name expr = assignmentStatement name $
+  functionCall (pyNameToPyPrimary $ Py.Name "NewType") [stringToPyExpression $ Py.unName name, expr]
+
+primaryAndParams :: Py.Primary -> [Py.Expression] -> Py.Expression
+primaryAndParams prim params = pyPrimaryToPyExpression $ primaryWithExpressionSlices prim params
 
 pyAssignmentToPyStatement :: Py.Assignment -> Py.Statement
 pyAssignmentToPyStatement a = Py.StatementSimple [Py.SimpleStatementAssignment a]
@@ -59,6 +79,9 @@ pyNameToPyNamedExpression = Py.NamedExpressionSimple . pyNameToPyExpression
 pyNameToPyPrimary :: Py.Name -> Py.Primary
 pyNameToPyPrimary = Py.PrimarySimple . Py.AtomName
 
+pyNameToPyStarTarget :: Py.Name -> Py.StarTarget
+pyNameToPyStarTarget = Py.StarTargetUnstarred . Py.TargetWithStarAtomAtom . Py.StarAtomName
+
 pyPrimaryToPyBitwiseOr :: Py.Primary -> Py.BitwiseOr
 pyPrimaryToPyBitwiseOr = Py.BitwiseOr Nothing . pyPrimaryToPyBitwiseXor
 
@@ -74,10 +97,6 @@ pyPrimaryToPyExpression = pyConjunctionToPyExpression . pyPrimaryToPyConjunction
 
 pyPrimaryToPySlice :: Py.Primary -> Py.Slice
 pyPrimaryToPySlice = pyExpressionToPySlice . pyPrimaryToPyExpression
-
-functionCall :: Py.Primary -> [Py.Expression] -> Py.Expression
-functionCall func args = pyPrimaryToPyExpression $ primaryWithRhs func $
-  Py.PrimaryRhsCall $ Py.Args (Py.PosArgExpression <$> args) [] []
 
 orNull :: Py.Expression -> Py.Expression
 orNull lhs = pyBitwiseOrToPyExpression $
@@ -97,7 +116,10 @@ primaryWithSlices :: Py.Primary -> Py.Slice -> [Py.SliceOrStarredExpression] -> 
 primaryWithSlices prim first rest = primaryWithRhs prim $ Py.PrimaryRhsSlices $ Py.Slices first rest
 
 simpleStatementNoComment :: Py.SimpleStatement -> Py.StatementWithComment
-simpleStatementNoComment s = Py.StatementWithComment (Py.StatementSimple [s]) Nothing
+simpleStatementNoComment s = statementNoComment (Py.StatementSimple [s])
+
+statementNoComment :: Py.Statement -> Py.StatementWithComment
+statementNoComment s = Py.StatementWithComment s Nothing
 
 stringToPyExpression :: String -> Py.Expression
 stringToPyExpression = pyPrimaryToPyExpression . Py.PrimarySimple . Py.AtomString
