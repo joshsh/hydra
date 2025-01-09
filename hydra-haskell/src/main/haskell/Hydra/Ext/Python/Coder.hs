@@ -37,12 +37,17 @@ constructModule :: PythonNamespaces
 constructModule namespaces mod coders pairs = do
     g <- getState
     pairs <- CM.mapM (createDeclarations g) pairs
-    let stmts = L.concat (fst <$> pairs)
+    let defStmts = L.concat (fst <$> pairs)
     let tvars = S.toList $ L.foldl S.union S.empty (snd <$> pairs)
-    -- TODO: decide whether tvars is needed; simplify the type encoding functions if not
+    let tvarStmts = tvarStmt <$> tvars
+    let stmts = tvarStmts ++ defStmts
     let mc = moduleDescription mod
     return $ Py.Module imports stmts mc
   where
+    -- S = TypeVar('S')
+    tvarStmt name = statementNoComment $ assignmentStatement name $ functionCall (pyNameToPyPrimary $ Py.Name "TypeVar")
+      [stringToPyExpression $ Py.unName name]
+
     createDeclarations g pair@(el, TypedTerm term typ) = if isType typ
       then toTypeDeclarations namespaces el term
       else do
