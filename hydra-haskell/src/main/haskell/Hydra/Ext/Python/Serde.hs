@@ -221,6 +221,7 @@ encodeSimpleStatement :: Py.SimpleStatement -> A.Expr
 encodeSimpleStatement s = case s of
   Py.SimpleStatementAssignment a -> encodeAssignment a
   Py.SimpleStatementImport i -> encodeImportStatement i
+  Py.SimpleStatementTypeAlias t -> encodeTypeAlias t
   _ -> unsupportedVariant "simple statement" s
 
 encodeSingleTarget :: Py.SingleTarget -> A.Expr
@@ -292,6 +293,9 @@ encodeTargetWithStarAtom :: Py.TargetWithStarAtom -> A.Expr
 encodeTargetWithStarAtom t = case t of
   Py.TargetWithStarAtomAtom a -> encodeStarAtom a
   _ -> unsupportedVariant "target with star atom" t
+
+encodeTypeAlias :: Py.TypeAlias -> A.Expr
+encodeTypeAlias (Py.TypeAlias name tparams body) = spaceSep [cst "type", encodeName name, cst "=", encodeExpression body]
 
 encodeTypedAssignment :: Py.TypedAssignment -> A.Expr
 encodeTypedAssignment (Py.TypedAssignment lhs typ rhs) = spaceSep [head, encodeExpression typ] -- TODO: rhs

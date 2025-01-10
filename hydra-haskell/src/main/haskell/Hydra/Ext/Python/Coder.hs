@@ -86,13 +86,19 @@ encodeFieldType namespaces relName tparams (FieldType fname ftype) = do
   return $ Py.StatementWithComment stmt comments
 
 encodeFunctionType :: PythonNamespaces -> Y.Maybe Name -> TypeParams -> FunctionType -> Flow Graph Py.Expression
-encodeFunctionType namespaces relName tparams (FunctionType dom cod) = do
-  pydom <- encodeType namespaces relName tparams dom
-  pycod <- encodeType namespaces relName tparams cod
+encodeFunctionType namespaces relName tparams ft = do
+  pydoms <- CM.mapM encode doms
+  pycod <- encode cod
   return $ pyPrimaryToPyExpression $ primaryWithSlices (pyNameToPyPrimary $ Py.Name "Callable")
     (pyPrimaryToPySlice $ Py.PrimarySimple $ Py.AtomList $
-      Py.List [Py.StarNamedExpressionSimple $ Py.NamedExpressionSimple pydom])
+      Py.List (Py.StarNamedExpressionSimple . Py.NamedExpressionSimple <$> pydoms))
     [Py.SliceOrStarredExpressionSlice $ pyExpressionToPySlice pycod]
+  where
+    encode = encodeType namespaces relName tparams
+    (doms, cod) = gatherParams [] ft
+    gatherParams rdoms (FunctionType dom cod) = case stripType cod of
+      TypeFunction ft2 -> gatherParams (dom:rdoms) ft2
+      _ -> (L.reverse (dom:rdoms), cod)
 
 encodeApplicationType :: PythonNamespaces -> Y.Maybe Name -> TypeParams -> ApplicationType -> Flow Graph Py.Expression
 encodeApplicationType namespaces relName tparams at = do
