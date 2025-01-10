@@ -456,32 +456,26 @@ _Decorators = (Core.Name "hydra/ext/python/syntax.Decorators")
 data ClassDefinition = 
   ClassDefinition {
     classDefinitionDecorators :: (Maybe Decorators),
-    classDefinitionRaw :: ClassDefRaw}
+    classDefinitionName :: Name,
+    classDefinitionTypeParams :: [TypeParameter],
+    classDefinitionArguments :: (Maybe Args),
+    classDefinitionComment :: (Maybe String),
+    classDefinitionBlock :: Block}
   deriving (Eq, Ord, Read, Show)
 
 _ClassDefinition = (Core.Name "hydra/ext/python/syntax.ClassDefinition")
 
 _ClassDefinition_decorators = (Core.Name "decorators")
 
-_ClassDefinition_raw = (Core.Name "raw")
+_ClassDefinition_name = (Core.Name "name")
 
-data ClassDefRaw = 
-  ClassDefRaw {
-    classDefRawName :: Name,
-    classDefRawTypeParams :: [TypeParameter],
-    classDefRawArguments :: (Maybe Args),
-    classDefRawBlock :: Block}
-  deriving (Eq, Ord, Read, Show)
+_ClassDefinition_typeParams = (Core.Name "typeParams")
 
-_ClassDefRaw = (Core.Name "hydra/ext/python/syntax.ClassDefRaw")
+_ClassDefinition_arguments = (Core.Name "arguments")
 
-_ClassDefRaw_name = (Core.Name "name")
+_ClassDefinition_comment = (Core.Name "comment")
 
-_ClassDefRaw_typeParams = (Core.Name "typeParams")
-
-_ClassDefRaw_arguments = (Core.Name "arguments")
-
-_ClassDefRaw_block = (Core.Name "block")
+_ClassDefinition_block = (Core.Name "block")
 
 data FunctionDefinition = 
   FunctionDefinition {

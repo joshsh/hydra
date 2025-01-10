@@ -65,9 +65,9 @@ constructModule namespaces mod coders pairs = do
         standardImports = toImport <$> pairs
           where
             pairs = [
+              ("__future__", ["annotations"]),
               ("typing", ["Callable", "NewType", "TypeVar"]),
-              ("dataclasses", ["dataclass"]),
-              ("__future__", ["annotations"])]
+              ("dataclasses", ["dataclass"])]
             toImport (modName, symbols) = Py.ImportStatementFrom $
               Py.ImportFrom [] (Just $ Py.DottedName [Py.Name modName]) $
                 Py.ImportFromTargetsSimple (forSymbol <$> symbols)
@@ -154,12 +154,12 @@ encodeName namespaces relName tparams name = case M.lookup name (snd tparams) of
 encodeNamespace :: Namespace -> Py.DottedName
 encodeNamespace ns = Py.DottedName (Py.Name <$> (Strings.splitOn "/" $ unNamespace ns))
 
-encodeRecordType :: PythonNamespaces -> Name -> RowType -> TypeParams -> Flow Graph Py.Statement
-encodeRecordType namespaces name (RowType _ tfields) tparams = do
+encodeRecordType :: PythonNamespaces -> Name -> RowType -> TypeParams -> Maybe String -> Flow Graph Py.Statement
+encodeRecordType namespaces name (RowType _ tfields) tparams comment = do
     pyFields <- CM.mapM (encodeFieldType namespaces (Just name) tparams) tfields
     let body = Py.BlockIndented pyFields
-    return $ Py.StatementCompound $ Py.CompoundStatementClassDef $ Py.ClassDefinition (Just decs) $
-      Py.ClassDefRaw (Py.Name lname) [] args body
+    return $ Py.StatementCompound $ Py.CompoundStatementClassDef $
+      Py.ClassDefinition (Just decs) (Py.Name lname) [] args comment body
   where
     lname = localNameOfEager name
     pytparams = snd <$> fst tparams
@@ -204,7 +204,9 @@ encodeTypeAssignment namespaces name typ tparams@(tnames, tmap) comment = case s
         tparams2 = (tnames ++ [(var, pyvar)], M.insert var pyvar tmap)
           where
             pyvar = Py.Name $ capitalize $ unName var
-    TypeRecord rt -> single <$> (encodeRecordType namespaces name rt tparams)
+    TypeRecord rt -> do
+      st <- statementNoComment <$> (encodeRecordType namespaces name rt tparams comment)
+      return ([st], tvars)
     TypeUnion rt -> do
       st <- encodeUnionType namespaces name rt tparams comment
       return (st, tvars)

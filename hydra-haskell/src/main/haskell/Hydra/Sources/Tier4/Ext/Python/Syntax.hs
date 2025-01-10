@@ -387,17 +387,15 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 
       def "ClassDefinition" $ record [
         "decorators">: optional $ python "Decorators",
-        "raw">: python "ClassDefRaw"],
-
--- class_def_raw:
---     | 'class' NAME [type_params] ['(' [arguments] ')' ] ':' block
-
-      def "ClassDefRaw" $ record [
         "name">: python "Name",
         "typeParams">: list $ python "TypeParameter",
         "arguments">: optional $ python "Args",
+        "comment">: optional string, -- Added for Hydra
         "block">: python "Block"],
 
+-- class_def_raw:
+--     | 'class' NAME [type_params] ['(' [arguments] ')' ] ':' block
+--
 -- # Function definitions
 -- # --------------------
 --

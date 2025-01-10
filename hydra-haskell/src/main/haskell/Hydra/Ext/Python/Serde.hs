@@ -62,16 +62,17 @@ encodeBlock b = case b of
   Py.BlockIndented sc -> tabIndentDoubleSpace (encodeStatementWithComment <$> sc)
   Py.BlockSimple ss -> newlineSep (encodeSimpleStatement <$> ss)
 
-encodeClassDefRaw :: Py.ClassDefRaw -> A.Expr
-encodeClassDefRaw (Py.ClassDefRaw name tparams args body) = newlineSep [
-    noSep [spaceSep $ Y.catMaybes [Just $ cst "class", Just $ encodeName name, (argExp <$> args)], cst ":"],
-    encodeBlock body] -- TODO: tparams, args
-  where
-    argExp a = noSep [cst "(", encodeArgs a, cst ")"]
-
 encodeClassDefinition :: Py.ClassDefinition -> A.Expr
-encodeClassDefinition (Py.ClassDefinition mdecs raw) = newlineSep $
-  Y.catMaybes [encodeDecorators <$> mdecs, Just $ encodeClassDefRaw raw]
+encodeClassDefinition (Py.ClassDefinition mdecs name tparams args comment body) = newlineSep $
+  Y.catMaybes [encodeDecorators <$> mdecs, Just classExpr]
+  where
+    classExpr = newlineSep [
+        noSep [spaceSep $ Y.catMaybes [Just $ cst "class", Just $ encodeName name, (argExp <$> args)], cst ":"],
+        doubleNewlineSep $ Y.catMaybes [
+          (\c -> tabIndentDoubleSpace [tripleQuotedString c]) <$> comment,
+          Just $ encodeBlock body]] -- TODO: tparams
+      where
+        argExp a = noSep [cst "(", encodeArgs a, cst ")"]
 
 encodeCompareOpBitwiseOrPair :: Py.CompareOpBitwiseOrPair -> A.Expr
 encodeCompareOpBitwiseOrPair p = unsupportedType "compare op bitwise or pair"
@@ -166,7 +167,7 @@ encodeList (Py.List es) = noSep [cst "[", commaSep inlineStyle (encodeStarNamedE
 
 encodeModule :: Py.Module -> A.Expr
 encodeModule (Py.Module imports body mdoc) = doubleNewlineSep $ Y.catMaybes $
-   [cst . toPythonComments <$> mdoc, importsSec] ++ bodyExprs
+   [tripleQuotedString <$> mdoc, importsSec] ++ bodyExprs
   where
     bodyExprs = Just . encodeStatementWithComment <$> body
     importsSec = if L.null exprs then Nothing else Just $ newlineSep exprs
@@ -311,6 +312,9 @@ encodeUntypedAssignment (Py.UntypedAssignment targets rhs _) = spaceSep $ lefts 
 
 toPythonComments :: String -> String
 toPythonComments c = L.intercalate "\n" $ ("# " ++) <$> L.lines c
+
+tripleQuotedString :: String -> A.Expr
+tripleQuotedString s = cst $ "\"\"\"" ++ s ++ "\"\"\"" -- TODO: escaping
 
 unsupportedType :: String -> A.Expr
 unsupportedType label = cst $ "[" ++ label ++ "]"
