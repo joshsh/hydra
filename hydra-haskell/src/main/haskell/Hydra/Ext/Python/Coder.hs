@@ -204,16 +204,16 @@ encodeTypeAssignment namespaces name typ tparams@(tnames, tmap) comment = case s
         tparams2 = (tnames ++ [(var, pyvar)], M.insert var pyvar tmap)
           where
             pyvar = Py.Name $ capitalize $ unName var
-    TypeLiteral lt -> singleNewtype <$> encodeLiteralType lt
     TypeRecord rt -> single <$> (encodeRecordType namespaces name rt tparams)
     TypeUnion rt -> do
       st <- encodeUnionType namespaces name rt tparams comment
       return (st, tvars)
     TypeWrap (WrappedType _ t) -> singleNewtype <$> encodeType namespaces (Just name) tparams t
-    t -> singleNewtype <$> encodeType namespaces (Just name) tparams t
+    t -> singleTypedef <$> encodeType namespaces (Just name) tparams t
   where
     single st = ([Py.StatementWithComment st comment], tvars)
     singleNewtype e = single $ newtypeStatement (Py.Name $ localNameOfEager name) e
+    singleTypedef e = single $ typeAliasStatement (Py.Name $ localNameOfEager name) e
     tvars = S.fromList (snd <$> (fst tparams))
 
 -- TODO: consider producing Python enums where appropriate
@@ -226,15 +226,10 @@ encodeUnionType namespaces name (RowType _ tfields) tparams comment = do
         fcomment <- getTypeDescription ftype
         pytype <- encodeType namespaces (Just name) tparams ftype
         return $ Py.StatementWithComment (newtypeStatement (variantName fname) pytype) fcomment
-    unionStmt = Py.StatementWithComment typeAliasSt comment
-      where
-       typeAliasSt = Py.StatementSimple [Py.SimpleStatementTypeAlias $
-          Py.TypeAlias (Py.Name $ localNameOfEager name) [] $
-            orExpression (pyNameToPyPrimary . variantName . fieldTypeName <$> tfields)]
---         assignSt = assignmentStatement (Py.Name $ localNameOfEager name) $
---           primaryAndParams
---             (pyNameToPyPrimary $ Py.Name "Union")
---             (pyNameToPyExpression . variantName . fieldTypeName <$> tfields)
+    unionStmt = Py.StatementWithComment
+      (typeAliasStatement ((Py.Name $ localNameOfEager name)) $
+        orExpression (pyNameToPyPrimary . variantName . fieldTypeName <$> tfields))
+      comment
     variantName fname = Py.Name $ (localNameOfEager name) ++ (capitalize $ unName fname)
 
 moduleToPythonModule :: Module -> Flow Graph Py.Module
@@ -271,3 +266,6 @@ toTypeDeclarations namespaces el term = withTrace ("type element " ++ unName nam
     encodeTypeAssignment namespaces name typ ([], M.empty) comment
   where
     name = elementName el
+
+typeAliasStatement :: Py.Name -> Py.Expression -> Py.Statement
+typeAliasStatement name tyexpr = Py.StatementSimple [Py.SimpleStatementTypeAlias $ Py.TypeAlias name [] tyexpr]
