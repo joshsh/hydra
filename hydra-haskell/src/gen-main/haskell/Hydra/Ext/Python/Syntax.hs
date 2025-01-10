@@ -2084,28 +2084,21 @@ _Set = (Core.Name "hydra/ext/python/syntax.Set")
 
 newtype Dict = 
   Dict {
-    unDict :: [DoubleStarredKvpairs]}
+    unDict :: [DoubleStarredKvpair]}
   deriving (Eq, Ord, Read, Show)
 
 _Dict = (Core.Name "hydra/ext/python/syntax.Dict")
 
-newtype DoubleStarredKvpairs = 
-  DoubleStarredKvpairs {
-    unDoubleStarredKvpairs :: [DoubleStarredKvpair]}
-  deriving (Eq, Ord, Read, Show)
-
-_DoubleStarredKvpairs = (Core.Name "hydra/ext/python/syntax.DoubleStarredKvpairs")
-
 data DoubleStarredKvpair = 
   DoubleStarredKvpairStarred BitwiseOr |
-  DoubleStarredKvpairKvpair Kvpair
+  DoubleStarredKvpairPair Kvpair
   deriving (Eq, Ord, Read, Show)
 
 _DoubleStarredKvpair = (Core.Name "hydra/ext/python/syntax.DoubleStarredKvpair")
 
 _DoubleStarredKvpair_starred = (Core.Name "starred")
 
-_DoubleStarredKvpair_kvpair = (Core.Name "kvpair")
+_DoubleStarredKvpair_pair = (Core.Name "pair")
 
 data Kvpair = 
   Kvpair {

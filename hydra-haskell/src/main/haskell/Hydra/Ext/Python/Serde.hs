@@ -9,9 +9,9 @@ import qualified Data.Maybe as Y
 
 
 encodeAnnotatedRhs :: Py.AnnotatedRhs -> A.Expr
-encodeAnnotatedRhs a = case a of
+encodeAnnotatedRhs a = spaceSep [cst "=", case a of
   Py.AnnotatedRhsStar s -> commaSep inlineStyle (encodeStarExpression <$> s)
-  _ -> unsupportedVariant "annotated rhs" a
+  _ -> unsupportedVariant "annotated rhs" a]
 
 encodeArgs :: Py.Args -> A.Expr
 encodeArgs (Py.Args positional kwargStarred kwargDoubleStarred) = commaSep inlineStyle $ ps ++ ks ++ kss
@@ -32,6 +32,7 @@ encodeAssignmentExpression (Py.AssignmentExpression name expr)
 
 encodeAtom :: Py.Atom -> A.Expr
 encodeAtom a = case a of
+  Py.AtomDict d -> encodeDict d
   Py.AtomList l -> encodeList l
   Py.AtomName n -> encodeName n
   Py.AtomString s -> cst $ "'" ++ s ++ "'" -- TODO: string escaping
@@ -93,6 +94,9 @@ encodeDecorators (Py.Decorators exprs) = newlineSep (encodeDec <$> exprs)
   where
     encodeDec ne = noSep [cst "@", encodeNamedExpression ne]
 
+encodeDict :: Py.Dict -> A.Expr
+encodeDict (Py.Dict items) = noSep [cst "{", commaSep inlineStyle (encodeDoubleStarredKvpair <$> items), cst "}"]
+
 encodeDisjunction :: Py.Disjunction -> A.Expr
 encodeDisjunction (Py.Disjunction cs) = symbolSep "or" inlineStyle (encodeConjunction <$> cs)
 
@@ -103,6 +107,11 @@ encodeDottedAsName (Py.DottedAsName name mas) = spaceSep $ Y.catMaybes [Just $ e
 
 encodeDottedName :: Py.DottedName -> A.Expr
 encodeDottedName (Py.DottedName names) = cst $ L.intercalate "." (Py.unName <$> names)
+
+encodeDoubleStarredKvpair :: Py.DoubleStarredKvpair -> A.Expr
+encodeDoubleStarredKvpair d = case d of
+  Py.DoubleStarredKvpairPair p -> encodeKvpair p
+  _ -> unsupportedVariant "double starred kv pair" d
 
 encodeExpression :: Py.Expression -> A.Expr
 encodeExpression e = case e of
@@ -148,6 +157,9 @@ encodeInversion :: Py.Inversion -> A.Expr
 encodeInversion i = case i of
   Py.InversionNot other -> spaceSep [cst "not", encodeInversion other]
   Py.InversionSimple c -> encodeComparison c
+
+encodeKvpair :: Py.Kvpair -> A.Expr
+encodeKvpair (Py.Kvpair k v) = spaceSep [noSep [encodeExpression k, cst ":"], encodeExpression v]
 
 encodeKwarg :: Py.Kwarg -> A.Expr
 encodeKwarg (Py.Kwarg name expr) = noSep [encodeName name, cst "=", encodeExpression expr]
@@ -299,7 +311,8 @@ encodeTypeAlias :: Py.TypeAlias -> A.Expr
 encodeTypeAlias (Py.TypeAlias name tparams body) = spaceSep [cst "type", encodeName name, cst "=", encodeExpression body]
 
 encodeTypedAssignment :: Py.TypedAssignment -> A.Expr
-encodeTypedAssignment (Py.TypedAssignment lhs typ rhs) = spaceSep [head, encodeExpression typ] -- TODO: rhs
+encodeTypedAssignment (Py.TypedAssignment lhs typ rhs) = spaceSep $ Y.catMaybes [
+    Just head, Just $ encodeExpression typ, encodeAnnotatedRhs <$> rhs]
   where
     head = noSep [encodeSingleTarget lhs, cst ":"]
 

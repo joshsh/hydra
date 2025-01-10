@@ -1483,19 +1483,17 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 -- dict:
 --     | '{' [double_starred_kvpairs] '}'
 
-      def "Dict" $ list $ python "DoubleStarredKvpairs",
+      def "Dict" $ list $ python "DoubleStarredKvpair",
 
 -- double_starred_kvpairs: ','.double_starred_kvpair+ [',']
-
-      def "DoubleStarredKvpairs" $ nonemptyList $ python "DoubleStarredKvpair",
-
+--
 -- double_starred_kvpair:
 --     | '**' bitwise_or
 --     | kvpair
 
       def "DoubleStarredKvpair" $ union [
         "starred">: python "BitwiseOr",
-        "kvpair">: python "Kvpair"],
+        "pair">: python "Kvpair"],
 
 -- kvpair: expression ':' expression
 

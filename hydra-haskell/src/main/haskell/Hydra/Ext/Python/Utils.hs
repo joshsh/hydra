@@ -8,7 +8,7 @@ import qualified Data.List as L
 assignmentStatement :: Py.Name -> Py.Expression -> Py.Statement
 assignmentStatement name expr = pyAssignmentToPyStatement $ Py.AssignmentUntyped $ Py.UntypedAssignment
     [pyNameToPyStarTarget name]
-    (Py.AnnotatedRhsStar [Py.StarExpressionSimple expr])
+    (pyExpressionToPyAnnotatedRhs expr)
     Nothing
 
 decodePyExpressionToPyPrimary :: Py.Expression -> Maybe Py.Primary
@@ -54,6 +54,9 @@ primaryAndParams prim params = pyPrimaryToPyExpression $ primaryWithExpressionSl
 pyAssignmentToPyStatement :: Py.Assignment -> Py.Statement
 pyAssignmentToPyStatement a = Py.StatementSimple [Py.SimpleStatementAssignment a]
 
+pyAtomToPyExpression :: Py.Atom -> Py.Expression
+pyAtomToPyExpression = pyPrimaryToPyExpression . Py.PrimarySimple
+
 pyBitwiseOrToPyConjunction :: Py.BitwiseOr -> Py.Conjunction
 pyBitwiseOrToPyConjunction bor = Py.Conjunction [Py.InversionSimple $ Py.Comparison bor []]
 
@@ -68,6 +71,9 @@ pyExpressionToPyPrimary :: Py.Expression -> Py.Primary
 pyExpressionToPyPrimary e = case decodePyExpressionToPyPrimary e of
   Just prim -> prim
   Nothing -> Py.PrimarySimple $ Py.AtomGroup $ Py.GroupExpression $ Py.NamedExpressionSimple e
+
+pyExpressionToPyAnnotatedRhs :: Py.Expression -> Py.AnnotatedRhs
+pyExpressionToPyAnnotatedRhs expr = Py.AnnotatedRhsStar [Py.StarExpressionSimple expr]
 
 pyExpressionToPySlice :: Py.Expression -> Py.Slice
 pyExpressionToPySlice = Py.SliceNamed . Py.NamedExpressionSimple
@@ -133,4 +139,4 @@ statementNoComment :: Py.Statement -> Py.StatementWithComment
 statementNoComment s = Py.StatementWithComment s Nothing
 
 stringToPyExpression :: String -> Py.Expression
-stringToPyExpression = pyPrimaryToPyExpression . Py.PrimarySimple . Py.AtomString
+stringToPyExpression = pyAtomToPyExpression . Py.AtomString

@@ -67,7 +67,7 @@ constructModule namespaces mod coders pairs = do
             pairs = [
               ("__future__", ["annotations"]),
               ("typing", ["Callable", "NewType", "TypeVar"]),
-              ("dataclasses", ["dataclass"])]
+              ("dataclasses", ["dataclass", "field"])]
             toImport (modName, symbols) = Py.ImportStatementFrom $
               Py.ImportFrom [] (Just $ Py.DottedName [Py.Name modName]) $
                 Py.ImportFromTargetsSimple (forSymbol <$> symbols)
@@ -79,11 +79,18 @@ encodeFieldName fname = Py.Name $ convertCase CaseConventionCamel CaseConvention
 
 encodeFieldType :: PythonNamespaces -> Y.Maybe Name -> TypeParams -> FieldType -> Flow Graph Py.StatementWithComment
 encodeFieldType namespaces relName tparams (FieldType fname ftype) = do
-  comments <- getTypeDescription ftype
-  let pyName = Py.SingleTargetName $ encodeFieldName fname
-  pyType <- encodeType namespaces relName tparams ftype
-  let stmt = pyAssignmentToPyStatement $ Py.AssignmentTyped $ Py.TypedAssignment pyName pyType Nothing
-  return $ Py.StatementWithComment stmt comments
+    comment <- getTypeDescription ftype
+    let rhs = docField <$> comment
+    let pyName = Py.SingleTargetName $ encodeFieldName fname
+    pyType <- encodeType namespaces relName tparams ftype
+    let stmt = pyAssignmentToPyStatement $ Py.AssignmentTyped $ Py.TypedAssignment pyName pyType rhs
+    return $ Py.StatementWithComment stmt Nothing -- TODO: don't need a commented statement
+  where
+    docField c = pyExpressionToPyAnnotatedRhs $ pyPrimaryToPyExpression $ primaryWithRhs
+      (pyNameToPyPrimary $ Py.Name "field") $
+       Py.PrimaryRhsCall $ Py.Args [] [Py.KwargOrStarredKwarg $
+           Py.Kwarg (Py.Name "metadata") (pyAtomToPyExpression $ Py.AtomDict $ Py.Dict [
+             Py.DoubleStarredKvpairPair $ Py.Kvpair (pyNameToPyExpression $ Py.Name "doc") (stringToPyExpression c)])] []
 
 encodeFunctionType :: PythonNamespaces -> Y.Maybe Name -> TypeParams -> FunctionType -> Flow Graph Py.Expression
 encodeFunctionType namespaces relName tparams ft = do
