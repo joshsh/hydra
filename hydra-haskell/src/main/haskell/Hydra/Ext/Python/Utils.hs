@@ -2,6 +2,8 @@ module Hydra.Ext.Python.Utils where
 
 import qualified Hydra.Ext.Python.Syntax as Py
 
+import qualified Data.List as L
+
 
 assignmentStatement :: Py.Name -> Py.Expression -> Py.Statement
 assignmentStatement name expr = pyAssignmentToPyStatement $ Py.AssignmentUntyped $ Py.UntypedAssignment
@@ -101,11 +103,17 @@ pyPrimaryToPyExpression = pyConjunctionToPyExpression . pyPrimaryToPyConjunction
 pyPrimaryToPySlice :: Py.Primary -> Py.Slice
 pyPrimaryToPySlice = pyExpressionToPySlice . pyPrimaryToPyExpression
 
-orNull :: Py.Expression -> Py.Expression
-orNull lhs = pyBitwiseOrToPyExpression $
-    Py.BitwiseOr (Just lhsOr) (pyPrimaryToPyBitwiseXor $ pyNameToPyPrimary $ Py.Name "None")
+orExpression :: [Py.Primary] -> Py.Expression
+orExpression prims = pyBitwiseOrToPyExpression $ build Nothing prims
   where
-    lhsOr = pyPrimaryToPyBitwiseOr $ pyExpressionToPyPrimary lhs
+    build prev prims = if L.null (L.tail prims)
+        then cur
+        else build (Just cur) $ L.tail prims
+      where
+        cur = Py.BitwiseOr prev $ pyPrimaryToPyBitwiseXor $ L.head prims
+
+orNull :: Py.Primary -> Py.Expression
+orNull lhs = orExpression [lhs, pyNameToPyPrimary $ Py.Name "None"]
 
 primaryWithRhs :: Py.Primary -> Py.PrimaryRhs -> Py.Primary
 primaryWithRhs prim rhs = Py.PrimaryCompound $ Py.PrimaryWithRhs prim rhs

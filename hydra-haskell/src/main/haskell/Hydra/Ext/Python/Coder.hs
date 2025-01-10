@@ -63,8 +63,9 @@ constructModule namespaces mod coders pairs = do
         standardImports = toImport <$> pairs
           where
             pairs = [
-              ("typing", ["Callable", "NewType"]),
-              ("dataclasses", ["dataclass"])]
+              ("typing", ["Callable", "NewType", "TypeVar"]),
+              ("dataclasses", ["dataclass"]),
+              ("__future__", ["annotations"])]
             toImport (modName, symbols) = Py.ImportStatementFrom $
               Py.ImportFrom [] (Just $ Py.DottedName [Py.Name modName]) $
                 Py.ImportFromTargetsSimple (forSymbol <$> symbols)
@@ -174,7 +175,7 @@ encodeType namespaces relName tparams typ = case stripType typ of
       pyvt <- encode vt
       return $ nameAndParams (Py.Name "dict") [pykt, pyvt]
     TypeLiteral lt -> encodeLiteralType lt
-    TypeOptional et -> orNull <$> encode et
+    TypeOptional et -> orNull . pyExpressionToPyPrimary <$> encode et
     TypeRecord rt -> if isUnitType (TypeRecord rt)
       then pure $ pyNameToPyExpression $ Py.Name "None"
       else variableReference $ rowTypeTypeName rt
@@ -217,10 +218,15 @@ encodeUnionType namespaces name (RowType _ tfields) tparams comment = do
         fcomment <- getTypeDescription ftype
         pytype <- encodeType namespaces (Just name) tparams ftype
         return $ Py.StatementWithComment (newtypeStatement (variantName fname) pytype) fcomment
-    unionStmt = Py.StatementWithComment (assignmentStatement (Py.Name $ localNameOfEager name) $
-        primaryAndParams
-          (pyNameToPyPrimary $ Py.Name "Union")
-          (pyNameToPyExpression . variantName . fieldTypeName <$> tfields)) comment
+    unionStmt = Py.StatementWithComment typeAliasSt comment
+      where
+       typeAliasSt = Py.StatementSimple [Py.SimpleStatementTypeAlias $
+          Py.TypeAlias (Py.Name $ localNameOfEager name) [] $
+            orExpression (pyNameToPyPrimary . variantName . fieldTypeName <$> tfields)]
+--         assignSt = assignmentStatement (Py.Name $ localNameOfEager name) $
+--           primaryAndParams
+--             (pyNameToPyPrimary $ Py.Name "Union")
+--             (pyNameToPyExpression . variantName . fieldTypeName <$> tfields)
     variantName fname = Py.Name $ (localNameOfEager name) ++ (capitalize $ unName fname)
 
 moduleToPythonModule :: Module -> Flow Graph Py.Module
