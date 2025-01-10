@@ -66,7 +66,7 @@ constructModule namespaces mod coders pairs = do
           where
             pairs = [
               ("__future__", ["annotations"]),
-              ("typing", ["Callable", "NewType", "TypeVar"]),
+              ("typing", ["Callable", "Literal", "NewType", "TypeVar"]),
               ("dataclasses", ["dataclass", "field"])]
             toImport (modName, symbols) = Py.ImportStatementFrom $
               Py.ImportFrom [] (Just $ Py.DottedName [Py.Name modName]) $
@@ -229,8 +229,12 @@ encodeUnionType namespaces name (RowType _ tfields) tparams comment = do
   where
     toFieldStmt (FieldType fname ftype) = do
         fcomment <- getTypeDescription ftype
-        pytype <- encodeType namespaces tparams ftype
-        return $ Py.StatementWithComment (newtypeStatement (variantName fname) pytype) fcomment
+        st <- if isUnitType (stripType ftype)
+          then pure $ assignmentStatement (variantName fname) $
+            pyPrimaryToPyExpression $ primaryWithExpressionSlices (pyNameToPyPrimary $ Py.Name "Literal")
+              [stringToPyExpression $ unName fname]
+          else newtypeStatement (variantName fname) <$> encodeType namespaces tparams ftype
+        return $ Py.StatementWithComment st fcomment
     unionStmt = Py.StatementWithComment
       (typeAliasStatement ((Py.Name $ localNameOfEager name)) $
         orExpression (pyNameToPyPrimary . variantName . fieldTypeName <$> tfields))

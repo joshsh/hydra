@@ -229,11 +229,18 @@ hydraCoreModule = Module ns elements [] [] $
       def "LiteralType" $
         doc "Any of a fixed set of literal types, also called atomic types, base types, primitive types, or type constants" $
         union [
-          "binary">: unit,
-          "boolean">: unit,
-          "float">: core "FloatType",
-          "integer">: core "IntegerType",
-          "string">: unit],
+          "binary">:
+             doc "The type of a binary (byte string) value" unit,
+          "boolean">:
+            doc "The type of a boolean (true/false) value" unit,
+          "float">:
+            doc "The type of a floating-point value" $
+            core "FloatType",
+          "integer">:
+            doc "The type of an integer value" $
+            core "IntegerType",
+          "string">:
+            doc "The type of a string value" unit],
 
       def "MapType" $
         doc "A map type" $

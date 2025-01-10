@@ -319,9 +319,8 @@ encodeTypedAssignment (Py.TypedAssignment lhs typ rhs) = spaceSep $ Y.catMaybes 
 encodeUntypedAssignment :: Py.UntypedAssignment -> A.Expr
 encodeUntypedAssignment (Py.UntypedAssignment targets rhs _) = spaceSep $ lefts ++ [right]
   where
-    lefts = encodeTarget <$> targets
+    lefts = encodeStarTarget <$> targets
     right = encodeAnnotatedRhs rhs
-    encodeTarget t = spaceSep [encodeStarTarget t, cst "="]
 
 toPythonComments :: String -> String
 toPythonComments c = L.intercalate "\n" $ ("# " ++) <$> L.lines c
