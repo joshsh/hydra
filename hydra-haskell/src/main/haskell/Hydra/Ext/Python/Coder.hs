@@ -75,7 +75,8 @@ constructModule namespaces mod coders pairs = do
                 forSymbol s = Py.ImportFromAsName (Py.Name s) Nothing
 
 encodeFieldName :: Name -> Py.Name
-encodeFieldName fname = Py.Name $ convertCase CaseConventionCamel CaseConventionLowerSnake $ unName fname
+encodeFieldName fname = Py.Name $ sanitizePythonName $
+  convertCase CaseConventionCamel CaseConventionLowerSnake $ unName fname
 
 encodeFieldType :: PythonNamespaces -> TypeParams -> FieldType -> Flow Graph Py.Statement
 encodeFieldType namespaces tparams (FieldType fname ftype) = do
@@ -210,7 +211,7 @@ encodeTypeAssignment namespaces name typ tparams@(tnames, tmap) comment = case s
   where
     single st = ([st], tvars)
     singleNewtype e = single $ newtypeStatement (Py.Name $ localNameOfEager name) comment e
-    singleTypedef e = single $ typeAliasStatement (Py.Name $ localNameOfEager name) comment e
+    singleTypedef e = single $ typeAliasStatement (Py.Name $ sanitizePythonName $ localNameOfEager name) comment e
     tvars = S.fromList (snd <$> (fst tparams))
 
 -- TODO: consider producing Python enums where appropriate
@@ -226,9 +227,9 @@ encodeUnionType namespaces name (RowType _ tfields) tparams comment = do
             pyPrimaryToPyExpression $ primaryWithExpressionSlices (pyNameToPyPrimary $ Py.Name "Literal")
               [stringToPyExpression $ unName fname]
           else newtypeStatement (variantName fname) fcomment <$> encodeType namespaces tparams ftype
-    unionStmt = assignmentStatement (Py.Name $ localNameOfEager name) $ annotatedExpression comment $
+    unionStmt = typeAliasStatement (Py.Name $ sanitizePythonName $ localNameOfEager name) comment $
       orExpression (pyNameToPyPrimary . variantName . fieldTypeName <$> tfields)
-    variantName fname = Py.Name $ (localNameOfEager name) ++ (capitalize $ unName fname)
+    variantName fname = Py.Name $ sanitizePythonName $ (localNameOfEager name) ++ (capitalize $ unName fname)
 
 moduleToPythonModule :: Module -> Flow Graph Py.Module
 moduleToPythonModule mod = do
@@ -249,6 +250,9 @@ namespacesForModule mod = do
   where
     focusNs = moduleNamespace mod
     toPair ns = (ns, encodeNamespace ns)
+
+sanitizePythonName :: String -> String
+sanitizePythonName = sanitizeWithUnderscores pythonReservedWords
 
 toDataDeclarations :: M.Map Type (Coder Graph Graph Term Py.Expression) -> PythonNamespaces -> (Element, TypedTerm)
   -> Flow Graph [Py.Statement]

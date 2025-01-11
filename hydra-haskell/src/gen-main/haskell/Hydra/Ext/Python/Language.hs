@@ -69,8 +69,8 @@ pythonLanguage = Coders.Language {
     Coders.languageConstraintsTypes = (\_ -> True)}}
 
 -- | A set of reserved words in Python
-reservedWords :: (Set String)
-reservedWords = (Sets.fromList keywords) 
+pythonReservedWords :: (Set String)
+pythonReservedWords = (Sets.fromList keywords)
   where 
     keywords = [
       "False",

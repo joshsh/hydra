@@ -28,7 +28,7 @@ pythonLanguageModule = Module ns elements [hydraCodersModule, hydraBasicsModule]
     ns = Namespace "hydra/ext/python/language"
     elements = [
       el pythonLanguageDef,
-      el reservedWordsDef]
+      el pythonReservedWordsDef]
 
 pythonLanguageDef :: TElement Language
 pythonLanguageDef = pythonLanguageDefinition "pythonLanguage" $
@@ -94,8 +94,8 @@ pythonLanguageDef = pythonLanguageDefinition "pythonLanguage" $
         TypeVariantWrap]
       typePredicate = constant true -- TODO: verify whether all are supported
 
-reservedWordsDef :: TElement (S.Set String)
-reservedWordsDef = pythonLanguageDefinition "reservedWords" $
+pythonReservedWordsDef :: TElement (S.Set String)
+pythonReservedWordsDef = pythonLanguageDefinition "pythonReservedWords" $
     doc "A set of reserved words in Python" $
     typed (setT stringT) $
     (Sets.fromList @@ var "keywords")
