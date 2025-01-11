@@ -22,14 +22,14 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 
     -- These definitions are not based on the grammar, but are convenient for working with Python sources in Hydra.
     constructs = [
+      def "AnnotatedStatement" $ record [ -- Note: added for Hydra-Python
+        "comment">: optional string,
+        "statement">: python "Statement"],
+
       def "Module" $ record [
         "imports">: list $ python "ImportStatement",
-        "body">: list $ python "StatementWithComment",
-        "comment">: optional string],
-
-      def "StatementWithComment" $ record [ -- Note: added for Hydra-Python
-        "statement">: python "Statement",
-        "comment">: optional string]]
+        "comment">: optional string,
+        "body">: list $ python "Statement"]]
 
     -- Terminals from the PEG grammar (see below)
     terminals = [
@@ -129,7 +129,8 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 
       def "Statement" $ union [
         "compound">: python "CompoundStatement",
-        "simple">: nonemptyList $ python "SimpleStatement"],
+        "simple">: nonemptyList $ python "SimpleStatement",
+        "annotated">: python "AnnotatedStatement"], -- Added for Hydra-Python
 
 -- statement_newline:
 --     | compound_stmt NEWLINE
@@ -371,7 +372,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 --     | simple_stmts
 
       def "Block" $ union [
-        "indented">: nonemptyList $ python "StatementWithComment",
+        "indented">: nonemptyList $ python "Statement",
         "simple">: nonemptyList $ python "SimpleStatement"],
 
 -- decorators: ('@' named_expression NEWLINE )+

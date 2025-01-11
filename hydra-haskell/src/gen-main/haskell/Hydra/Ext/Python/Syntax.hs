@@ -8,32 +8,32 @@ import Data.List as L
 import Data.Map as M
 import Data.Set as S
 
+data AnnotatedStatement = 
+  AnnotatedStatement {
+    annotatedStatementComment :: (Maybe String),
+    annotatedStatementStatement :: Statement}
+  deriving (Eq, Ord, Read, Show)
+
+_AnnotatedStatement = (Core.Name "hydra/ext/python/syntax.AnnotatedStatement")
+
+_AnnotatedStatement_comment = (Core.Name "comment")
+
+_AnnotatedStatement_statement = (Core.Name "statement")
+
 data Module = 
   Module {
     moduleImports :: [ImportStatement],
-    moduleBody :: [StatementWithComment],
-    moduleComment :: (Maybe String)}
+    moduleComment :: (Maybe String),
+    moduleBody :: [Statement]}
   deriving (Eq, Ord, Read, Show)
 
 _Module = (Core.Name "hydra/ext/python/syntax.Module")
 
 _Module_imports = (Core.Name "imports")
 
-_Module_body = (Core.Name "body")
-
 _Module_comment = (Core.Name "comment")
 
-data StatementWithComment = 
-  StatementWithComment {
-    statementWithCommentStatement :: Statement,
-    statementWithCommentComment :: (Maybe String)}
-  deriving (Eq, Ord, Read, Show)
-
-_StatementWithComment = (Core.Name "hydra/ext/python/syntax.StatementWithComment")
-
-_StatementWithComment_statement = (Core.Name "statement")
-
-_StatementWithComment_comment = (Core.Name "comment")
+_Module_body = (Core.Name "body")
 
 newtype Name = 
   Name {
@@ -95,7 +95,8 @@ _FuncType_body = (Core.Name "body")
 
 data Statement = 
   StatementCompound CompoundStatement |
-  StatementSimple [SimpleStatement]
+  StatementSimple [SimpleStatement] |
+  StatementAnnotated AnnotatedStatement
   deriving (Eq, Ord, Read, Show)
 
 _Statement = (Core.Name "hydra/ext/python/syntax.Statement")
@@ -103,6 +104,8 @@ _Statement = (Core.Name "hydra/ext/python/syntax.Statement")
 _Statement_compound = (Core.Name "compound")
 
 _Statement_simple = (Core.Name "simple")
+
+_Statement_annotated = (Core.Name "annotated")
 
 data SimpleStatement = 
   SimpleStatementAssignment Assignment |
@@ -436,7 +439,7 @@ newtype DottedName =
 _DottedName = (Core.Name "hydra/ext/python/syntax.DottedName")
 
 data Block = 
-  BlockIndented [StatementWithComment] |
+  BlockIndented [Statement] |
   BlockSimple [SimpleStatement]
   deriving (Eq, Ord, Read, Show)
 

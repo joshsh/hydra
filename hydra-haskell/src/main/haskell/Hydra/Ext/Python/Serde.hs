@@ -13,6 +13,10 @@ encodeAnnotatedRhs a = spaceSep [cst "=", case a of
   Py.AnnotatedRhsStar s -> commaSep inlineStyle (encodeStarExpression <$> s)
   _ -> unsupportedVariant "annotated rhs" a]
 
+encodeAnnotatedStatement :: Py.AnnotatedStatement -> A.Expr
+encodeAnnotatedStatement (Py.AnnotatedStatement mdoc stmt) = newlineSep $ Y.catMaybes $
+  [cst . toPythonComments <$> mdoc, Just $ encodeStatement stmt]
+
 encodeArgs :: Py.Args -> A.Expr
 encodeArgs (Py.Args positional kwargStarred kwargDoubleStarred) = commaSep inlineStyle $ ps ++ ks ++ kss
   where
@@ -60,7 +64,7 @@ encodeBitwiseXor (Py.BitwiseXor lhs rhs) = spaceSep $ Y.catMaybes [encodeLhs <$>
 
 encodeBlock :: Py.Block -> A.Expr
 encodeBlock b = case b of
-  Py.BlockIndented sc -> tabIndentDoubleSpace (encodeStatementWithComment <$> sc)
+  Py.BlockIndented sc -> tabIndentDoubleSpace (encodeStatement <$> sc)
   Py.BlockSimple ss -> newlineSep (encodeSimpleStatement <$> ss)
 
 encodeClassDefinition :: Py.ClassDefinition -> A.Expr
@@ -178,10 +182,10 @@ encodeList :: Py.List -> A.Expr
 encodeList (Py.List es) = noSep [cst "[", commaSep inlineStyle (encodeStarNamedExpression <$> es), cst "]"]
 
 encodeModule :: Py.Module -> A.Expr
-encodeModule (Py.Module imports body mdoc) = doubleNewlineSep $ Y.catMaybes $
+encodeModule (Py.Module imports mdoc body) = doubleNewlineSep $ Y.catMaybes $
    [tripleQuotedString <$> mdoc, importsSec] ++ bodyExprs
   where
-    bodyExprs = Just . encodeStatementWithComment <$> body
+    bodyExprs = Just . encodeStatement <$> body
     importsSec = if L.null exprs then Nothing else Just $ newlineSep exprs
       where
         exprs = encodeImportStatement <$> imports
@@ -283,12 +287,9 @@ encodeStarredExpression (Py.StarredExpression expr) = noSep [cst "*", encodeExpr
 
 encodeStatement :: Py.Statement -> A.Expr
 encodeStatement s = case s of
+  Py.StatementAnnotated a -> encodeAnnotatedStatement a
   Py.StatementCompound c -> encodeCompoundStatement c
   Py.StatementSimple stmts -> newlineSep (encodeSimpleStatement <$> stmts)
-
-encodeStatementWithComment :: Py.StatementWithComment -> A.Expr
-encodeStatementWithComment (Py.StatementWithComment stmt mdoc) = newlineSep $ Y.catMaybes $
-  [cst . toPythonComments <$> mdoc, Just $ encodeStatement stmt]
 
 encodeSum :: Py.Sum -> A.Expr
 encodeSum (Py.Sum lhs rhs) = spaceSep $ Y.catMaybes [encodeSumLhs <$> lhs, Just $ encodeTerm rhs]
