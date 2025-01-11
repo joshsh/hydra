@@ -39,7 +39,7 @@ encodeAtom a = case a of
   Py.AtomDict d -> encodeDict d
   Py.AtomList l -> encodeList l
   Py.AtomName n -> encodeName n
-  Py.AtomString s -> cst $ "'" ++ s ++ "'" -- TODO: string escaping
+  Py.AtomString s -> cst $ escapePythonSingleQuoted s
   _ -> unsupportedVariant "atom" a
 
 encodeAwaitPrimary :: Py.AwaitPrimary -> A.Expr
@@ -322,6 +322,23 @@ encodeUntypedAssignment (Py.UntypedAssignment targets rhs _) = spaceSep $ lefts 
   where
     lefts = encodeStarTarget <$> targets
     right = encodeAnnotatedRhs rhs
+
+-- TODO: this is a ChatGPT-generated function which has not been thoroughly tested.
+escapePythonSingleQuoted :: String -> String
+escapePythonSingleQuoted str = '\'' : concatMap escapeChar str ++ "'"
+  where
+    escapeChar '\'' = "\\'"  -- Escape single quote
+    escapeChar '\\' = "\\\\" -- Escape backslash
+    escapeChar '\n' = "\\n"  -- Escape newline
+    escapeChar '\t' = "\\t"  -- Escape tab
+    escapeChar '\r' = "\\r"  -- Escape carriage return
+    escapeChar c
+      | c < ' '   = "\\x" ++ toHex (fromEnum c) -- Escape other control chars as hex
+      | otherwise = [c]  -- Leave normal characters as is
+
+    toHex :: Int -> String
+    toHex n = let hex = "0123456789abcdef"
+              in [hex !! (n `div` 16), hex !! (n `mod` 16)]
 
 toPythonComments :: String -> String
 toPythonComments c = L.intercalate "\n" $ ("# " ++) <$> L.lines c

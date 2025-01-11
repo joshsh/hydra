@@ -226,7 +226,7 @@ encodeUnionType namespaces name (RowType _ tfields) tparams comment = do
             pyPrimaryToPyExpression $ primaryWithExpressionSlices (pyNameToPyPrimary $ Py.Name "Literal")
               [stringToPyExpression $ unName fname]
           else newtypeStatement (variantName fname) fcomment <$> encodeType namespaces tparams ftype
-    unionStmt = typeAliasStatement ((Py.Name $ localNameOfEager name)) comment $
+    unionStmt = assignmentStatement (Py.Name $ localNameOfEager name) $ annotatedExpression comment $
       orExpression (pyNameToPyPrimary . variantName . fieldTypeName <$> tfields)
     variantName fname = Py.Name $ (localNameOfEager name) ++ (capitalize $ unName fname)
 

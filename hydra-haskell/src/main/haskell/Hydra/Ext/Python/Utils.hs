@@ -145,5 +145,6 @@ stringToPyExpression :: String -> Py.Expression
 stringToPyExpression = pyAtomToPyExpression . Py.AtomString
 
 typeAliasStatement :: Py.Name -> Maybe String -> Py.Expression -> Py.Statement
-typeAliasStatement name mcomment tyexpr = pySimpleStatementToPyStatement $
-  Py.SimpleStatementTypeAlias $ Py.TypeAlias name [] $ annotatedExpression mcomment tyexpr
+--typeAliasStatement name mcomment tyexpr = pySimpleStatementToPyStatement $
+--  Py.SimpleStatementTypeAlias $ Py.TypeAlias name [] $ annotatedExpression mcomment tyexpr
+typeAliasStatement name mcomment tyexpr = assignmentStatement name $ annotatedExpression mcomment tyexpr
