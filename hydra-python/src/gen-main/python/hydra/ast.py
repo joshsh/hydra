@@ -5,110 +5,131 @@ from typing import Annotated, Callable, Literal, NewType, TypeVar
 from dataclasses import dataclass, field
 import hydra.core
 
-AssociativityNone = Literal['none']
+AssociativityNone = Literal["none"]
 
-AssociativityLeft = Literal['left']
+AssociativityLeft = Literal["left"]
 
-AssociativityRight = Literal['right']
+AssociativityRight = Literal["right"]
 
-AssociativityBoth = Literal['both']
+AssociativityBoth = Literal["both"]
 
-Associativity = Annotated[AssociativityNone | AssociativityLeft | AssociativityRight | AssociativityBoth, 'Operator associativity']
+Associativity = Annotated[
+    AssociativityNone | AssociativityLeft | AssociativityRight | AssociativityBoth,
+    "Operator associativity",
+]
+
 
 @dataclass
 class BlockStyle:
     """Formatting option for code blocks"""
 
     indent: str | None
-    
+
     newline_before_content: bool
-    
+
     newline_after_content: bool
+
 
 @dataclass
 class BracketExpr:
     """An expression enclosed by brackets"""
 
     brackets: Brackets
-    
+
     enclosed: Expr
-    
+
     style: BlockStyle
+
 
 @dataclass
 class Brackets:
     """Matching open and close bracket symbols"""
 
     open: Symbol
-    
+
     close: Symbol
 
-ExprConst = NewType('ExprConst', Symbol)
 
-ExprIndent = NewType('ExprIndent', IndentedExpression)
+ExprConst = NewType("ExprConst", Symbol)
 
-ExprOp = NewType('ExprOp', OpExpr)
+ExprIndent = NewType("ExprIndent", IndentedExpression)
 
-ExprBrackets = NewType('ExprBrackets', BracketExpr)
+ExprOp = NewType("ExprOp", OpExpr)
 
-Expr = Annotated[ExprConst | ExprIndent | ExprOp | ExprBrackets, 'An abstract expression']
+ExprBrackets = NewType("ExprBrackets", BracketExpr)
+
+Expr = Annotated[
+    ExprConst | ExprIndent | ExprOp | ExprBrackets, "An abstract expression"
+]
+
 
 @dataclass
 class IndentedExpression:
     """An expression indented in a certain style"""
 
     style: IndentStyle
-    
+
     expr: Expr
 
-IndentStyleAllLines = NewType('IndentStyleAllLines', str)
 
-IndentStyleSubsequentLines = NewType('IndentStyleSubsequentLines', str)
+IndentStyleAllLines = NewType("IndentStyleAllLines", str)
 
-IndentStyle = Annotated[IndentStyleAllLines | IndentStyleSubsequentLines, 'Any of several indentation styles']
+IndentStyleSubsequentLines = NewType("IndentStyleSubsequentLines", str)
+
+IndentStyle = Annotated[
+    IndentStyleAllLines | IndentStyleSubsequentLines,
+    "Any of several indentation styles",
+]
+
 
 @dataclass
 class Op:
     """An operator symbol"""
 
     symbol: Symbol
-    
+
     padding: Padding
-    
+
     precedence: Precedence
-    
+
     associativity: Associativity
+
 
 @dataclass
 class OpExpr:
     """An operator expression"""
 
     op: Op
-    
+
     lhs: Expr
-    
+
     rhs: Expr
+
 
 @dataclass
 class Padding:
     """Left and right padding for an operator"""
 
     left: Ws
-    
+
     right: Ws
 
-Precedence = Annotated[int, 'Operator precedence']
 
-Symbol = Annotated[str, 'Any symbol']
+Precedence = Annotated[int, "Operator precedence"]
 
-WsNone = Literal['none']
+Symbol = Annotated[str, "Any symbol"]
 
-WsSpace = Literal['space']
+WsNone = Literal["none"]
 
-WsBreak = Literal['break']
+WsSpace = Literal["space"]
 
-WsBreakAndIndent = NewType('WsBreakAndIndent', str)
+WsBreak = Literal["break"]
 
-WsDoubleBreak = Literal['doubleBreak']
+WsBreakAndIndent = NewType("WsBreakAndIndent", str)
 
-Ws = Annotated[WsNone | WsSpace | WsBreak | WsBreakAndIndent | WsDoubleBreak, 'One of several classes of whitespace']
+WsDoubleBreak = Literal["doubleBreak"]
+
+Ws = Annotated[
+    WsNone | WsSpace | WsBreak | WsBreakAndIndent | WsDoubleBreak,
+    "One of several classes of whitespace",
+]
