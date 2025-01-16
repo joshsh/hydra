@@ -1,8 +1,9 @@
 """A model for Hydra transformation workflows"""
 
 from __future__ import annotations
-from typing import Annotated, Callable, Literal, NewType, TypeVar
-from dataclasses import dataclass, field
+from typing import Annotated, Literal, NewType, TypeVar
+from collections.abc import Callable
+from dataclasses import dataclass
 import hydra.compute
 import hydra.core
 import hydra.graph

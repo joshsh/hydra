@@ -1,8 +1,9 @@
 """The extension to graphs of Hydra's core type system (hydra/core)"""
 
 from __future__ import annotations
-from typing import Annotated, Callable, Literal, NewType, TypeVar
-from dataclasses import dataclass, field
+from typing import Annotated, Literal, TypeVar
+from collections.abc import Callable
+from dataclasses import dataclass
 import hydra.compute
 import hydra.core
 

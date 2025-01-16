@@ -1,8 +1,8 @@
 """A model for unit testing"""
 
 from __future__ import annotations
-from typing import Annotated, Callable, Literal, NewType, TypeVar
-from dataclasses import dataclass, field
+from typing import Annotated, Literal
+from dataclasses import dataclass
 import hydra.core
 
 EvaluationStyleEager = Literal["eager"]

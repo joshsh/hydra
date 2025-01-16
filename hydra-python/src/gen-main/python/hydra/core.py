@@ -1,8 +1,8 @@
 """Hydra's core data model of type and term expressions"""
 
 from __future__ import annotations
-from typing import Annotated, Callable, Literal, NewType, TypeVar
-from dataclasses import dataclass, field
+from typing import Annotated, Literal, NewType
+from dataclasses import dataclass
 
 
 @dataclass
