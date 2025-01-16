@@ -232,3 +232,6 @@ tabIndent e = ExprIndent $ IndentedExpression (IndentStyleAllLines "    ") e
 
 tabIndentDoubleSpace :: [Expr] -> Expr
 tabIndentDoubleSpace = tabIndent . doubleNewlineSep
+
+tabIndentSingleSpace :: [Expr] -> Expr
+tabIndentSingleSpace = tabIndent . newlineSep

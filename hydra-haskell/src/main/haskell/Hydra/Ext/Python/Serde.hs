@@ -62,10 +62,10 @@ encodeBitwiseXor (Py.BitwiseXor lhs rhs) = spaceSep $ Y.catMaybes [encodeLhs <$>
   where
     encodeLhs l = spaceSep [encodeBitwiseXor l, cst "^"]
 
-encodeBlock :: Py.Block -> A.Expr
-encodeBlock b = case b of
-  Py.BlockIndented sc -> tabIndentDoubleSpace (encodeStatement <$> sc)
-  Py.BlockSimple ss -> newlineSep (encodeSimpleStatement <$> ss)
+encodeBlock :: Bool -> Py.Block -> A.Expr
+encodeBlock doubleSpace b = case b of
+  Py.BlockIndented sc -> (if doubleSpace then tabIndentDoubleSpace else tabIndentSingleSpace) (encodeStatement <$> sc)
+  Py.BlockSimple ss -> (if doubleSpace then doubleNewlineSep else newlineSep) (encodeSimpleStatement <$> ss)
 
 encodeClassDefinition :: Py.ClassDefinition -> A.Expr
 encodeClassDefinition (Py.ClassDefinition mdecs name tparams args comment body) = newlineSep $
@@ -74,8 +74,8 @@ encodeClassDefinition (Py.ClassDefinition mdecs name tparams args comment body) 
     classExpr = newlineSep [
         noSep [spaceSep $ Y.catMaybes [Just $ cst "class", Just $ encodeName name, (argExp <$> args)], cst ":"],
         doubleNewlineSep $ Y.catMaybes [
-          (\c -> tabIndentDoubleSpace [tripleQuotedString c]) <$> comment,
-          Just $ encodeBlock body]] -- TODO: tparams
+          (\c -> tabIndent (tripleQuotedString c)) <$> comment,
+          Just $ encodeBlock False body]] -- TODO: tparams
       where
         argExp a = noSep [cst "(", encodeArgs a, cst ")"]
 
