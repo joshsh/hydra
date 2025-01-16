@@ -5,52 +5,69 @@ from typing import Annotated, Callable, Literal, NewType, TypeVar
 from dataclasses import dataclass, field
 import hydra.core
 
-Constant = Annotated[str, 'A constant pattern']
+Constant = Annotated[str, "A constant pattern"]
 
-Grammar = Annotated[list[Production], 'An enhanced Backus-Naur form (BNF) grammar']
+Grammar = Annotated[list[Production], "An enhanced Backus-Naur form (BNF) grammar"]
 
-Label = Annotated[str, 'A name for a pattern']
+Label = Annotated[str, "A name for a pattern"]
+
 
 @dataclass
 class LabeledPattern:
     """A pattern together with a name (label)"""
 
     label: Label
-    
+
     pattern: Pattern
 
-PatternNil = Literal['nil']
 
-PatternIgnored = NewType('PatternIgnored', Pattern)
+PatternNil = Literal["nil"]
 
-PatternLabeled = NewType('PatternLabeled', LabeledPattern)
+PatternIgnored = NewType("PatternIgnored", Pattern)
 
-PatternConstant = NewType('PatternConstant', Constant)
+PatternLabeled = NewType("PatternLabeled", LabeledPattern)
 
-PatternRegex = NewType('PatternRegex', Regex)
+PatternConstant = NewType("PatternConstant", Constant)
 
-PatternNonterminal = NewType('PatternNonterminal', Symbol)
+PatternRegex = NewType("PatternRegex", Regex)
 
-PatternSequence = NewType('PatternSequence', list[Pattern])
+PatternNonterminal = NewType("PatternNonterminal", Symbol)
 
-PatternAlternatives = NewType('PatternAlternatives', list[Pattern])
+PatternSequence = NewType("PatternSequence", list[Pattern])
 
-PatternOption = NewType('PatternOption', Pattern)
+PatternAlternatives = NewType("PatternAlternatives", list[Pattern])
 
-PatternStar = NewType('PatternStar', Pattern)
+PatternOption = NewType("PatternOption", Pattern)
 
-PatternPlus = NewType('PatternPlus', Pattern)
+PatternStar = NewType("PatternStar", Pattern)
 
-Pattern = Annotated[PatternNil | PatternIgnored | PatternLabeled | PatternConstant | PatternRegex | PatternNonterminal | PatternSequence | PatternAlternatives | PatternOption | PatternStar | PatternPlus, 'A pattern which matches valid expressions in the language']
+PatternPlus = NewType("PatternPlus", Pattern)
+
+Pattern = Annotated[
+    PatternNil
+    | PatternIgnored
+    | PatternLabeled
+    | PatternConstant
+    | PatternRegex
+    | PatternNonterminal
+    | PatternSequence
+    | PatternAlternatives
+    | PatternOption
+    | PatternStar
+    | PatternPlus,
+    "A pattern which matches valid expressions in the language",
+]
+
 
 @dataclass
 class Production:
     """A BNF production"""
 
     symbol: Symbol
-    
+
     pattern: Pattern
 
-Regex = Annotated[str, 'A regular expression']
 
-Symbol = Annotated[str, 'A nonterminal symbol']
+Regex = Annotated[str, "A regular expression"]
+
+Symbol = Annotated[str, "A nonterminal symbol"]
