@@ -1,8 +1,7 @@
 """A model for path- and pattern-based graph constraints, which may be considered as part of the schema of a graph"""
 
 from __future__ import annotations
-from typing import Annotated, Callable, Literal, NewType, TypeVar
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 import hydra.core
 import hydra.query
 

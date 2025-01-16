@@ -4,20 +4,48 @@ This directory contains a Python implementation of Hydra, still in progress.
 
 ## Getting Started
 
-Install uv with the following command,
+Install uv.
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-Make the python virtual environment,
+Make the python virtual environment.
 ```bash
 uv venv --python 3.12
 source .venv/bin/activate
 ```
 
-Install the dependencies,
+Install the dependencies.
 ```bash
 uv sync
+```
+
+## Formatting, Linting, and Type Checking
+
+All of these commands can run from the Hydra Python root directory, but files/directories can be specified as arguments
+as well to get more specific results.
+
+#### Formatting
+Format the code.
+```bash
+ruff format
+```
+
+#### Linting
+Run the linter.
+Run the linter.
+```bash
+ruff check
+```
+Fix the linting errors in the code if they are fixable (e.g. removing unused imports).
+```bash
+ruff check --fix
+```
+
+#### Static Type Checking
+Run the type checker.
+```bash
+pyright
 ```
 
 ## Validate generated Python code

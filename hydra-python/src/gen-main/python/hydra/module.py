@@ -1,8 +1,8 @@
 """A model for Hydra namespaces and modules"""
 
 from __future__ import annotations
-from typing import Annotated, Callable, Literal, NewType, TypeVar
-from dataclasses import dataclass, field
+from typing import Annotated
+from dataclasses import dataclass
 import hydra.core
 import hydra.graph
 

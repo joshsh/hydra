@@ -1,9 +1,7 @@
 """A JSON syntax model. See the BNF at https://www.json.org"""
 
 from __future__ import annotations
-from typing import Annotated, Callable, Literal, NewType, TypeVar
-from dataclasses import dataclass, field
-import hydra.core
+from typing import Annotated, Literal, NewType
 
 ValueArray = Annotated[NewType("ValueArray", list[Value]), "A JSON array"]
 

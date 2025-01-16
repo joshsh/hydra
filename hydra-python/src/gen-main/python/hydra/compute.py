@@ -1,8 +1,9 @@
 """Abstractions for single- and bidirectional transformations"""
 
 from __future__ import annotations
-from typing import Annotated, Callable, Literal, NewType, TypeVar
-from dataclasses import dataclass, field
+from typing import Annotated, TypeVar
+from collections.abc import Callable
+from dataclasses import dataclass
 import hydra.core
 
 S = TypeVar("S")

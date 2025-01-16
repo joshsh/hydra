@@ -1,8 +1,8 @@
 """Phantom types for use with Hydra DSLs"""
 
 from __future__ import annotations
-from typing import Annotated, Callable, Literal, NewType, TypeVar
-from dataclasses import dataclass, field
+from typing import Annotated, TypeVar
+from dataclasses import dataclass
 import hydra.core
 
 A = TypeVar("A")

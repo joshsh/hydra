@@ -1,9 +1,8 @@
 """A common API for BNF-based grammars, specifying context-free languages"""
 
 from __future__ import annotations
-from typing import Annotated, Callable, Literal, NewType, TypeVar
-from dataclasses import dataclass, field
-import hydra.core
+from typing import Annotated, Literal, NewType
+from dataclasses import dataclass
 
 Constant = Annotated[str, "A constant pattern"]
 
