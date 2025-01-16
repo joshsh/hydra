@@ -39,7 +39,7 @@ encodeAtom a = case a of
   Py.AtomDict d -> encodeDict d
   Py.AtomList l -> encodeList l
   Py.AtomName n -> encodeName n
-  Py.AtomString s -> cst $ escapePythonSingleQuoted s
+  Py.AtomString s -> cst $ escapePythonString True s
   _ -> unsupportedVariant "atom" a
 
 encodeAwaitPrimary :: Py.AwaitPrimary -> A.Expr
@@ -323,11 +323,13 @@ encodeUntypedAssignment (Py.UntypedAssignment targets rhs _) = spaceSep $ lefts 
     lefts = encodeStarTarget <$> targets
     right = encodeAnnotatedRhs rhs
 
--- TODO: this is a ChatGPT-generated function which has not been thoroughly tested.
-escapePythonSingleQuoted :: String -> String
-escapePythonSingleQuoted str = '\'' : concatMap escapeChar str ++ "'"
+-- TODO: this is a partially ChatGPT-generated function which has not been thoroughly tested.
+escapePythonString :: Bool -> String -> String
+escapePythonString doubleQuoted str = encChar : L.concatMap escapeChar str ++ [encChar]
   where
-    escapeChar '\'' = "\\'"  -- Escape single quote
+    encChar = if doubleQuoted then '"' else '\''
+    escapeChar '\'' = if doubleQuoted then  "'" else "\\'"  -- Escape single quote
+    escapeChar '"'  = if doubleQuoted then "\\\"" else "\""  -- Escape double quote
     escapeChar '\\' = "\\\\" -- Escape backslash
     escapeChar '\n' = "\\n"  -- Escape newline
     escapeChar '\t' = "\\t"  -- Escape tab
