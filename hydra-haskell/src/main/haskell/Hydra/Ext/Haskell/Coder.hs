@@ -281,8 +281,8 @@ nameDecls g namespaces name@(Name nm) typ = if useCoreImport
 toDataDeclaration :: M.Map Type (Coder Graph Graph Term H.Expression) -> HaskellNamespaces
   -> (Element, TypedTerm) -> Flow Graph H.DeclarationWithComments
 toDataDeclaration coders namespaces (el, TypedTerm term typ) = do
-  comments <- getTermDescription term
-  toDecl comments hname term coder Nothing
+    comments <- getTermDescription term
+    toDecl comments hname term coder Nothing
   where
     coder = Y.fromJust $ M.lookup typ coders
     hname = simpleName $ localNameOfEager $ elementName el

@@ -21,6 +21,8 @@ import Hydra.AdapterUtils
 import Hydra.Reduction
 import Hydra.Tier1
 import Hydra.Tier2
+import Hydra.Basics
+import Hydra.CoreDecoding
 
 import qualified Control.Monad as CM
 import qualified Data.List as L
@@ -92,3 +94,29 @@ transformModule lang encodeTerm createModule mod = withTrace ("transform module 
     codersFor types = do
       cdrs <- CM.mapM (constructCoder lang encodeTerm) types
       return $ M.fromList $ L.zip types cdrs
+
+-- Reusable code for breadth-first processing of a module
+
+data Definition = DefinitionType Name Type | DefinitionTerm Name Term Type
+
+-- | Map a Hydra module to a list of type and/or term definitions which have been adapted to the target language.
+adaptedModuleDefinitions :: Language -> Module -> Flow Graph [Definition]
+adaptedModuleDefinitions lang mod = do
+    tterms <- withSchemaContext $ CM.mapM elementAsTypedTerm $ moduleElements mod
+    let types = S.toList $ S.fromList $ (stripType . typedTermType <$> tterms)
+    adapters <- adaptersFor types
+    CM.mapM (classify adapters) $ L.zip (elementName <$> moduleElements mod) tterms
+  where
+    classify adapters (name, (TypedTerm term typ)) = if isType typ
+      then do
+        typ <- coreDecodeType term >>= adaptType lang
+        return $ DefinitionType name typ
+      else do
+        case M.lookup typ adapters of
+          Nothing -> fail $ "no adapter for element " ++ unName name
+          Just adapter -> do
+            adapted <- coderEncode (adapterCoder adapter) term
+            return $ DefinitionTerm name adapted $ adapterTarget adapter
+    adaptersFor types = do
+      adapters <- CM.mapM (languageAdapter lang) types
+      return $ M.fromList $ L.zip types adapters
