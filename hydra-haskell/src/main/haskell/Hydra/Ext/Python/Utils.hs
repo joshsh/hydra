@@ -1,5 +1,6 @@
 module Hydra.Ext.Python.Utils where
 
+import Hydra.Tools.Formatting
 import qualified Hydra.Ext.Python.Syntax as Py
 
 import qualified Data.List as L
@@ -15,12 +16,13 @@ annotatedExpression :: Maybe String -> Py.Expression -> Py.Expression
 annotatedExpression mcomment expr = case mcomment of
   Nothing -> expr
   Just c -> pyPrimaryToPyExpression $
-    primaryWithExpressionSlices (pyNameToPyPrimary $ Py.Name "Annotated") [expr, stringToPyExpression c]
+    primaryWithExpressionSlices (pyNameToPyPrimary $ Py.Name "Annotated")
+    [expr, stringToPyExpression $ normalizeComment c]
 
 annotatedStatement :: Maybe String -> Py.Statement -> Py.Statement
 annotatedStatement mcomment stmt = case mcomment of
   Nothing -> stmt
-  Just c -> Py.StatementAnnotated $ Py.AnnotatedStatement c stmt
+  Just c -> Py.StatementAnnotated $ Py.AnnotatedStatement (normalizeComment c) stmt
 
 decodePyExpressionToPyPrimary :: Py.Expression -> Maybe Py.Primary
 decodePyExpressionToPyPrimary e = case e of
@@ -58,6 +60,15 @@ nameAndParams pyName params = primaryAndParams (pyNameToPyPrimary pyName) params
 newtypeStatement :: Py.Name -> Maybe String -> Py.Expression -> Py.Statement
 newtypeStatement name mcomment expr = annotatedStatement mcomment $ assignmentStatement name $
   functionCall (pyNameToPyPrimary $ Py.Name "NewType") [stringToPyExpression $ Py.unName name, expr]
+
+normalizeComment :: String -> String
+normalizeComment s = if L.null stripped
+    then ""
+    else if L.last stripped /= '.'
+      then stripped ++ "."
+      else stripped
+  where
+    stripped = stripLeadingAndTrailingWhitespace s
 
 primaryAndParams :: Py.Primary -> [Py.Expression] -> Py.Expression
 primaryAndParams prim params = pyPrimaryToPyExpression $ primaryWithExpressionSlices prim params

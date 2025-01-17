@@ -66,6 +66,9 @@ nonAlnumToUnderscores = L.reverse . fst . L.foldl replace ([], False)
 sanitizeWithUnderscores :: S.Set String -> String -> String
 sanitizeWithUnderscores reserved = escapeWithUnderscore reserved . nonAlnumToUnderscores
 
+stripLeadingAndTrailingWhitespace :: String -> String
+stripLeadingAndTrailingWhitespace s = L.dropWhile C.isSpace $ L.reverse $ L.dropWhile C.isSpace $ L.reverse s
+
 toLowerCase :: String -> String
 toLowerCase = fmap C.toLower
 
