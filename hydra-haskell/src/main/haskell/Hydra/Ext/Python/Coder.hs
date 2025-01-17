@@ -21,72 +21,34 @@ import qualified Data.Map as M
 import qualified Data.Set as S
 import qualified Data.Maybe as Y
 
+data PythonEnvironment = PythonEnvironment {
+  pythonEnvironmentNamespaces :: PythonNamespaces,
+  pythonEnvironmentBoundTypeVariables :: TypeParams}
 
 type PythonNamespaces = Namespaces Py.DottedName
 
-type TypeParams = ([(Name, Py.Name)], M.Map Name Py.Name)
+data PythonModuleMetadata = PythonModuleMetadata {
+  pythonModuleMetadataBoundTypeVariables :: S.Set Name}
+
+type TypeParams = ([Py.Name], M.Map Name Py.Name)
 
 -- TODO: use these
 constantForFieldName tname fname = toUpperCase (localNameOfEager tname) ++ "_" ++ toUpperCase (unName fname)
 constantForTypeName tname = toUpperCase $ localNameOfEager tname
 
-constructModule :: PythonNamespaces
-  -> Module
-  -> M.Map Type (Coder Graph Graph Term Py.Expression)
-  -> [(Element, TypedTerm)] -> Flow Graph Py.Module
-constructModule namespaces mod coders pairs = do
-    g <- getState
-    pairs <- CM.mapM (createDeclarations g) pairs
-    let defStmts = L.concat (fst <$> pairs)
-    let tvars = S.toList $ L.foldl S.union S.empty (snd <$> pairs)
-
-    -- TODO: this may be more than we need, as the TypeVar statements may only be needed for NewType declarations, not for dataclasses
-    let tvarStmts = tvarStmt <$> tvars
-
-    let stmts = tvarStmts ++ defStmts
-    let mc = moduleDescription mod
-    return $ Py.Module imports mc stmts
-  where
-    tvarStmt name = assignmentStatement name $ functionCall (pyNameToPyPrimary $ Py.Name "TypeVar")
-      [stringToPyExpression $ Py.unName name]
-
-    createDeclarations g pair@(el, TypedTerm term typ) = if isType typ
-      then toTypeDeclarations namespaces el term
-      else do
-        st <- toDataDeclarations coders namespaces pair
-        return (st, S.empty)
-
-    imports = standardImports ++ domainImports
-      where
-        domainImports = toImport <$> names
-          where
-            names = L.sort $ M.elems $ namespacesMapping namespaces
-            toImport ns = Py.ImportStatementName $ Py.ImportName [Py.DottedAsName ns Nothing]
-        standardImports = toImport <$> pairs
-          where
-            pairs = [
-              ("__future__", ["annotations"]),
-              ("typing", ["Annotated", "Callable", "Literal", "NewType", "TypeVar"]),
-              ("dataclasses", ["dataclass", "field"])]
-            toImport (modName, symbols) = Py.ImportStatementFrom $
-              Py.ImportFrom [] (Just $ Py.DottedName [Py.Name modName]) $
-                Py.ImportFromTargetsSimple (forSymbol <$> symbols)
-              where
-                forSymbol s = Py.ImportFromAsName (Py.Name s) Nothing
-
 encodeFieldName :: Name -> Py.Name
 encodeFieldName fname = Py.Name $ sanitizePythonName $
   convertCase CaseConventionCamel CaseConventionLowerSnake $ unName fname
 
-encodeFieldType :: PythonNamespaces -> TypeParams -> FieldType -> Flow Graph Py.Statement
-encodeFieldType namespaces tparams (FieldType fname ftype) = do
+encodeFieldType :: PythonEnvironment -> FieldType -> Flow Graph Py.Statement
+encodeFieldType env (FieldType fname ftype) = do
   comment <- getTypeDescription ftype
   let pyName = Py.SingleTargetName $ encodeFieldName fname
-  pyType <- annotatedExpression comment <$> encodeType namespaces tparams ftype
+  pyType <- annotatedExpression comment <$> encodeType env ftype
   return $ pyAssignmentToPyStatement $ Py.AssignmentTyped $ Py.TypedAssignment pyName pyType Nothing
 
-encodeFunctionType :: PythonNamespaces -> TypeParams -> FunctionType -> Flow Graph Py.Expression
-encodeFunctionType namespaces tparams ft = do
+encodeFunctionType :: PythonEnvironment -> FunctionType -> Flow Graph Py.Expression
+encodeFunctionType env ft = do
   pydoms <- CM.mapM encode doms
   pycod <- encode cod
   return $ pyPrimaryToPyExpression $ primaryWithSlices (pyNameToPyPrimary $ Py.Name "Callable")
@@ -94,16 +56,16 @@ encodeFunctionType namespaces tparams ft = do
       Py.List (Py.StarNamedExpressionSimple . Py.NamedExpressionSimple <$> pydoms))
     [Py.SliceOrStarredExpressionSlice $ pyExpressionToPySlice pycod]
   where
-    encode = encodeType namespaces tparams
+    encode = encodeType env
     (doms, cod) = gatherParams [] ft
     gatherParams rdoms (FunctionType dom cod) = case stripType cod of
       TypeFunction ft2 -> gatherParams (dom:rdoms) ft2
       _ -> (L.reverse (dom:rdoms), cod)
 
-encodeApplicationType :: PythonNamespaces -> TypeParams -> ApplicationType -> Flow Graph Py.Expression
-encodeApplicationType namespaces tparams at = do
-    pybody <- encodeType namespaces tparams body
-    pyargs <- CM.mapM (encodeType namespaces tparams) args
+encodeApplicationType :: PythonEnvironment -> ApplicationType -> Flow Graph Py.Expression
+encodeApplicationType env at = do
+    pybody <- encodeType env body
+    pyargs <- CM.mapM (encodeType env) args
     return $ primaryAndParams (pyExpressionToPyPrimary pybody) pyargs
   where
     (body, args) = gatherParams (TypeApplication at) []
@@ -111,9 +73,9 @@ encodeApplicationType namespaces tparams at = do
       TypeApplication (ApplicationType lhs rhs) -> gatherParams lhs (rhs:ps)
       _ -> (t, ps)
 
-encodeLambdaType :: PythonNamespaces -> TypeParams -> LambdaType -> Flow Graph Py.Expression
-encodeLambdaType namespaces tparams lt = do
-    pybody <- encodeType namespaces tparams body
+encodeLambdaType :: PythonEnvironment -> LambdaType -> Flow Graph Py.Expression
+encodeLambdaType env lt = do
+    pybody <- encodeType env body
     return $ primaryAndParams (pyExpressionToPyPrimary pybody) (pyNameToPyExpression . Py.Name . unName <$> params)
   where
     (body, params) = gatherParams (TypeLambda lt) []
@@ -137,42 +99,41 @@ encodeLiteralType lt = do
         _ -> fail $ "unsupported integer type: " ++ show it
       LiteralTypeString -> pure "str"
 
-encodeName :: PythonNamespaces -> TypeParams -> Name -> Py.Name
-encodeName namespaces tparams name = case M.lookup name (snd tparams) of
+encodeName :: PythonEnvironment -> Name -> Py.Name
+encodeName env name = case M.lookup name (snd $ pythonEnvironmentBoundTypeVariables env) of
     Just n -> n
     Nothing -> if ns == Just focusNs
       then Py.Name local
       else Py.Name $ L.intercalate "." $ Strings.splitOn "/" $ unName name
   where
-    focusNs = fst $ namespacesFocus namespaces
+    focusNs = fst $ namespacesFocus $ pythonEnvironmentNamespaces env
     QualifiedName ns local = qualifyNameEager name
 
 encodeNamespace :: Namespace -> Py.DottedName
 encodeNamespace ns = Py.DottedName (Py.Name <$> (Strings.splitOn "/" $ unNamespace ns))
 
-encodeRecordType :: PythonNamespaces -> Name -> RowType -> TypeParams -> Maybe String -> Flow Graph Py.Statement
-encodeRecordType namespaces name (RowType _ tfields) tparams comment = do
-    pyFields <- CM.mapM (encodeFieldType namespaces tparams) tfields
+encodeRecordType :: PythonEnvironment -> Name -> RowType -> Maybe String -> Flow Graph Py.Statement
+encodeRecordType env@(PythonEnvironment _ (tparamList, tparamMap)) name (RowType _ tfields) comment = do
+    pyFields <- CM.mapM (encodeFieldType env) tfields
     let body = Py.BlockIndented pyFields
     return $ Py.StatementCompound $ Py.CompoundStatementClassDef $
       Py.ClassDefinition (Just decs) (Py.Name lname) [] args comment body
   where
     lname = localNameOfEager name
-    pytparams = snd <$> fst tparams
-    args = if L.null pytparams
+    args = if L.null tparamList
       then Nothing
       else Just $ Py.Args [Py.PosArgExpression $ pyPrimaryToPyExpression $
-        primaryWithExpressionSlices (pyNameToPyPrimary $ Py.Name "Generic") (pyNameToPyExpression <$> pytparams)] [] []
+        primaryWithExpressionSlices (pyNameToPyPrimary $ Py.Name "Generic") (pyNameToPyExpression <$> tparamList)] [] []
     decs = Py.Decorators [pyNameToPyNamedExpression $ Py.Name "dataclass"]
 
-encodeTerm :: PythonNamespaces -> Term -> Flow Graph Py.Expression
-encodeTerm namespaces term = fail "not yet implemented"
+encodeTerm :: PythonEnvironment -> Term -> Flow Graph Py.Expression
+encodeTerm env term = fail "not yet implemented"
 
-encodeType :: PythonNamespaces -> TypeParams -> Type -> Flow Graph Py.Expression
-encodeType namespaces tparams typ = case stripType typ of
-    TypeApplication at -> encodeApplicationType namespaces tparams at
-    TypeFunction ft -> encodeFunctionType namespaces tparams ft
-    TypeLambda lt -> encodeLambdaType namespaces tparams lt
+encodeType :: PythonEnvironment -> Type -> Flow Graph Py.Expression
+encodeType env typ = case stripType typ of
+    TypeApplication at -> encodeApplicationType env at
+    TypeFunction ft -> encodeFunctionType env ft
+    TypeLambda lt -> encodeLambdaType env lt
     TypeList et -> nameAndParams (Py.Name "list") . L.singleton <$> encode et
     TypeMap (MapType kt vt) -> do
       pykt <- encode kt
@@ -188,35 +149,32 @@ encodeType namespaces tparams typ = case stripType typ of
     TypeVariable name -> variableReference name
     _ -> dflt
   where
-    encode = encodeType namespaces tparams
+    encode = encodeType env
     dflt = pure $ stringToPyExpression $ "type = " ++ show (stripType typ)
-    variableReference name = pure $ pyNameToPyExpression $ encodeName namespaces tparams name
+    variableReference name = pure $ pyNameToPyExpression $ encodeName env name
 
-encodeTypeAssignment :: PythonNamespaces -> Name -> Type -> TypeParams -> Maybe String
-  -> Flow Graph ([Py.Statement], S.Set Py.Name)
-encodeTypeAssignment namespaces name typ tparams@(tnames, tmap) comment = case stripType typ of
-    TypeLambda (LambdaType var body) -> encodeTypeAssignment namespaces name body tparams2 comment
-      where
-        tparams2 = (tnames ++ [(var, pyvar)], M.insert var pyvar tmap)
-          where
-            pyvar = Py.Name $ capitalize $ unName var
-    TypeRecord rt -> do
-      st <- encodeRecordType namespaces name rt tparams comment
-      return ([st], tvars)
-    TypeUnion rt -> do
-      st <- encodeUnionType namespaces name rt tparams comment
-      return (st, tvars)
-    TypeWrap (WrappedType _ t) -> singleNewtype <$> encodeType namespaces tparams t
-    t -> singleTypedef <$> encodeType namespaces tparams t
+encodeTypeAssignment :: PythonEnvironment -> Name -> Type -> Maybe String -> Flow Graph [Py.Statement]
+encodeTypeAssignment env name typ comment = encode env typ
   where
-    single st = ([st], tvars)
+    encode env@(PythonEnvironment namespaces (tparamList, tparamMap)) typ = case stripType typ of
+      TypeLambda (LambdaType var body) -> encode newEnv body
+        where
+          pyvar = encodeTypeVariable var
+          newEnv = PythonEnvironment namespaces (tparamList ++ [pyvar], M.insert var pyvar tparamMap)
+      TypeRecord rt -> single <$> encodeRecordType env name rt comment
+      TypeUnion rt -> encodeUnionType env name rt comment
+      TypeWrap (WrappedType _ t) -> singleNewtype <$> encodeType env t
+      t -> singleTypedef <$> encodeType env t
+    single st = [st]
     singleNewtype e = single $ newtypeStatement (Py.Name $ localNameOfEager name) comment e
     singleTypedef e = single $ typeAliasStatement (Py.Name $ sanitizePythonName $ localNameOfEager name) comment e
-    tvars = S.fromList (snd <$> (fst tparams))
+
+encodeTypeVariable :: Name -> Py.Name
+encodeTypeVariable = Py.Name . capitalize . unName
 
 -- TODO: consider producing Python enums where appropriate
-encodeUnionType :: PythonNamespaces -> Name -> RowType -> TypeParams -> Maybe String -> Flow Graph [Py.Statement]
-encodeUnionType namespaces name (RowType _ tfields) tparams comment = do
+encodeUnionType :: PythonEnvironment -> Name -> RowType -> Maybe String -> Flow Graph [Py.Statement]
+encodeUnionType env name (RowType _ tfields) comment = do
     fieldStmts <- CM.mapM toFieldStmt tfields
     return $ fieldStmts ++ [unionStmt]
   where
@@ -226,15 +184,62 @@ encodeUnionType namespaces name (RowType _ tfields) tparams comment = do
           then pure $ assignmentStatement (variantName fname) $
             pyPrimaryToPyExpression $ primaryWithExpressionSlices (pyNameToPyPrimary $ Py.Name "Literal")
               [stringToPyExpression $ unName fname]
-          else newtypeStatement (variantName fname) fcomment <$> encodeType namespaces tparams ftype
+          else newtypeStatement (variantName fname) fcomment <$> encodeType env ftype
     unionStmt = typeAliasStatement (Py.Name $ sanitizePythonName $ localNameOfEager name) comment $
       orExpression (pyNameToPyPrimary . variantName . fieldTypeName <$> tfields)
     variantName fname = Py.Name $ sanitizePythonName $ (localNameOfEager name) ++ (capitalize $ unName fname)
 
+gatherMetadata :: [Definition] -> PythonModuleMetadata
+gatherMetadata = L.foldl addDef start
+  where
+    start = PythonModuleMetadata S.empty
+    addDef meta@(PythonModuleMetadata tvars) def = case def of
+      DefinitionTerm name term typ -> meta
+      DefinitionType name typ -> PythonModuleMetadata $ newTvars tvars typ
+        where
+          newTvars s t = case stripType t of
+            TypeLambda (LambdaType v body) -> newTvars (S.insert v s) body
+            _ -> s
+
 moduleToPythonModule :: Module -> Flow Graph Py.Module
 moduleToPythonModule mod = do
-  namespaces <- namespacesForModule mod
-  transformModule pythonLanguage (encodeTerm namespaces) (constructModule namespaces) mod
+    namespaces <- namespacesForModule mod -- TODO: use the adapted definitions, not the raw module
+    let env = PythonEnvironment namespaces ([], M.empty)
+    defs <- adaptedModuleDefinitions pythonLanguage mod
+    let (PythonModuleMetadata tvars) = gatherMetadata defs
+    defStmts <- L.concat <$> (CM.mapM (createDeclarations env) defs)
+    let tvarStmts = tvarStmt . encodeTypeVariable <$> S.toList tvars
+    let stmts = tvarStmts ++ defStmts
+    let mc = moduleDescription mod
+    return $ Py.Module (imports namespaces) mc stmts
+  where
+    createDeclarations env def = case def of
+      DefinitionTerm name term typ -> withTrace ("data element " ++ unName name) $
+        return [pySimpleStatementToPyStatement Py.SimpleStatementContinue] -- TODO
+      DefinitionType name typ -> withTrace ("type element " ++ unName name) $ do
+        comment <- getTypeDescription typ
+        encodeTypeAssignment env name typ comment
+    createDataDeclaration name term typ = fail "oops"
+    createTypeDeclaration name typ = fail "oops"
+    tvarStmt name = assignmentStatement name $ functionCall (pyNameToPyPrimary $ Py.Name "TypeVar")
+      [stringToPyExpression $ Py.unName name]
+    imports namespaces = standardImports ++ domainImports
+      where
+        domainImports = toImport <$> names
+          where
+            names = L.sort $ M.elems $ namespacesMapping namespaces
+            toImport ns = Py.ImportStatementName $ Py.ImportName [Py.DottedAsName ns Nothing]
+        standardImports = toImport <$> pairs
+          where
+            pairs = [
+              ("__future__", ["annotations"]),
+              ("typing", ["Annotated", "Callable", "Literal", "NewType", "TypeVar"]),
+              ("dataclasses", ["dataclass", "field"])]
+            toImport (modName, symbols) = Py.ImportStatementFrom $
+              Py.ImportFrom [] (Just $ Py.DottedName [Py.Name modName]) $
+                Py.ImportFromTargetsSimple (forSymbol <$> symbols)
+              where
+                forSymbol s = Py.ImportFromAsName (Py.Name s) Nothing
 
 moduleToPython :: Module -> Flow Graph (M.Map FilePath String)
 moduleToPython mod = do
@@ -245,7 +250,7 @@ moduleToPython mod = do
 
 namespacesForModule :: Module -> Flow Graph PythonNamespaces
 namespacesForModule mod = do
-    nss <- moduleDependencyNamespaces True True True True mod
+    nss <- moduleDependencyNamespaces True True True False mod
     return $ Namespaces (toPair focusNs) $ M.fromList (toPair <$> S.toList nss)
   where
     focusNs = moduleNamespace mod
@@ -253,17 +258,3 @@ namespacesForModule mod = do
 
 sanitizePythonName :: String -> String
 sanitizePythonName = sanitizeWithUnderscores pythonReservedWords
-
-toDataDeclarations :: M.Map Type (Coder Graph Graph Term Py.Expression) -> PythonNamespaces -> (Element, TypedTerm)
-  -> Flow Graph [Py.Statement]
-toDataDeclarations coders namespaces (el, TypedTerm term typ) = withTrace ("data element " ++ unName (elementName el)) $ do
-  comment <- getTermDescription term
-  return [pySimpleStatementToPyStatement Py.SimpleStatementContinue]
-
-toTypeDeclarations :: PythonNamespaces -> Element -> Term -> Flow Graph ([Py.Statement], S.Set Py.Name)
-toTypeDeclarations namespaces el term = withTrace ("type element " ++ unName name) $ do
-    typ <- coreDecodeType term >>= adaptType pythonLanguage
-    comment <- getTypeDescription typ
-    encodeTypeAssignment namespaces name typ ([], M.empty) comment
-  where
-    name = elementName el
