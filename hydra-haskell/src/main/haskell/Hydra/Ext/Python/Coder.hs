@@ -80,10 +80,10 @@ encodeFieldName fname = Py.Name $ sanitizePythonName $
 
 encodeFieldType :: PythonNamespaces -> TypeParams -> FieldType -> Flow Graph Py.Statement
 encodeFieldType namespaces tparams (FieldType fname ftype) = do
-    comment <- getTypeDescription ftype
-    let pyName = Py.SingleTargetName $ encodeFieldName fname
-    pyType <- annotatedExpression comment <$> encodeType namespaces tparams ftype
-    return $ pyAssignmentToPyStatement $ Py.AssignmentTyped $ Py.TypedAssignment pyName pyType Nothing
+  comment <- getTypeDescription ftype
+  let pyName = Py.SingleTargetName $ encodeFieldName fname
+  pyType <- annotatedExpression comment <$> encodeType namespaces tparams ftype
+  return $ pyAssignmentToPyStatement $ Py.AssignmentTyped $ Py.TypedAssignment pyName pyType Nothing
 
 encodeFunctionType :: PythonNamespaces -> TypeParams -> FunctionType -> Flow Graph Py.Expression
 encodeFunctionType namespaces tparams ft = do

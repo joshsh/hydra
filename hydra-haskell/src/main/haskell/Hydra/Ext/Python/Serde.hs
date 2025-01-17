@@ -14,8 +14,7 @@ encodeAnnotatedRhs a = spaceSep [cst "=", case a of
   _ -> unsupportedVariant "annotated rhs" a]
 
 encodeAnnotatedStatement :: Py.AnnotatedStatement -> A.Expr
-encodeAnnotatedStatement (Py.AnnotatedStatement mdoc stmt) = newlineSep $ Y.catMaybes $
-  [cst . toPythonComments <$> mdoc, Just $ encodeStatement stmt]
+encodeAnnotatedStatement (Py.AnnotatedStatement doc stmt) = newlineSep [cst $ toPythonComments doc, encodeStatement stmt]
 
 encodeArgs :: Py.Args -> A.Expr
 encodeArgs (Py.Args positional kwargStarred kwargDoubleStarred) = commaSep inlineStyle $ ps ++ ks ++ kss

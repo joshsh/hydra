@@ -70,7 +70,7 @@ pythonLanguage = Coders.Language {
 
 -- | A set of reserved words in Python
 pythonReservedWords :: (Set String)
-pythonReservedWords = (Sets.fromList keywords)
+pythonReservedWords = (Sets.fromList keywords) 
   where 
     keywords = [
       "False",

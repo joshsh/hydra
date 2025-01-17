@@ -10,7 +10,7 @@ import Data.Set as S
 
 data AnnotatedStatement = 
   AnnotatedStatement {
-    annotatedStatementComment :: (Maybe String),
+    annotatedStatementComment :: String,
     annotatedStatementStatement :: Statement}
   deriving (Eq, Ord, Read, Show)
 
