@@ -17,6 +17,11 @@ annotatedExpression mcomment expr = case mcomment of
   Just c -> pyPrimaryToPyExpression $
     primaryWithExpressionSlices (pyNameToPyPrimary $ Py.Name "Annotated") [expr, stringToPyExpression c]
 
+annotatedStatement :: Maybe String -> Py.Statement -> Py.Statement
+annotatedStatement mcomment stmt = case mcomment of
+  Nothing -> stmt
+  Just c -> Py.StatementAnnotated $ Py.AnnotatedStatement c stmt
+
 decodePyExpressionToPyPrimary :: Py.Expression -> Maybe Py.Primary
 decodePyExpressionToPyPrimary e = case e of
   Py.ExpressionSimple (Py.Disjunction [conjunction]) -> decodePyConjunctionToPyPrimary conjunction
@@ -51,7 +56,7 @@ nameAndParams :: Py.Name -> [Py.Expression] -> Py.Expression
 nameAndParams pyName params = primaryAndParams (pyNameToPyPrimary pyName) params
 
 newtypeStatement :: Py.Name -> Maybe String -> Py.Expression -> Py.Statement
-newtypeStatement name mcomment expr = assignmentStatement name $ annotatedExpression mcomment $
+newtypeStatement name mcomment expr = annotatedStatement mcomment $ assignmentStatement name $
   functionCall (pyNameToPyPrimary $ Py.Name "NewType") [stringToPyExpression $ Py.unName name, expr]
 
 primaryAndParams :: Py.Primary -> [Py.Expression] -> Py.Expression
@@ -145,6 +150,4 @@ stringToPyExpression :: String -> Py.Expression
 stringToPyExpression = pyAtomToPyExpression . Py.AtomString
 
 typeAliasStatement :: Py.Name -> Maybe String -> Py.Expression -> Py.Statement
---typeAliasStatement name mcomment tyexpr = pySimpleStatementToPyStatement $
---  Py.SimpleStatementTypeAlias $ Py.TypeAlias name [] $ annotatedExpression mcomment tyexpr
-typeAliasStatement name mcomment tyexpr = assignmentStatement name $ annotatedExpression mcomment tyexpr
+typeAliasStatement name mcomment tyexpr = annotatedStatement mcomment $ assignmentStatement name tyexpr

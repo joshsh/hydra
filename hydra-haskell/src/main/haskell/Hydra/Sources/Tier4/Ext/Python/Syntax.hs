@@ -23,7 +23,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
     -- These definitions are not based on the grammar, but are convenient for working with Python sources in Hydra.
     constructs = [
       def "AnnotatedStatement" $ record [ -- Note: added for Hydra-Python
-        "comment">: optional string,
+        "comment">: string,
         "statement">: python "Statement"],
 
       def "Module" $ record [
