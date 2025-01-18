@@ -210,14 +210,14 @@ moduleToPythonModule mod = do
     defStmts <- L.concat <$> (CM.mapM (createDeclarations env) defs)
     let tvarStmts = tvarStmt . encodeTypeVariable <$> S.toList tvars
     let stmts = tvarStmts ++ defStmts
-    let mc = moduleDescription mod
+    let mc = normalizeComment <$> moduleDescription mod
     return $ Py.Module (imports namespaces) mc stmts
   where
     createDeclarations env def = case def of
       DefinitionTerm name term typ -> withTrace ("data element " ++ unName name) $
         return [pySimpleStatementToPyStatement Py.SimpleStatementContinue] -- TODO
       DefinitionType name typ -> withTrace ("type element " ++ unName name) $ do
-        comment <- getTypeDescription typ
+        comment <- fmap normalizeComment <$> getTypeDescription typ
         encodeTypeAssignment env name typ comment
     createDataDeclaration name term typ = fail "oops"
     createTypeDeclaration name typ = fail "oops"

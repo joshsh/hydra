@@ -17,12 +17,12 @@ annotatedExpression mcomment expr = case mcomment of
   Nothing -> expr
   Just c -> pyPrimaryToPyExpression $
     primaryWithExpressionSlices (pyNameToPyPrimary $ Py.Name "Annotated")
-    [expr, stringToPyExpression $ normalizeComment c]
+    [expr, stringToPyExpression c]
 
 annotatedStatement :: Maybe String -> Py.Statement -> Py.Statement
 annotatedStatement mcomment stmt = case mcomment of
   Nothing -> stmt
-  Just c -> Py.StatementAnnotated $ Py.AnnotatedStatement (normalizeComment c) stmt
+  Just c -> Py.StatementAnnotated $ Py.AnnotatedStatement c stmt
 
 decodePyExpressionToPyPrimary :: Py.Expression -> Maybe Py.Primary
 decodePyExpressionToPyPrimary e = case e of
