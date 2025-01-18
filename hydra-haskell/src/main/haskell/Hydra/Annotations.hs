@@ -83,8 +83,16 @@ getTypeClasses typ = case getTypeAnnotation key_classes typ of
 getTypeDescription :: Type -> Flow Graph (Y.Maybe String)
 getTypeDescription = getDescription . typeAnnotationInternal
 
+hasDescription :: M.Map Name Term -> Bool
+hasDescription anns = case getAnnotation key_description anns of
+  Nothing -> False
+  Just _ -> True
+
 hasFlag :: Name -> Flow s Bool
 hasFlag flag = getAttrWithDefault flag (Terms.boolean False) >>= Expect.boolean
+
+hasTypeDescription :: Type -> Bool
+hasTypeDescription = hasDescription . typeAnnotationInternal
 
 -- | Return a zero-indexed counter for the given key: 0, 1, 2, ...
 nextCount :: Name -> Flow s Int
