@@ -1,24 +1,25 @@
-"""A JSON syntax model. See the BNF at https://www.json.org"""
+"""A JSON syntax model. See the BNF at https://www.json.org."""
 
 from __future__ import annotations
-from typing import Annotated, Literal, NewType
+from typing import Literal, NewType
+import hydra.core
 
-ValueArray = Annotated[NewType("ValueArray", list[Value]), "A JSON array"]
+# A JSON array
+ValueArray = NewType("ValueArray", list[Value])
 
-ValueBoolean = Annotated[NewType("ValueBoolean", bool), "A boolean value"]
+# A boolean value
+ValueBoolean = NewType("ValueBoolean", bool)
 
 ValueNull = Literal["null"]
 
-ValueNumber = Annotated[NewType("ValueNumber", float), "A numeric value"]
+# A numeric value
+ValueNumber = NewType("ValueNumber", float)
 
-ValueObject = Annotated[
-    NewType("ValueObject", dict[str, Value]),
-    "A JSON object as a set of key/value pairs",
-]
+# A JSON object as a set of key/value pairs
+ValueObject = NewType("ValueObject", dict[str, Value])
 
-ValueString = Annotated[NewType("ValueString", str), "A string value"]
+# A string value
+ValueString = NewType("ValueString", str)
 
-Value = Annotated[
-    ValueArray | ValueBoolean | ValueNull | ValueNumber | ValueObject | ValueString,
-    "A JSON value",
-]
+# A JSON value.
+Value = ValueArray | ValueBoolean | ValueNull | ValueNumber | ValueObject | ValueString
