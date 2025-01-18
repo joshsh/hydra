@@ -25,10 +25,17 @@ data PythonEnvironment = PythonEnvironment {
   pythonEnvironmentNamespaces :: PythonNamespaces,
   pythonEnvironmentBoundTypeVariables :: TypeParams}
 
-type PythonNamespaces = Namespaces Py.DottedName
-
+-- | Temporary metadata which is used to create the header section of a Python file
 data PythonModuleMetadata = PythonModuleMetadata {
-  pythonModuleMetadataBoundTypeVariables :: S.Set Name}
+  pythonModuleMetadataTypeVariables :: S.Set Name,
+  pythonModuleMetadataUsesAnnotated :: Bool,
+  pythonModuleMetadataUsesCallable :: Bool,
+  pythonModuleMetadataUsesDataclass :: Bool,
+  pythonModuleMetadataUsesLiteral :: Bool,
+  pythonModuleMetadataUsesNewType :: Bool,
+  pythonModuleMetadataUsesTypeVar :: Bool}
+
+type PythonNamespaces = Namespaces Py.DottedName
 
 type TypeParams = ([Py.Name], M.Map Name Py.Name)
 
@@ -49,12 +56,12 @@ encodeFieldType env (FieldType fname ftype) = do
 
 encodeFunctionType :: PythonEnvironment -> FunctionType -> Flow Graph Py.Expression
 encodeFunctionType env ft = do
-  pydoms <- CM.mapM encode doms
-  pycod <- encode cod
-  return $ pyPrimaryToPyExpression $ primaryWithSlices (pyNameToPyPrimary $ Py.Name "Callable")
-    (pyPrimaryToPySlice $ Py.PrimarySimple $ Py.AtomList $
-      Py.List (Py.StarNamedExpressionSimple . Py.NamedExpressionSimple <$> pydoms))
-    [Py.SliceOrStarredExpressionSlice $ pyExpressionToPySlice pycod]
+    pydoms <- CM.mapM encode doms
+    pycod <- encode cod
+    return $ pyPrimaryToPyExpression $ primaryWithSlices (pyNameToPyPrimary $ Py.Name "Callable")
+      (pyPrimaryToPySlice $ Py.PrimarySimple $ Py.AtomList $
+        Py.List (Py.StarNamedExpressionSimple . Py.NamedExpressionSimple <$> pydoms))
+      [Py.SliceOrStarredExpressionSlice $ pyExpressionToPySlice pycod]
   where
     encode = encodeType env
     (doms, cod) = gatherParams [] ft
@@ -113,12 +120,13 @@ encodeNamespace :: Namespace -> Py.DottedName
 encodeNamespace ns = Py.DottedName (Py.Name <$> (Strings.splitOn "/" $ unNamespace ns))
 
 encodeRecordType :: PythonEnvironment -> Name -> RowType -> Maybe String -> Flow Graph Py.Statement
-encodeRecordType env@(PythonEnvironment _ (tparamList, tparamMap)) name (RowType _ tfields) comment = do
+encodeRecordType env name (RowType _ tfields) comment = do
     pyFields <- CM.mapM (encodeFieldType env) tfields
     let body = Py.BlockIndented pyFields
     return $ Py.StatementCompound $ Py.CompoundStatementClassDef $
       Py.ClassDefinition (Just decs) (Py.Name lname) [] args comment body
   where
+    (tparamList, tparamMap) = pythonEnvironmentBoundTypeVariables env
     lname = localNameOfEager name
     args = if L.null tparamList
       then Nothing
@@ -156,11 +164,12 @@ encodeType env typ = case stripType typ of
 encodeTypeAssignment :: PythonEnvironment -> Name -> Type -> Maybe String -> Flow Graph [Py.Statement]
 encodeTypeAssignment env name typ comment = encode env typ
   where
-    encode env@(PythonEnvironment namespaces (tparamList, tparamMap)) typ = case stripType typ of
+    encode env typ = case stripType typ of
       TypeLambda (LambdaType var body) -> encode newEnv body
         where
           pyvar = encodeTypeVariable var
-          newEnv = PythonEnvironment namespaces (tparamList ++ [pyvar], M.insert var pyvar tparamMap)
+          (tparamList, tparamMap) = pythonEnvironmentBoundTypeVariables env
+          newEnv = env {pythonEnvironmentBoundTypeVariables = (tparamList ++ [pyvar], M.insert var pyvar tparamMap)}
       TypeRecord rt -> single <$> encodeRecordType env name rt comment
       TypeUnion rt -> encodeUnionType env name rt comment
       TypeWrap (WrappedType _ t) -> singleNewtype <$> encodeType env t
@@ -190,28 +199,57 @@ encodeUnionType env name (RowType _ tfields) comment = do
     variantName fname = Py.Name $ sanitizePythonName $ (localNameOfEager name) ++ (capitalize $ unName fname)
 
 gatherMetadata :: [Definition] -> PythonModuleMetadata
-gatherMetadata = L.foldl addDef start
+gatherMetadata defs = checkTvars $ L.foldl addDef start defs
   where
-    start = PythonModuleMetadata S.empty
-    addDef meta@(PythonModuleMetadata tvars) def = case def of
-      DefinitionTerm name term typ -> meta
-      DefinitionType name typ -> PythonModuleMetadata $ newTvars tvars typ
+    checkTvars meta = meta {pythonModuleMetadataUsesTypeVar = not $ S.null $ pythonModuleMetadataTypeVariables meta}
+    start = PythonModuleMetadata {
+      pythonModuleMetadataTypeVariables = S.empty,
+      pythonModuleMetadataUsesAnnotated = False,
+      pythonModuleMetadataUsesCallable = False,
+      pythonModuleMetadataUsesDataclass = False,
+      pythonModuleMetadataUsesLiteral = False,
+      pythonModuleMetadataUsesNewType = False,
+      pythonModuleMetadataUsesTypeVar = False}
+    addDef meta def = case def of
+      DefinitionTerm _ _ _ -> meta
+      DefinitionType _ typ -> foldOverType TraversalOrderPre extendMeta newMeta typ
         where
-          newTvars s t = case stripType t of
-            TypeLambda (LambdaType v body) -> newTvars (S.insert v s) body
-            _ -> s
+          tvars = pythonModuleMetadataTypeVariables meta
+          newMeta = meta {pythonModuleMetadataTypeVariables = newTvars tvars typ}
+            where
+              newTvars s t = case stripType t of
+                TypeLambda (LambdaType v body) -> newTvars (S.insert v s) body
+                _ -> s
+          extendMeta meta t = case t of
+            TypeFunction _ -> meta {pythonModuleMetadataUsesCallable = True}
+            TypeRecord (RowType _ fields) -> meta {
+                pythonModuleMetadataUsesAnnotated = L.foldl checkForAnnotated (pythonModuleMetadataUsesAnnotated meta) fields,
+                pythonModuleMetadataUsesDataclass = pythonModuleMetadataUsesDataclass meta || not (L.null fields)}
+              where
+                checkForAnnotated b (FieldType _ ft) = b || hasTypeDescription ft
+            TypeUnion (RowType _ fields) -> meta {
+                pythonModuleMetadataUsesLiteral = L.foldl checkForLiteral (pythonModuleMetadataUsesLiteral meta) fields,
+                pythonModuleMetadataUsesNewType = L.foldl checkForNewType (pythonModuleMetadataUsesNewType meta) fields}
+              where
+                checkForLiteral b (FieldType _ ft) = b || isUnitType (stripType ft)
+                checkForNewType b (FieldType _ ft) = b || not (isUnitType (stripType ft))
+            TypeWrap _ -> meta {pythonModuleMetadataUsesNewType = True}
+            _ -> meta
 
 moduleToPythonModule :: Module -> Flow Graph Py.Module
 moduleToPythonModule mod = do
     namespaces <- namespacesForModule mod -- TODO: use the adapted definitions, not the raw module
-    let env = PythonEnvironment namespaces ([], M.empty)
+    let env = PythonEnvironment {
+              pythonEnvironmentNamespaces = namespaces,
+              pythonEnvironmentBoundTypeVariables = ([], M.empty)}
     defs <- adaptedModuleDefinitions pythonLanguage mod
-    let (PythonModuleMetadata tvars) = gatherMetadata defs
+    let meta = gatherMetadata defs
+    let tvars = pythonModuleMetadataTypeVariables meta
     defStmts <- L.concat <$> (CM.mapM (createDeclarations env) defs)
     let tvarStmts = tvarStmt . encodeTypeVariable <$> S.toList tvars
     let stmts = tvarStmts ++ defStmts
     let mc = normalizeComment <$> moduleDescription mod
-    return $ Py.Module (imports namespaces) mc stmts
+    return $ Py.Module (imports namespaces meta) mc stmts
   where
     createDeclarations env def = case def of
       DefinitionTerm name term typ -> withTrace ("data element " ++ unName name) $
@@ -223,18 +261,31 @@ moduleToPythonModule mod = do
     createTypeDeclaration name typ = fail "oops"
     tvarStmt name = assignmentStatement name $ functionCall (pyNameToPyPrimary $ Py.Name "TypeVar")
       [stringToPyExpression $ Py.unName name]
-    imports namespaces = standardImports ++ domainImports
+    imports namespaces meta = standardImports ++ domainImports
       where
+
         domainImports = toImport <$> names
           where
             names = L.sort $ M.elems $ namespacesMapping namespaces
             toImport ns = Py.ImportStatementName $ Py.ImportName [Py.DottedAsName ns Nothing]
-        standardImports = toImport <$> pairs
+        standardImports = toImport <$> (Y.catMaybes (simplifyPair <$> pairs))
           where
+            simplifyPair (a, symbols) = if L.null rem then Nothing else Just (a, rem)
+              where
+                rem = Y.catMaybes symbols
             pairs = [
-              ("__future__", ["annotations"]),
-              ("typing", ["Annotated", "Callable", "Literal", "NewType", "TypeVar"]),
-              ("dataclasses", ["dataclass", "field"])]
+                ("__future__", [Just "annotations"]),
+                ("collections.abc", [
+                  cond "Callable" $ pythonModuleMetadataUsesCallable meta]),
+                ("typing", [
+                  cond "Annotated" $ pythonModuleMetadataUsesAnnotated meta,
+                  cond "Literal" $ pythonModuleMetadataUsesLiteral meta,
+                  cond "NewType" $ pythonModuleMetadataUsesNewType meta,
+                  cond "TypeVar" $ pythonModuleMetadataUsesTypeVar meta]),
+                ("dataclasses", [
+                  cond "dataclass" $ pythonModuleMetadataUsesDataclass meta])]
+              where
+                cond name b = if b then Just name else Nothing
             toImport (modName, symbols) = Py.ImportStatementFrom $
               Py.ImportFrom [] (Just $ Py.DottedName [Py.Name modName]) $
                 Py.ImportFromTargetsSimple (forSymbol <$> symbols)
