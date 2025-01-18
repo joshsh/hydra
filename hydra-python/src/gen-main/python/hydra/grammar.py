@@ -1,24 +1,25 @@
-"""A common API for BNF-based grammars, specifying context-free languages"""
+"""A common API for BNF-based grammars, specifying context-free languages."""
 
 from __future__ import annotations
-from typing import Annotated, Literal, NewType
+from typing import Literal, NewType
 from dataclasses import dataclass
+import hydra.core
 
-Constant = Annotated[str, "A constant pattern"]
+# A constant pattern.
+Constant = str
 
-Grammar = Annotated[list[Production], "An enhanced Backus-Naur form (BNF) grammar"]
+# An enhanced Backus-Naur form (BNF) grammar.
+Grammar = list[Production]
 
-Label = Annotated[str, "A name for a pattern"]
-
+# A name for a pattern.
+Label = str
 
 @dataclass
 class LabeledPattern:
-    """A pattern together with a name (label)"""
+    """A pattern together with a name (label)."""
 
     label: Label
-
     pattern: Pattern
-
 
 PatternNil = Literal["nil"]
 
@@ -42,31 +43,18 @@ PatternStar = NewType("PatternStar", Pattern)
 
 PatternPlus = NewType("PatternPlus", Pattern)
 
-Pattern = Annotated[
-    PatternNil
-    | PatternIgnored
-    | PatternLabeled
-    | PatternConstant
-    | PatternRegex
-    | PatternNonterminal
-    | PatternSequence
-    | PatternAlternatives
-    | PatternOption
-    | PatternStar
-    | PatternPlus,
-    "A pattern which matches valid expressions in the language",
-]
-
+# A pattern which matches valid expressions in the language.
+Pattern = PatternNil | PatternIgnored | PatternLabeled | PatternConstant | PatternRegex | PatternNonterminal | PatternSequence | PatternAlternatives | PatternOption | PatternStar | PatternPlus
 
 @dataclass
 class Production:
-    """A BNF production"""
+    """A BNF production."""
 
     symbol: Symbol
-
     pattern: Pattern
 
+# A regular expression.
+Regex = str
 
-Regex = Annotated[str, "A regular expression"]
-
-Symbol = Annotated[str, "A nonterminal symbol"]
+# A nonterminal symbol.
+Symbol = str
