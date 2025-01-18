@@ -4,7 +4,7 @@ This directory contains a Python implementation of Hydra, still in progress.
 
 ## Getting Started
 
-Install uv.
+Install [uv](https://github.com/astral-sh/uv).
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
@@ -20,19 +20,25 @@ Install the dependencies.
 uv sync
 ```
 
+Install [Ruff](https://github.com/astral-sh/ruff), e.g. on macOS.
+```bash
+brew install ruff
+```
+
 ## Formatting, Linting, and Type Checking
 
 All of these commands can run from the Hydra Python root directory, but files/directories can be specified as arguments
 as well to get more specific results.
 
 #### Formatting
-Format the code.
+
+Format the hand-written Python code.
 ```bash
 ruff format
 ```
 
 #### Linting
-Run the linter.
+
 Run the linter.
 ```bash
 ruff check
