@@ -23,7 +23,7 @@ V2 = TypeVar("V2")
 X = TypeVar("X")
 
 @dataclass
-class Adapter (Generic[S1, S2, T1, T2, V1, V2]):
+class Adapter(Generic[S1, S2, T1, T2, V1, V2]):
     """A two-level bidirectional encoder which adapts types to types and terms to terms."""
 
     is_lossy: bool
@@ -32,14 +32,14 @@ class Adapter (Generic[S1, S2, T1, T2, V1, V2]):
     coder: Coder[S1, S2, V1, V2]
 
 @dataclass
-class Bicoder (Generic[S1, S2, T1, T2, V1, V2]):
+class Bicoder(Generic[S1, S2, T1, T2, V1, V2]):
     """A two-level encoder and decoder, operating both at a type level and an instance (data) level."""
 
     encode: Callable[[T1], Adapter[S1, S2, T1, T2, V1, V2]]
     decode: Callable[[T2], Adapter[S2, S1, T2, T1, V2, V1]]
 
 @dataclass
-class Coder (Generic[S1, S2, V1, V2]):
+class Coder(Generic[S1, S2, V1, V2]):
     """An encoder and decoder; a bidirectional flow between two types."""
 
     encode: Callable[[V1], Flow[S1, V2]]
@@ -49,7 +49,7 @@ class Coder (Generic[S1, S2, V1, V2]):
 Flow = Callable[[S, Trace], FlowState[S, X]]
 
 @dataclass
-class FlowState (Generic[S, X]):
+class FlowState(Generic[S, X]):
     """The result of evaluating a Flow."""
 
     value: X | None

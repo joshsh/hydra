@@ -21,7 +21,7 @@ class HydraSchemaSpec:
     type_name: Annotated[hydra.core.Name, "The name of the top-level type; all data which passes through the workflow will be instances of this type"]
 
 @dataclass
-class LastMile (Generic[S, A]):
+class LastMile(Generic[S, A]):
     """The last mile of a transformation, which encodes and serializes terms to a file."""
 
     encoder: Annotated[Callable[[hydra.core.Type], hydra.compute.Flow[S, Callable[[hydra.core.Term, hydra.graph.Graph], hydra.compute.Flow[S, list[A]]]]], "An encoder for terms to a list of output objects"]

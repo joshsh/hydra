@@ -11,7 +11,7 @@ A = TypeVar("A")
 TCase = hydra.core.Name
 
 @dataclass
-class TElement (Generic[A]):
+class TElement(Generic[A]):
     """An association with a named term (element) with a phantom type."""
 
     name: hydra.core.Name

@@ -71,7 +71,10 @@ encodeClassDefinition (Py.ClassDefinition mdecs name tparams args comment body) 
   Y.catMaybes [encodeDecorators <$> mdecs, Just classExpr]
   where
     classExpr = newlineSep [
-        noSep [spaceSep $ Y.catMaybes [Just $ cst "class", Just $ encodeName name, (argExp <$> args)], cst ":"],
+        noSep $ Y.catMaybes [
+          Just $ spaceSep $ Y.catMaybes [Just $ cst "class", Just $ encodeName name],
+          (argExp <$> args),
+          Just $ cst ":"],
         doubleNewlineSep $ Y.catMaybes [
           (\c -> tabIndent (tripleQuotedString c)) <$> comment,
           Just $ encodeBlock False body]] -- TODO: tparams
