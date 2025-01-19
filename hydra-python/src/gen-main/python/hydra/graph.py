@@ -45,7 +45,7 @@ class Primitive:
     implementation: Annotated[Callable[[list[hydra.core.Term]], hydra.compute.Flow[Graph, hydra.core.Term]], "A concrete implementation of the primitive function"]
 
 @dataclass
-class TermCoder (Generic[X]):
+class TermCoder(Generic[X]):
     """A type together with a coder for mapping terms into arguments for primitive functions, and mapping computed results into terms."""
 
     type: hydra.core.Type
