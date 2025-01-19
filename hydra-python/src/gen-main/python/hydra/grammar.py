@@ -3,7 +3,6 @@
 from __future__ import annotations
 from typing import Literal, NewType
 from dataclasses import dataclass
-import hydra.core
 
 # A constant pattern.
 Constant = str

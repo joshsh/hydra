@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 from typing import Literal, NewType
-import hydra.core
 
 # A JSON array
 ValueArray = NewType("ValueArray", list[Value])
