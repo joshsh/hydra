@@ -31,6 +31,7 @@ data PythonModuleMetadata = PythonModuleMetadata {
   pythonModuleMetadataUsesAnnotated :: Bool,
   pythonModuleMetadataUsesCallable :: Bool,
   pythonModuleMetadataUsesDataclass :: Bool,
+  pythonModuleMetadataUsesGeneric :: Bool,
   pythonModuleMetadataUsesLiteral :: Bool,
   pythonModuleMetadataUsesNewType :: Bool,
   pythonModuleMetadataUsesTypeVar :: Bool}
@@ -207,6 +208,7 @@ gatherMetadata defs = checkTvars $ L.foldl addDef start defs
       pythonModuleMetadataUsesAnnotated = False,
       pythonModuleMetadataUsesCallable = False,
       pythonModuleMetadataUsesDataclass = False,
+      pythonModuleMetadataUsesGeneric = False,
       pythonModuleMetadataUsesLiteral = False,
       pythonModuleMetadataUsesNewType = False,
       pythonModuleMetadataUsesTypeVar = False}
@@ -222,6 +224,7 @@ gatherMetadata defs = checkTvars $ L.foldl addDef start defs
                 _ -> s
           extendMeta meta t = case t of
             TypeFunction _ -> meta {pythonModuleMetadataUsesCallable = True}
+            TypeLambda _ -> meta {pythonModuleMetadataUsesGeneric = True}
             TypeRecord (RowType _ fields) -> meta {
                 pythonModuleMetadataUsesAnnotated = L.foldl checkForAnnotated (pythonModuleMetadataUsesAnnotated meta) fields,
                 pythonModuleMetadataUsesDataclass = pythonModuleMetadataUsesDataclass meta || not (L.null fields)}
@@ -279,6 +282,7 @@ moduleToPythonModule mod = do
                   cond "Callable" $ pythonModuleMetadataUsesCallable meta]),
                 ("typing", [
                   cond "Annotated" $ pythonModuleMetadataUsesAnnotated meta,
+                  cond "Generic" $ pythonModuleMetadataUsesGeneric meta,
                   cond "Literal" $ pythonModuleMetadataUsesLiteral meta,
                   cond "NewType" $ pythonModuleMetadataUsesNewType meta,
                   cond "TypeVar" $ pythonModuleMetadataUsesTypeVar meta]),

@@ -1,7 +1,7 @@
 """Phantom types for use with Hydra DSLs."""
 
 from __future__ import annotations
-from typing import TypeVar
+from typing import Generic, TypeVar
 from dataclasses import dataclass
 import hydra.core
 

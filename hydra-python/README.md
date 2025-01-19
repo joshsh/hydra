@@ -20,9 +20,10 @@ Install the dependencies.
 uv sync
 ```
 
-Install [Ruff](https://github.com/astral-sh/ruff), e.g. on macOS.
+Install [Ruff](https://github.com/astral-sh/ruff) and [pyright](https://github.com/microsoft/pyright), e.g. on macOS.
 ```bash
 brew install ruff
+brew install pyright
 ```
 
 ## Formatting, Linting, and Type Checking
