@@ -301,7 +301,7 @@ moduleToPython mod = do
 
 namespacesForModule :: Module -> Flow Graph PythonNamespaces
 namespacesForModule mod = do
-    nss <- moduleDependencyNamespaces True True True False mod
+    nss <- moduleDependencyNamespaces True True False False mod
     return $ Namespaces (toPair focusNs) $ M.fromList (toPair <$> S.toList nss)
   where
     focusNs = moduleNamespace mod
