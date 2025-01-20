@@ -1,8 +1,8 @@
 """A model which provides a common syntax tree for Hydra serializers."""
 
 from __future__ import annotations
-from typing import Literal, NewType
 from dataclasses import dataclass
+from typing import Literal, NewType
 
 AssociativityNone = Literal["none"]
 

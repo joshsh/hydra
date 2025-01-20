@@ -1,8 +1,8 @@
 """A model for Hydra namespaces and modules."""
 
 from __future__ import annotations
-from typing import Annotated
 from dataclasses import dataclass
+from typing import Annotated
 import hydra.graph
 
 FileExtension = str

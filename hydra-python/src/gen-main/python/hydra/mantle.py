@@ -1,8 +1,8 @@
 """A set of types which supplement hydra/core with variants and accessors."""
 
 from __future__ import annotations
-from typing import Generic, Literal, NewType, TypeVar
 from dataclasses import dataclass
+from typing import Generic, Literal, NewType, TypeVar
 import hydra.core
 
 A = TypeVar("A")

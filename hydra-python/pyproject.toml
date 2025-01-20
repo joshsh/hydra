@@ -15,7 +15,6 @@ check = ["pyright>=1.1.391"]
 [tool.uv]
 default-groups = ["test", "lint", "check"]
 
-
 [tool.ruff]
 line-length = 88
 indent-width = 4
