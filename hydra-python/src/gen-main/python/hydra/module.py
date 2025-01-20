@@ -10,6 +10,7 @@ type FileExtension = str
 @dataclass
 class Library:
     """A library of primitive functions."""
+    
     namespace: Annotated[Namespace, "A common prefix for all primitive function names in the library"]
     prefix: Annotated[str, "A preferred namespace prefix for function names in the library"]
     primitives: Annotated[list[hydra.graph.Primitive], "The primitives defined in this library"]
@@ -17,6 +18,7 @@ class Library:
 @dataclass
 class Module:
     """A logical collection of elements in the same namespace, having dependencies on zero or more other modules."""
+    
     namespace: Annotated[Namespace, "A common prefix for all element names in the module"]
     elements: Annotated[list[hydra.graph.Element], "The elements defined in this module"]
     term_dependencies: Annotated[list[Module], "Any modules which the term expressions of this module directly depend upon"]
@@ -29,5 +31,6 @@ type Namespace = str
 @dataclass
 class QualifiedName:
     """A qualified name consisting of an optional namespace together with a mandatory local name."""
+    
     namespace: Namespace | None
     local: str

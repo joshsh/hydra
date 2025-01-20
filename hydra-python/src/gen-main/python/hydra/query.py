@@ -6,23 +6,17 @@ from hydra.dsl.types import Variant
 from typing import Annotated
 import hydra.core
 
-class ComparisonConstraintEqual(Variant[None]):
-    pass
+class ComparisonConstraintEqual(Variant[None]): ...
 
-class ComparisonConstraintNotEqual(Variant[None]):
-    pass
+class ComparisonConstraintNotEqual(Variant[None]): ...
 
-class ComparisonConstraintLessThan(Variant[None]):
-    pass
+class ComparisonConstraintLessThan(Variant[None]): ...
 
-class ComparisonConstraintGreaterThan(Variant[None]):
-    pass
+class ComparisonConstraintGreaterThan(Variant[None]): ...
 
-class ComparisonConstraintLessThanOrEqual(Variant[None]):
-    pass
+class ComparisonConstraintLessThanOrEqual(Variant[None]): ...
 
-class ComparisonConstraintGreaterThanOrEqual(Variant[None]):
-    pass
+class ComparisonConstraintGreaterThanOrEqual(Variant[None]): ...
 
 # One of several comparison operators.
 type ComparisonConstraint = ComparisonConstraintEqual | ComparisonConstraintNotEqual | ComparisonConstraintLessThan | ComparisonConstraintGreaterThan | ComparisonConstraintLessThanOrEqual | ComparisonConstraintGreaterThanOrEqual
@@ -30,6 +24,7 @@ type ComparisonConstraint = ComparisonConstraintEqual | ComparisonConstraintNotE
 @dataclass
 class Edge:
     """An abstract edge based on a record type."""
+    
     type: Annotated[hydra.core.Name, "The name of a record type, for which the edge also specifies an out- and an in- projection"]
     out: Annotated[hydra.core.Name | None, "The field representing the out-projection of the edge. Defaults to 'out'."]
     in_: Annotated[hydra.core.Name | None, "The field representing the in-projection of the edge. Defaults to 'in'."]
@@ -37,6 +32,7 @@ class Edge:
 @dataclass
 class GraphPattern:
     """A query pattern which matches within a designated component subgraph."""
+    
     graph: Annotated[hydra.core.Name, "The name of the component graph"]
     patterns: Annotated[list[Pattern], "The patterns to match within the subgraph"]
 
@@ -85,12 +81,14 @@ type Pattern = PatternTriple | PatternNegation | PatternConjunction | PatternDis
 @dataclass
 class Query:
     """A SELECT-style graph pattern matching query."""
+    
     variables: Annotated[list[Variable], "The variables selected by the query"]
     patterns: Annotated[list[Pattern], "The patterns to be matched"]
 
 @dataclass
 class Range:
     """A range from min to max, inclusive."""
+    
     min: int
     max: int
 
@@ -121,6 +119,7 @@ type RegexQuantifier = RegexQuantifierOne | RegexQuantifierZeroOrOne | RegexQuan
 @dataclass
 class RegexSequence:
     """A path with a regex quantifier."""
+    
     path: Path
     quantifier: RegexQuantifier
 
@@ -139,6 +138,7 @@ type Step = StepEdge | StepProject | StepCompare
 @dataclass
 class TriplePattern:
     """A subject/predicate/object pattern."""
+    
     subject: Node
     predicate: Path
     object: Node

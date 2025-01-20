@@ -13,15 +13,14 @@ import hydra.mantle
 @dataclass
 class AdapterContext:
     """An evaluation context together with a source language and a target language."""
+    
     graph: hydra.graph.Graph
     language: Language
     adapters: dict[hydra.core.Name, hydra.compute.Adapter[AdapterContext, AdapterContext, hydra.core.Type, hydra.core.Type, hydra.core.Term, hydra.core.Term]]
 
-class CoderDirectionEncode(Variant[None]):
-    pass
+class CoderDirectionEncode(Variant[None]): ...
 
-class CoderDirectionDecode(Variant[None]):
-    pass
+class CoderDirectionDecode(Variant[None]): ...
 
 # Indicates either the 'out' or the 'in' direction of a coder.
 type CoderDirection = CoderDirectionEncode | CoderDirectionDecode
@@ -29,12 +28,14 @@ type CoderDirection = CoderDirectionEncode | CoderDirectionDecode
 @dataclass
 class Language:
     """A named language together with language-specific constraints."""
+    
     name: LanguageName
     constraints: LanguageConstraints
 
 @dataclass
 class LanguageConstraints:
     """A set of constraints on valid type and term expressions, characterizing a language."""
+    
     elimination_variants: Annotated[set[hydra.mantle.EliminationVariant], "All supported elimination variants"]
     literal_variants: Annotated[set[hydra.mantle.LiteralVariant], "All supported literal variants"]
     float_types: Annotated[set[hydra.core.FloatType], "All supported float types"]
