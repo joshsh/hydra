@@ -21,6 +21,9 @@ import qualified Data.Map as M
 import qualified Data.Set as S
 import qualified Data.Maybe as Y
 
+-- Temporary macros for Python code generation
+_useFutureAnnotations_ = True
+
 data PythonEnvironment = PythonEnvironment {
   pythonEnvironmentNamespaces :: PythonNamespaces,
   pythonEnvironmentBoundTypeVariables :: TypeParams}
@@ -112,7 +115,7 @@ encodeName :: PythonEnvironment -> Name -> Py.Name
 encodeName env name = case M.lookup name (snd $ pythonEnvironmentBoundTypeVariables env) of
     Just n -> n
     Nothing -> if ns == Just focusNs
-      then Py.Name local
+      then Py.Name $ if _useFutureAnnotations_ then local else escapePythonString True local
       else Py.Name $ L.intercalate "." $ Strings.splitOn "/" $ unName name
   where
     focusNs = fst $ namespacesFocus $ pythonEnvironmentNamespaces env
@@ -282,7 +285,7 @@ moduleToPythonModule mod = do
               where
                 rem = Y.catMaybes symbols
             pairs = [
-                ("__future__", [Just "annotations"]),
+                ("__future__", [if _useFutureAnnotations_ then Just "annotations" else Nothing]),
                 ("collections.abc", [
                   cond "Callable" $ pythonModuleMetadataUsesCallable meta]),
                 ("dataclasses", [
