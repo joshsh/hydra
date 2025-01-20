@@ -397,7 +397,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
         "name">: python "Name",
         "typeParams">: list $ python "TypeParameter",
         "arguments">: optional $ python "Args",
-        "block">: python "Block"],
+        "body">: python "Block"],
 
 -- class_def_raw:
 --     | 'class' NAME [type_params] ['(' [arguments] ')' ] ':' block

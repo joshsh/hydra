@@ -488,7 +488,7 @@ data ClassDefinition =
     classDefinitionName :: Name,
     classDefinitionTypeParams :: [TypeParameter],
     classDefinitionArguments :: (Maybe Args),
-    classDefinitionBlock :: Block}
+    classDefinitionBody :: Block}
   deriving (Eq, Ord, Read, Show)
 
 _ClassDefinition = (Core.Name "hydra/ext/python/syntax.ClassDefinition")
@@ -501,7 +501,7 @@ _ClassDefinition_typeParams = (Core.Name "typeParams")
 
 _ClassDefinition_arguments = (Core.Name "arguments")
 
-_ClassDefinition_block = (Core.Name "block")
+_ClassDefinition_body = (Core.Name "body")
 
 data FunctionDefinition = 
   FunctionDefinition {

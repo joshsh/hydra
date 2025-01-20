@@ -200,6 +200,9 @@ printExpr e = case e of
       suf = if nlAfter then "\n" else ""
       BlockStyle doIndent nlBefore nlAfter = style
 
+semicolonSep :: [Expr] -> Expr
+semicolonSep = symbolSep ";" inlineStyle
+
 sep :: Op -> [Expr] -> Expr
 sep op els =  case els of
   [] -> cst ""
