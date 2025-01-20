@@ -7,19 +7,12 @@ from typing import Annotated, Generic, TypeVar
 import hydra.core
 
 S = TypeVar("S")
-
 S1 = TypeVar("S1")
-
 S2 = TypeVar("S2")
-
 T1 = TypeVar("T1")
-
 T2 = TypeVar("T2")
-
 V1 = TypeVar("V1")
-
 V2 = TypeVar("V2")
-
 X = TypeVar("X")
 
 @dataclass

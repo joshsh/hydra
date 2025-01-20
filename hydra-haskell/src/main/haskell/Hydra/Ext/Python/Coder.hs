@@ -254,11 +254,16 @@ moduleToPythonModule mod = do
     let meta = gatherMetadata defs
     let tvars = pythonModuleMetadataTypeVariables meta
     defStmts <- L.concat <$> (CM.mapM (createDeclarations env) defs)
+    let importStmts = imports namespaces meta
     let tvarStmts = tvarStmt . encodeTypeVariable <$> S.toList tvars
-    let stmts = tvarStmts ++ defStmts
-    let mc = normalizeComment <$> moduleDescription mod
-    return $ Py.Module (imports namespaces meta) mc stmts
+    let mc = tripleQuotedString . normalizeComment <$> moduleDescription mod
+    let commentStmts = case normalizeComment <$> moduleDescription mod of
+                       Nothing -> []
+                       Just c -> [commentStatement c]
+    let body = L.filter (not . L.null) [commentStmts, importStmts, tvarStmts] ++ (singleton <$> defStmts)
+    return $ Py.Module body
   where
+    singleton s = [s]
     createDeclarations env def = case def of
       DefinitionTerm name term typ -> withTrace ("data element " ++ unName name) $
         return [pySimpleStatementToPyStatement Py.SimpleStatementContinue] -- TODO
@@ -269,9 +274,8 @@ moduleToPythonModule mod = do
     createTypeDeclaration name typ = fail "oops"
     tvarStmt name = assignmentStatement name $ functionCall (pyNameToPyPrimary $ Py.Name "TypeVar")
       [stringToPyExpression Py.QuoteStyleDouble $ Py.unName name]
-    imports namespaces meta = standardImports ++ domainImports
+    imports namespaces meta = pySimpleStatementToPyStatement . Py.SimpleStatementImport <$> (standardImports ++ domainImports)
       where
-
         domainImports = toImport <$> names
           where
             names = L.sort $ M.elems $ namespacesMapping namespaces
