@@ -378,7 +378,8 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 --     | simple_stmts
 
       def "Block" $ union [
-        "indented">: nonemptyList $ python "Statement",
+        -- Statements in indented blocks are grouped in Hydra, for better control over newlines
+        "indented">: nonemptyList $ nonemptyList $ python "Statement",
         "simple">: nonemptyList $ python "SimpleStatement"],
 
 -- decorators: ('@' named_expression NEWLINE )+

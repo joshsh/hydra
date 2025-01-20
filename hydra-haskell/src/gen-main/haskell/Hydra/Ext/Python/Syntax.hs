@@ -465,7 +465,7 @@ newtype DottedName =
 _DottedName = (Core.Name "hydra/ext/python/syntax.DottedName")
 
 data Block = 
-  BlockIndented [Statement] |
+  BlockIndented [[Statement]] |
   BlockSimple [SimpleStatement]
   deriving (Eq, Ord, Read, Show)
 

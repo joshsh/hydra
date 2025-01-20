@@ -64,7 +64,9 @@ encodeBitwiseXor (Py.BitwiseXor lhs rhs) = spaceSep $ Y.catMaybes [encodeLhs <$>
 
 encodeBlock :: Py.Block -> A.Expr
 encodeBlock b = case b of
-  Py.BlockIndented sc -> tabIndentSingleSpace (encodeStatement <$> sc)
+  Py.BlockIndented sc -> tabIndentDoubleSpace (encodeGroup <$> sc)
+    where
+      encodeGroup ss = newlineSep (encodeStatement <$> ss)
   Py.BlockSimple ss -> semicolonSep (encodeSimpleStatement <$> ss)
 
 encodeClassDefinition :: Py.ClassDefinition -> A.Expr

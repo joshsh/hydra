@@ -55,14 +55,14 @@ functionCall func args = pyPrimaryToPyExpression $ primaryWithRhs func $
   Py.PrimaryRhsCall $ Py.Args (Py.PosArgExpression <$> args) [] []
 
 indentedBlock :: Maybe String -> [Py.Statement] -> Py.Block
-indentedBlock mcomment stmts = if L.null allStatements
+indentedBlock mcomment stmts = if L.null groups
     then Py.BlockSimple [pyExpressionToPySimpleStatement $ pyAtomToPyExpression Py.AtomEllipsis]
-    else Py.BlockIndented allStatements
+    else Py.BlockIndented groups
   where
-    allStatements = commentStmts ++ stmts
-    commentStmts = case mcomment of
+    commentGroup = case mcomment of
       Just s -> [pyExpressionToPyStatement $ stringToPyExpression Py.QuoteStyleTriple s]
       Nothing -> []
+    groups = L.filter (not . L.null) [commentGroup, stmts]
 
 nameAndParams :: Py.Name -> [Py.Expression] -> Py.Expression
 nameAndParams pyName params = primaryAndParams (pyNameToPyPrimary pyName) params
