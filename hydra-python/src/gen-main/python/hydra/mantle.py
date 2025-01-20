@@ -77,12 +77,12 @@ class TermAccessorOptionalCasesJust(Variant[None]): ...
 
 class TermAccessorUnionCasesDefault(Variant[None]): ...
 
-class TermAccessorUnionCasesBranch(Variant["type = TypeWrap (WrappedType {wrappedTypeTypeName = Name {unName = \"hydra/core.Name\"}, wrappedTypeObject = TypeLiteral LiteralTypeString})"]):
+class TermAccessorUnionCasesBranch(Variant[hydra.core.Name]):
     """A unique identifier in some context; a string-valued key."""
 
 class TermAccessorLetEnvironment(Variant[None]): ...
 
-class TermAccessorLetBinding(Variant["type = TypeWrap (WrappedType {wrappedTypeTypeName = Name {unName = \"hydra/core.Name\"}, wrappedTypeObject = TypeLiteral LiteralTypeString})"]):
+class TermAccessorLetBinding(Variant[hydra.core.Name]):
     """A unique identifier in some context; a string-valued key."""
 
 class TermAccessorListElement(Variant[int]): ...
@@ -95,7 +95,7 @@ class TermAccessorOptionalTerm(Variant[None]): ...
 
 class TermAccessorProductTerm(Variant[int]): ...
 
-class TermAccessorRecordField(Variant["type = TypeWrap (WrappedType {wrappedTypeTypeName = Name {unName = \"hydra/core.Name\"}, wrappedTypeObject = TypeLiteral LiteralTypeString})"]):
+class TermAccessorRecordField(Variant[hydra.core.Name]):
     """A unique identifier in some context; a string-valued key."""
 
 class TermAccessorSetElement(Variant[int]): ...

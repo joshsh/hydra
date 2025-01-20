@@ -35,7 +35,6 @@ data PythonModuleMetadata = PythonModuleMetadata {
   pythonModuleMetadataUsesCallable :: Bool,
   pythonModuleMetadataUsesDataclass :: Bool,
   pythonModuleMetadataUsesGeneric :: Bool,
-  pythonModuleMetadataUsesLiteral :: Bool,
   pythonModuleMetadataUsesNewType :: Bool,
   pythonModuleMetadataUsesTypeVar :: Bool,
   pythonModuleMetadataUsesVariant :: Bool}
@@ -160,6 +159,7 @@ encodeType env typ = case stripType typ of
     TypeSet et -> nameAndParams (Py.Name "set") . L.singleton <$> encode et
     TypeUnion rt -> variableReference $ rowTypeTypeName rt
     TypeVariable name -> variableReference name
+    TypeWrap (WrappedType name _) -> variableReference name
     _ -> dflt
   where
     encode = encodeType env
@@ -215,7 +215,6 @@ gatherMetadata defs = checkTvars $ L.foldl addDef start defs
       pythonModuleMetadataUsesCallable = False,
       pythonModuleMetadataUsesDataclass = False,
       pythonModuleMetadataUsesGeneric = False,
-      pythonModuleMetadataUsesLiteral = False,
       pythonModuleMetadataUsesNewType = False,
       pythonModuleMetadataUsesTypeVar = False,
       pythonModuleMetadataUsesVariant = False}
@@ -238,13 +237,11 @@ gatherMetadata defs = checkTvars $ L.foldl addDef start defs
               where
                 checkForAnnotated b (FieldType _ ft) = b || hasTypeDescription ft
             TypeUnion (RowType _ fields) -> meta {
---                pythonModuleMetadataUsesLiteral = L.foldl checkForLiteral (pythonModuleMetadataUsesLiteral meta) fields,
---                pythonModuleMetadataUsesNewType = L.foldl checkForNewType (pythonModuleMetadataUsesNewType meta) fields,
                 pythonModuleMetadataUsesVariant = pythonModuleMetadataUsesVariant meta || (not $ L.null fields)}
               where
                 checkForLiteral b (FieldType _ ft) = b || isUnitType (stripType ft)
                 checkForNewType b (FieldType _ ft) = b || not (isUnitType (stripType ft))
-            TypeWrap _ -> meta {pythonModuleMetadataUsesNewType = True}
+            TypeWrap _ -> meta {pythonModuleMetadataUsesNewType = True} -- TODO: this can result in a false positive when the wrapped type is only a reference
             _ -> meta
 
 moduleToPythonModule :: Module -> Flow Graph Py.Module
@@ -295,7 +292,6 @@ moduleToPythonModule mod = do
                 ("typing", [
                   cond "Annotated" $ pythonModuleMetadataUsesAnnotated meta,
                   cond "Generic" $ pythonModuleMetadataUsesGeneric meta,
-                  cond "Literal" $ pythonModuleMetadataUsesLiteral meta,
                   cond "NewType" $ pythonModuleMetadataUsesNewType meta,
                   cond "TypeVar" $ pythonModuleMetadataUsesTypeVar meta])]
               where
