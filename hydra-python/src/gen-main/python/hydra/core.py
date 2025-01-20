@@ -8,30 +8,35 @@ from typing import Annotated, NewType
 @dataclass
 class AnnotatedTerm:
     """A term together with an annotation."""
+    
     subject: Term
     annotation: dict[Name, Term]
 
 @dataclass
 class AnnotatedType:
     """A type together with an annotation."""
+    
     subject: Type
     annotation: dict[Name, Term]
 
 @dataclass
 class Application:
     """A term which applies a function to an argument."""
+    
     function: Annotated[Term, "The left-hand side of the application"]
     argument: Annotated[Term, "The right-hand side of the application"]
 
 @dataclass
 class ApplicationType:
     """The type-level analog of an application term."""
+    
     function: Annotated[Type, "The left-hand side of the application"]
     argument: Annotated[Type, "The right-hand side of the application"]
 
 @dataclass
 class CaseStatement:
     """A union elimination; a case statement."""
+    
     type_name: Name
     default: Term | None
     cases: list[Field]
@@ -60,23 +65,22 @@ type Elimination = EliminationList | EliminationOptional | EliminationProduct | 
 @dataclass
 class Field:
     """A name/term pair."""
+    
     name: Name
     term: Term
 
 @dataclass
 class FieldType:
     """A name/type pair."""
+    
     name: Name
     type: Type
 
-class FloatTypeBigfloat(Variant[None]):
-    pass
+class FloatTypeBigfloat(Variant[None]): ...
 
-class FloatTypeFloat32(Variant[None]):
-    pass
+class FloatTypeFloat32(Variant[None]): ...
 
-class FloatTypeFloat64(Variant[None]):
-    pass
+class FloatTypeFloat64(Variant[None]): ...
 
 # A floating-point type.
 type FloatType = FloatTypeBigfloat | FloatTypeFloat32 | FloatTypeFloat64
@@ -108,41 +112,34 @@ type Function = FunctionElimination | FunctionLambda | FunctionPrimitive
 @dataclass
 class FunctionType:
     """A function type, also known as an arrow type."""
+    
     domain: Type
     codomain: Type
 
 @dataclass
 class Injection:
     """An instance of a union type; i.e. a string-indexed generalization of inl() or inr()."""
+    
     type_name: Name
     field: Field
 
-class IntegerTypeBigint(Variant[None]):
-    pass
+class IntegerTypeBigint(Variant[None]): ...
 
-class IntegerTypeInt8(Variant[None]):
-    pass
+class IntegerTypeInt8(Variant[None]): ...
 
-class IntegerTypeInt16(Variant[None]):
-    pass
+class IntegerTypeInt16(Variant[None]): ...
 
-class IntegerTypeInt32(Variant[None]):
-    pass
+class IntegerTypeInt32(Variant[None]): ...
 
-class IntegerTypeInt64(Variant[None]):
-    pass
+class IntegerTypeInt64(Variant[None]): ...
 
-class IntegerTypeUint8(Variant[None]):
-    pass
+class IntegerTypeUint8(Variant[None]): ...
 
-class IntegerTypeUint16(Variant[None]):
-    pass
+class IntegerTypeUint16(Variant[None]): ...
 
-class IntegerTypeUint32(Variant[None]):
-    pass
+class IntegerTypeUint32(Variant[None]): ...
 
-class IntegerTypeUint64(Variant[None]):
-    pass
+class IntegerTypeUint64(Variant[None]): ...
 
 # An integer type.
 type IntegerType = IntegerTypeBigint | IntegerTypeInt8 | IntegerTypeInt16 | IntegerTypeInt32 | IntegerTypeInt64 | IntegerTypeUint8 | IntegerTypeUint16 | IntegerTypeUint32 | IntegerTypeUint64
@@ -180,6 +177,7 @@ type IntegerValue = IntegerValueBigint | IntegerValueInt8 | IntegerValueInt16 | 
 @dataclass
 class Lambda:
     """A function abstraction (lambda)."""
+    
     parameter: Annotated[Name, "The parameter of the lambda"]
     domain: Annotated[Type | None, "An optional domain type for the lambda"]
     body: Annotated[Term, "The body of the lambda"]
@@ -187,18 +185,21 @@ class Lambda:
 @dataclass
 class LambdaType:
     """A type abstraction; the type-level analog of a lambda term."""
+    
     parameter: Annotated[Name, "The variable which is bound by the lambda"]
     body: Annotated[Type, "The body of the lambda"]
 
 @dataclass
 class Let:
     """A set of (possibly recursive) 'let' bindings together with an environment in which they are bound."""
+    
     bindings: list[LetBinding]
     environment: Term
 
 @dataclass
 class LetBinding:
     """A field with an optional type scheme, used to bind variables to terms in a 'let' expression."""
+    
     name: Name
     term: Term
     type: TypeScheme | None
@@ -242,6 +243,7 @@ type LiteralType = LiteralTypeBinary | LiteralTypeBoolean | LiteralTypeFloat | L
 @dataclass
 class MapType:
     """A map type."""
+    
     keys: Type
     values: Type
 
@@ -251,30 +253,35 @@ Name = NewType("Name", str)
 @dataclass
 class OptionalCases:
     """A case statement for matching optional terms."""
+    
     nothing: Annotated[Term, "A term provided if the optional value is nothing"]
     just: Annotated[Term, "A function which is applied if the optional value is non-nothing"]
 
 @dataclass
 class Projection:
     """A record elimination; a projection."""
+    
     type_name: Annotated[Name, "The name of the record type"]
     field: Annotated[Name, "The name of the projected field"]
 
 @dataclass
 class Record:
     """A record, or labeled tuple; a map of field names to terms."""
+    
     type_name: Name
     fields: list[Field]
 
 @dataclass
 class RowType:
     """A labeled record or union type."""
+    
     type_name: Annotated[Name, "The name of the row type, which must correspond to the name of a Type element"]
     fields: Annotated[list[FieldType], "The fields of this row type, excluding any inherited fields"]
 
 @dataclass
 class Sum:
     """The unlabeled equivalent of an Injection term."""
+    
     index: int
     size: int
     term: Annotated[Term, "A data term"]
@@ -288,8 +295,7 @@ class TermApplication(Variant[Application]):
 class TermFunction(Variant[Function]):
     """A function term."""
 
-class TermLet(Variant[Let]):
-    pass
+class TermLet(Variant[Let]): ...
 
 class TermList(Variant[list[Term]]):
     """A list."""
@@ -330,8 +336,7 @@ class TermUnion(Variant[Injection]):
 class TermVariable(Variant[Name]):
     """A variable reference."""
 
-class TermWrap(Variant[WrappedTerm]):
-    pass
+class TermWrap(Variant[WrappedTerm]): ...
 
 # A data term.
 type Term = TermAnnotated | TermApplication | TermFunction | TermLet | TermList | TermLiteral | TermMap | TermOptional | TermProduct | TermRecord | TermSet | TermSum | TermTypeAbstraction | TermTypeApplication | TermTyped | TermUnion | TermVariable | TermWrap
@@ -339,53 +344,39 @@ type Term = TermAnnotated | TermApplication | TermFunction | TermLet | TermList 
 @dataclass
 class TupleProjection:
     """A tuple elimination; a projection from an integer-indexed product."""
+    
     arity: Annotated[int, "The arity of the tuple"]
     index: Annotated[int, "The 0-indexed offset from the beginning of the tuple"]
 
-class TypeAnnotated(Variant[AnnotatedType]):
-    pass
+class TypeAnnotated(Variant[AnnotatedType]): ...
 
-class TypeApplication(Variant[ApplicationType]):
-    pass
+class TypeApplication(Variant[ApplicationType]): ...
 
-class TypeFunction(Variant[FunctionType]):
-    pass
+class TypeFunction(Variant[FunctionType]): ...
 
-class TypeLambda(Variant[LambdaType]):
-    pass
+class TypeLambda(Variant[LambdaType]): ...
 
-class TypeList(Variant[Type]):
-    pass
+class TypeList(Variant[Type]): ...
 
-class TypeLiteral(Variant[LiteralType]):
-    pass
+class TypeLiteral(Variant[LiteralType]): ...
 
-class TypeMap(Variant[MapType]):
-    pass
+class TypeMap(Variant[MapType]): ...
 
-class TypeOptional(Variant[Type]):
-    pass
+class TypeOptional(Variant[Type]): ...
 
-class TypeProduct(Variant[list[Type]]):
-    pass
+class TypeProduct(Variant[list[Type]]): ...
 
-class TypeRecord(Variant[RowType]):
-    pass
+class TypeRecord(Variant[RowType]): ...
 
-class TypeSet(Variant[Type]):
-    pass
+class TypeSet(Variant[Type]): ...
 
-class TypeSum(Variant[list[Type]]):
-    pass
+class TypeSum(Variant[list[Type]]): ...
 
-class TypeUnion(Variant[RowType]):
-    pass
+class TypeUnion(Variant[RowType]): ...
 
-class TypeVariable(Variant[Name]):
-    pass
+class TypeVariable(Variant[Name]): ...
 
-class TypeWrap(Variant[WrappedType]):
-    pass
+class TypeWrap(Variant[WrappedType]): ...
 
 # A data type.
 type Type = TypeAnnotated | TypeApplication | TypeFunction | TypeLambda | TypeList | TypeLiteral | TypeMap | TypeOptional | TypeProduct | TypeRecord | TypeSet | TypeSum | TypeUnion | TypeVariable | TypeWrap
@@ -393,18 +384,21 @@ type Type = TypeAnnotated | TypeApplication | TypeFunction | TypeLambda | TypeLi
 @dataclass
 class TypeAbstraction:
     """A System F type abstraction term."""
+    
     parameter: Annotated[Name, "The type variable introduced by the abstraction"]
     body: Annotated[Term, "The body of the abstraction"]
 
 @dataclass
 class TypeScheme:
     """A type expression together with free type variables occurring in the expression."""
+    
     variables: list[Name]
     type: Type
 
 @dataclass
 class TypedTerm:
     """A term together with its type."""
+    
     term: Term
     type: Type
 
@@ -415,11 +409,13 @@ class Unit:
 @dataclass
 class WrappedTerm:
     """A term wrapped in a type name."""
+    
     type_name: Name
     object: Term
 
 @dataclass
 class WrappedType:
     """A type wrapped in a type name."""
+    
     type_name: Name
     object: Type

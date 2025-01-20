@@ -10,203 +10,146 @@ A = TypeVar("A")
 
 B = TypeVar("B")
 
-class EitherLeft(Variant[A]):
-    pass
+class EitherLeft(Variant[A]): ...
 
-class EitherRight(Variant[B]):
-    pass
+class EitherRight(Variant[B]): ...
 
 # A disjoint union between a 'left' type and a 'right' type.
 type Either = EitherLeft | EitherRight
 
-class EliminationVariantList(Variant[None]):
-    pass
+class EliminationVariantList(Variant[None]): ...
 
-class EliminationVariantOptional(Variant[None]):
-    pass
+class EliminationVariantOptional(Variant[None]): ...
 
-class EliminationVariantProduct(Variant[None]):
-    pass
+class EliminationVariantProduct(Variant[None]): ...
 
-class EliminationVariantRecord(Variant[None]):
-    pass
+class EliminationVariantRecord(Variant[None]): ...
 
-class EliminationVariantUnion(Variant[None]):
-    pass
+class EliminationVariantUnion(Variant[None]): ...
 
-class EliminationVariantWrap(Variant[None]):
-    pass
+class EliminationVariantWrap(Variant[None]): ...
 
 # The identifier of an elimination constructor.
 type EliminationVariant = EliminationVariantList | EliminationVariantOptional | EliminationVariantProduct | EliminationVariantRecord | EliminationVariantUnion | EliminationVariantWrap
 
-class FunctionVariantElimination(Variant[None]):
-    pass
+class FunctionVariantElimination(Variant[None]): ...
 
-class FunctionVariantLambda(Variant[None]):
-    pass
+class FunctionVariantLambda(Variant[None]): ...
 
-class FunctionVariantPrimitive(Variant[None]):
-    pass
+class FunctionVariantPrimitive(Variant[None]): ...
 
 # The identifier of a function constructor.
 type FunctionVariant = FunctionVariantElimination | FunctionVariantLambda | FunctionVariantPrimitive
 
-class LiteralVariantBinary(Variant[None]):
-    pass
+class LiteralVariantBinary(Variant[None]): ...
 
-class LiteralVariantBoolean(Variant[None]):
-    pass
+class LiteralVariantBoolean(Variant[None]): ...
 
-class LiteralVariantFloat(Variant[None]):
-    pass
+class LiteralVariantFloat(Variant[None]): ...
 
-class LiteralVariantInteger(Variant[None]):
-    pass
+class LiteralVariantInteger(Variant[None]): ...
 
-class LiteralVariantString(Variant[None]):
-    pass
+class LiteralVariantString(Variant[None]): ...
 
 # The identifier of a literal constructor.
 type LiteralVariant = LiteralVariantBinary | LiteralVariantBoolean | LiteralVariantFloat | LiteralVariantInteger | LiteralVariantString
 
-class PrecisionArbitrary(Variant[None]):
-    pass
+class PrecisionArbitrary(Variant[None]): ...
 
-class PrecisionBits(Variant[int]):
-    pass
+class PrecisionBits(Variant[int]): ...
 
 # Numeric precision: arbitrary precision, or precision to a specified number of bits.
 type Precision = PrecisionArbitrary | PrecisionBits
 
-class TermAccessorAnnotatedSubject(Variant[None]):
-    pass
+class TermAccessorAnnotatedSubject(Variant[None]): ...
 
-class TermAccessorApplicationFunction(Variant[None]):
-    pass
+class TermAccessorApplicationFunction(Variant[None]): ...
 
-class TermAccessorApplicationArgument(Variant[None]):
-    pass
+class TermAccessorApplicationArgument(Variant[None]): ...
 
-class TermAccessorLambdaBody(Variant[None]):
-    pass
+class TermAccessorLambdaBody(Variant[None]): ...
 
-class TermAccessorListFold(Variant[None]):
-    pass
+class TermAccessorListFold(Variant[None]): ...
 
-class TermAccessorOptionalCasesNothing(Variant[None]):
-    pass
+class TermAccessorOptionalCasesNothing(Variant[None]): ...
 
-class TermAccessorOptionalCasesJust(Variant[None]):
-    pass
+class TermAccessorOptionalCasesJust(Variant[None]): ...
 
-class TermAccessorUnionCasesDefault(Variant[None]):
-    pass
+class TermAccessorUnionCasesDefault(Variant[None]): ...
 
 class TermAccessorUnionCasesBranch(Variant["type = TypeWrap (WrappedType {wrappedTypeTypeName = Name {unName = \"hydra/core.Name\"}, wrappedTypeObject = TypeLiteral LiteralTypeString})"]):
     """A unique identifier in some context; a string-valued key."""
 
-class TermAccessorLetEnvironment(Variant[None]):
-    pass
+class TermAccessorLetEnvironment(Variant[None]): ...
 
 class TermAccessorLetBinding(Variant["type = TypeWrap (WrappedType {wrappedTypeTypeName = Name {unName = \"hydra/core.Name\"}, wrappedTypeObject = TypeLiteral LiteralTypeString})"]):
     """A unique identifier in some context; a string-valued key."""
 
-class TermAccessorListElement(Variant[int]):
-    pass
+class TermAccessorListElement(Variant[int]): ...
 
-class TermAccessorMapKey(Variant[int]):
-    pass
+class TermAccessorMapKey(Variant[int]): ...
 
-class TermAccessorMapValue(Variant[int]):
-    pass
+class TermAccessorMapValue(Variant[int]): ...
 
-class TermAccessorOptionalTerm(Variant[None]):
-    pass
+class TermAccessorOptionalTerm(Variant[None]): ...
 
-class TermAccessorProductTerm(Variant[int]):
-    pass
+class TermAccessorProductTerm(Variant[int]): ...
 
 class TermAccessorRecordField(Variant["type = TypeWrap (WrappedType {wrappedTypeTypeName = Name {unName = \"hydra/core.Name\"}, wrappedTypeObject = TypeLiteral LiteralTypeString})"]):
     """A unique identifier in some context; a string-valued key."""
 
-class TermAccessorSetElement(Variant[int]):
-    pass
+class TermAccessorSetElement(Variant[int]): ...
 
-class TermAccessorSumTerm(Variant[None]):
-    pass
+class TermAccessorSumTerm(Variant[None]): ...
 
-class TermAccessorTypeAbstractionBody(Variant[None]):
-    pass
+class TermAccessorTypeAbstractionBody(Variant[None]): ...
 
-class TermAccessorTypeApplicationTerm(Variant[None]):
-    pass
+class TermAccessorTypeApplicationTerm(Variant[None]): ...
 
-class TermAccessorTypedTerm(Variant[None]):
-    pass
+class TermAccessorTypedTerm(Variant[None]): ...
 
-class TermAccessorInjectionTerm(Variant[None]):
-    pass
+class TermAccessorInjectionTerm(Variant[None]): ...
 
-class TermAccessorWrappedTerm(Variant[None]):
-    pass
+class TermAccessorWrappedTerm(Variant[None]): ...
 
 # A function which maps from a term to a particular immediate subterm.
 type TermAccessor = TermAccessorAnnotatedSubject | TermAccessorApplicationFunction | TermAccessorApplicationArgument | TermAccessorLambdaBody | TermAccessorListFold | TermAccessorOptionalCasesNothing | TermAccessorOptionalCasesJust | TermAccessorUnionCasesDefault | TermAccessorUnionCasesBranch | TermAccessorLetEnvironment | TermAccessorLetBinding | TermAccessorListElement | TermAccessorMapKey | TermAccessorMapValue | TermAccessorOptionalTerm | TermAccessorProductTerm | TermAccessorRecordField | TermAccessorSetElement | TermAccessorSumTerm | TermAccessorTypeAbstractionBody | TermAccessorTypeApplicationTerm | TermAccessorTypedTerm | TermAccessorInjectionTerm | TermAccessorWrappedTerm
 
-class TermVariantAnnotated(Variant[None]):
-    pass
+class TermVariantAnnotated(Variant[None]): ...
 
-class TermVariantApplication(Variant[None]):
-    pass
+class TermVariantApplication(Variant[None]): ...
 
-class TermVariantFunction(Variant[None]):
-    pass
+class TermVariantFunction(Variant[None]): ...
 
-class TermVariantLet(Variant[None]):
-    pass
+class TermVariantLet(Variant[None]): ...
 
-class TermVariantList(Variant[None]):
-    pass
+class TermVariantList(Variant[None]): ...
 
-class TermVariantLiteral(Variant[None]):
-    pass
+class TermVariantLiteral(Variant[None]): ...
 
-class TermVariantMap(Variant[None]):
-    pass
+class TermVariantMap(Variant[None]): ...
 
-class TermVariantOptional(Variant[None]):
-    pass
+class TermVariantOptional(Variant[None]): ...
 
-class TermVariantProduct(Variant[None]):
-    pass
+class TermVariantProduct(Variant[None]): ...
 
-class TermVariantRecord(Variant[None]):
-    pass
+class TermVariantRecord(Variant[None]): ...
 
-class TermVariantSet(Variant[None]):
-    pass
+class TermVariantSet(Variant[None]): ...
 
-class TermVariantSum(Variant[None]):
-    pass
+class TermVariantSum(Variant[None]): ...
 
-class TermVariantTypeAbstraction(Variant[None]):
-    pass
+class TermVariantTypeAbstraction(Variant[None]): ...
 
-class TermVariantTypeApplication(Variant[None]):
-    pass
+class TermVariantTypeApplication(Variant[None]): ...
 
-class TermVariantTyped(Variant[None]):
-    pass
+class TermVariantTyped(Variant[None]): ...
 
-class TermVariantUnion(Variant[None]):
-    pass
+class TermVariantUnion(Variant[None]): ...
 
-class TermVariantVariable(Variant[None]):
-    pass
+class TermVariantVariable(Variant[None]): ...
 
-class TermVariantWrap(Variant[None]):
-    pass
+class TermVariantWrap(Variant[None]): ...
 
 # The identifier of a term expression constructor.
 type TermVariant = TermVariantAnnotated | TermVariantApplication | TermVariantFunction | TermVariantLet | TermVariantList | TermVariantLiteral | TermVariantMap | TermVariantOptional | TermVariantProduct | TermVariantRecord | TermVariantSet | TermVariantSum | TermVariantTypeAbstraction | TermVariantTypeApplication | TermVariantTyped | TermVariantUnion | TermVariantVariable | TermVariantWrap
@@ -214,54 +157,40 @@ type TermVariant = TermVariantAnnotated | TermVariantApplication | TermVariantFu
 @dataclass
 class TypeConstraint:
     """An assertion that two types can be unified into a single type."""
+    
     left: hydra.core.Type
     right: hydra.core.Type
     context: str | None
 
-class TypeVariantAnnotated(Variant[None]):
-    pass
+class TypeVariantAnnotated(Variant[None]): ...
 
-class TypeVariantApplication(Variant[None]):
-    pass
+class TypeVariantApplication(Variant[None]): ...
 
-class TypeVariantFunction(Variant[None]):
-    pass
+class TypeVariantFunction(Variant[None]): ...
 
-class TypeVariantLambda(Variant[None]):
-    pass
+class TypeVariantLambda(Variant[None]): ...
 
-class TypeVariantList(Variant[None]):
-    pass
+class TypeVariantList(Variant[None]): ...
 
-class TypeVariantLiteral(Variant[None]):
-    pass
+class TypeVariantLiteral(Variant[None]): ...
 
-class TypeVariantMap(Variant[None]):
-    pass
+class TypeVariantMap(Variant[None]): ...
 
-class TypeVariantOptional(Variant[None]):
-    pass
+class TypeVariantOptional(Variant[None]): ...
 
-class TypeVariantProduct(Variant[None]):
-    pass
+class TypeVariantProduct(Variant[None]): ...
 
-class TypeVariantRecord(Variant[None]):
-    pass
+class TypeVariantRecord(Variant[None]): ...
 
-class TypeVariantSet(Variant[None]):
-    pass
+class TypeVariantSet(Variant[None]): ...
 
-class TypeVariantSum(Variant[None]):
-    pass
+class TypeVariantSum(Variant[None]): ...
 
-class TypeVariantUnion(Variant[None]):
-    pass
+class TypeVariantUnion(Variant[None]): ...
 
-class TypeVariantVariable(Variant[None]):
-    pass
+class TypeVariantVariable(Variant[None]): ...
 
-class TypeVariantWrap(Variant[None]):
-    pass
+class TypeVariantWrap(Variant[None]): ...
 
 # The identifier of a type constructor.
 type TypeVariant = TypeVariantAnnotated | TypeVariantApplication | TypeVariantFunction | TypeVariantLambda | TypeVariantList | TypeVariantLiteral | TypeVariantMap | TypeVariantOptional | TypeVariantProduct | TypeVariantRecord | TypeVariantSet | TypeVariantSum | TypeVariantUnion | TypeVariantVariable | TypeVariantWrap
