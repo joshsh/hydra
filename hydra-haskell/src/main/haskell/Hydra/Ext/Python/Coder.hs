@@ -34,7 +34,8 @@ data PythonModuleMetadata = PythonModuleMetadata {
   pythonModuleMetadataUsesGeneric :: Bool,
   pythonModuleMetadataUsesLiteral :: Bool,
   pythonModuleMetadataUsesNewType :: Bool,
-  pythonModuleMetadataUsesTypeVar :: Bool}
+  pythonModuleMetadataUsesTypeVar :: Bool,
+  pythonModuleMetadataUsesVariant :: Bool}
 
 type PythonNamespaces = Namespaces Py.DottedName
 
@@ -211,7 +212,8 @@ gatherMetadata defs = checkTvars $ L.foldl addDef start defs
       pythonModuleMetadataUsesGeneric = False,
       pythonModuleMetadataUsesLiteral = False,
       pythonModuleMetadataUsesNewType = False,
-      pythonModuleMetadataUsesTypeVar = False}
+      pythonModuleMetadataUsesTypeVar = False,
+      pythonModuleMetadataUsesVariant = False}
     addDef meta def = case def of
       DefinitionTerm _ _ _ -> meta
       DefinitionType _ typ -> foldOverType TraversalOrderPre extendMeta newMeta typ
@@ -232,7 +234,8 @@ gatherMetadata defs = checkTvars $ L.foldl addDef start defs
                 checkForAnnotated b (FieldType _ ft) = b || hasTypeDescription ft
             TypeUnion (RowType _ fields) -> meta {
                 pythonModuleMetadataUsesLiteral = L.foldl checkForLiteral (pythonModuleMetadataUsesLiteral meta) fields,
-                pythonModuleMetadataUsesNewType = L.foldl checkForNewType (pythonModuleMetadataUsesNewType meta) fields}
+                pythonModuleMetadataUsesNewType = L.foldl checkForNewType (pythonModuleMetadataUsesNewType meta) fields,
+                pythonModuleMetadataUsesVariant = False} -- TODO
               where
                 checkForLiteral b (FieldType _ ft) = b || isUnitType (stripType ft)
                 checkForNewType b (FieldType _ ft) = b || not (isUnitType (stripType ft))
@@ -280,14 +283,16 @@ moduleToPythonModule mod = do
                 ("__future__", [Just "annotations"]),
                 ("collections.abc", [
                   cond "Callable" $ pythonModuleMetadataUsesCallable meta]),
+                ("dataclasses", [
+                  cond "dataclass" $ pythonModuleMetadataUsesDataclass meta]),
+                ("hydra.dsl.types", [
+                  cond "Variant" $ pythonModuleMetadataUsesVariant meta]),
                 ("typing", [
                   cond "Annotated" $ pythonModuleMetadataUsesAnnotated meta,
                   cond "Generic" $ pythonModuleMetadataUsesGeneric meta,
                   cond "Literal" $ pythonModuleMetadataUsesLiteral meta,
                   cond "NewType" $ pythonModuleMetadataUsesNewType meta,
-                  cond "TypeVar" $ pythonModuleMetadataUsesTypeVar meta]),
-                ("dataclasses", [
-                  cond "dataclass" $ pythonModuleMetadataUsesDataclass meta])]
+                  cond "TypeVar" $ pythonModuleMetadataUsesTypeVar meta])]
               where
                 cond name b = if b then Just name else Nothing
             toImport (modName, symbols) = Py.ImportStatementFrom $
