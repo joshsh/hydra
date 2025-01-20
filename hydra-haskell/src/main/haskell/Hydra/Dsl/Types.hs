@@ -1,4 +1,4 @@
--- | A DSL for constructing Hydra types
+-- | A domain-specific language for constructing Hydra types in Haskell.
 
 {-# LANGUAGE FlexibleInstances #-} -- TODO: temporary, for IsString (Type)
 module Hydra.Dsl.Types where

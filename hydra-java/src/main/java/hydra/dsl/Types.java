@@ -29,7 +29,7 @@ import static hydra.dsl.Core.name;
 
 
 /**
- * DSL utilities for constructing Hydra types.
+ * A domain-specific language for constructing Hydra types in Java.
  */
 public interface Types {
     Name PLACEHOLDER_NAME = name("Placeholder");
