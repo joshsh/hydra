@@ -1,8 +1,8 @@
 """A model for language-agnostic graph pattern queries."""
 
 from __future__ import annotations
-from typing import Annotated, Literal, NewType
 from dataclasses import dataclass
+from typing import Annotated, Literal, NewType
 import hydra.core
 
 ComparisonConstraintEqual = Literal["equal"]

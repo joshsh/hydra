@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 from collections.abc import Callable
-from typing import Annotated, Generic, Literal, TypeVar
 from dataclasses import dataclass
+from typing import Annotated, Generic, Literal, TypeVar
 import hydra.compute
 import hydra.core
 

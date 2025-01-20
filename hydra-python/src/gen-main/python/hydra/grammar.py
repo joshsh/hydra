@@ -1,8 +1,8 @@
 """A common API for BNF-based grammars, specifying context-free languages."""
 
 from __future__ import annotations
-from typing import Literal, NewType
 from dataclasses import dataclass
+from typing import Literal, NewType
 
 # A constant pattern.
 Constant = str
