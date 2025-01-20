@@ -36,7 +36,7 @@ import static hydra.dsl.Core.*;
 
 
 /**
- * DSL utilities for constructing Hydra terms based on native Java objects.
+ * A domain-specific language for constructing Hydra terms in Java.
  */
 public interface Terms {
     /**
