@@ -2,23 +2,26 @@
 
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Literal, NewType
+from hydra.dsl.types import Variant
 
-AssociativityNone = Literal["none"]
+class AssociativityNone(Variant[None]):
+    pass
 
-AssociativityLeft = Literal["left"]
+class AssociativityLeft(Variant[None]):
+    pass
 
-AssociativityRight = Literal["right"]
+class AssociativityRight(Variant[None]):
+    pass
 
-AssociativityBoth = Literal["both"]
+class AssociativityBoth(Variant[None]):
+    pass
 
 # Operator associativity.
-Associativity = AssociativityNone | AssociativityLeft | AssociativityRight | AssociativityBoth
+type Associativity = AssociativityNone | AssociativityLeft | AssociativityRight | AssociativityBoth
 
 @dataclass
 class BlockStyle:
     """Formatting option for code blocks."""
-
     indent: str | None
     newline_before_content: bool
     newline_after_content: bool
@@ -26,7 +29,6 @@ class BlockStyle:
 @dataclass
 class BracketExpr:
     """An expression enclosed by brackets."""
-
     brackets: Brackets
     enclosed: Expr
     style: BlockStyle
@@ -34,39 +36,42 @@ class BracketExpr:
 @dataclass
 class Brackets:
     """Matching open and close bracket symbols."""
-
     open: Symbol
     close: Symbol
 
-ExprConst = NewType("ExprConst", Symbol)
+class ExprConst(Variant[Symbol]):
+    pass
 
-ExprIndent = NewType("ExprIndent", IndentedExpression)
+class ExprIndent(Variant[IndentedExpression]):
+    pass
 
-ExprOp = NewType("ExprOp", OpExpr)
+class ExprOp(Variant[OpExpr]):
+    pass
 
-ExprBrackets = NewType("ExprBrackets", BracketExpr)
+class ExprBrackets(Variant[BracketExpr]):
+    pass
 
 # An abstract expression.
-Expr = ExprConst | ExprIndent | ExprOp | ExprBrackets
+type Expr = ExprConst | ExprIndent | ExprOp | ExprBrackets
 
 @dataclass
 class IndentedExpression:
     """An expression indented in a certain style."""
-
     style: IndentStyle
     expr: Expr
 
-IndentStyleAllLines = NewType("IndentStyleAllLines", str)
+class IndentStyleAllLines(Variant[str]):
+    pass
 
-IndentStyleSubsequentLines = NewType("IndentStyleSubsequentLines", str)
+class IndentStyleSubsequentLines(Variant[str]):
+    pass
 
 # Any of several indentation styles.
-IndentStyle = IndentStyleAllLines | IndentStyleSubsequentLines
+type IndentStyle = IndentStyleAllLines | IndentStyleSubsequentLines
 
 @dataclass
 class Op:
     """An operator symbol."""
-
     symbol: Symbol
     padding: Padding
     precedence: Precedence
@@ -75,7 +80,6 @@ class Op:
 @dataclass
 class OpExpr:
     """An operator expression."""
-
     op: Op
     lhs: Expr
     rhs: Expr
@@ -83,25 +87,29 @@ class OpExpr:
 @dataclass
 class Padding:
     """Left and right padding for an operator."""
-
     left: Ws
     right: Ws
 
 # Operator precedence.
-Precedence = int
+type Precedence = int
 
 # Any symbol.
-Symbol = str
+type Symbol = str
 
-WsNone = Literal["none"]
+class WsNone(Variant[None]):
+    pass
 
-WsSpace = Literal["space"]
+class WsSpace(Variant[None]):
+    pass
 
-WsBreak = Literal["break"]
+class WsBreak(Variant[None]):
+    pass
 
-WsBreakAndIndent = NewType("WsBreakAndIndent", str)
+class WsBreakAndIndent(Variant[str]):
+    pass
 
-WsDoubleBreak = Literal["doubleBreak"]
+class WsDoubleBreak(Variant[None]):
+    pass
 
 # One of several classes of whitespace.
-Ws = WsNone | WsSpace | WsBreak | WsBreakAndIndent | WsDoubleBreak
+type Ws = WsNone | WsSpace | WsBreak | WsBreakAndIndent | WsDoubleBreak

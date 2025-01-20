@@ -2,58 +2,67 @@
 
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Literal, NewType
+from hydra.dsl.types import Variant
 
 # A constant pattern.
-Constant = str
+type Constant = str
 
 # An enhanced Backus-Naur form (BNF) grammar.
-Grammar = list[Production]
+type Grammar = list[Production]
 
 # A name for a pattern.
-Label = str
+type Label = str
 
 @dataclass
 class LabeledPattern:
     """A pattern together with a name (label)."""
-
     label: Label
     pattern: Pattern
 
-PatternNil = Literal["nil"]
+class PatternNil(Variant[None]):
+    pass
 
-PatternIgnored = NewType("PatternIgnored", Pattern)
+class PatternIgnored(Variant[Pattern]):
+    pass
 
-PatternLabeled = NewType("PatternLabeled", LabeledPattern)
+class PatternLabeled(Variant[LabeledPattern]):
+    pass
 
-PatternConstant = NewType("PatternConstant", Constant)
+class PatternConstant(Variant[Constant]):
+    pass
 
-PatternRegex = NewType("PatternRegex", Regex)
+class PatternRegex(Variant[Regex]):
+    pass
 
-PatternNonterminal = NewType("PatternNonterminal", Symbol)
+class PatternNonterminal(Variant[Symbol]):
+    pass
 
-PatternSequence = NewType("PatternSequence", list[Pattern])
+class PatternSequence(Variant[list[Pattern]]):
+    pass
 
-PatternAlternatives = NewType("PatternAlternatives", list[Pattern])
+class PatternAlternatives(Variant[list[Pattern]]):
+    pass
 
-PatternOption = NewType("PatternOption", Pattern)
+class PatternOption(Variant[Pattern]):
+    pass
 
-PatternStar = NewType("PatternStar", Pattern)
+class PatternStar(Variant[Pattern]):
+    pass
 
-PatternPlus = NewType("PatternPlus", Pattern)
+class PatternPlus(Variant[Pattern]):
+    pass
 
 # A pattern which matches valid expressions in the language.
-Pattern = PatternNil | PatternIgnored | PatternLabeled | PatternConstant | PatternRegex | PatternNonterminal | PatternSequence | PatternAlternatives | PatternOption | PatternStar | PatternPlus
+type Pattern = PatternNil | PatternIgnored | PatternLabeled | PatternConstant | PatternRegex | PatternNonterminal | PatternSequence | PatternAlternatives | PatternOption | PatternStar | PatternPlus
 
 @dataclass
 class Production:
     """A BNF production."""
-
     symbol: Symbol
     pattern: Pattern
 
 # A regular expression.
-Regex = str
+type Regex = str
 
 # A nonterminal symbol.
-Symbol = str
+type Symbol = str
