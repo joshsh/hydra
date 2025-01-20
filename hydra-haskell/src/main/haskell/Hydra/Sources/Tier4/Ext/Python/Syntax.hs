@@ -29,7 +29,9 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
       def "Module" $ record [
         "imports">: list $ python "ImportStatement",
         "comment">: optional string,
-        "body">: list $ python "Statement"]]
+        "body">: list $ python "Statement"],
+
+      def "QuoteStyle" $ enum ["single", "double", "triple"]]
 
     -- Terminals from the PEG grammar (see below)
     terminals = [
@@ -38,6 +40,10 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
       def "Number" $ union [ -- NUMBER in the grammar
         "integer">: bigint,
         "float">: bigfloat],
+
+      def "String" $ record [ -- STRING in the grammar
+        "value">: string,
+        "quoteStyle">: python "QuoteStyle"],
 
       def "TypeComment" string] -- TYPE_COMMENT in the grammar
 
@@ -391,7 +397,6 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
         "name">: python "Name",
         "typeParams">: list $ python "TypeParameter",
         "arguments">: optional $ python "Args",
-        "comment">: optional string, -- Added for Hydra
         "block">: python "Block"],
 
 -- class_def_raw:
@@ -1338,7 +1343,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
         "true">: unit,
         "false">: unit,
         "none">: unit,
-        "string">: string,
+        "string">: python "String",
         "number">: python "Number",
         "tuple">: python "Tuple",
         "group">: python "Group",

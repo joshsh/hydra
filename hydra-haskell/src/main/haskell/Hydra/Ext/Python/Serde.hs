@@ -38,7 +38,7 @@ encodeAtom a = case a of
   Py.AtomDict d -> encodeDict d
   Py.AtomList l -> encodeList l
   Py.AtomName n -> encodeName n
-  Py.AtomString s -> cst $ escapePythonString True s
+  Py.AtomString s -> encodeString s
   _ -> unsupportedVariant "atom" a
 
 encodeAwaitPrimary :: Py.AwaitPrimary -> A.Expr
@@ -67,7 +67,7 @@ encodeBlock doubleSpace b = case b of
   Py.BlockSimple ss -> (if doubleSpace then doubleNewlineSep else newlineSep) (encodeSimpleStatement <$> ss)
 
 encodeClassDefinition :: Py.ClassDefinition -> A.Expr
-encodeClassDefinition (Py.ClassDefinition mdecs name tparams args comment body) = newlineSep $
+encodeClassDefinition (Py.ClassDefinition mdecs name tparams args body) = newlineSep $
   Y.catMaybes [encodeDecorators <$> mdecs, Just classExpr]
   where
     classExpr = newlineSep [
@@ -75,9 +75,7 @@ encodeClassDefinition (Py.ClassDefinition mdecs name tparams args comment body) 
           Just $ spaceSep $ Y.catMaybes [Just $ cst "class", Just $ encodeName name],
           (argExp <$> args),
           Just $ cst ":"],
-        doubleNewlineSep $ Y.catMaybes [
-          (\c -> tabIndent (tripleQuotedString c)) <$> comment,
-          Just $ encodeBlock False body]] -- TODO: tparams
+        encodeBlock False body] -- TODO: tparams
       where
         argExp a = noSep [cst "(", encodeArgs a, cst ")"]
 
@@ -240,7 +238,9 @@ encodeSimpleStatement :: Py.SimpleStatement -> A.Expr
 encodeSimpleStatement s = case s of
   Py.SimpleStatementAssignment a -> encodeAssignment a
   Py.SimpleStatementImport i -> encodeImportStatement i
+  Py.SimpleStatementPass -> cst "pass"
   Py.SimpleStatementTypeAlias t -> encodeTypeAlias t
+  Py.SimpleStatementStarExpressions exprs -> newlineSep (encodeStarExpression <$> exprs)
   _ -> unsupportedVariant "simple statement" s
 
 encodeSingleTarget :: Py.SingleTarget -> A.Expr
@@ -292,6 +292,12 @@ encodeStatement s = case s of
   Py.StatementAnnotated a -> encodeAnnotatedStatement a
   Py.StatementCompound c -> encodeCompoundStatement c
   Py.StatementSimple stmts -> newlineSep (encodeSimpleStatement <$> stmts)
+
+encodeString :: Py.String_ -> A.Expr
+encodeString (Py.String_ s style) = case style of
+  Py.QuoteStyleSingle -> cst $ escapePythonString False s
+  Py.QuoteStyleDouble -> cst $ escapePythonString True s
+  Py.QuoteStyleTriple -> tripleQuotedString s
 
 encodeSum :: Py.Sum -> A.Expr
 encodeSum (Py.Sum lhs rhs) = spaceSep $ Y.catMaybes [encodeSumLhs <$> lhs, Just $ encodeTerm rhs]
