@@ -3,7 +3,8 @@
 from __future__ import annotations
 from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Annotated, Literal
+from hydra.dsl.types import Variant
+from typing import Annotated
 import hydra.compute
 import hydra.core
 import hydra.graph
@@ -12,29 +13,28 @@ import hydra.mantle
 @dataclass
 class AdapterContext:
     """An evaluation context together with a source language and a target language."""
-
     graph: hydra.graph.Graph
     language: Language
     adapters: dict[hydra.core.Name, hydra.compute.Adapter[AdapterContext, AdapterContext, hydra.core.Type, hydra.core.Type, hydra.core.Term, hydra.core.Term]]
 
-CoderDirectionEncode = Literal["encode"]
+class CoderDirectionEncode(Variant[None]):
+    pass
 
-CoderDirectionDecode = Literal["decode"]
+class CoderDirectionDecode(Variant[None]):
+    pass
 
 # Indicates either the 'out' or the 'in' direction of a coder.
-CoderDirection = CoderDirectionEncode | CoderDirectionDecode
+type CoderDirection = CoderDirectionEncode | CoderDirectionDecode
 
 @dataclass
 class Language:
     """A named language together with language-specific constraints."""
-
     name: LanguageName
     constraints: LanguageConstraints
 
 @dataclass
 class LanguageConstraints:
     """A set of constraints on valid type and term expressions, characterizing a language."""
-
     elimination_variants: Annotated[set[hydra.mantle.EliminationVariant], "All supported elimination variants"]
     literal_variants: Annotated[set[hydra.mantle.LiteralVariant], "All supported literal variants"]
     float_types: Annotated[set[hydra.core.FloatType], "All supported float types"]
@@ -45,11 +45,13 @@ class LanguageConstraints:
     types: Annotated[Callable[[hydra.core.Type], bool], "A logical set of types, as a predicate which tests a type for inclusion"]
 
 # The unique name of a language.
-LanguageName = str
+type LanguageName = str
 
-TraversalOrderPre = Literal["pre"]
+class TraversalOrderPre(Variant[None]):
+    """Pre-order traversal."""
 
-TraversalOrderPost = Literal["post"]
+class TraversalOrderPost(Variant[None]):
+    """Post-order traversal."""
 
 # Specifies either a pre-order or post-order traversal.
-TraversalOrder = TraversalOrderPre | TraversalOrderPost
+type TraversalOrder = TraversalOrderPre | TraversalOrderPost

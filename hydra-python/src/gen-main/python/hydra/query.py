@@ -2,28 +2,34 @@
 
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Annotated, Literal, NewType
+from hydra.dsl.types import Variant
+from typing import Annotated
 import hydra.core
 
-ComparisonConstraintEqual = Literal["equal"]
+class ComparisonConstraintEqual(Variant[None]):
+    pass
 
-ComparisonConstraintNotEqual = Literal["notEqual"]
+class ComparisonConstraintNotEqual(Variant[None]):
+    pass
 
-ComparisonConstraintLessThan = Literal["lessThan"]
+class ComparisonConstraintLessThan(Variant[None]):
+    pass
 
-ComparisonConstraintGreaterThan = Literal["greaterThan"]
+class ComparisonConstraintGreaterThan(Variant[None]):
+    pass
 
-ComparisonConstraintLessThanOrEqual = Literal["lessThanOrEqual"]
+class ComparisonConstraintLessThanOrEqual(Variant[None]):
+    pass
 
-ComparisonConstraintGreaterThanOrEqual = Literal["greaterThanOrEqual"]
+class ComparisonConstraintGreaterThanOrEqual(Variant[None]):
+    pass
 
 # One of several comparison operators.
-ComparisonConstraint = ComparisonConstraintEqual | ComparisonConstraintNotEqual | ComparisonConstraintLessThan | ComparisonConstraintGreaterThan | ComparisonConstraintLessThanOrEqual | ComparisonConstraintGreaterThanOrEqual
+type ComparisonConstraint = ComparisonConstraintEqual | ComparisonConstraintNotEqual | ComparisonConstraintLessThan | ComparisonConstraintGreaterThan | ComparisonConstraintLessThanOrEqual | ComparisonConstraintGreaterThanOrEqual
 
 @dataclass
 class Edge:
     """An abstract edge based on a record type."""
-
     type: Annotated[hydra.core.Name, "The name of a record type, for which the edge also specifies an out- and an in- projection"]
     out: Annotated[hydra.core.Name | None, "The field representing the out-projection of the edge. Defaults to 'out'."]
     in_: Annotated[hydra.core.Name | None, "The field representing the in-projection of the edge. Defaults to 'in'."]
@@ -31,111 +37,111 @@ class Edge:
 @dataclass
 class GraphPattern:
     """A query pattern which matches within a designated component subgraph."""
-
     graph: Annotated[hydra.core.Name, "The name of the component graph"]
     patterns: Annotated[list[Pattern], "The patterns to match within the subgraph"]
 
-# A graph term; an expression which is valid in the graph being matched
-NodeTerm = NewType("NodeTerm", hydra.core.Term)
+class NodeTerm(Variant[hydra.core.Term]):
+    """A graph term; an expression which is valid in the graph being matched."""
 
-# A query variable, not to be confused with a variable term
-NodeVariable = NewType("NodeVariable", Variable)
+class NodeVariable(Variant[Variable]):
+    """A query variable, not to be confused with a variable term."""
 
-NodeWildcard = Literal["wildcard"]
+class NodeWildcard(Variant[None]):
+    """An anonymous variable which we do not care to join across patterns."""
 
 # A node in a query expression; it may be a term, a variable, or a wildcard.
-Node = NodeTerm | NodeVariable | NodeWildcard
+type Node = NodeTerm | NodeVariable | NodeWildcard
 
-# A path given by a single step
-PathStep = NewType("PathStep", Step)
+class PathStep(Variant[Step]):
+    """A path given by a single step."""
 
-# A path given by a regular expression quantifier applied to another path
-PathRegex = NewType("PathRegex", RegexSequence)
+class PathRegex(Variant[RegexSequence]):
+    """A path given by a regular expression quantifier applied to another path."""
 
-# A path given by the inverse of another path
-PathInverse = NewType("PathInverse", Path)
+class PathInverse(Variant[Path]):
+    """A path given by the inverse of another path."""
 
 # A query path.
-Path = PathStep | PathRegex | PathInverse
+type Path = PathStep | PathRegex | PathInverse
 
-# A subject/predicate/object pattern
-PatternTriple = NewType("PatternTriple", TriplePattern)
+class PatternTriple(Variant[TriplePattern]):
+    """A subject/predicate/object pattern."""
 
-# The negation of another pattern
-PatternNegation = NewType("PatternNegation", Pattern)
+class PatternNegation(Variant[Pattern]):
+    """The negation of another pattern."""
 
-# The conjunction ('and') of several other patterns
-PatternConjunction = NewType("PatternConjunction", list[Pattern])
+class PatternConjunction(Variant[list[Pattern]]):
+    """The conjunction ('and') of several other patterns."""
 
-# The disjunction (inclusive 'or') of several other patterns
-PatternDisjunction = NewType("PatternDisjunction", list[Pattern])
+class PatternDisjunction(Variant[list[Pattern]]):
+    """The disjunction (inclusive 'or') of several other patterns."""
 
-# A pattern which matches within a named subgraph
-PatternGraph = NewType("PatternGraph", GraphPattern)
+class PatternGraph(Variant[GraphPattern]):
+    """A pattern which matches within a named subgraph."""
 
 # A query pattern.
-Pattern = PatternTriple | PatternNegation | PatternConjunction | PatternDisjunction | PatternGraph
+type Pattern = PatternTriple | PatternNegation | PatternConjunction | PatternDisjunction | PatternGraph
 
 @dataclass
 class Query:
     """A SELECT-style graph pattern matching query."""
-
     variables: Annotated[list[Variable], "The variables selected by the query"]
     patterns: Annotated[list[Pattern], "The patterns to be matched"]
 
 @dataclass
 class Range:
     """A range from min to max, inclusive."""
-
     min: int
     max: int
 
-RegexQuantifierOne = Literal["one"]
+class RegexQuantifierOne(Variant[None]):
+    """No quantifier; matches a single occurrence."""
 
-RegexQuantifierZeroOrOne = Literal["zeroOrOne"]
+class RegexQuantifierZeroOrOne(Variant[None]):
+    """The ? quanifier; matches zero or one occurrence."""
 
-RegexQuantifierZeroOrMore = Literal["zeroOrMore"]
+class RegexQuantifierZeroOrMore(Variant[None]):
+    """The * quantifier; matches any number of occurrences."""
 
-RegexQuantifierOneOrMore = Literal["oneOrMore"]
+class RegexQuantifierOneOrMore(Variant[None]):
+    """The + quantifier; matches one or more occurrences."""
 
-# The {n} quantifier; matches exactly n occurrences
-RegexQuantifierExactly = NewType("RegexQuantifierExactly", int)
+class RegexQuantifierExactly(Variant[int]):
+    """The {n} quantifier; matches exactly n occurrences."""
 
-# The {n,} quantifier; matches at least n occurrences
-RegexQuantifierAtLeast = NewType("RegexQuantifierAtLeast", int)
+class RegexQuantifierAtLeast(Variant[int]):
+    """The {n,} quantifier; matches at least n occurrences."""
 
-# The {n, m} quantifier; matches between n and m (inclusive) occurrences
-RegexQuantifierRange = NewType("RegexQuantifierRange", Range)
+class RegexQuantifierRange(Variant[Range]):
+    """The {n, m} quantifier; matches between n and m (inclusive) occurrences."""
 
 # A regular expression quantifier.
-RegexQuantifier = RegexQuantifierOne | RegexQuantifierZeroOrOne | RegexQuantifierZeroOrMore | RegexQuantifierOneOrMore | RegexQuantifierExactly | RegexQuantifierAtLeast | RegexQuantifierRange
+type RegexQuantifier = RegexQuantifierOne | RegexQuantifierZeroOrOne | RegexQuantifierZeroOrMore | RegexQuantifierOneOrMore | RegexQuantifierExactly | RegexQuantifierAtLeast | RegexQuantifierRange
 
 @dataclass
 class RegexSequence:
     """A path with a regex quantifier."""
-
     path: Path
     quantifier: RegexQuantifier
 
-# An out-to-in traversal of an abstract edge
-StepEdge = NewType("StepEdge", Edge)
+class StepEdge(Variant[Edge]):
+    """An out-to-in traversal of an abstract edge."""
 
-# A projection from a record through one of its fields
-StepProject = NewType("StepProject", hydra.core.Projection)
+class StepProject(Variant[hydra.core.Projection]):
+    """A projection from a record through one of its fields."""
 
-# A comparison of two terms
-StepCompare = NewType("StepCompare", ComparisonConstraint)
+class StepCompare(Variant[ComparisonConstraint]):
+    """A comparison of two terms."""
 
 # An atomic function as part of a query. When applied to a graph, steps are typed by function types.
-Step = StepEdge | StepProject | StepCompare
+type Step = StepEdge | StepProject | StepCompare
 
 @dataclass
 class TriplePattern:
     """A subject/predicate/object pattern."""
-
     subject: Node
     predicate: Path
     object: Node
 
 # A query variable.
-Variable = str
+type Variable = str

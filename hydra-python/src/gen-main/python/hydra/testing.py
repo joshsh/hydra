@@ -2,20 +2,21 @@
 
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Literal
+from hydra.dsl.types import Variant
 import hydra.core
 
-EvaluationStyleEager = Literal["eager"]
+class EvaluationStyleEager(Variant[None]):
+    pass
 
-EvaluationStyleLazy = Literal["lazy"]
+class EvaluationStyleLazy(Variant[None]):
+    pass
 
 # One of two evaluation styles: eager or lazy.
-EvaluationStyle = EvaluationStyleEager | EvaluationStyleLazy
+type EvaluationStyle = EvaluationStyleEager | EvaluationStyleLazy
 
 @dataclass
 class TestCase:
     """A simple test case with an input and an expected output."""
-
     description: str | None
     evaluation_style: EvaluationStyle
     input: hydra.core.Term
@@ -24,7 +25,6 @@ class TestCase:
 @dataclass
 class TestGroup:
     """A collection of test cases with a name and optional description."""
-
     name: str
     description: str | None
     subgroups: list[TestGroup]

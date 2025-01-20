@@ -2,181 +2,184 @@
 
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Annotated, Literal, NewType
+from hydra.dsl.types import Variant
+from typing import Annotated, NewType
 
 @dataclass
 class AnnotatedTerm:
     """A term together with an annotation."""
-
     subject: Term
     annotation: dict[Name, Term]
 
 @dataclass
 class AnnotatedType:
     """A type together with an annotation."""
-
     subject: Type
     annotation: dict[Name, Term]
 
 @dataclass
 class Application:
     """A term which applies a function to an argument."""
-
     function: Annotated[Term, "The left-hand side of the application"]
     argument: Annotated[Term, "The right-hand side of the application"]
 
 @dataclass
 class ApplicationType:
     """The type-level analog of an application term."""
-
     function: Annotated[Type, "The left-hand side of the application"]
     argument: Annotated[Type, "The right-hand side of the application"]
 
 @dataclass
 class CaseStatement:
     """A union elimination; a case statement."""
-
     type_name: Name
     default: Term | None
     cases: list[Field]
 
-# Eliminates a list using a fold function; this function has the signature b -> [a] -> b
-EliminationList = NewType("EliminationList", Term)
+class EliminationList(Variant[Term]):
+    """Eliminates a list using a fold function; this function has the signature b -> [a] -> b."""
 
-# Eliminates an optional term by matching over the two possible cases
-EliminationOptional = NewType("EliminationOptional", OptionalCases)
+class EliminationOptional(Variant[OptionalCases]):
+    """Eliminates an optional term by matching over the two possible cases."""
 
-# Eliminates a tuple by projecting the component at a given 0-indexed offset
-EliminationProduct = NewType("EliminationProduct", TupleProjection)
+class EliminationProduct(Variant[TupleProjection]):
+    """Eliminates a tuple by projecting the component at a given 0-indexed offset."""
 
-# Eliminates a record by projecting a given field
-EliminationRecord = NewType("EliminationRecord", Projection)
+class EliminationRecord(Variant[Projection]):
+    """Eliminates a record by projecting a given field."""
 
-# Eliminates a union term by matching over the fields of the union. This is a case statement.
-EliminationUnion = NewType("EliminationUnion", CaseStatement)
+class EliminationUnion(Variant[CaseStatement]):
+    """Eliminates a union term by matching over the fields of the union. This is a case statement."""
 
-# Unwrap a wrapped term
-EliminationWrap = NewType("EliminationWrap", Name)
+class EliminationWrap(Variant[Name]):
+    """Unwrap a wrapped term."""
 
 # A corresponding elimination for an introduction term.
-Elimination = EliminationList | EliminationOptional | EliminationProduct | EliminationRecord | EliminationUnion | EliminationWrap
+type Elimination = EliminationList | EliminationOptional | EliminationProduct | EliminationRecord | EliminationUnion | EliminationWrap
 
 @dataclass
 class Field:
     """A name/term pair."""
-
     name: Name
     term: Term
 
 @dataclass
 class FieldType:
     """A name/type pair."""
-
     name: Name
     type: Type
 
-FloatTypeBigfloat = Literal["bigfloat"]
+class FloatTypeBigfloat(Variant[None]):
+    pass
 
-FloatTypeFloat32 = Literal["float32"]
+class FloatTypeFloat32(Variant[None]):
+    pass
 
-FloatTypeFloat64 = Literal["float64"]
+class FloatTypeFloat64(Variant[None]):
+    pass
 
 # A floating-point type.
-FloatType = FloatTypeBigfloat | FloatTypeFloat32 | FloatTypeFloat64
+type FloatType = FloatTypeBigfloat | FloatTypeFloat32 | FloatTypeFloat64
 
-# An arbitrary-precision floating-point value
-FloatValueBigfloat = NewType("FloatValueBigfloat", float)
+class FloatValueBigfloat(Variant[float]):
+    """An arbitrary-precision floating-point value."""
 
-# A 32-bit floating-point value
-FloatValueFloat32 = NewType("FloatValueFloat32", float)
+class FloatValueFloat32(Variant[float]):
+    """A 32-bit floating-point value."""
 
-# A 64-bit floating-point value
-FloatValueFloat64 = NewType("FloatValueFloat64", float)
+class FloatValueFloat64(Variant[float]):
+    """A 64-bit floating-point value."""
 
 # A floating-point literal value.
-FloatValue = FloatValueBigfloat | FloatValueFloat32 | FloatValueFloat64
+type FloatValue = FloatValueBigfloat | FloatValueFloat32 | FloatValueFloat64
 
-# An elimination for any of a few term variants
-FunctionElimination = NewType("FunctionElimination", Elimination)
+class FunctionElimination(Variant[Elimination]):
+    """An elimination for any of a few term variants."""
 
-# A function abstraction (lambda)
-FunctionLambda = NewType("FunctionLambda", Lambda)
+class FunctionLambda(Variant[Lambda]):
+    """A function abstraction (lambda)."""
 
-# A reference to a built-in (primitive) function
-FunctionPrimitive = NewType("FunctionPrimitive", Name)
+class FunctionPrimitive(Variant[Name]):
+    """A reference to a built-in (primitive) function."""
 
 # A function.
-Function = FunctionElimination | FunctionLambda | FunctionPrimitive
+type Function = FunctionElimination | FunctionLambda | FunctionPrimitive
 
 @dataclass
 class FunctionType:
     """A function type, also known as an arrow type."""
-
     domain: Type
     codomain: Type
 
 @dataclass
 class Injection:
     """An instance of a union type; i.e. a string-indexed generalization of inl() or inr()."""
-
     type_name: Name
     field: Field
 
-IntegerTypeBigint = Literal["bigint"]
+class IntegerTypeBigint(Variant[None]):
+    pass
 
-IntegerTypeInt8 = Literal["int8"]
+class IntegerTypeInt8(Variant[None]):
+    pass
 
-IntegerTypeInt16 = Literal["int16"]
+class IntegerTypeInt16(Variant[None]):
+    pass
 
-IntegerTypeInt32 = Literal["int32"]
+class IntegerTypeInt32(Variant[None]):
+    pass
 
-IntegerTypeInt64 = Literal["int64"]
+class IntegerTypeInt64(Variant[None]):
+    pass
 
-IntegerTypeUint8 = Literal["uint8"]
+class IntegerTypeUint8(Variant[None]):
+    pass
 
-IntegerTypeUint16 = Literal["uint16"]
+class IntegerTypeUint16(Variant[None]):
+    pass
 
-IntegerTypeUint32 = Literal["uint32"]
+class IntegerTypeUint32(Variant[None]):
+    pass
 
-IntegerTypeUint64 = Literal["uint64"]
+class IntegerTypeUint64(Variant[None]):
+    pass
 
 # An integer type.
-IntegerType = IntegerTypeBigint | IntegerTypeInt8 | IntegerTypeInt16 | IntegerTypeInt32 | IntegerTypeInt64 | IntegerTypeUint8 | IntegerTypeUint16 | IntegerTypeUint32 | IntegerTypeUint64
+type IntegerType = IntegerTypeBigint | IntegerTypeInt8 | IntegerTypeInt16 | IntegerTypeInt32 | IntegerTypeInt64 | IntegerTypeUint8 | IntegerTypeUint16 | IntegerTypeUint32 | IntegerTypeUint64
 
-# An arbitrary-precision integer value
-IntegerValueBigint = NewType("IntegerValueBigint", int)
+class IntegerValueBigint(Variant[int]):
+    """An arbitrary-precision integer value."""
 
-# An 8-bit signed integer value
-IntegerValueInt8 = NewType("IntegerValueInt8", int)
+class IntegerValueInt8(Variant[int]):
+    """An 8-bit signed integer value."""
 
-# A 16-bit signed integer value (short value)
-IntegerValueInt16 = NewType("IntegerValueInt16", int)
+class IntegerValueInt16(Variant[int]):
+    """A 16-bit signed integer value (short value)."""
 
-# A 32-bit signed integer value (int value)
-IntegerValueInt32 = NewType("IntegerValueInt32", int)
+class IntegerValueInt32(Variant[int]):
+    """A 32-bit signed integer value (int value)."""
 
-# A 64-bit signed integer value (long value)
-IntegerValueInt64 = NewType("IntegerValueInt64", int)
+class IntegerValueInt64(Variant[int]):
+    """A 64-bit signed integer value (long value)."""
 
-# An 8-bit unsigned integer value (byte)
-IntegerValueUint8 = NewType("IntegerValueUint8", int)
+class IntegerValueUint8(Variant[int]):
+    """An 8-bit unsigned integer value (byte)."""
 
-# A 16-bit unsigned integer value
-IntegerValueUint16 = NewType("IntegerValueUint16", int)
+class IntegerValueUint16(Variant[int]):
+    """A 16-bit unsigned integer value."""
 
-# A 32-bit unsigned integer value (unsigned int)
-IntegerValueUint32 = NewType("IntegerValueUint32", int)
+class IntegerValueUint32(Variant[int]):
+    """A 32-bit unsigned integer value (unsigned int)."""
 
-# A 64-bit unsigned integer value (unsigned long)
-IntegerValueUint64 = NewType("IntegerValueUint64", int)
+class IntegerValueUint64(Variant[int]):
+    """A 64-bit unsigned integer value (unsigned long)."""
 
 # An integer literal value.
-IntegerValue = IntegerValueBigint | IntegerValueInt8 | IntegerValueInt16 | IntegerValueInt32 | IntegerValueInt64 | IntegerValueUint8 | IntegerValueUint16 | IntegerValueUint32 | IntegerValueUint64
+type IntegerValue = IntegerValueBigint | IntegerValueInt8 | IntegerValueInt16 | IntegerValueInt32 | IntegerValueInt64 | IntegerValueUint8 | IntegerValueUint16 | IntegerValueUint32 | IntegerValueUint64
 
 @dataclass
 class Lambda:
     """A function abstraction (lambda)."""
-
     parameter: Annotated[Name, "The parameter of the lambda"]
     domain: Annotated[Type | None, "An optional domain type for the lambda"]
     body: Annotated[Term, "The body of the lambda"]
@@ -184,62 +187,61 @@ class Lambda:
 @dataclass
 class LambdaType:
     """A type abstraction; the type-level analog of a lambda term."""
-
     parameter: Annotated[Name, "The variable which is bound by the lambda"]
     body: Annotated[Type, "The body of the lambda"]
 
 @dataclass
 class Let:
     """A set of (possibly recursive) 'let' bindings together with an environment in which they are bound."""
-
     bindings: list[LetBinding]
     environment: Term
 
 @dataclass
 class LetBinding:
     """A field with an optional type scheme, used to bind variables to terms in a 'let' expression."""
-
     name: Name
     term: Term
     type: TypeScheme | None
 
-# A binary literal
-LiteralBinary = NewType("LiteralBinary", bytes)
+class LiteralBinary(Variant[bytes]):
+    """A binary literal."""
 
-# A boolean literal
-LiteralBoolean = NewType("LiteralBoolean", bool)
+class LiteralBoolean(Variant[bool]):
+    """A boolean literal."""
 
-# A floating-point literal
-LiteralFloat = NewType("LiteralFloat", FloatValue)
+class LiteralFloat(Variant[FloatValue]):
+    """A floating-point literal."""
 
-# An integer literal
-LiteralInteger = NewType("LiteralInteger", IntegerValue)
+class LiteralInteger(Variant[IntegerValue]):
+    """An integer literal."""
 
-# A string literal
-LiteralString = NewType("LiteralString", str)
+class LiteralString(Variant[str]):
+    """A string literal."""
 
 # A term constant; an instance of a literal type.
-Literal = LiteralBinary | LiteralBoolean | LiteralFloat | LiteralInteger | LiteralString
+type Literal = LiteralBinary | LiteralBoolean | LiteralFloat | LiteralInteger | LiteralString
 
-LiteralTypeBinary = Literal["binary"]
+class LiteralTypeBinary(Variant[None]):
+    """The type of a binary (byte string) value."""
 
-LiteralTypeBoolean = Literal["boolean"]
+class LiteralTypeBoolean(Variant[None]):
+    """The type of a boolean (true/false) value."""
 
-# The type of a floating-point value
-LiteralTypeFloat = NewType("LiteralTypeFloat", FloatType)
+class LiteralTypeFloat(Variant[FloatType]):
+    """The type of a floating-point value."""
 
-# The type of an integer value
-LiteralTypeInteger = NewType("LiteralTypeInteger", IntegerType)
+class LiteralTypeInteger(Variant[IntegerType]):
+    """The type of an integer value."""
 
-LiteralTypeString = Literal["string"]
+class LiteralTypeString(Variant[None]):
+    """The type of a string value."""
 
 # Any of a fixed set of literal types, also called atomic types, base types, primitive types, or type constants.
-LiteralType = LiteralTypeBinary | LiteralTypeBoolean | LiteralTypeFloat | LiteralTypeInteger | LiteralTypeString
+type LiteralType = LiteralTypeBinary | LiteralTypeBoolean | LiteralTypeFloat | LiteralTypeInteger | LiteralTypeString
 
 @dataclass
 class MapType:
     """A map type."""
-
     keys: Type
     values: Type
 
@@ -249,152 +251,160 @@ Name = NewType("Name", str)
 @dataclass
 class OptionalCases:
     """A case statement for matching optional terms."""
-
     nothing: Annotated[Term, "A term provided if the optional value is nothing"]
     just: Annotated[Term, "A function which is applied if the optional value is non-nothing"]
 
 @dataclass
 class Projection:
     """A record elimination; a projection."""
-
     type_name: Annotated[Name, "The name of the record type"]
     field: Annotated[Name, "The name of the projected field"]
 
 @dataclass
 class Record:
     """A record, or labeled tuple; a map of field names to terms."""
-
     type_name: Name
     fields: list[Field]
 
 @dataclass
 class RowType:
     """A labeled record or union type."""
-
     type_name: Annotated[Name, "The name of the row type, which must correspond to the name of a Type element"]
     fields: Annotated[list[FieldType], "The fields of this row type, excluding any inherited fields"]
 
 @dataclass
 class Sum:
     """The unlabeled equivalent of an Injection term."""
-
     index: int
     size: int
     term: Annotated[Term, "A data term"]
 
-# A term annotated with metadata
-TermAnnotated = NewType("TermAnnotated", AnnotatedTerm)
+class TermAnnotated(Variant[AnnotatedTerm]):
+    """A term annotated with metadata."""
 
-# A function application
-TermApplication = NewType("TermApplication", Application)
+class TermApplication(Variant[Application]):
+    """A function application."""
 
-# A function term
-TermFunction = NewType("TermFunction", Function)
+class TermFunction(Variant[Function]):
+    """A function term."""
 
-TermLet = NewType("TermLet", Let)
+class TermLet(Variant[Let]):
+    pass
 
-# A list
-TermList = NewType("TermList", list[Term])
+class TermList(Variant[list[Term]]):
+    """A list."""
 
-# A literal value
-TermLiteral = NewType("TermLiteral", Literal)
+class TermLiteral(Variant[Literal]):
+    """A literal value."""
 
-# A map of keys to values
-TermMap = NewType("TermMap", dict[Term, Term])
+class TermMap(Variant[dict[Term, Term]]):
+    """A map of keys to values."""
 
-# An optional value
-TermOptional = NewType("TermOptional", Term | None)
+class TermOptional(Variant[Term | None]):
+    """An optional value."""
 
-# A tuple
-TermProduct = NewType("TermProduct", list[Term])
+class TermProduct(Variant[list[Term]]):
+    """A tuple."""
 
-# A record term
-TermRecord = NewType("TermRecord", Record)
+class TermRecord(Variant[Record]):
+    """A record term."""
 
-# A set of values
-TermSet = NewType("TermSet", set[Term])
+class TermSet(Variant[set[Term]]):
+    """A set of values."""
 
-# A variant tuple
-TermSum = NewType("TermSum", Sum)
+class TermSum(Variant[Sum]):
+    """A variant tuple."""
 
-# A System F type abstraction term
-TermTypeAbstraction = NewType("TermTypeAbstraction", TypeAbstraction)
+class TermTypeAbstraction(Variant[TypeAbstraction]):
+    """A System F type abstraction term."""
 
-# A System F type application term
-TermTypeApplication = NewType("TermTypeApplication", TypedTerm)
+class TermTypeApplication(Variant[TypedTerm]):
+    """A System F type application term."""
 
-# A term annotated with its type
-TermTyped = NewType("TermTyped", TypedTerm)
+class TermTyped(Variant[TypedTerm]):
+    """A term annotated with its type."""
 
-# An injection; an instance of a union type
-TermUnion = NewType("TermUnion", Injection)
+class TermUnion(Variant[Injection]):
+    """An injection; an instance of a union type."""
 
-# A variable reference
-TermVariable = NewType("TermVariable", Name)
+class TermVariable(Variant[Name]):
+    """A variable reference."""
 
-TermWrap = NewType("TermWrap", WrappedTerm)
+class TermWrap(Variant[WrappedTerm]):
+    pass
 
 # A data term.
-Term = TermAnnotated | TermApplication | TermFunction | TermLet | TermList | TermLiteral | TermMap | TermOptional | TermProduct | TermRecord | TermSet | TermSum | TermTypeAbstraction | TermTypeApplication | TermTyped | TermUnion | TermVariable | TermWrap
+type Term = TermAnnotated | TermApplication | TermFunction | TermLet | TermList | TermLiteral | TermMap | TermOptional | TermProduct | TermRecord | TermSet | TermSum | TermTypeAbstraction | TermTypeApplication | TermTyped | TermUnion | TermVariable | TermWrap
 
 @dataclass
 class TupleProjection:
     """A tuple elimination; a projection from an integer-indexed product."""
-
     arity: Annotated[int, "The arity of the tuple"]
     index: Annotated[int, "The 0-indexed offset from the beginning of the tuple"]
 
-TypeAnnotated = NewType("TypeAnnotated", AnnotatedType)
+class TypeAnnotated(Variant[AnnotatedType]):
+    pass
 
-TypeApplication = NewType("TypeApplication", ApplicationType)
+class TypeApplication(Variant[ApplicationType]):
+    pass
 
-TypeFunction = NewType("TypeFunction", FunctionType)
+class TypeFunction(Variant[FunctionType]):
+    pass
 
-TypeLambda = NewType("TypeLambda", LambdaType)
+class TypeLambda(Variant[LambdaType]):
+    pass
 
-TypeList = NewType("TypeList", Type)
+class TypeList(Variant[Type]):
+    pass
 
-TypeLiteral = NewType("TypeLiteral", LiteralType)
+class TypeLiteral(Variant[LiteralType]):
+    pass
 
-TypeMap = NewType("TypeMap", MapType)
+class TypeMap(Variant[MapType]):
+    pass
 
-TypeOptional = NewType("TypeOptional", Type)
+class TypeOptional(Variant[Type]):
+    pass
 
-TypeProduct = NewType("TypeProduct", list[Type])
+class TypeProduct(Variant[list[Type]]):
+    pass
 
-TypeRecord = NewType("TypeRecord", RowType)
+class TypeRecord(Variant[RowType]):
+    pass
 
-TypeSet = NewType("TypeSet", Type)
+class TypeSet(Variant[Type]):
+    pass
 
-TypeSum = NewType("TypeSum", list[Type])
+class TypeSum(Variant[list[Type]]):
+    pass
 
-TypeUnion = NewType("TypeUnion", RowType)
+class TypeUnion(Variant[RowType]):
+    pass
 
-TypeVariable = NewType("TypeVariable", Name)
+class TypeVariable(Variant[Name]):
+    pass
 
-TypeWrap = NewType("TypeWrap", WrappedType)
+class TypeWrap(Variant[WrappedType]):
+    pass
 
 # A data type.
-Type = TypeAnnotated | TypeApplication | TypeFunction | TypeLambda | TypeList | TypeLiteral | TypeMap | TypeOptional | TypeProduct | TypeRecord | TypeSet | TypeSum | TypeUnion | TypeVariable | TypeWrap
+type Type = TypeAnnotated | TypeApplication | TypeFunction | TypeLambda | TypeList | TypeLiteral | TypeMap | TypeOptional | TypeProduct | TypeRecord | TypeSet | TypeSum | TypeUnion | TypeVariable | TypeWrap
 
 @dataclass
 class TypeAbstraction:
     """A System F type abstraction term."""
-
     parameter: Annotated[Name, "The type variable introduced by the abstraction"]
     body: Annotated[Term, "The body of the abstraction"]
 
 @dataclass
 class TypeScheme:
     """A type expression together with free type variables occurring in the expression."""
-
     variables: list[Name]
     type: Type
 
 @dataclass
 class TypedTerm:
     """A term together with its type."""
-
     term: Term
     type: Type
 
@@ -402,18 +412,14 @@ class TypedTerm:
 class Unit:
     """An empty record as a canonical unit value."""
 
-
-
 @dataclass
 class WrappedTerm:
     """A term wrapped in a type name."""
-
     type_name: Name
     object: Term
 
 @dataclass
 class WrappedType:
     """A type wrapped in a type name."""
-
     type_name: Name
     object: Type

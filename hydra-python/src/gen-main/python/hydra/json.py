@@ -1,24 +1,25 @@
 """A JSON syntax model. See the BNF at https://www.json.org."""
 
 from __future__ import annotations
-from typing import Literal, NewType
+from hydra.dsl.types import Variant
 
-# A JSON array
-ValueArray = NewType("ValueArray", list[Value])
+class ValueArray(Variant[list[Value]]):
+    """A JSON array."""
 
-# A boolean value
-ValueBoolean = NewType("ValueBoolean", bool)
+class ValueBoolean(Variant[bool]):
+    """A boolean value."""
 
-ValueNull = Literal["null"]
+class ValueNull(Variant[None]):
+    """JSON's null value."""
 
-# A numeric value
-ValueNumber = NewType("ValueNumber", float)
+class ValueNumber(Variant[float]):
+    """A numeric value."""
 
-# A JSON object as a set of key/value pairs
-ValueObject = NewType("ValueObject", dict[str, Value])
+class ValueObject(Variant[dict[str, Value]]):
+    """A JSON object as a set of key/value pairs."""
 
-# A string value
-ValueString = NewType("ValueString", str)
+class ValueString(Variant[str]):
+    """A string value."""
 
 # A JSON value.
-Value = ValueArray | ValueBoolean | ValueNull | ValueNumber | ValueObject | ValueString
+type Value = ValueArray | ValueBoolean | ValueNull | ValueNumber | ValueObject | ValueString

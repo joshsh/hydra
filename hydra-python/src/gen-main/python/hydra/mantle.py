@@ -2,194 +2,266 @@
 
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Generic, Literal, NewType, TypeVar
+from hydra.dsl.types import Variant
+from typing import Generic, NewType, TypeVar
 import hydra.core
 
 A = TypeVar("A")
 
 B = TypeVar("B")
 
-EitherLeft = NewType("EitherLeft", A)
+class EitherLeft(Variant[A]):
+    pass
 
-EitherRight = NewType("EitherRight", B)
+class EitherRight(Variant[B]):
+    pass
 
 # A disjoint union between a 'left' type and a 'right' type.
-Either = EitherLeft | EitherRight
+type Either = EitherLeft | EitherRight
 
-EliminationVariantList = Literal["list"]
+class EliminationVariantList(Variant[None]):
+    pass
 
-EliminationVariantOptional = Literal["optional"]
+class EliminationVariantOptional(Variant[None]):
+    pass
 
-EliminationVariantProduct = Literal["product"]
+class EliminationVariantProduct(Variant[None]):
+    pass
 
-EliminationVariantRecord = Literal["record"]
+class EliminationVariantRecord(Variant[None]):
+    pass
 
-EliminationVariantUnion = Literal["union"]
+class EliminationVariantUnion(Variant[None]):
+    pass
 
-EliminationVariantWrap = Literal["wrap"]
+class EliminationVariantWrap(Variant[None]):
+    pass
 
 # The identifier of an elimination constructor.
-EliminationVariant = EliminationVariantList | EliminationVariantOptional | EliminationVariantProduct | EliminationVariantRecord | EliminationVariantUnion | EliminationVariantWrap
+type EliminationVariant = EliminationVariantList | EliminationVariantOptional | EliminationVariantProduct | EliminationVariantRecord | EliminationVariantUnion | EliminationVariantWrap
 
-FunctionVariantElimination = Literal["elimination"]
+class FunctionVariantElimination(Variant[None]):
+    pass
 
-FunctionVariantLambda = Literal["lambda"]
+class FunctionVariantLambda(Variant[None]):
+    pass
 
-FunctionVariantPrimitive = Literal["primitive"]
+class FunctionVariantPrimitive(Variant[None]):
+    pass
 
 # The identifier of a function constructor.
-FunctionVariant = FunctionVariantElimination | FunctionVariantLambda | FunctionVariantPrimitive
+type FunctionVariant = FunctionVariantElimination | FunctionVariantLambda | FunctionVariantPrimitive
 
-LiteralVariantBinary = Literal["binary"]
+class LiteralVariantBinary(Variant[None]):
+    pass
 
-LiteralVariantBoolean = Literal["boolean"]
+class LiteralVariantBoolean(Variant[None]):
+    pass
 
-LiteralVariantFloat = Literal["float"]
+class LiteralVariantFloat(Variant[None]):
+    pass
 
-LiteralVariantInteger = Literal["integer"]
+class LiteralVariantInteger(Variant[None]):
+    pass
 
-LiteralVariantString = Literal["string"]
+class LiteralVariantString(Variant[None]):
+    pass
 
 # The identifier of a literal constructor.
-LiteralVariant = LiteralVariantBinary | LiteralVariantBoolean | LiteralVariantFloat | LiteralVariantInteger | LiteralVariantString
+type LiteralVariant = LiteralVariantBinary | LiteralVariantBoolean | LiteralVariantFloat | LiteralVariantInteger | LiteralVariantString
 
-PrecisionArbitrary = Literal["arbitrary"]
+class PrecisionArbitrary(Variant[None]):
+    pass
 
-PrecisionBits = NewType("PrecisionBits", int)
+class PrecisionBits(Variant[int]):
+    pass
 
 # Numeric precision: arbitrary precision, or precision to a specified number of bits.
-Precision = PrecisionArbitrary | PrecisionBits
+type Precision = PrecisionArbitrary | PrecisionBits
 
-TermAccessorAnnotatedSubject = Literal["annotatedSubject"]
+class TermAccessorAnnotatedSubject(Variant[None]):
+    pass
 
-TermAccessorApplicationFunction = Literal["applicationFunction"]
+class TermAccessorApplicationFunction(Variant[None]):
+    pass
 
-TermAccessorApplicationArgument = Literal["applicationArgument"]
+class TermAccessorApplicationArgument(Variant[None]):
+    pass
 
-TermAccessorLambdaBody = Literal["lambdaBody"]
+class TermAccessorLambdaBody(Variant[None]):
+    pass
 
-TermAccessorListFold = Literal["listFold"]
+class TermAccessorListFold(Variant[None]):
+    pass
 
-TermAccessorOptionalCasesNothing = Literal["optionalCasesNothing"]
+class TermAccessorOptionalCasesNothing(Variant[None]):
+    pass
 
-TermAccessorOptionalCasesJust = Literal["optionalCasesJust"]
+class TermAccessorOptionalCasesJust(Variant[None]):
+    pass
 
-TermAccessorUnionCasesDefault = Literal["unionCasesDefault"]
+class TermAccessorUnionCasesDefault(Variant[None]):
+    pass
 
-# A unique identifier in some context; a string-valued key
-TermAccessorUnionCasesBranch = NewType("TermAccessorUnionCasesBranch", "type = TypeWrap (WrappedType {wrappedTypeTypeName = Name {unName = \"hydra/core.Name\"}, wrappedTypeObject = TypeLiteral LiteralTypeString})")
+class TermAccessorUnionCasesBranch(Variant["type = TypeWrap (WrappedType {wrappedTypeTypeName = Name {unName = \"hydra/core.Name\"}, wrappedTypeObject = TypeLiteral LiteralTypeString})"]):
+    """A unique identifier in some context; a string-valued key."""
 
-TermAccessorLetEnvironment = Literal["letEnvironment"]
+class TermAccessorLetEnvironment(Variant[None]):
+    pass
 
-# A unique identifier in some context; a string-valued key
-TermAccessorLetBinding = NewType("TermAccessorLetBinding", "type = TypeWrap (WrappedType {wrappedTypeTypeName = Name {unName = \"hydra/core.Name\"}, wrappedTypeObject = TypeLiteral LiteralTypeString})")
+class TermAccessorLetBinding(Variant["type = TypeWrap (WrappedType {wrappedTypeTypeName = Name {unName = \"hydra/core.Name\"}, wrappedTypeObject = TypeLiteral LiteralTypeString})"]):
+    """A unique identifier in some context; a string-valued key."""
 
-TermAccessorListElement = NewType("TermAccessorListElement", int)
+class TermAccessorListElement(Variant[int]):
+    pass
 
-TermAccessorMapKey = NewType("TermAccessorMapKey", int)
+class TermAccessorMapKey(Variant[int]):
+    pass
 
-TermAccessorMapValue = NewType("TermAccessorMapValue", int)
+class TermAccessorMapValue(Variant[int]):
+    pass
 
-TermAccessorOptionalTerm = Literal["optionalTerm"]
+class TermAccessorOptionalTerm(Variant[None]):
+    pass
 
-TermAccessorProductTerm = NewType("TermAccessorProductTerm", int)
+class TermAccessorProductTerm(Variant[int]):
+    pass
 
-# A unique identifier in some context; a string-valued key
-TermAccessorRecordField = NewType("TermAccessorRecordField", "type = TypeWrap (WrappedType {wrappedTypeTypeName = Name {unName = \"hydra/core.Name\"}, wrappedTypeObject = TypeLiteral LiteralTypeString})")
+class TermAccessorRecordField(Variant["type = TypeWrap (WrappedType {wrappedTypeTypeName = Name {unName = \"hydra/core.Name\"}, wrappedTypeObject = TypeLiteral LiteralTypeString})"]):
+    """A unique identifier in some context; a string-valued key."""
 
-TermAccessorSetElement = NewType("TermAccessorSetElement", int)
+class TermAccessorSetElement(Variant[int]):
+    pass
 
-TermAccessorSumTerm = Literal["sumTerm"]
+class TermAccessorSumTerm(Variant[None]):
+    pass
 
-TermAccessorTypeAbstractionBody = Literal["typeAbstractionBody"]
+class TermAccessorTypeAbstractionBody(Variant[None]):
+    pass
 
-TermAccessorTypeApplicationTerm = Literal["typeApplicationTerm"]
+class TermAccessorTypeApplicationTerm(Variant[None]):
+    pass
 
-TermAccessorTypedTerm = Literal["typedTerm"]
+class TermAccessorTypedTerm(Variant[None]):
+    pass
 
-TermAccessorInjectionTerm = Literal["injectionTerm"]
+class TermAccessorInjectionTerm(Variant[None]):
+    pass
 
-TermAccessorWrappedTerm = Literal["wrappedTerm"]
+class TermAccessorWrappedTerm(Variant[None]):
+    pass
 
 # A function which maps from a term to a particular immediate subterm.
-TermAccessor = TermAccessorAnnotatedSubject | TermAccessorApplicationFunction | TermAccessorApplicationArgument | TermAccessorLambdaBody | TermAccessorListFold | TermAccessorOptionalCasesNothing | TermAccessorOptionalCasesJust | TermAccessorUnionCasesDefault | TermAccessorUnionCasesBranch | TermAccessorLetEnvironment | TermAccessorLetBinding | TermAccessorListElement | TermAccessorMapKey | TermAccessorMapValue | TermAccessorOptionalTerm | TermAccessorProductTerm | TermAccessorRecordField | TermAccessorSetElement | TermAccessorSumTerm | TermAccessorTypeAbstractionBody | TermAccessorTypeApplicationTerm | TermAccessorTypedTerm | TermAccessorInjectionTerm | TermAccessorWrappedTerm
+type TermAccessor = TermAccessorAnnotatedSubject | TermAccessorApplicationFunction | TermAccessorApplicationArgument | TermAccessorLambdaBody | TermAccessorListFold | TermAccessorOptionalCasesNothing | TermAccessorOptionalCasesJust | TermAccessorUnionCasesDefault | TermAccessorUnionCasesBranch | TermAccessorLetEnvironment | TermAccessorLetBinding | TermAccessorListElement | TermAccessorMapKey | TermAccessorMapValue | TermAccessorOptionalTerm | TermAccessorProductTerm | TermAccessorRecordField | TermAccessorSetElement | TermAccessorSumTerm | TermAccessorTypeAbstractionBody | TermAccessorTypeApplicationTerm | TermAccessorTypedTerm | TermAccessorInjectionTerm | TermAccessorWrappedTerm
 
-TermVariantAnnotated = Literal["annotated"]
+class TermVariantAnnotated(Variant[None]):
+    pass
 
-TermVariantApplication = Literal["application"]
+class TermVariantApplication(Variant[None]):
+    pass
 
-TermVariantFunction = Literal["function"]
+class TermVariantFunction(Variant[None]):
+    pass
 
-TermVariantLet = Literal["let"]
+class TermVariantLet(Variant[None]):
+    pass
 
-TermVariantList = Literal["list"]
+class TermVariantList(Variant[None]):
+    pass
 
-TermVariantLiteral = Literal["literal"]
+class TermVariantLiteral(Variant[None]):
+    pass
 
-TermVariantMap = Literal["map"]
+class TermVariantMap(Variant[None]):
+    pass
 
-TermVariantOptional = Literal["optional"]
+class TermVariantOptional(Variant[None]):
+    pass
 
-TermVariantProduct = Literal["product"]
+class TermVariantProduct(Variant[None]):
+    pass
 
-TermVariantRecord = Literal["record"]
+class TermVariantRecord(Variant[None]):
+    pass
 
-TermVariantSet = Literal["set"]
+class TermVariantSet(Variant[None]):
+    pass
 
-TermVariantSum = Literal["sum"]
+class TermVariantSum(Variant[None]):
+    pass
 
-TermVariantTypeAbstraction = Literal["typeAbstraction"]
+class TermVariantTypeAbstraction(Variant[None]):
+    pass
 
-TermVariantTypeApplication = Literal["typeApplication"]
+class TermVariantTypeApplication(Variant[None]):
+    pass
 
-TermVariantTyped = Literal["typed"]
+class TermVariantTyped(Variant[None]):
+    pass
 
-TermVariantUnion = Literal["union"]
+class TermVariantUnion(Variant[None]):
+    pass
 
-TermVariantVariable = Literal["variable"]
+class TermVariantVariable(Variant[None]):
+    pass
 
-TermVariantWrap = Literal["wrap"]
+class TermVariantWrap(Variant[None]):
+    pass
 
 # The identifier of a term expression constructor.
-TermVariant = TermVariantAnnotated | TermVariantApplication | TermVariantFunction | TermVariantLet | TermVariantList | TermVariantLiteral | TermVariantMap | TermVariantOptional | TermVariantProduct | TermVariantRecord | TermVariantSet | TermVariantSum | TermVariantTypeAbstraction | TermVariantTypeApplication | TermVariantTyped | TermVariantUnion | TermVariantVariable | TermVariantWrap
+type TermVariant = TermVariantAnnotated | TermVariantApplication | TermVariantFunction | TermVariantLet | TermVariantList | TermVariantLiteral | TermVariantMap | TermVariantOptional | TermVariantProduct | TermVariantRecord | TermVariantSet | TermVariantSum | TermVariantTypeAbstraction | TermVariantTypeApplication | TermVariantTyped | TermVariantUnion | TermVariantVariable | TermVariantWrap
 
 @dataclass
 class TypeConstraint:
     """An assertion that two types can be unified into a single type."""
-
     left: hydra.core.Type
     right: hydra.core.Type
     context: str | None
 
-TypeVariantAnnotated = Literal["annotated"]
+class TypeVariantAnnotated(Variant[None]):
+    pass
 
-TypeVariantApplication = Literal["application"]
+class TypeVariantApplication(Variant[None]):
+    pass
 
-TypeVariantFunction = Literal["function"]
+class TypeVariantFunction(Variant[None]):
+    pass
 
-TypeVariantLambda = Literal["lambda"]
+class TypeVariantLambda(Variant[None]):
+    pass
 
-TypeVariantList = Literal["list"]
+class TypeVariantList(Variant[None]):
+    pass
 
-TypeVariantLiteral = Literal["literal"]
+class TypeVariantLiteral(Variant[None]):
+    pass
 
-TypeVariantMap = Literal["map"]
+class TypeVariantMap(Variant[None]):
+    pass
 
-TypeVariantOptional = Literal["optional"]
+class TypeVariantOptional(Variant[None]):
+    pass
 
-TypeVariantProduct = Literal["product"]
+class TypeVariantProduct(Variant[None]):
+    pass
 
-TypeVariantRecord = Literal["record"]
+class TypeVariantRecord(Variant[None]):
+    pass
 
-TypeVariantSet = Literal["set"]
+class TypeVariantSet(Variant[None]):
+    pass
 
-TypeVariantSum = Literal["sum"]
+class TypeVariantSum(Variant[None]):
+    pass
 
-TypeVariantUnion = Literal["union"]
+class TypeVariantUnion(Variant[None]):
+    pass
 
-TypeVariantVariable = Literal["variable"]
+class TypeVariantVariable(Variant[None]):
+    pass
 
-TypeVariantWrap = Literal["wrap"]
+class TypeVariantWrap(Variant[None]):
+    pass
 
 # The identifier of a type constructor.
-TypeVariant = TypeVariantAnnotated | TypeVariantApplication | TypeVariantFunction | TypeVariantLambda | TypeVariantList | TypeVariantLiteral | TypeVariantMap | TypeVariantOptional | TypeVariantProduct | TypeVariantRecord | TypeVariantSet | TypeVariantSum | TypeVariantUnion | TypeVariantVariable | TypeVariantWrap
+type TypeVariant = TypeVariantAnnotated | TypeVariantApplication | TypeVariantFunction | TypeVariantLambda | TypeVariantList | TypeVariantLiteral | TypeVariantMap | TypeVariantOptional | TypeVariantProduct | TypeVariantRecord | TypeVariantSet | TypeVariantSum | TypeVariantUnion | TypeVariantVariable | TypeVariantWrap
