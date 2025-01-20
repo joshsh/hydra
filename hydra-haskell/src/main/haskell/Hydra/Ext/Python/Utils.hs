@@ -55,9 +55,9 @@ functionCall func args = pyPrimaryToPyExpression $ primaryWithRhs func $
   Py.PrimaryRhsCall $ Py.Args (Py.PosArgExpression <$> args) [] []
 
 indentedBlock :: Maybe String -> [Py.Statement] -> Py.Block
-indentedBlock mcomment stmts = Py.BlockIndented $ if L.null allStatements
-    then [pySimpleStatementToPyStatement Py.SimpleStatementPass]
-    else allStatements
+indentedBlock mcomment stmts = if L.null allStatements
+    then Py.BlockSimple [pyExpressionToPySimpleStatement $ pyAtomToPyExpression Py.AtomEllipsis]
+    else Py.BlockIndented allStatements
   where
     allStatements = commentStmts ++ stmts
     commentStmts = case mcomment of
@@ -110,9 +110,11 @@ pyExpressionToPyAnnotatedRhs expr = Py.AnnotatedRhsStar [Py.StarExpressionSimple
 pyExpressionToPySlice :: Py.Expression -> Py.Slice
 pyExpressionToPySlice = Py.SliceNamed . Py.NamedExpressionSimple
 
+pyExpressionToPySimpleStatement :: Py.Expression -> Py.SimpleStatement
+pyExpressionToPySimpleStatement expr = Py.SimpleStatementStarExpressions [Py.StarExpressionSimple expr]
+
 pyExpressionToPyStatement :: Py.Expression -> Py.Statement
-pyExpressionToPyStatement expr = pySimpleStatementToPyStatement $
-  Py.SimpleStatementStarExpressions [Py.StarExpressionSimple expr]
+pyExpressionToPyStatement = pySimpleStatementToPyStatement . pyExpressionToPySimpleStatement
 
 pyNameToPyExpression :: Py.Name -> Py.Expression
 pyNameToPyExpression =  pyPrimaryToPyExpression . pyNameToPyPrimary

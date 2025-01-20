@@ -36,6 +36,7 @@ encodeAssignmentExpression (Py.AssignmentExpression name expr)
 encodeAtom :: Py.Atom -> A.Expr
 encodeAtom a = case a of
   Py.AtomDict d -> encodeDict d
+  Py.AtomEllipsis -> cst "..."
   Py.AtomList l -> encodeList l
   Py.AtomName n -> encodeName n
   Py.AtomString s -> encodeString s
@@ -61,23 +62,24 @@ encodeBitwiseXor (Py.BitwiseXor lhs rhs) = spaceSep $ Y.catMaybes [encodeLhs <$>
   where
     encodeLhs l = spaceSep [encodeBitwiseXor l, cst "^"]
 
-encodeBlock :: Bool -> Py.Block -> A.Expr
-encodeBlock doubleSpace b = case b of
-  Py.BlockIndented sc -> (if doubleSpace then tabIndentDoubleSpace else tabIndentSingleSpace) (encodeStatement <$> sc)
-  Py.BlockSimple ss -> (if doubleSpace then doubleNewlineSep else newlineSep) (encodeSimpleStatement <$> ss)
+encodeBlock :: Py.Block -> A.Expr
+encodeBlock b = case b of
+  Py.BlockIndented sc -> tabIndentSingleSpace (encodeStatement <$> sc)
+  Py.BlockSimple ss -> semicolonSep (encodeSimpleStatement <$> ss)
 
 encodeClassDefinition :: Py.ClassDefinition -> A.Expr
 encodeClassDefinition (Py.ClassDefinition mdecs name tparams args body) = newlineSep $
   Y.catMaybes [encodeDecorators <$> mdecs, Just classExpr]
   where
-    classExpr = newlineSep [
-        noSep $ Y.catMaybes [
-          Just $ spaceSep $ Y.catMaybes [Just $ cst "class", Just $ encodeName name],
-          (argExp <$> args),
-          Just $ cst ":"],
-        encodeBlock False body] -- TODO: tparams
+    header = noSep $ Y.catMaybes [
+        Just $ spaceSep $ Y.catMaybes [Just $ cst "class", Just $ encodeName name],
+        (argExp <$> args),
+        Just $ cst ":"]
       where
         argExp a = noSep [cst "(", encodeArgs a, cst ")"]
+    classExpr = case body of -- TODO: tparams
+      Py.BlockSimple _ -> spaceSep [header, encodeBlock body]
+      Py.BlockIndented _ -> newlineSep [header, encodeBlock body]
 
 encodeCompareOpBitwiseOrPair :: Py.CompareOpBitwiseOrPair -> A.Expr
 encodeCompareOpBitwiseOrPair p = unsupportedType "compare op bitwise or pair"
