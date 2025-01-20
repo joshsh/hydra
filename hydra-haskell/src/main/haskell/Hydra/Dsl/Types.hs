@@ -21,8 +21,6 @@ n >: t = field n t
 --(::=) :: String -> Type -> FieldType
 n <=> t = field n t
 
-
-
 infixr 0 -->
 (-->) :: Type -> Type -> Type
 a --> b = function a b

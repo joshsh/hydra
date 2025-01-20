@@ -7,7 +7,6 @@ from typing import Generic, NewType, TypeVar
 import hydra.core
 
 A = TypeVar("A")
-
 B = TypeVar("B")
 
 class EitherLeft(Variant[A]): ...

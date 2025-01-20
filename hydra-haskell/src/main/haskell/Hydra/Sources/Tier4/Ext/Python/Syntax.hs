@@ -26,10 +26,9 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
         "comment">: string,
         "statement">: python "Statement"],
 
-      def "Module" $ record [
-        "imports">: list $ python "ImportStatement",
-        "comment">: optional string,
-        "body">: list $ python "Statement"],
+      def "Module" $
+        -- Groups of statements are separated by a double newline; see also the "Block" production.
+        list $ nonemptyList $ python "Statement",
 
       def "QuoteStyle" $ enum ["single", "double", "triple"]]
 
@@ -47,7 +46,8 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 
       def "TypeComment" string] -- TYPE_COMMENT in the grammar
 
-    -- Nonterminal productions from the PEG grammar (inline)
+    -- Nonterminal productions from the PEG grammar (inline).
+    -- Note: all significant deviations from the grammar are indicated with the word "Hydra" in comments.
     nonterminals = [
 -- # General grammatical elements and rules:
 -- #
@@ -378,7 +378,7 @@ pythonSyntaxModule = Module pythonNs elements [hydraCoreModule] tier0Modules $
 --     | simple_stmts
 
       def "Block" $ union [
-        -- Statements in indented blocks are grouped in Hydra, for better control over newlines
+        -- Statements in indented blocks are grouped in Hydra, so these groups can be separated by a double newline.
         "indented">: nonemptyList $ nonemptyList $ python "Statement",
         "simple">: nonemptyList $ python "SimpleStatement"],
 

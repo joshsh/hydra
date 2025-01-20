@@ -20,20 +20,12 @@ _AnnotatedStatement_comment = (Core.Name "comment")
 
 _AnnotatedStatement_statement = (Core.Name "statement")
 
-data Module = 
+newtype Module = 
   Module {
-    moduleImports :: [ImportStatement],
-    moduleComment :: (Maybe String),
-    moduleBody :: [Statement]}
+    unModule :: [[Statement]]}
   deriving (Eq, Ord, Read, Show)
 
 _Module = (Core.Name "hydra/ext/python/syntax.Module")
-
-_Module_imports = (Core.Name "imports")
-
-_Module_comment = (Core.Name "comment")
-
-_Module_body = (Core.Name "body")
 
 data QuoteStyle = 
   QuoteStyleSingle  |

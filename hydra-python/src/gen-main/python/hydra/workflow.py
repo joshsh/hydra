@@ -11,7 +11,6 @@ import hydra.graph
 import hydra.module
 
 A = TypeVar("A")
-
 S = TypeVar("S")
 
 @dataclass

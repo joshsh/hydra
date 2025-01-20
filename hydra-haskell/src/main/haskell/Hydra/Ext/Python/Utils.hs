@@ -24,6 +24,9 @@ annotatedStatement mcomment stmt = case mcomment of
   Nothing -> stmt
   Just c -> Py.StatementAnnotated $ Py.AnnotatedStatement c stmt
 
+commentStatement :: String -> Py.Statement
+commentStatement s = pyExpressionToPyStatement $ stringToPyExpression Py.QuoteStyleTriple s
+
 decodePyExpressionToPyPrimary :: Py.Expression -> Maybe Py.Primary
 decodePyExpressionToPyPrimary e = case e of
   Py.ExpressionSimple (Py.Disjunction [conjunction]) -> decodePyConjunctionToPyPrimary conjunction
@@ -60,7 +63,7 @@ indentedBlock mcomment stmts = if L.null groups
     else Py.BlockIndented groups
   where
     commentGroup = case mcomment of
-      Just s -> [pyExpressionToPyStatement $ stringToPyExpression Py.QuoteStyleTriple s]
+      Just s -> [commentStatement s]
       Nothing -> []
     groups = L.filter (not . L.null) [commentGroup, stmts]
 

@@ -186,13 +186,9 @@ encodeList :: Py.List -> A.Expr
 encodeList (Py.List es) = noSep [cst "[", commaSep inlineStyle (encodeStarNamedExpression <$> es), cst "]"]
 
 encodeModule :: Py.Module -> A.Expr
-encodeModule (Py.Module imports mdoc body) = doubleNewlineSep $ Y.catMaybes $
-   [tripleQuotedString <$> mdoc, importsSec] ++ bodyExprs
+encodeModule (Py.Module groups) = doubleNewlineSep (encodeGroup <$> groups)
   where
-    bodyExprs = Just . encodeStatement <$> body
-    importsSec = if L.null exprs then Nothing else Just $ newlineSep exprs
-      where
-        exprs = encodeImportStatement <$> imports
+    encodeGroup ss = newlineSep (encodeStatement <$> ss)
 
 encodeName :: Py.Name -> A.Expr
 encodeName (Py.Name n) = cst n
