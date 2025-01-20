@@ -35,6 +35,20 @@ _Module_comment = (Core.Name "comment")
 
 _Module_body = (Core.Name "body")
 
+data QuoteStyle = 
+  QuoteStyleSingle  |
+  QuoteStyleDouble  |
+  QuoteStyleTriple 
+  deriving (Eq, Ord, Read, Show)
+
+_QuoteStyle = (Core.Name "hydra/ext/python/syntax.QuoteStyle")
+
+_QuoteStyle_single = (Core.Name "single")
+
+_QuoteStyle_double = (Core.Name "double")
+
+_QuoteStyle_triple = (Core.Name "triple")
+
 newtype Name = 
   Name {
     unName :: String}
@@ -52,6 +66,18 @@ _Number = (Core.Name "hydra/ext/python/syntax.Number")
 _Number_integer = (Core.Name "integer")
 
 _Number_float = (Core.Name "float")
+
+data String_ = 
+  String_ {
+    stringValue :: String,
+    stringQuoteStyle :: QuoteStyle}
+  deriving (Eq, Ord, Read, Show)
+
+_String = (Core.Name "hydra/ext/python/syntax.String")
+
+_String_value = (Core.Name "value")
+
+_String_quoteStyle = (Core.Name "quoteStyle")
 
 newtype TypeComment = 
   TypeComment {
@@ -462,7 +488,6 @@ data ClassDefinition =
     classDefinitionName :: Name,
     classDefinitionTypeParams :: [TypeParameter],
     classDefinitionArguments :: (Maybe Args),
-    classDefinitionComment :: (Maybe String),
     classDefinitionBlock :: Block}
   deriving (Eq, Ord, Read, Show)
 
@@ -475,8 +500,6 @@ _ClassDefinition_name = (Core.Name "name")
 _ClassDefinition_typeParams = (Core.Name "typeParams")
 
 _ClassDefinition_arguments = (Core.Name "arguments")
-
-_ClassDefinition_comment = (Core.Name "comment")
 
 _ClassDefinition_block = (Core.Name "block")
 
@@ -1899,7 +1922,7 @@ data Atom =
   AtomTrue  |
   AtomFalse  |
   AtomNone  |
-  AtomString String |
+  AtomString String_ |
   AtomNumber Number |
   AtomTuple Tuple |
   AtomGroup Group |

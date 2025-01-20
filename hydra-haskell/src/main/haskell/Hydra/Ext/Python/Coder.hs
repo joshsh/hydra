@@ -124,9 +124,9 @@ encodeNamespace ns = Py.DottedName (Py.Name <$> (Strings.splitOn "/" $ unNamespa
 encodeRecordType :: PythonEnvironment -> Name -> RowType -> Maybe String -> Flow Graph Py.Statement
 encodeRecordType env name (RowType _ tfields) comment = do
     pyFields <- CM.mapM (encodeFieldType env) tfields
-    let body = Py.BlockIndented pyFields
+    let body = indentedBlock comment pyFields
     return $ Py.StatementCompound $ Py.CompoundStatementClassDef $
-      Py.ClassDefinition (Just decs) (Py.Name lname) [] args comment body
+      Py.ClassDefinition (Just decs) (Py.Name lname) [] args body
   where
     (tparamList, tparamMap) = pythonEnvironmentBoundTypeVariables env
     lname = localNameOfEager name
@@ -160,7 +160,7 @@ encodeType env typ = case stripType typ of
     _ -> dflt
   where
     encode = encodeType env
-    dflt = pure $ stringToPyExpression $ "type = " ++ show (stripType typ)
+    dflt = pure $ stringToPyExpression Py.QuoteStyleDouble $ "type = " ++ show (stripType typ)
     variableReference name = pure $ pyNameToPyExpression $ encodeName env name
 
 encodeTypeAssignment :: PythonEnvironment -> Name -> Type -> Maybe String -> Flow Graph [Py.Statement]
@@ -190,12 +190,14 @@ encodeUnionType env name (RowType _ tfields) comment = do
     return $ fieldStmts ++ [unionStmt]
   where
     toFieldStmt (FieldType fname ftype) = do
-        fcomment <- getTypeDescription ftype
-        if isUnitType (stripType ftype)
-          then pure $ assignmentStatement (variantName fname) $
-            pyPrimaryToPyExpression $ primaryWithExpressionSlices (pyNameToPyPrimary $ Py.Name "Literal")
-              [stringToPyExpression $ unName fname]
-          else newtypeStatement (variantName fname) fcomment <$> encodeType env ftype
+        comment <- fmap normalizeComment <$> getTypeDescription ftype
+        ptype <- encodeType env ftype
+        let body = indentedBlock comment []
+        return $ Py.StatementCompound $ Py.CompoundStatementClassDef $
+          Py.ClassDefinition Nothing (variantName fname) [] (Just $ args ptype) body
+      where
+        args ptype = Py.Args [Py.PosArgExpression $ pyPrimaryToPyExpression $
+          primaryWithExpressionSlices (pyNameToPyPrimary $ Py.Name "Variant") [ptype]] [] []
     unionStmt = typeAliasStatement (Py.Name $ sanitizePythonName $ localNameOfEager name) comment $
       orExpression (pyNameToPyPrimary . variantName . fieldTypeName <$> tfields)
     variantName fname = Py.Name $ sanitizePythonName $ (localNameOfEager name) ++ (capitalize $ unName fname)
@@ -233,9 +235,9 @@ gatherMetadata defs = checkTvars $ L.foldl addDef start defs
               where
                 checkForAnnotated b (FieldType _ ft) = b || hasTypeDescription ft
             TypeUnion (RowType _ fields) -> meta {
-                pythonModuleMetadataUsesLiteral = L.foldl checkForLiteral (pythonModuleMetadataUsesLiteral meta) fields,
-                pythonModuleMetadataUsesNewType = L.foldl checkForNewType (pythonModuleMetadataUsesNewType meta) fields,
-                pythonModuleMetadataUsesVariant = False} -- TODO
+--                pythonModuleMetadataUsesLiteral = L.foldl checkForLiteral (pythonModuleMetadataUsesLiteral meta) fields,
+--                pythonModuleMetadataUsesNewType = L.foldl checkForNewType (pythonModuleMetadataUsesNewType meta) fields,
+                pythonModuleMetadataUsesVariant = pythonModuleMetadataUsesVariant meta || (not $ L.null fields)}
               where
                 checkForLiteral b (FieldType _ ft) = b || isUnitType (stripType ft)
                 checkForNewType b (FieldType _ ft) = b || not (isUnitType (stripType ft))
@@ -266,7 +268,7 @@ moduleToPythonModule mod = do
     createDataDeclaration name term typ = fail "oops"
     createTypeDeclaration name typ = fail "oops"
     tvarStmt name = assignmentStatement name $ functionCall (pyNameToPyPrimary $ Py.Name "TypeVar")
-      [stringToPyExpression $ Py.unName name]
+      [stringToPyExpression Py.QuoteStyleDouble $ Py.unName name]
     imports namespaces meta = standardImports ++ domainImports
       where
 

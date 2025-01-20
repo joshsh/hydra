@@ -17,7 +17,7 @@ annotatedExpression mcomment expr = case mcomment of
   Nothing -> expr
   Just c -> pyPrimaryToPyExpression $
     primaryWithExpressionSlices (pyNameToPyPrimary $ Py.Name "Annotated")
-    [expr, stringToPyExpression c]
+    [expr, stringToPyExpression Py.QuoteStyleDouble c]
 
 annotatedStatement :: Maybe String -> Py.Statement -> Py.Statement
 annotatedStatement mcomment stmt = case mcomment of
@@ -54,12 +54,22 @@ functionCall :: Py.Primary -> [Py.Expression] -> Py.Expression
 functionCall func args = pyPrimaryToPyExpression $ primaryWithRhs func $
   Py.PrimaryRhsCall $ Py.Args (Py.PosArgExpression <$> args) [] []
 
+indentedBlock :: Maybe String -> [Py.Statement] -> Py.Block
+indentedBlock mcomment stmts = Py.BlockIndented $ if L.null allStatements
+    then [pySimpleStatementToPyStatement Py.SimpleStatementPass]
+    else allStatements
+  where
+    allStatements = commentStmts ++ stmts
+    commentStmts = case mcomment of
+      Just s -> [pyExpressionToPyStatement $ stringToPyExpression Py.QuoteStyleTriple s]
+      Nothing -> []
+
 nameAndParams :: Py.Name -> [Py.Expression] -> Py.Expression
 nameAndParams pyName params = primaryAndParams (pyNameToPyPrimary pyName) params
 
 newtypeStatement :: Py.Name -> Maybe String -> Py.Expression -> Py.Statement
 newtypeStatement name mcomment expr = annotatedStatement mcomment $ assignmentStatement name $
-  functionCall (pyNameToPyPrimary $ Py.Name "NewType") [stringToPyExpression $ Py.unName name, expr]
+  functionCall (pyNameToPyPrimary $ Py.Name "NewType") [stringToPyExpression Py.QuoteStyleDouble $ Py.unName name, expr]
 
 normalizeComment :: String -> String
 normalizeComment s = if L.null stripped
@@ -99,6 +109,10 @@ pyExpressionToPyAnnotatedRhs expr = Py.AnnotatedRhsStar [Py.StarExpressionSimple
 
 pyExpressionToPySlice :: Py.Expression -> Py.Slice
 pyExpressionToPySlice = Py.SliceNamed . Py.NamedExpressionSimple
+
+pyExpressionToPyStatement :: Py.Expression -> Py.Statement
+pyExpressionToPyStatement expr = pySimpleStatementToPyStatement $
+  Py.SimpleStatementStarExpressions [Py.StarExpressionSimple expr]
 
 pyNameToPyExpression :: Py.Name -> Py.Expression
 pyNameToPyExpression =  pyPrimaryToPyExpression . pyNameToPyPrimary
@@ -157,8 +171,8 @@ primaryWithExpressionSlices prim exprs = primaryWithSlices prim
 primaryWithSlices :: Py.Primary -> Py.Slice -> [Py.SliceOrStarredExpression] -> Py.Primary
 primaryWithSlices prim first rest = primaryWithRhs prim $ Py.PrimaryRhsSlices $ Py.Slices first rest
 
-stringToPyExpression :: String -> Py.Expression
-stringToPyExpression = pyAtomToPyExpression . Py.AtomString
+stringToPyExpression :: Py.QuoteStyle -> String -> Py.Expression
+stringToPyExpression style s = pyAtomToPyExpression $ Py.AtomString $ Py.String_ s style
 
 typeAliasStatement :: Py.Name -> Maybe String -> Py.Expression -> Py.Statement
 --typeAliasStatement name mcomment tyexpr = annotatedStatement mcomment $ assignmentStatement name tyexpr
