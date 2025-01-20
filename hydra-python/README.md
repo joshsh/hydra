@@ -55,6 +55,34 @@ Run the type checker.
 pyright
 ```
 
+## Testing
+To run the all the tests,
+```bash
+pytest
+```
+
+To run a specific test,
+```bash
+pytest tests/test_grammar.py
+```
+
+To match a specific test,
+```bash
+pytest -k test_grammar
+```
+or
+To match a specific test,
+```bash
+pytest -k test_math_grammar
+```
+
+Additionally, if you want to see printed outputs, you can run the tests with the `-s` flag.
+```bash
+pytest -s
+```
+
+
+
 ## Validate generated Python code
 
 The generated Hydra Kernel code is in `src/gen-main/python`.
