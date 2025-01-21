@@ -149,5 +149,5 @@ hydraQueryModule = Module ns elements [hydraCoreModule] [hydraCoreModule] $
           "object">: query "Node"],
 
       def "Variable" $
-        doc "A query variable"
-        string]
+        doc "A query variable" $
+        wrap string]

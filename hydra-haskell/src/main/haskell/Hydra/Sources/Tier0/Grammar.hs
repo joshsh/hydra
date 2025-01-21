@@ -25,16 +25,16 @@ hydraGrammarModule = Module ns elements [hydraCoreModule] [hydraCoreModule] $
     elements = [
 
       def "Constant" $
-        doc "A constant pattern"
-        string,
+        doc "A constant pattern" $
+        wrap string,
 
       def "Grammar" $
         doc "An enhanced Backus-Naur form (BNF) grammar" $
         list $ grammar "Production",
 
       def "Label" $
-        doc "A name for a pattern"
-        string,
+        doc "A name for a pattern" $
+        wrap string,
 
       def "LabeledPattern" $
         doc "A pattern together with a name (label)" $
@@ -64,9 +64,9 @@ hydraGrammarModule = Module ns elements [hydraCoreModule] [hydraCoreModule] $
           "pattern">: grammar "Pattern"],
 
       def "Regex" $
-        doc "A regular expression"
-        string,
+        doc "A regular expression" $
+        wrap string,
 
       def "Symbol" $
-        doc "A nonterminal symbol"
-        string]
+        doc "A nonterminal symbol" $
+        wrap string]

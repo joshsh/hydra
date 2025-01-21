@@ -84,7 +84,8 @@ hydraCodersModule = Module ns elements [hydraMantleModule, hydraGraphModule] [hy
             core "Type" --> boolean],
 
       def "LanguageName" $
-        doc "The unique name of a language" string,
+        doc "The unique name of a language" $
+        wrap string,
 
       def "TraversalOrder" $
         doc "Specifies either a pre-order or post-order traversal" $
