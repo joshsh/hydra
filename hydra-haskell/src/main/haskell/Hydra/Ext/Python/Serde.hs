@@ -297,7 +297,7 @@ encodeString :: Py.String_ -> A.Expr
 encodeString (Py.String_ s style) = case style of
   Py.QuoteStyleSingle -> cst $ escapePythonString False s
   Py.QuoteStyleDouble -> cst $ escapePythonString True s
-  Py.QuoteStyleTriple -> tripleQuotedString s
+  Py.QuoteStyleTriple -> tripleQuotes s
 
 encodeSum :: Py.Sum -> A.Expr
 encodeSum (Py.Sum lhs rhs) = spaceSep $ Y.catMaybes [encodeSumLhs <$> lhs, Just $ encodeTerm rhs]
@@ -353,8 +353,8 @@ escapePythonString doubleQuoted str = encChar : L.concatMap escapeChar str ++ [e
 toPythonComments :: String -> String
 toPythonComments c = L.intercalate "\n" $ ("# " ++) <$> L.lines c
 
-tripleQuotedString :: String -> A.Expr
-tripleQuotedString s = cst $ "\"\"\"" ++ s ++ "\"\"\"" -- TODO: escaping
+tripleQuotes :: String -> A.Expr
+tripleQuotes s = cst $ "\"\"\"" ++ s ++ "\"\"\"" -- TODO: escaping
 
 unsupportedType :: String -> A.Expr
 unsupportedType label = cst $ "[" ++ label ++ "]"

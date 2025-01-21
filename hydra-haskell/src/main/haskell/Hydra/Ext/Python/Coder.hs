@@ -34,6 +34,7 @@ data PythonModuleMetadata = PythonModuleMetadata {
   pythonModuleMetadataUsesAnnotated :: Bool,
   pythonModuleMetadataUsesCallable :: Bool,
   pythonModuleMetadataUsesDataclass :: Bool,
+  pythonModuleMetadataUsesEnum :: Bool,
   pythonModuleMetadataUsesGeneric :: Bool,
   pythonModuleMetadataUsesNewType :: Bool,
   pythonModuleMetadataUsesTypeVar :: Bool,
@@ -127,15 +128,15 @@ encodeRecordType :: PythonEnvironment -> Name -> RowType -> Maybe String -> Flow
 encodeRecordType env name (RowType _ tfields) comment = do
     pyFields <- CM.mapM (encodeFieldType env) tfields
     let body = indentedBlock comment pyFields
-    return $ Py.StatementCompound $ Py.CompoundStatementClassDef $
+    return $ pyClassDefinitionToPyStatement $
       Py.ClassDefinition (Just decs) (Py.Name lname) [] args body
   where
     (tparamList, tparamMap) = pythonEnvironmentBoundTypeVariables env
     lname = localNameOfEager name
     args = if L.null tparamList
       then Nothing
-      else Just $ Py.Args [Py.PosArgExpression $ pyPrimaryToPyExpression $
-        primaryWithExpressionSlices (pyNameToPyPrimary $ Py.Name "Generic") (pyNameToPyExpression <$> tparamList)] [] []
+      else Just $ pyExpressionsToPyArgs [pyPrimaryToPyExpression $
+        primaryWithExpressionSlices (pyNameToPyPrimary $ Py.Name "Generic") (pyNameToPyExpression <$> tparamList)]
     decs = Py.Decorators [pyNameToPyNamedExpression $ Py.Name "dataclass"]
 
 encodeTerm :: PythonEnvironment -> Term -> Flow Graph Py.Expression
@@ -163,7 +164,7 @@ encodeType env typ = case stripType typ of
     _ -> dflt
   where
     encode = encodeType env
-    dflt = pure $ stringToPyExpression Py.QuoteStyleDouble $ "type = " ++ show (stripType typ)
+    dflt = pure $ doubleQuotedString $ "type = " ++ show (stripType typ)
     variableReference name = pure $ pyNameToPyExpression $ encodeName env name
 
 encodeTypeAssignment :: PythonEnvironment -> Name -> Type -> Maybe String -> Flow Graph [Py.Statement]
@@ -186,24 +187,34 @@ encodeTypeAssignment env name typ comment = encode env typ
 encodeTypeVariable :: Name -> Py.Name
 encodeTypeVariable = Py.Name . capitalize . unName
 
--- TODO: consider producing Python enums where appropriate
 encodeUnionType :: PythonEnvironment -> Name -> RowType -> Maybe String -> Flow Graph [Py.Statement]
-encodeUnionType env name (RowType _ tfields) comment = do
-    fieldStmts <- CM.mapM toFieldStmt tfields
-    return $ fieldStmts ++ [unionStmt]
+encodeUnionType env name rt@(RowType _ tfields) comment = if isEnumType rt
+    then pure [asEnum]
+    else do
+      fieldStmts <- CM.mapM toFieldStmt tfields
+      return $ fieldStmts ++ [unionStmt]
   where
+    asEnum = pyClassDefinitionToPyStatement $ Py.ClassDefinition Nothing (Py.Name lname) [] args body
+      where
+        args = Just $ pyExpressionsToPyArgs [pyNameToPyExpression $ Py.Name "Enum"]
+        body = indentedBlock comment (toVal <$> tfields)
+          where
+            toVal (FieldType fname _) = assignmentStatement (enumVariantName $ unName fname) (doubleQuotedString $ unName fname)
+    lname = localNameOfEager name
     toFieldStmt (FieldType fname ftype) = do
         comment <- fmap normalizeComment <$> getTypeDescription ftype
         ptype <- encodeType env ftype
         let body = indentedBlock comment []
-        return $ Py.StatementCompound $ Py.CompoundStatementClassDef $
+        return $ pyClassDefinitionToPyStatement $
           Py.ClassDefinition Nothing (variantName fname) [] (Just $ args ptype) body
       where
-        args ptype = Py.Args [Py.PosArgExpression $ pyPrimaryToPyExpression $
-          primaryWithExpressionSlices (pyNameToPyPrimary $ Py.Name "Variant") [ptype]] [] []
-    unionStmt = typeAliasStatement (Py.Name $ sanitizePythonName $ localNameOfEager name) comment $
+        args ptype = pyExpressionsToPyArgs[
+          pyPrimaryToPyExpression $ primaryWithExpressionSlices (pyNameToPyPrimary $ Py.Name "Variant") [ptype]]
+    unionStmt = typeAliasStatement (Py.Name $ sanitizePythonName lname) comment $
       orExpression (pyNameToPyPrimary . variantName . fieldTypeName <$> tfields)
-    variantName fname = Py.Name $ sanitizePythonName $ (localNameOfEager name) ++ (capitalize $ unName fname)
+    variantName fname = Py.Name $ sanitizePythonName $ lname ++ (capitalize $ unName fname)
+    enumVariantName fname = Py.Name $ (convertCase CaseConventionPascal CaseConventionUpperSnake lname)
+      ++ "_" ++ (convertCase CaseConventionCamel CaseConventionUpperSnake fname)
 
 gatherMetadata :: [Definition] -> PythonModuleMetadata
 gatherMetadata defs = checkTvars $ L.foldl addDef start defs
@@ -214,6 +225,7 @@ gatherMetadata defs = checkTvars $ L.foldl addDef start defs
       pythonModuleMetadataUsesAnnotated = False,
       pythonModuleMetadataUsesCallable = False,
       pythonModuleMetadataUsesDataclass = False,
+      pythonModuleMetadataUsesEnum = False,
       pythonModuleMetadataUsesGeneric = False,
       pythonModuleMetadataUsesNewType = False,
       pythonModuleMetadataUsesTypeVar = False,
@@ -236,8 +248,10 @@ gatherMetadata defs = checkTvars $ L.foldl addDef start defs
                 pythonModuleMetadataUsesDataclass = pythonModuleMetadataUsesDataclass meta || not (L.null fields)}
               where
                 checkForAnnotated b (FieldType _ ft) = b || hasTypeDescription ft
-            TypeUnion (RowType _ fields) -> meta {
-                pythonModuleMetadataUsesVariant = pythonModuleMetadataUsesVariant meta || (not $ L.null fields)}
+            TypeUnion rt@(RowType _ fields) -> if isEnumType rt
+                then meta {pythonModuleMetadataUsesEnum = True}
+                else meta {
+                  pythonModuleMetadataUsesVariant = pythonModuleMetadataUsesVariant meta || (not $ L.null fields)}
               where
                 checkForLiteral b (FieldType _ ft) = b || isUnitType (stripType ft)
                 checkForNewType b (FieldType _ ft) = b || not (isUnitType (stripType ft))
@@ -273,7 +287,7 @@ moduleToPythonModule mod = do
     createDataDeclaration name term typ = fail "oops"
     createTypeDeclaration name typ = fail "oops"
     tvarStmt name = assignmentStatement name $ functionCall (pyNameToPyPrimary $ Py.Name "TypeVar")
-      [stringToPyExpression Py.QuoteStyleDouble $ Py.unName name]
+      [doubleQuotedString $ Py.unName name]
     imports namespaces meta = pySimpleStatementToPyStatement . Py.SimpleStatementImport <$> (standardImports ++ domainImports)
       where
         domainImports = toImport <$> names
@@ -291,6 +305,8 @@ moduleToPythonModule mod = do
                   cond "Callable" $ pythonModuleMetadataUsesCallable meta]),
                 ("dataclasses", [
                   cond "dataclass" $ pythonModuleMetadataUsesDataclass meta]),
+                ("enum", [
+                  cond "Enum" $ pythonModuleMetadataUsesEnum meta]),
                 ("hydra.dsl.types", [
                   cond "Variant" $ pythonModuleMetadataUsesVariant meta]),
                 ("typing", [
