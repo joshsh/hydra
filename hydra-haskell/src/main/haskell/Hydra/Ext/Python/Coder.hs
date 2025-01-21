@@ -127,7 +127,7 @@ encodeNamespace ns = Py.DottedName (Py.Name <$> (Strings.splitOn "/" $ unNamespa
 encodeRecordType :: PythonEnvironment -> Name -> RowType -> Maybe String -> Flow Graph Py.Statement
 encodeRecordType env name (RowType _ tfields) comment = do
     pyFields <- CM.mapM (encodeFieldType env) tfields
-    let body = indentedBlock comment pyFields
+    let body = indentedBlock comment [pyFields]
     return $ pyClassDefinitionToPyStatement $
       Py.ClassDefinition (Just decs) (Py.Name lname) [] args body
   where
@@ -188,18 +188,22 @@ encodeTypeVariable :: Name -> Py.Name
 encodeTypeVariable = Py.Name . capitalize . unName
 
 encodeUnionType :: PythonEnvironment -> Name -> RowType -> Maybe String -> Flow Graph [Py.Statement]
-encodeUnionType env name rt@(RowType _ tfields) comment = if isEnumType rt
-    then pure [asEnum]
-    else do
-      fieldStmts <- CM.mapM toFieldStmt tfields
-      return $ fieldStmts ++ [unionStmt]
+encodeUnionType env name rt@(RowType _ tfields) comment = if isEnumType rt then asEnum else asUnion
   where
-    asEnum = pyClassDefinitionToPyStatement $ Py.ClassDefinition Nothing (Py.Name lname) [] args body
+    asEnum = do
+        vals <- CM.mapM toVal tfields
+        let body = indentedBlock comment vals
+        return [pyClassDefinitionToPyStatement $ Py.ClassDefinition Nothing (Py.Name lname) [] args body]
       where
         args = Just $ pyExpressionsToPyArgs [pyNameToPyExpression $ Py.Name "Enum"]
-        body = indentedBlock comment (toVal <$> tfields)
-          where
-            toVal (FieldType fname _) = assignmentStatement (enumVariantName $ unName fname) (doubleQuotedString $ unName fname)
+        toVal (FieldType fname ftype) = do
+          fcomment <- fmap normalizeComment <$> getTypeDescription ftype
+          return $ Y.catMaybes [
+            Just $ assignmentStatement (enumVariantName $ unName fname) (doubleQuotedString $ unName fname),
+            pyExpressionToPyStatement . tripleQuotedString <$> fcomment]
+    asUnion = do
+      fieldStmts <- CM.mapM toFieldStmt tfields
+      return $ fieldStmts ++ [unionStmt]
     lname = localNameOfEager name
     toFieldStmt (FieldType fname ftype) = do
         comment <- fmap normalizeComment <$> getTypeDescription ftype

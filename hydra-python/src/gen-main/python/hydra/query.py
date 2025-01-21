@@ -11,10 +11,15 @@ class ComparisonConstraint(Enum):
     """One of several comparison operators."""
     
     EQUAL = "equal"
+    
     NOT_EQUAL = "notEqual"
+    
     LESS_THAN = "lessThan"
+    
     GREATER_THAN = "greaterThan"
+    
     LESS_THAN_OR_EQUAL = "lessThanOrEqual"
+    
     GREATER_THAN_OR_EQUAL = "greaterThanOrEqual"
 
 @dataclass

@@ -9,8 +9,11 @@ class Associativity(Enum):
     """Operator associativity."""
     
     NONE = "none"
+    
     LEFT = "left"
+    
     RIGHT = "right"
+    
     BOTH = "both"
 
 @dataclass

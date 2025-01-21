@@ -22,6 +22,7 @@ class CoderDirection(Enum):
     """Indicates either the 'out' or the 'in' direction of a coder."""
     
     ENCODE = "encode"
+    
     DECODE = "decode"
 
 @dataclass
@@ -51,4 +52,7 @@ class TraversalOrder(Enum):
     """Specifies either a pre-order or post-order traversal."""
     
     PRE = "pre"
+    """Pre-order traversal."""
+    
     POST = "post"
+    """Post-order traversal."""
