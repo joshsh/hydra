@@ -21,8 +21,8 @@ class AdapterContext:
 class CoderDirection(Enum):
     """Indicates either the 'out' or the 'in' direction of a coder."""
     
-    CODER_DIRECTION_ENCODE = "encode"
-    CODER_DIRECTION_DECODE = "decode"
+    ENCODE = "encode"
+    DECODE = "decode"
 
 @dataclass
 class Language:
@@ -50,5 +50,5 @@ type LanguageName = str
 class TraversalOrder(Enum):
     """Specifies either a pre-order or post-order traversal."""
     
-    TRAVERSAL_ORDER_PRE = "pre"
-    TRAVERSAL_ORDER_POST = "post"
+    PRE = "pre"
+    POST = "post"

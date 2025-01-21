@@ -13,9 +13,9 @@ X = TypeVar("X")
 class Comparison(Enum):
     """An equality judgement: less than, equal to, or greater than."""
     
-    COMPARISON_LESS_THAN = "lessThan"
-    COMPARISON_EQUAL_TO = "equalTo"
-    COMPARISON_GREATER_THAN = "greaterThan"
+    LESS_THAN = "lessThan"
+    EQUAL_TO = "equalTo"
+    GREATER_THAN = "greaterThan"
 
 @dataclass
 class Graph:
@@ -53,5 +53,5 @@ class TermCoder(Generic[X]):
 class TypeClass(Enum):
     """Any of a small number of built-in type classes."""
     
-    TYPE_CLASS_EQUALITY = "equality"
-    TYPE_CLASS_ORDERING = "ordering"
+    EQUALITY = "equality"
+    ORDERING = "ordering"

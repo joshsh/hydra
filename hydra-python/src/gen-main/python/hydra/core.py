@@ -80,9 +80,9 @@ class FieldType:
 class FloatType(Enum):
     """A floating-point type."""
     
-    FLOAT_TYPE_BIGFLOAT = "bigfloat"
-    FLOAT_TYPE_FLOAT32 = "float32"
-    FLOAT_TYPE_FLOAT64 = "float64"
+    BIGFLOAT = "bigfloat"
+    FLOAT32 = "float32"
+    FLOAT64 = "float64"
 
 class FloatValueBigfloat(Variant[float]):
     """An arbitrary-precision floating-point value."""
@@ -125,15 +125,15 @@ class Injection:
 class IntegerType(Enum):
     """An integer type."""
     
-    INTEGER_TYPE_BIGINT = "bigint"
-    INTEGER_TYPE_INT8 = "int8"
-    INTEGER_TYPE_INT16 = "int16"
-    INTEGER_TYPE_INT32 = "int32"
-    INTEGER_TYPE_INT64 = "int64"
-    INTEGER_TYPE_UINT8 = "uint8"
-    INTEGER_TYPE_UINT16 = "uint16"
-    INTEGER_TYPE_UINT32 = "uint32"
-    INTEGER_TYPE_UINT64 = "uint64"
+    BIGINT = "bigint"
+    INT8 = "int8"
+    INT16 = "int16"
+    INT32 = "int32"
+    INT64 = "int64"
+    UINT8 = "uint8"
+    UINT16 = "uint16"
+    UINT32 = "uint32"
+    UINT64 = "uint64"
 
 class IntegerValueBigint(Variant[int]):
     """An arbitrary-precision integer value."""
