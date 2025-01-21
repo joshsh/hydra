@@ -148,7 +148,7 @@ termTestContext variants = withConstraints $ (languageConstraints baseLanguage) 
   where
     literalVars = S.fromList [LiteralVariantFloat, LiteralVariantInteger, LiteralVariantString]
     floatVars = S.fromList [FloatTypeFloat32]
-    integerVars = S.fromList [IntegerTypeInt16, IntegerTypeInt32]
+    integerVars = S.fromList [IntegerTypeInt16, IntegerTypeInt32, IntegerTypeBigint]
 
 withConstraints :: LanguageConstraints -> AdapterContext
 withConstraints c = baseContext { adapterContextLanguage = baseLanguage { languageConstraints = c }}
