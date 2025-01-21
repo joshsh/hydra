@@ -4,7 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
 from hydra.dsl.types import Variant
-from typing import Annotated
+from typing import Annotated, NewType
 import hydra.core
 
 class ComparisonConstraint(Enum):
@@ -145,4 +145,4 @@ class TriplePattern:
     object: Node
 
 # A query variable.
-type Variable = str
+Variable = NewType("Variable", str)

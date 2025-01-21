@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Annotated
+from typing import Annotated, NewType
 import hydra.graph
 
-type FileExtension = str
+# A file extension (without the dot), e.g. "json" or "py".
+FileExtension = NewType("FileExtension", str)
 
 @dataclass
 class Library:
@@ -26,7 +27,7 @@ class Module:
     description: Annotated[str | None, "An optional human-readable description of the module"]
 
 # A prefix for element names.
-type Namespace = str
+Namespace = NewType("Namespace", str)
 
 @dataclass
 class QualifiedName:
