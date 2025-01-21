@@ -3,6 +3,7 @@
 module Hydra.Schemas (
   elementAsTypedTerm,
   fieldTypes,
+  isEnumType,
   isSerializable,
   moduleDependencyNamespaces,
   requireRecordType,
@@ -62,6 +63,11 @@ fieldTypes t = case stripType t of
   where
     toMap fields = M.fromList (toPair <$> fields)
     toPair (FieldType fname ftype) = (fname, ftype)
+
+-- | Checks whether the fields of a 'RowType' are all unit-typed.
+--   A union with such a 'RowType' can be treated as an enum in languages that support enums.
+isEnumType :: RowType -> Bool
+isEnumType (RowType _ tfields) = L.foldl (\b f -> b && isUnitType (fieldTypeType f)) True tfields
 
 isSerializable :: Element -> Flow Graph Bool
 isSerializable el = do

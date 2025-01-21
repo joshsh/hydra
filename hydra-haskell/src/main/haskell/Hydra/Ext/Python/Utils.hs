@@ -17,7 +17,7 @@ annotatedExpression mcomment expr = case mcomment of
   Nothing -> expr
   Just c -> pyPrimaryToPyExpression $
     primaryWithExpressionSlices (pyNameToPyPrimary $ Py.Name "Annotated")
-    [expr, stringToPyExpression Py.QuoteStyleDouble c]
+    [expr, doubleQuotedString c]
 
 annotatedStatement :: Maybe String -> Py.Statement -> Py.Statement
 annotatedStatement mcomment stmt = case mcomment of
@@ -25,7 +25,7 @@ annotatedStatement mcomment stmt = case mcomment of
   Just c -> Py.StatementAnnotated $ Py.AnnotatedStatement c stmt
 
 commentStatement :: String -> Py.Statement
-commentStatement s = pyExpressionToPyStatement $ stringToPyExpression Py.QuoteStyleTriple s
+commentStatement = pyExpressionToPyStatement . tripleQuotedString
 
 decodePyExpressionToPyPrimary :: Py.Expression -> Maybe Py.Primary
 decodePyExpressionToPyPrimary e = case e of
@@ -53,6 +53,9 @@ decodePyPowerToPyPrimary p = case p of
   Py.Power (Py.AwaitPrimary False prim) _ -> Just prim
   _ -> Nothing
 
+doubleQuotedString :: String -> Py.Expression
+doubleQuotedString = stringToPyExpression Py.QuoteStyleDouble
+
 functionCall :: Py.Primary -> [Py.Expression] -> Py.Expression
 functionCall func args = pyPrimaryToPyExpression $ primaryWithRhs func $
   Py.PrimaryRhsCall $ Py.Args (Py.PosArgExpression <$> args) [] []
@@ -72,7 +75,7 @@ nameAndParams pyName params = primaryAndParams (pyNameToPyPrimary pyName) params
 
 newtypeStatement :: Py.Name -> Maybe String -> Py.Expression -> Py.Statement
 newtypeStatement name mcomment expr = annotatedStatement mcomment $ assignmentStatement name $
-  functionCall (pyNameToPyPrimary $ Py.Name "NewType") [stringToPyExpression Py.QuoteStyleDouble $ Py.unName name, expr]
+  functionCall (pyNameToPyPrimary $ Py.Name "NewType") [doubleQuotedString $ Py.unName name, expr]
 
 normalizeComment :: String -> String
 normalizeComment s = if L.null stripped
@@ -98,6 +101,9 @@ pyBitwiseOrToPyConjunction bor = Py.Conjunction [Py.InversionSimple $ Py.Compari
 pyBitwiseOrToPyExpression :: Py.BitwiseOr -> Py.Expression
 pyBitwiseOrToPyExpression = pyConjunctionToPyExpression . pyBitwiseOrToPyConjunction
 
+pyClassDefinitionToPyStatement :: Py.ClassDefinition -> Py.Statement
+pyClassDefinitionToPyStatement = Py.StatementCompound . Py.CompoundStatementClassDef
+
 pyConjunctionToPyExpression :: Py.Conjunction -> Py.Expression
 pyConjunctionToPyExpression conj = Py.ExpressionSimple $ Py.Disjunction [conj]
 
@@ -109,6 +115,9 @@ pyExpressionToPyPrimary e = case decodePyExpressionToPyPrimary e of
 
 pyExpressionToPyAnnotatedRhs :: Py.Expression -> Py.AnnotatedRhs
 pyExpressionToPyAnnotatedRhs expr = Py.AnnotatedRhsStar [Py.StarExpressionSimple expr]
+
+pyExpressionsToPyArgs :: [Py.Expression] -> Py.Args
+pyExpressionsToPyArgs exprs = Py.Args (Py.PosArgExpression <$> exprs) [] []
 
 pyExpressionToPySlice :: Py.Expression -> Py.Slice
 pyExpressionToPySlice = Py.SliceNamed . Py.NamedExpressionSimple
@@ -178,6 +187,9 @@ primaryWithSlices prim first rest = primaryWithRhs prim $ Py.PrimaryRhsSlices $ 
 
 stringToPyExpression :: Py.QuoteStyle -> String -> Py.Expression
 stringToPyExpression style s = pyAtomToPyExpression $ Py.AtomString $ Py.String_ s style
+
+tripleQuotedString :: String -> Py.Expression
+tripleQuotedString = stringToPyExpression Py.QuoteStyleTriple
 
 typeAliasStatement :: Py.Name -> Maybe String -> Py.Expression -> Py.Statement
 --typeAliasStatement name mcomment tyexpr = annotatedStatement mcomment $ assignmentStatement name tyexpr
