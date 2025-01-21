@@ -27,7 +27,9 @@ hydraModuleModule = Module ns elements [hydraGraphModule] [hydraCoreModule] $
 
     elements = [
 
-      def "FileExtension" string,
+      def "FileExtension" $
+        doc "A file extension (without the dot), e.g. \"json\" or \"py\"" $
+        wrap string,
 
       def "Library" $
         doc "A library of primitive functions" $
@@ -62,8 +64,8 @@ hydraModuleModule = Module ns elements [hydraGraphModule] [hydraCoreModule] $
             optional string],
 
       def "Namespace" $
-        doc "A prefix for element names"
-        string,
+        doc "A prefix for element names" $
+        wrap string,
 
       def "QualifiedName" $
         doc "A qualified name consisting of an optional namespace together with a mandatory local name" $
