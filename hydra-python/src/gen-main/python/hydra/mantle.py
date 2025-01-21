@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 from dataclasses import dataclass
+from enum import Enum
 from hydra.dsl.types import Variant
 from typing import Generic, NewType, TypeVar
 import hydra.core
@@ -16,42 +17,31 @@ class EitherRight(Variant[B]): ...
 # A disjoint union between a 'left' type and a 'right' type.
 type Either = EitherLeft | EitherRight
 
-class EliminationVariantList(Variant[None]): ...
+class EliminationVariant(Enum):
+    """The identifier of an elimination constructor."""
+    
+    ELIMINATION_VARIANT_LIST = "list"
+    ELIMINATION_VARIANT_OPTIONAL = "optional"
+    ELIMINATION_VARIANT_PRODUCT = "product"
+    ELIMINATION_VARIANT_RECORD = "record"
+    ELIMINATION_VARIANT_UNION = "union"
+    ELIMINATION_VARIANT_WRAP = "wrap"
 
-class EliminationVariantOptional(Variant[None]): ...
+class FunctionVariant(Enum):
+    """The identifier of a function constructor."""
+    
+    FUNCTION_VARIANT_ELIMINATION = "elimination"
+    FUNCTION_VARIANT_LAMBDA = "lambda"
+    FUNCTION_VARIANT_PRIMITIVE = "primitive"
 
-class EliminationVariantProduct(Variant[None]): ...
-
-class EliminationVariantRecord(Variant[None]): ...
-
-class EliminationVariantUnion(Variant[None]): ...
-
-class EliminationVariantWrap(Variant[None]): ...
-
-# The identifier of an elimination constructor.
-type EliminationVariant = EliminationVariantList | EliminationVariantOptional | EliminationVariantProduct | EliminationVariantRecord | EliminationVariantUnion | EliminationVariantWrap
-
-class FunctionVariantElimination(Variant[None]): ...
-
-class FunctionVariantLambda(Variant[None]): ...
-
-class FunctionVariantPrimitive(Variant[None]): ...
-
-# The identifier of a function constructor.
-type FunctionVariant = FunctionVariantElimination | FunctionVariantLambda | FunctionVariantPrimitive
-
-class LiteralVariantBinary(Variant[None]): ...
-
-class LiteralVariantBoolean(Variant[None]): ...
-
-class LiteralVariantFloat(Variant[None]): ...
-
-class LiteralVariantInteger(Variant[None]): ...
-
-class LiteralVariantString(Variant[None]): ...
-
-# The identifier of a literal constructor.
-type LiteralVariant = LiteralVariantBinary | LiteralVariantBoolean | LiteralVariantFloat | LiteralVariantInteger | LiteralVariantString
+class LiteralVariant(Enum):
+    """The identifier of a literal constructor."""
+    
+    LITERAL_VARIANT_BINARY = "binary"
+    LITERAL_VARIANT_BOOLEAN = "boolean"
+    LITERAL_VARIANT_FLOAT = "float"
+    LITERAL_VARIANT_INTEGER = "integer"
+    LITERAL_VARIANT_STRING = "string"
 
 class PrecisionArbitrary(Variant[None]): ...
 
@@ -114,44 +104,27 @@ class TermAccessorWrappedTerm(Variant[None]): ...
 # A function which maps from a term to a particular immediate subterm.
 type TermAccessor = TermAccessorAnnotatedSubject | TermAccessorApplicationFunction | TermAccessorApplicationArgument | TermAccessorLambdaBody | TermAccessorListFold | TermAccessorOptionalCasesNothing | TermAccessorOptionalCasesJust | TermAccessorUnionCasesDefault | TermAccessorUnionCasesBranch | TermAccessorLetEnvironment | TermAccessorLetBinding | TermAccessorListElement | TermAccessorMapKey | TermAccessorMapValue | TermAccessorOptionalTerm | TermAccessorProductTerm | TermAccessorRecordField | TermAccessorSetElement | TermAccessorSumTerm | TermAccessorTypeAbstractionBody | TermAccessorTypeApplicationTerm | TermAccessorTypedTerm | TermAccessorInjectionTerm | TermAccessorWrappedTerm
 
-class TermVariantAnnotated(Variant[None]): ...
-
-class TermVariantApplication(Variant[None]): ...
-
-class TermVariantFunction(Variant[None]): ...
-
-class TermVariantLet(Variant[None]): ...
-
-class TermVariantList(Variant[None]): ...
-
-class TermVariantLiteral(Variant[None]): ...
-
-class TermVariantMap(Variant[None]): ...
-
-class TermVariantOptional(Variant[None]): ...
-
-class TermVariantProduct(Variant[None]): ...
-
-class TermVariantRecord(Variant[None]): ...
-
-class TermVariantSet(Variant[None]): ...
-
-class TermVariantSum(Variant[None]): ...
-
-class TermVariantTypeAbstraction(Variant[None]): ...
-
-class TermVariantTypeApplication(Variant[None]): ...
-
-class TermVariantTyped(Variant[None]): ...
-
-class TermVariantUnion(Variant[None]): ...
-
-class TermVariantVariable(Variant[None]): ...
-
-class TermVariantWrap(Variant[None]): ...
-
-# The identifier of a term expression constructor.
-type TermVariant = TermVariantAnnotated | TermVariantApplication | TermVariantFunction | TermVariantLet | TermVariantList | TermVariantLiteral | TermVariantMap | TermVariantOptional | TermVariantProduct | TermVariantRecord | TermVariantSet | TermVariantSum | TermVariantTypeAbstraction | TermVariantTypeApplication | TermVariantTyped | TermVariantUnion | TermVariantVariable | TermVariantWrap
+class TermVariant(Enum):
+    """The identifier of a term expression constructor."""
+    
+    TERM_VARIANT_ANNOTATED = "annotated"
+    TERM_VARIANT_APPLICATION = "application"
+    TERM_VARIANT_FUNCTION = "function"
+    TERM_VARIANT_LET = "let"
+    TERM_VARIANT_LIST = "list"
+    TERM_VARIANT_LITERAL = "literal"
+    TERM_VARIANT_MAP = "map"
+    TERM_VARIANT_OPTIONAL = "optional"
+    TERM_VARIANT_PRODUCT = "product"
+    TERM_VARIANT_RECORD = "record"
+    TERM_VARIANT_SET = "set"
+    TERM_VARIANT_SUM = "sum"
+    TERM_VARIANT_TYPE_ABSTRACTION = "typeAbstraction"
+    TERM_VARIANT_TYPE_APPLICATION = "typeApplication"
+    TERM_VARIANT_TYPED = "typed"
+    TERM_VARIANT_UNION = "union"
+    TERM_VARIANT_VARIABLE = "variable"
+    TERM_VARIANT_WRAP = "wrap"
 
 @dataclass
 class TypeConstraint:
@@ -161,35 +134,21 @@ class TypeConstraint:
     right: hydra.core.Type
     context: str | None
 
-class TypeVariantAnnotated(Variant[None]): ...
-
-class TypeVariantApplication(Variant[None]): ...
-
-class TypeVariantFunction(Variant[None]): ...
-
-class TypeVariantLambda(Variant[None]): ...
-
-class TypeVariantList(Variant[None]): ...
-
-class TypeVariantLiteral(Variant[None]): ...
-
-class TypeVariantMap(Variant[None]): ...
-
-class TypeVariantOptional(Variant[None]): ...
-
-class TypeVariantProduct(Variant[None]): ...
-
-class TypeVariantRecord(Variant[None]): ...
-
-class TypeVariantSet(Variant[None]): ...
-
-class TypeVariantSum(Variant[None]): ...
-
-class TypeVariantUnion(Variant[None]): ...
-
-class TypeVariantVariable(Variant[None]): ...
-
-class TypeVariantWrap(Variant[None]): ...
-
-# The identifier of a type constructor.
-type TypeVariant = TypeVariantAnnotated | TypeVariantApplication | TypeVariantFunction | TypeVariantLambda | TypeVariantList | TypeVariantLiteral | TypeVariantMap | TypeVariantOptional | TypeVariantProduct | TypeVariantRecord | TypeVariantSet | TypeVariantSum | TypeVariantUnion | TypeVariantVariable | TypeVariantWrap
+class TypeVariant(Enum):
+    """The identifier of a type constructor."""
+    
+    TYPE_VARIANT_ANNOTATED = "annotated"
+    TYPE_VARIANT_APPLICATION = "application"
+    TYPE_VARIANT_FUNCTION = "function"
+    TYPE_VARIANT_LAMBDA = "lambda"
+    TYPE_VARIANT_LIST = "list"
+    TYPE_VARIANT_LITERAL = "literal"
+    TYPE_VARIANT_MAP = "map"
+    TYPE_VARIANT_OPTIONAL = "optional"
+    TYPE_VARIANT_PRODUCT = "product"
+    TYPE_VARIANT_RECORD = "record"
+    TYPE_VARIANT_SET = "set"
+    TYPE_VARIANT_SUM = "sum"
+    TYPE_VARIANT_UNION = "union"
+    TYPE_VARIANT_VARIABLE = "variable"
+    TYPE_VARIANT_WRAP = "wrap"

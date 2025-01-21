@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 from dataclasses import dataclass
+from enum import Enum
 from hydra.dsl.types import Variant
 from typing import Annotated, NewType
 
@@ -76,14 +77,12 @@ class FieldType:
     name: Name
     type: Type
 
-class FloatTypeBigfloat(Variant[None]): ...
-
-class FloatTypeFloat32(Variant[None]): ...
-
-class FloatTypeFloat64(Variant[None]): ...
-
-# A floating-point type.
-type FloatType = FloatTypeBigfloat | FloatTypeFloat32 | FloatTypeFloat64
+class FloatType(Enum):
+    """A floating-point type."""
+    
+    FLOAT_TYPE_BIGFLOAT = "bigfloat"
+    FLOAT_TYPE_FLOAT32 = "float32"
+    FLOAT_TYPE_FLOAT64 = "float64"
 
 class FloatValueBigfloat(Variant[float]):
     """An arbitrary-precision floating-point value."""
@@ -123,26 +122,18 @@ class Injection:
     type_name: Name
     field: Field
 
-class IntegerTypeBigint(Variant[None]): ...
-
-class IntegerTypeInt8(Variant[None]): ...
-
-class IntegerTypeInt16(Variant[None]): ...
-
-class IntegerTypeInt32(Variant[None]): ...
-
-class IntegerTypeInt64(Variant[None]): ...
-
-class IntegerTypeUint8(Variant[None]): ...
-
-class IntegerTypeUint16(Variant[None]): ...
-
-class IntegerTypeUint32(Variant[None]): ...
-
-class IntegerTypeUint64(Variant[None]): ...
-
-# An integer type.
-type IntegerType = IntegerTypeBigint | IntegerTypeInt8 | IntegerTypeInt16 | IntegerTypeInt32 | IntegerTypeInt64 | IntegerTypeUint8 | IntegerTypeUint16 | IntegerTypeUint32 | IntegerTypeUint64
+class IntegerType(Enum):
+    """An integer type."""
+    
+    INTEGER_TYPE_BIGINT = "bigint"
+    INTEGER_TYPE_INT8 = "int8"
+    INTEGER_TYPE_INT16 = "int16"
+    INTEGER_TYPE_INT32 = "int32"
+    INTEGER_TYPE_INT64 = "int64"
+    INTEGER_TYPE_UINT8 = "uint8"
+    INTEGER_TYPE_UINT16 = "uint16"
+    INTEGER_TYPE_UINT32 = "uint32"
+    INTEGER_TYPE_UINT64 = "uint64"
 
 class IntegerValueBigint(Variant[int]):
     """An arbitrary-precision integer value."""

@@ -2,15 +2,14 @@
 
 from __future__ import annotations
 from dataclasses import dataclass
-from hydra.dsl.types import Variant
+from enum import Enum
 import hydra.core
 
-class EvaluationStyleEager(Variant[None]): ...
-
-class EvaluationStyleLazy(Variant[None]): ...
-
-# One of two evaluation styles: eager or lazy.
-type EvaluationStyle = EvaluationStyleEager | EvaluationStyleLazy
+class EvaluationStyle(Enum):
+    """One of two evaluation styles: eager or lazy."""
+    
+    EVALUATION_STYLE_EAGER = "eager"
+    EVALUATION_STYLE_LAZY = "lazy"
 
 @dataclass
 class TestCase:

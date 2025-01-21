@@ -3,7 +3,7 @@
 from __future__ import annotations
 from collections.abc import Callable
 from dataclasses import dataclass
-from hydra.dsl.types import Variant
+from enum import Enum
 from typing import Annotated
 import hydra.compute
 import hydra.core
@@ -18,12 +18,11 @@ class AdapterContext:
     language: Language
     adapters: dict[hydra.core.Name, hydra.compute.Adapter[AdapterContext, AdapterContext, hydra.core.Type, hydra.core.Type, hydra.core.Term, hydra.core.Term]]
 
-class CoderDirectionEncode(Variant[None]): ...
-
-class CoderDirectionDecode(Variant[None]): ...
-
-# Indicates either the 'out' or the 'in' direction of a coder.
-type CoderDirection = CoderDirectionEncode | CoderDirectionDecode
+class CoderDirection(Enum):
+    """Indicates either the 'out' or the 'in' direction of a coder."""
+    
+    CODER_DIRECTION_ENCODE = "encode"
+    CODER_DIRECTION_DECODE = "decode"
 
 @dataclass
 class Language:
@@ -48,11 +47,8 @@ class LanguageConstraints:
 # The unique name of a language.
 type LanguageName = str
 
-class TraversalOrderPre(Variant[None]):
-    """Pre-order traversal."""
-
-class TraversalOrderPost(Variant[None]):
-    """Post-order traversal."""
-
-# Specifies either a pre-order or post-order traversal.
-type TraversalOrder = TraversalOrderPre | TraversalOrderPost
+class TraversalOrder(Enum):
+    """Specifies either a pre-order or post-order traversal."""
+    
+    TRAVERSAL_ORDER_PRE = "pre"
+    TRAVERSAL_ORDER_POST = "post"
