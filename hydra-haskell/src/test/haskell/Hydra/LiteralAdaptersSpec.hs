@@ -80,6 +80,12 @@ testIntegerAdapter = H.describe "Test integer adapter" $ do
       IntegerTypeUint64 IntegerTypeUint32 True
       (IntegerValueUint64 i) (IntegerValueUint32 $ fromIntegral i)
 
+  H.it "upgrade int64 to bigint when supported" $
+    QC.property $ \i -> checkIntegerAdapter
+      [IntegerTypeBigint]
+      IntegerTypeInt64 IntegerTypeBigint False
+      (IntegerValueInt64 i) (IntegerValueBigint $ fromIntegral i)
+
 testLiteralAdapter :: H.SpecWith ()
 testLiteralAdapter = H.describe "Test literal adapter" $ do
 

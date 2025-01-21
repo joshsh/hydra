@@ -18,16 +18,31 @@ To build Hydra-Haskell and enter the GHCi REPL, use:
 stack ghci
 ```
 
-Or to enter the test environment:
-
-```bash
-stack ghci hydra:hydra-test
-```
+## Test
 
 To run all tests at the command line, use:
 
 ```bash
 stack test
+```
+
+If you are familiar with Hydra-Haskell internals and you want to enter the test environment interactively:
+
+```bash
+stack ghci hydra:lib hydra:hydra-test
+```
+
+Or just `stack ghci hydra:hydra-test` if you want to treat the library as an external dependency.
+Now in the REPL, you can access test resources,
+
+```haskell
+:t Hydra.TestUtils.termTestContext
+```
+
+or run individual Hspec test cases.
+
+```haskell
+hspec Hydra.TermAdaptersSpec.termsAreAdaptedRecursively
 ```
 
 ## Code generation
