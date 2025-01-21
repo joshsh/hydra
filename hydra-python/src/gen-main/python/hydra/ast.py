@@ -4,6 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
 from hydra.dsl.types import Variant
+from typing import NewType
 
 class Associativity(Enum):
     """Operator associativity."""
@@ -89,10 +90,10 @@ class Padding:
     right: Ws
 
 # Operator precedence.
-type Precedence = int
+Precedence = NewType("Precedence", int)
 
 # Any symbol.
-type Symbol = str
+Symbol = NewType("Symbol", str)
 
 class WsNone(Variant[None]): ...
 
