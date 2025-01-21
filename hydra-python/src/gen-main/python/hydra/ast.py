@@ -2,18 +2,16 @@
 
 from __future__ import annotations
 from dataclasses import dataclass
+from enum import Enum
 from hydra.dsl.types import Variant
 
-class AssociativityNone(Variant[None]): ...
-
-class AssociativityLeft(Variant[None]): ...
-
-class AssociativityRight(Variant[None]): ...
-
-class AssociativityBoth(Variant[None]): ...
-
-# Operator associativity.
-type Associativity = AssociativityNone | AssociativityLeft | AssociativityRight | AssociativityBoth
+class Associativity(Enum):
+    """Operator associativity."""
+    
+    ASSOCIATIVITY_NONE = "none"
+    ASSOCIATIVITY_LEFT = "left"
+    ASSOCIATIVITY_RIGHT = "right"
+    ASSOCIATIVITY_BOTH = "both"
 
 @dataclass
 class BlockStyle:

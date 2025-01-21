@@ -2,24 +2,20 @@
 
 from __future__ import annotations
 from dataclasses import dataclass
+from enum import Enum
 from hydra.dsl.types import Variant
 from typing import Annotated
 import hydra.core
 
-class ComparisonConstraintEqual(Variant[None]): ...
-
-class ComparisonConstraintNotEqual(Variant[None]): ...
-
-class ComparisonConstraintLessThan(Variant[None]): ...
-
-class ComparisonConstraintGreaterThan(Variant[None]): ...
-
-class ComparisonConstraintLessThanOrEqual(Variant[None]): ...
-
-class ComparisonConstraintGreaterThanOrEqual(Variant[None]): ...
-
-# One of several comparison operators.
-type ComparisonConstraint = ComparisonConstraintEqual | ComparisonConstraintNotEqual | ComparisonConstraintLessThan | ComparisonConstraintGreaterThan | ComparisonConstraintLessThanOrEqual | ComparisonConstraintGreaterThanOrEqual
+class ComparisonConstraint(Enum):
+    """One of several comparison operators."""
+    
+    COMPARISON_CONSTRAINT_EQUAL = "equal"
+    COMPARISON_CONSTRAINT_NOT_EQUAL = "notEqual"
+    COMPARISON_CONSTRAINT_LESS_THAN = "lessThan"
+    COMPARISON_CONSTRAINT_GREATER_THAN = "greaterThan"
+    COMPARISON_CONSTRAINT_LESS_THAN_OR_EQUAL = "lessThanOrEqual"
+    COMPARISON_CONSTRAINT_GREATER_THAN_OR_EQUAL = "greaterThanOrEqual"
 
 @dataclass
 class Edge:

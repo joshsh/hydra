@@ -3,21 +3,19 @@
 from __future__ import annotations
 from collections.abc import Callable
 from dataclasses import dataclass
-from hydra.dsl.types import Variant
+from enum import Enum
 from typing import Annotated, Generic, TypeVar
 import hydra.compute
 import hydra.core
 
 X = TypeVar("X")
 
-class ComparisonLessThan(Variant[None]): ...
-
-class ComparisonEqualTo(Variant[None]): ...
-
-class ComparisonGreaterThan(Variant[None]): ...
-
-# An equality judgement: less than, equal to, or greater than.
-type Comparison = ComparisonLessThan | ComparisonEqualTo | ComparisonGreaterThan
+class Comparison(Enum):
+    """An equality judgement: less than, equal to, or greater than."""
+    
+    COMPARISON_LESS_THAN = "lessThan"
+    COMPARISON_EQUAL_TO = "equalTo"
+    COMPARISON_GREATER_THAN = "greaterThan"
 
 @dataclass
 class Graph:
@@ -52,9 +50,8 @@ class TermCoder(Generic[X]):
     type: hydra.core.Type
     coder: hydra.compute.Coder[Graph, Graph, hydra.core.Term, X]
 
-class TypeClassEquality(Variant[None]): ...
-
-class TypeClassOrdering(Variant[None]): ...
-
-# Any of a small number of built-in type classes.
-type TypeClass = TypeClassEquality | TypeClassOrdering
+class TypeClass(Enum):
+    """Any of a small number of built-in type classes."""
+    
+    TYPE_CLASS_EQUALITY = "equality"
+    TYPE_CLASS_ORDERING = "ordering"
