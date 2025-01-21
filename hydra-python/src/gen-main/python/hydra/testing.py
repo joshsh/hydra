@@ -9,6 +9,7 @@ class EvaluationStyle(Enum):
     """One of two evaluation styles: eager or lazy."""
     
     EAGER = "eager"
+    
     LAZY = "lazy"
 
 @dataclass

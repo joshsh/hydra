@@ -14,7 +14,9 @@ class Comparison(Enum):
     """An equality judgement: less than, equal to, or greater than."""
     
     LESS_THAN = "lessThan"
+    
     EQUAL_TO = "equalTo"
+    
     GREATER_THAN = "greaterThan"
 
 @dataclass
@@ -54,4 +56,5 @@ class TypeClass(Enum):
     """Any of a small number of built-in type classes."""
     
     EQUALITY = "equality"
+    
     ORDERING = "ordering"

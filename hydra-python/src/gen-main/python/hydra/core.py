@@ -81,7 +81,9 @@ class FloatType(Enum):
     """A floating-point type."""
     
     BIGFLOAT = "bigfloat"
+    
     FLOAT32 = "float32"
+    
     FLOAT64 = "float64"
 
 class FloatValueBigfloat(Variant[float]):
@@ -126,13 +128,21 @@ class IntegerType(Enum):
     """An integer type."""
     
     BIGINT = "bigint"
+    
     INT8 = "int8"
+    
     INT16 = "int16"
+    
     INT32 = "int32"
+    
     INT64 = "int64"
+    
     UINT8 = "uint8"
+    
     UINT16 = "uint16"
+    
     UINT32 = "uint32"
+    
     UINT64 = "uint64"
 
 class IntegerValueBigint(Variant[int]):

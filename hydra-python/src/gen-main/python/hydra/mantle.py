@@ -21,26 +21,37 @@ class EliminationVariant(Enum):
     """The identifier of an elimination constructor."""
     
     LIST = "list"
+    
     OPTIONAL = "optional"
+    
     PRODUCT = "product"
+    
     RECORD = "record"
+    
     UNION = "union"
+    
     WRAP = "wrap"
 
 class FunctionVariant(Enum):
     """The identifier of a function constructor."""
     
     ELIMINATION = "elimination"
+    
     LAMBDA = "lambda"
+    
     PRIMITIVE = "primitive"
 
 class LiteralVariant(Enum):
     """The identifier of a literal constructor."""
     
     BINARY = "binary"
+    
     BOOLEAN = "boolean"
+    
     FLOAT = "float"
+    
     INTEGER = "integer"
+    
     STRING = "string"
 
 class PrecisionArbitrary(Variant[None]): ...
@@ -108,22 +119,39 @@ class TermVariant(Enum):
     """The identifier of a term expression constructor."""
     
     ANNOTATED = "annotated"
+    
     APPLICATION = "application"
+    
     FUNCTION = "function"
+    
     LET = "let"
+    
     LIST = "list"
+    
     LITERAL = "literal"
+    
     MAP = "map"
+    
     OPTIONAL = "optional"
+    
     PRODUCT = "product"
+    
     RECORD = "record"
+    
     SET = "set"
+    
     SUM = "sum"
+    
     TYPE_ABSTRACTION = "typeAbstraction"
+    
     TYPE_APPLICATION = "typeApplication"
+    
     TYPED = "typed"
+    
     UNION = "union"
+    
     VARIABLE = "variable"
+    
     WRAP = "wrap"
 
 @dataclass
@@ -138,17 +166,31 @@ class TypeVariant(Enum):
     """The identifier of a type constructor."""
     
     ANNOTATED = "annotated"
+    
     APPLICATION = "application"
+    
     FUNCTION = "function"
+    
     LAMBDA = "lambda"
+    
     LIST = "list"
+    
     LITERAL = "literal"
+    
     MAP = "map"
+    
     OPTIONAL = "optional"
+    
     PRODUCT = "product"
+    
     RECORD = "record"
+    
     SET = "set"
+    
     SUM = "sum"
+    
     UNION = "union"
+    
     VARIABLE = "variable"
+    
     WRAP = "wrap"
