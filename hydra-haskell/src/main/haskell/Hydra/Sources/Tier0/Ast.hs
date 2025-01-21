@@ -89,11 +89,11 @@ hydraAstModule = Module ns elements [hydraCoreModule] [hydraCoreModule] $
 
       def "Precedence" $
         doc "Operator precedence" $
-        int32,
+        wrap int32,
 
       def "Symbol" $
-        doc "Any symbol"
-        string,
+        doc "Any symbol" $
+        wrap string,
 
       def "Ws" $
         doc "One of several classes of whitespace" $

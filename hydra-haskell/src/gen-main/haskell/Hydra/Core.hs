@@ -378,10 +378,15 @@ _Literal_string = (Name "string")
 
 -- | Any of a fixed set of literal types, also called atomic types, base types, primitive types, or type constants
 data LiteralType = 
+  -- | The type of a binary (byte string) value
   LiteralTypeBinary  |
+  -- | The type of a boolean (true/false) value
   LiteralTypeBoolean  |
+  -- | The type of a floating-point value
   LiteralTypeFloat FloatType |
+  -- | The type of an integer value
   LiteralTypeInteger IntegerType |
+  -- | The type of a string value
   LiteralTypeString 
   deriving (Eq, Ord, Read, Show)
 
