@@ -8,10 +8,10 @@ from hydra.dsl.types import Variant
 class Associativity(Enum):
     """Operator associativity."""
     
-    ASSOCIATIVITY_NONE = "none"
-    ASSOCIATIVITY_LEFT = "left"
-    ASSOCIATIVITY_RIGHT = "right"
-    ASSOCIATIVITY_BOTH = "both"
+    NONE = "none"
+    LEFT = "left"
+    RIGHT = "right"
+    BOTH = "both"
 
 @dataclass
 class BlockStyle:

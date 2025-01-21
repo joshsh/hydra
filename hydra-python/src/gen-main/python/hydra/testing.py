@@ -8,8 +8,8 @@ import hydra.core
 class EvaluationStyle(Enum):
     """One of two evaluation styles: eager or lazy."""
     
-    EVALUATION_STYLE_EAGER = "eager"
-    EVALUATION_STYLE_LAZY = "lazy"
+    EAGER = "eager"
+    LAZY = "lazy"
 
 @dataclass
 class TestCase:

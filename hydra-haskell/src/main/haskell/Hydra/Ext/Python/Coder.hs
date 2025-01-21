@@ -213,8 +213,7 @@ encodeUnionType env name rt@(RowType _ tfields) comment = if isEnumType rt
     unionStmt = typeAliasStatement (Py.Name $ sanitizePythonName lname) comment $
       orExpression (pyNameToPyPrimary . variantName . fieldTypeName <$> tfields)
     variantName fname = Py.Name $ sanitizePythonName $ lname ++ (capitalize $ unName fname)
-    enumVariantName fname = Py.Name $ (convertCase CaseConventionPascal CaseConventionUpperSnake lname)
-      ++ "_" ++ (convertCase CaseConventionCamel CaseConventionUpperSnake fname)
+    enumVariantName fname = Py.Name $ convertCase CaseConventionCamel CaseConventionUpperSnake fname
 
 gatherMetadata :: [Definition] -> PythonModuleMetadata
 gatherMetadata defs = checkTvars $ L.foldl addDef start defs

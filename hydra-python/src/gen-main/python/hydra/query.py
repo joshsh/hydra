@@ -10,12 +10,12 @@ import hydra.core
 class ComparisonConstraint(Enum):
     """One of several comparison operators."""
     
-    COMPARISON_CONSTRAINT_EQUAL = "equal"
-    COMPARISON_CONSTRAINT_NOT_EQUAL = "notEqual"
-    COMPARISON_CONSTRAINT_LESS_THAN = "lessThan"
-    COMPARISON_CONSTRAINT_GREATER_THAN = "greaterThan"
-    COMPARISON_CONSTRAINT_LESS_THAN_OR_EQUAL = "lessThanOrEqual"
-    COMPARISON_CONSTRAINT_GREATER_THAN_OR_EQUAL = "greaterThanOrEqual"
+    EQUAL = "equal"
+    NOT_EQUAL = "notEqual"
+    LESS_THAN = "lessThan"
+    GREATER_THAN = "greaterThan"
+    LESS_THAN_OR_EQUAL = "lessThanOrEqual"
+    GREATER_THAN_OR_EQUAL = "greaterThanOrEqual"
 
 @dataclass
 class Edge:
