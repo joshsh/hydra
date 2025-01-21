@@ -64,6 +64,9 @@ public abstract class LiteralType implements Serializable {
     }
   }
   
+  /**
+   * The type of a binary (byte string) value
+   */
   public static final class Binary extends hydra.core.LiteralType implements Serializable {
     public Binary () {
     
@@ -89,6 +92,9 @@ public abstract class LiteralType implements Serializable {
     }
   }
   
+  /**
+   * The type of a boolean (true/false) value
+   */
   public static final class Boolean_ extends hydra.core.LiteralType implements Serializable {
     public Boolean_ () {
     
@@ -114,6 +120,9 @@ public abstract class LiteralType implements Serializable {
     }
   }
   
+  /**
+   * The type of a floating-point value
+   */
   public static final class Float_ extends hydra.core.LiteralType implements Serializable {
     public final hydra.core.FloatType value;
     
@@ -142,6 +151,9 @@ public abstract class LiteralType implements Serializable {
     }
   }
   
+  /**
+   * The type of an integer value
+   */
   public static final class Integer_ extends hydra.core.LiteralType implements Serializable {
     public final hydra.core.IntegerType value;
     
@@ -170,6 +182,9 @@ public abstract class LiteralType implements Serializable {
     }
   }
   
+  /**
+   * The type of a string value
+   */
   public static final class String_ extends hydra.core.LiteralType implements Serializable {
     public String_ () {
     
