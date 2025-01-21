@@ -34,7 +34,7 @@ bidirectional :: (CoderDirection -> b -> Flow s b) -> Coder s s b b
 bidirectional f = Coder (f CoderDirectionEncode) (f CoderDirectionDecode)
 
 chooseAdapter :: (Eq t, Ord t, Show t) =>
-    (t -> [Flow so (SymmetricAdapter si t v)])
+    (t -> Flow so [SymmetricAdapter si t v])
  -> (t -> Bool)
  -> (t -> String)
  -> t
@@ -45,7 +45,7 @@ chooseAdapter alts supported describe typ = if supported typ
     -- Uncomment to debug adapter cycles
     -- debugCheckType typ
 
-    raw <- sequence (alts typ)
+    raw <- alts typ
     let candidates = L.filter (supported . adapterTarget) raw
     if L.null candidates
       then fail $ "no adapters found for " ++ describe typ
@@ -114,16 +114,21 @@ typeIsSupported :: LanguageConstraints -> Type -> Bool
 typeIsSupported constraints t = languageConstraintsTypes constraints base -- these are *additional* type constraints
   && isSupportedVariant (typeVariant base)
   && case base of
-    TypeLiteral at -> literalTypeIsSupported constraints at
+    TypeAnnotated (AnnotatedType t _) -> typeIsSupported constraints t
+    TypeApplication (ApplicationType lhs rhs) -> typeIsSupported constraints lhs && typeIsSupported constraints rhs
+    TypeLambda (LambdaType _ body) -> typeIsSupported constraints body
     TypeFunction (FunctionType dom cod) -> typeIsSupported constraints dom && typeIsSupported constraints cod
     TypeList lt -> typeIsSupported constraints lt
+    TypeLiteral at -> literalTypeIsSupported constraints at
     TypeMap (MapType kt vt) -> typeIsSupported constraints kt && typeIsSupported constraints vt
-    TypeWrap _ -> True -- TODO: dereference the type
     TypeOptional t -> typeIsSupported constraints t
-    TypeRecord rt -> and $ typeIsSupported constraints . fieldTypeType <$> rowTypeFields rt
+    TypeProduct types -> and (typeIsSupported constraints <$> types)
+    TypeRecord rt -> and (typeIsSupported constraints . fieldTypeType <$> rowTypeFields rt)
     TypeSet st -> typeIsSupported constraints st
-    TypeUnion rt -> and $ typeIsSupported constraints . fieldTypeType <$> rowTypeFields rt
-    _ -> True
+    TypeSum types -> and (typeIsSupported constraints <$> types)
+    TypeUnion rt -> and (typeIsSupported constraints . fieldTypeType <$> rowTypeFields rt)
+    TypeWrap (WrappedType _ t) -> typeIsSupported constraints t
+    TypeVariable _ -> True
   where
     isSupportedVariant v = v == TypeVariantVariable || S.member v (languageConstraintsTypeVariants constraints)
     base = stripType t

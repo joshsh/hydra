@@ -18,11 +18,12 @@ import Hydra.Mantle
 import Hydra.Tier1
 import Hydra.Tier2
 
+import qualified Control.Monad as CM
 import qualified Data.List as L
 import qualified Data.Set as S
 
 
-literalAdapter :: LiteralType -> Flow (AdapterContext) (SymmetricAdapter s LiteralType Literal)
+literalAdapter :: LiteralType -> Flow AdapterContext (SymmetricAdapter s LiteralType Literal)
 literalAdapter lt = do
     cx <- getState
     chooseAdapter (alts cx) (supported cx) describeLiteralType lt
@@ -31,8 +32,8 @@ literalAdapter lt = do
     constraints cx = languageConstraints $ adapterContextLanguage cx
 
     alts cx t = case t of
-        LiteralTypeBinary -> pure $ fallbackAdapter t
-        LiteralTypeBoolean -> pure $ if noIntegerVars
+        LiteralTypeBinary -> fallbackAdapter t
+        LiteralTypeBoolean -> if noIntegerVars
             then fallbackAdapter t
             else do
               adapter <- integerAdapter IntegerTypeUint8
@@ -45,8 +46,8 @@ literalAdapter lt = do
                       decode (LiteralInteger iv) = LiteralBoolean <$> do
                         (IntegerValueUint8 v) <- coderDecode step' iv
                         return $ v == 1
-              return $ Adapter False t (LiteralTypeInteger $ adapterTarget adapter) step
-        LiteralTypeFloat ft -> pure $ if noFloatVars
+              return [Adapter False t (LiteralTypeInteger $ adapterTarget adapter) step]
+        LiteralTypeFloat ft -> if noFloatVars
           then fallbackAdapter t
           else do
             adapter <- floatAdapter ft
@@ -54,16 +55,16 @@ literalAdapter lt = do
                   $ \dir l -> case l of
                     LiteralFloat fv -> LiteralFloat <$> encodeDecode dir (adapterCoder adapter) fv
                     _ -> unexpected "floating-point literal" (show l)
-            return $ Adapter (adapterIsLossy adapter) t (LiteralTypeFloat $ adapterTarget adapter) step
-        LiteralTypeInteger it -> pure $ if noIntegerVars
+            return [Adapter (adapterIsLossy adapter) t (LiteralTypeFloat $ adapterTarget adapter) step]
+        LiteralTypeInteger it -> if noIntegerVars
           then fallbackAdapter t
           else do
             adapter <- integerAdapter it
             let step = bidirectional
                   $ \dir (LiteralInteger iv) -> LiteralInteger
                     <$> encodeDecode dir (adapterCoder adapter) iv
-            return $ Adapter (adapterIsLossy adapter) t (LiteralTypeInteger $ adapterTarget adapter) step
-        LiteralTypeString -> pure $ fail "no substitute for the literal string type"
+            return [Adapter (adapterIsLossy adapter) t (LiteralTypeInteger $ adapterTarget adapter) step]
+        LiteralTypeString -> fail "no substitute for the literal string type"
       where
         noFloatVars = not (S.member LiteralVariantFloat $ languageConstraintsLiteralVariants $ constraints cx)
           || S.null (languageConstraintsFloatTypes $ constraints cx)
@@ -73,7 +74,7 @@ literalAdapter lt = do
 
         fallbackAdapter t = if noStrings
             then fail "cannot serialize unsupported type; strings are unsupported"
-            else warn msg $ pure $ Adapter False t LiteralTypeString step
+            else warn msg $ pure [Adapter False t LiteralTypeString step]
           where
             msg = disclaimer False (describeLiteralType t) (describeLiteralType LiteralTypeString)
             step = Coder encode decode
@@ -98,13 +99,13 @@ disclaimer :: Bool -> String -> String -> String
 disclaimer lossy source target = "replace " ++ source ++ " with " ++ target
   ++ if lossy then " (lossy)" else ""
 
-floatAdapter :: FloatType -> Flow (AdapterContext) (SymmetricAdapter s FloatType FloatValue)
+floatAdapter :: FloatType -> Flow AdapterContext (SymmetricAdapter s FloatType FloatValue)
 floatAdapter ft = do
     cx <- getState
     let supported = floatTypeIsSupported $ languageConstraints $ adapterContextLanguage cx
     chooseAdapter alts supported describeFloatType ft
   where
-    alts t = makeAdapter t <$> case t of
+    alts t = CM.mapM (makeAdapter t) $ case t of
         FloatTypeBigfloat -> [FloatTypeFloat64, FloatTypeFloat32]
         FloatTypeFloat32 -> [FloatTypeFloat64, FloatTypeBigfloat]
         FloatTypeFloat64 -> [FloatTypeBigfloat, FloatTypeFloat32]
@@ -115,13 +116,13 @@ floatAdapter ft = do
             step = Coder (pure . convertFloatValue target) (pure . convertFloatValue source)
             msg = disclaimer lossy (describeFloatType source) (describeFloatType target)
 
-integerAdapter :: IntegerType -> Flow (AdapterContext) (SymmetricAdapter s IntegerType IntegerValue)
+integerAdapter :: IntegerType -> Flow AdapterContext (SymmetricAdapter s IntegerType IntegerValue)
 integerAdapter it = do
     cx <- getState
     let supported = integerTypeIsSupported $ languageConstraints $ adapterContextLanguage cx
     chooseAdapter alts supported describeIntegerType it
   where
-    alts t = makeAdapter t <$> case t of
+    alts t = CM.mapM (makeAdapter t) $ case t of
         IntegerTypeBigint -> L.reverse unsignedPref
         IntegerTypeInt8 -> signed 1
         IntegerTypeInt16 -> signed 2

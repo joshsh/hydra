@@ -20,13 +20,16 @@ import qualified Data.Maybe as Y
 constraintsAreAsExpected :: H.SpecWith ()
 constraintsAreAsExpected = H.describe "Verify that the language constraints include/exclude the appropriate types" $ do
 
-    H.it "int16 and int32 are supported in the test context" $ do
+    H.it "int16, int32, and bigint are supported in the test context" $ do
       typeIsSupported (context [TypeVariantLiteral]) Types.int16 `H.shouldBe` True
       typeIsSupported (context [TypeVariantLiteral]) Types.int32 `H.shouldBe` True
+      typeIsSupported (context [TypeVariantLiteral]) Types.bigint `H.shouldBe` True
 
-    H.it "int8 and bigint are unsupported in the test context" $ do
+    H.it "int8 and uint32 are unsupported in the test context" $ do
       typeIsSupported (context [TypeVariantLiteral]) Types.int8 `H.shouldBe` False
-      typeIsSupported (context [TypeVariantLiteral]) Types.bigint `H.shouldBe` False
+      typeIsSupported (context [TypeVariantLiteral]) Types.uint32 `H.shouldBe` False
+
+    -- Note: floating-point constraints are untested
 
     H.it "Records are supported, but unions are not" $ do
       typeIsSupported (context [TypeVariantLiteral, TypeVariantRecord]) testTypeLatLon `H.shouldBe` True
@@ -216,6 +219,17 @@ termsAreAdaptedRecursively = H.describe "Verify that the adapter descends into s
       (list $ (\l -> set $ S.fromList $ string <$> l) <$> lists)
       (list $ (\l -> list $ string <$> S.toList (S.fromList l)) <$> lists)
 
+  H.it "A wrapped int64 becomes a wrapped bigint" $
+    QC.property $ \i -> checkDataAdapter
+      [TypeVariantLiteral, TypeVariantWrap]
+      (Types.wrapWithName aliasName Types.int64)
+      (Types.wrapWithName aliasName Types.bigint)
+      False
+      (wrap aliasName $ int64 i)
+      (wrap aliasName $ bigint $ fromIntegral i)
+  where
+    aliasName = Name "MyAlias"
+
 roundTripsPreserveSelectedTypes :: H.SpecWith ()
 roundTripsPreserveSelectedTypes = H.describe "Verify that the adapter is information preserving, i.e. that round-trips are no-ops" $ do
 
@@ -234,7 +248,7 @@ roundTripsPreserveSelectedTypes = H.describe "Verify that the adapter is informa
   H.it "Check projection terms (which map to variants)" $
     QC.property $ \fname -> roundTripIsNoop exampleProjectionType (project testTypePersonName fname)
 
-  H.it "Check nominally typed terms (which pass through as instances of the aliased type)" $
+  H.it "Check newtype terms (which pass through as instances of the aliased type)" $
     QC.property $ \s -> roundTripIsNoop testTypeStringAlias (wrap testTypeStringAliasName $ string s)
 
 --roundTripsPreserveArbitraryTypes :: H.SpecWith ()

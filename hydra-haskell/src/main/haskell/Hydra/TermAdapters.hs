@@ -27,6 +27,7 @@ import Hydra.Reduction
 import Hydra.Tier1
 import Hydra.Tier2
 import qualified Hydra.Dsl.Expect as Expect
+import qualified Hydra.Dsl.Terms as Terms
 import qualified Hydra.Dsl.Types as Types
 
 import qualified Control.Monad as CM
@@ -235,14 +236,11 @@ passMap t@(TypeMap (MapType kt vt)) = do
 
 passOptional :: TypeAdapter
 passOptional t@(TypeOptional ot) = do
-  ad <- termAdapter ot
-  return $ Adapter (adapterIsLossy ad) t (Types.optional $ adapterTarget ad) $
-    bidirectional $ \dir term -> case fullyStripTerm term of
-      (TermOptional m) -> TermOptional <$> case m of
-        Nothing -> pure Nothing
-        Just term' -> Just <$> encodeDecode dir (adapterCoder ad) term'
-      t -> pure term
---      t -> fail $ "expected optional term, found: " ++ show t
+    adapter <- termAdapter ot
+    return $ Adapter (adapterIsLossy adapter) t (Types.optional $ adapterTarget adapter) $
+      bidirectional (mapTerm $ adapterCoder adapter)
+  where
+    mapTerm coder dir term = Terms.optional <$> (Expect.optional pure term >>= traverse (encodeDecode dir coder))
 
 passProduct :: TypeAdapter
 passProduct t@(TypeProduct types) = do
@@ -291,10 +289,12 @@ passUnion t@(TypeUnion rt) = do
     nm = rowTypeTypeName rt
 
 passWrapped :: TypeAdapter
-passWrapped wt@(TypeWrap (WrappedType tname t)) = do
-  adapter <- termAdapter t
-  return $ Adapter (adapterIsLossy adapter) wt (Types.wrapWithName tname $ adapterTarget adapter)
-    $ bidirectional $ \dir (TermWrap (WrappedTerm _ term)) -> TermWrap . WrappedTerm tname <$> encodeDecode dir (adapterCoder adapter) term
+passWrapped t@(TypeWrap (WrappedType tname ot)) = do
+    adapter <- termAdapter ot
+    return $ Adapter (adapterIsLossy adapter) t (Types.wrapWithName tname $ adapterTarget adapter) $
+      bidirectional (mapTerm $ adapterCoder adapter)
+  where
+    mapTerm coder dir term = Terms.wrap tname <$> (Expect.wrap tname term >>= encodeDecode dir coder)
 
 simplifyApplication :: TypeAdapter
 simplifyApplication t@(TypeApplication (ApplicationType lhs _)) = do
@@ -315,10 +315,9 @@ termAdapter typ = case typ of
           g <- getState
           chooseAdapter (alts g) (supported g) describeType typ
         where
-          alts g t = (\c -> c t) <$>
-              if supportedAtTopLevel g t
-                then pass t
-                else trySubstitution t
+          alts g t = CM.mapM (\c -> c t) $ if supportedAtTopLevel g t
+              then pass t
+              else trySubstitution t
             where
               supportedAtTopLevel g t = variantIsSupported g t && languageConstraintsTypes (constraints g) t
               pass t = case typeVariant (stripType t) of
