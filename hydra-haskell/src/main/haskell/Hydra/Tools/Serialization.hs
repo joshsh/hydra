@@ -238,3 +238,9 @@ tabIndentDoubleSpace = tabIndent . doubleNewlineSep
 
 tabIndentSingleSpace :: [Expr] -> Expr
 tabIndentSingleSpace = tabIndent . newlineSep
+
+unsupportedType :: String -> Expr
+unsupportedType label = cst $ "[" ++ label ++ "]"
+
+unsupportedVariant :: Show a => String -> a -> Expr
+unsupportedVariant label obj = cst $ "[unsupported " ++ label ++ ": " ++ show obj ++ "]"

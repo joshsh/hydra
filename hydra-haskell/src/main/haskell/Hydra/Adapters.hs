@@ -30,10 +30,6 @@ import qualified Data.Map as M
 import qualified Data.Set as S
 
 
-data Namespaces n = Namespaces {
-  namespacesFocus :: (Namespace, n),
-  namespacesMapping :: M.Map Namespace n} deriving Show
-
 adaptAndEncodeType :: Language -> (Type -> Flow Graph t) -> Type -> Flow Graph t
 adaptAndEncodeType lang enc typ = case stripType typ of
   TypeVariable _ -> enc typ
@@ -96,8 +92,6 @@ transformModule lang encodeTerm createModule mod = withTrace ("transform module 
       return $ M.fromList $ L.zip types cdrs
 
 -- Reusable code for breadth-first processing of a module
-
-data Definition = DefinitionType Name Type | DefinitionTerm Name Term Type
 
 -- | Map a Hydra module to a list of type and/or term definitions which have been adapted to the target language.
 adaptedModuleDefinitions :: Language -> Module -> Flow Graph [Definition]

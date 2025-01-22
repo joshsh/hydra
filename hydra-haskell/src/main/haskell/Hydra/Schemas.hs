@@ -1,11 +1,16 @@
 -- | Various functions for dereferencing and decoding schema types
 
 module Hydra.Schemas (
+  Definition(..),
+  Namespaces(..),
+  definitionDependencyNamespaces,
+  dependencyNamespaces,
   elementAsTypedTerm,
   fieldTypes,
   isEnumType,
   isSerializable,
   moduleDependencyNamespaces,
+  namespacesForDefinitions,
   requireRecordType,
   requireType,
   requireUnionType,
@@ -37,6 +42,39 @@ import qualified Data.Map as M
 import qualified Data.Set as S
 import qualified Data.Maybe as Y
 
+
+data Definition = DefinitionType Name Type | DefinitionTerm Name Term Type
+
+data Namespaces n = Namespaces {
+  namespacesFocus :: (Namespace, n),
+  namespacesMapping :: M.Map Namespace n} deriving Show
+
+definitionDependencyNamespaces :: [Definition] -> S.Set Namespace
+definitionDependencyNamespaces defs = S.fromList $ Y.catMaybes (namespaceOfEager <$> S.toList allNames)
+  where
+    allNames = S.unions (defNames <$> defs)
+    defNames def = case def of
+        DefinitionType _ typ -> typeDependencyNames typ
+        DefinitionTerm _ term _ -> termDependencyNames True True True term
+
+-- | Find dependency namespaces in all of a set of terms.
+dependencyNamespaces :: Bool -> Bool -> Bool -> Bool -> [Term] -> Flow Graph (S.Set Namespace)
+dependencyNamespaces withVars withPrims withNoms withSchema terms = do
+    allNames <- S.unions <$> (CM.mapM depNames terms)
+    return $ S.fromList $ Y.catMaybes (namespaceOfEager <$> S.toList allNames)
+  where
+    depNames term = do
+      let dataNames = termDependencyNames withVars withPrims withNoms term
+
+      schemaNames <- if withSchema
+        then typeDependencyNames <$> requireTermType term
+        else pure S.empty
+
+      typeNames <- if isEncodedType (fullyStripTerm term)
+        then typeDependencyNames <$> coreDecodeType term
+        else pure S.empty
+
+      return $ S.unions [dataNames, schemaNames, typeNames]
 
 dereferenceType :: Name -> Flow Graph (Maybe Type)
 dereferenceType name = do
@@ -77,26 +115,17 @@ isSerializable el = do
   where
     variants typ = typeVariant <$> foldOverType TraversalOrderPre (\m t -> t:m) [] typ
 
--- | Find dependency namespaces in various dimensions of a term: va
+-- | Find dependency namespaces in all of the elements of a module, excluding the module's own namespace.
 moduleDependencyNamespaces :: Bool -> Bool -> Bool -> Bool -> Module -> Flow Graph (S.Set Namespace)
-moduleDependencyNamespaces withVars withPrims withNoms withSchema mod = do
-    allNames <- S.unions <$> (CM.mapM elNames $ moduleElements mod)
-    let namespaces = S.fromList $ Y.catMaybes (namespaceOfEager <$> S.toList allNames)
-    return $ S.delete (moduleNamespace mod) namespaces
+moduleDependencyNamespaces withVars withPrims withNoms withSchema mod =
+  S.delete (moduleNamespace mod) <$> (dependencyNamespaces withVars withPrims withNoms withSchema $
+    (elementData <$> moduleElements mod))
+
+namespacesForDefinitions :: (Namespace -> a) -> Namespace -> [Definition] -> Namespaces a
+namespacesForDefinitions encodeNamespace focusNs defs = Namespaces (toPair focusNs) $ M.fromList (toPair <$> S.toList nss)
   where
-    elNames el = do
-      let term = elementData el
-      let dataNames = termDependencyNames withVars withPrims withNoms term
-
-      schemaNames <- if withSchema
-        then typeDependencyNames <$> requireTermType term
-        else pure S.empty
-
-      typeNames <- if isEncodedType (fullyStripTerm term)
-        then typeDependencyNames <$> coreDecodeType term
-        else pure S.empty
-
-      return $ S.unions [dataNames, schemaNames, typeNames]
+    nss = S.delete focusNs $ definitionDependencyNamespaces defs
+    toPair ns = (ns, encodeNamespace ns)
 
 requireRecordType :: Name -> Flow Graph RowType
 requireRecordType = requireRowType "record type" $ \t -> case t of

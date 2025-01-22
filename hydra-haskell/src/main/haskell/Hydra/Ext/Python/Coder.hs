@@ -7,7 +7,7 @@ import Hydra.Dsl.Terms
 import Hydra.Tools.Serialization
 import qualified Hydra.Ext.Python.Syntax as Py
 import Hydra.Ext.Python.Utils
-import Hydra.Ext.Python.Serde hiding (encodeName, encodeTerm)
+import qualified Hydra.Ext.Python.Serde as PySer
 import qualified Hydra.Lib.Strings as Strings
 import qualified Hydra.Dsl.Types as Types
 import Hydra.Dsl.ShorthandTypes
@@ -25,7 +25,7 @@ import qualified Data.Maybe as Y
 _useFutureAnnotations_ = True
 
 data PythonEnvironment = PythonEnvironment {
-  pythonEnvironmentNamespaces :: PythonNamespaces,
+  pythonEnvironmentNamespaces :: Namespaces Py.DottedName,
   pythonEnvironmentBoundTypeVariables :: TypeParams}
 
 -- | Temporary metadata which is used to create the header section of a Python file
@@ -40,13 +40,7 @@ data PythonModuleMetadata = PythonModuleMetadata {
   pythonModuleMetadataUsesTypeVar :: Bool,
   pythonModuleMetadataUsesVariant :: Bool}
 
-type PythonNamespaces = Namespaces Py.DottedName
-
 type TypeParams = ([Py.Name], M.Map Name Py.Name)
-
--- TODO: use these
-constantForFieldName tname fname = toUpperCase (localNameOfEager tname) ++ "_" ++ toUpperCase (unName fname)
-constantForTypeName tname = toUpperCase $ localNameOfEager tname
 
 encodeFieldName :: Name -> Py.Name
 encodeFieldName fname = Py.Name $ sanitizePythonName $
@@ -85,6 +79,14 @@ encodeApplicationType env at = do
       TypeApplication (ApplicationType lhs rhs) -> gatherParams lhs (rhs:ps)
       _ -> (t, ps)
 
+encodeDefinition :: PythonEnvironment -> Definition -> Flow Graph [Py.Statement]
+encodeDefinition env def = case def of
+  DefinitionTerm name term typ -> withTrace ("data element " ++ unName name) $
+    return [pySimpleStatementToPyStatement Py.SimpleStatementContinue] -- TODO
+  DefinitionType name typ -> withTrace ("type element " ++ unName name) $ do
+    comment <- fmap normalizeComment <$> getTypeDescription typ
+    encodeTypeAssignment env name typ comment
+
 encodeLambdaType :: PythonEnvironment -> LambdaType -> Flow Graph Py.Expression
 encodeLambdaType env lt = do
     pybody <- encodeType env body
@@ -111,11 +113,67 @@ encodeLiteralType lt = do
         _ -> fail $ "unsupported integer type: " ++ show it
       LiteralTypeString -> pure "str"
 
+encodeModule :: Module -> Flow Graph Py.Module
+encodeModule mod = do
+    defs <- adaptedModuleDefinitions pythonLanguage mod
+    let namespaces = namespacesForDefinitions encodeNamespace (moduleNamespace mod) defs
+    let env = PythonEnvironment {
+              pythonEnvironmentNamespaces = namespaces,
+              pythonEnvironmentBoundTypeVariables = ([], M.empty)}
+    defStmts <- L.concat <$> (CM.mapM (encodeDefinition env) defs)
+    let meta = gatherMetadata defs
+    let tvars = pythonModuleMetadataTypeVariables meta
+    let importStmts = imports namespaces meta
+    let tvarStmts = tvarStmt . encodeTypeVariable <$> S.toList tvars
+    let mc = tripleQuotedString . normalizeComment <$> moduleDescription mod
+    let commentStmts = case normalizeComment <$> moduleDescription mod of
+                       Nothing -> []
+                       Just c -> [commentStatement c]
+    let body = L.filter (not . L.null) [commentStmts, importStmts, tvarStmts] ++ (singleton <$> defStmts)
+    return $ Py.Module body
+  where
+    singleton s = [s]
+    tvarStmt name = assignmentStatement name $ functionCall (pyNameToPyPrimary $ Py.Name "TypeVar")
+      [doubleQuotedString $ Py.unName name]
+    imports namespaces meta = pySimpleStatementToPyStatement . Py.SimpleStatementImport <$> (standardImports ++ domainImports)
+      where
+        domainImports = toImport <$> names
+          where
+            names = L.sort $ M.elems $ namespacesMapping namespaces
+            toImport ns = Py.ImportStatementName $ Py.ImportName [Py.DottedAsName ns Nothing]
+        standardImports = toImport <$> (Y.catMaybes (simplifyPair <$> pairs))
+          where
+            simplifyPair (a, symbols) = if L.null rem then Nothing else Just (a, rem)
+              where
+                rem = Y.catMaybes symbols
+            pairs = [
+                ("__future__", [if _useFutureAnnotations_ then Just "annotations" else Nothing]),
+                ("collections.abc", [
+                  cond "Callable" $ pythonModuleMetadataUsesCallable meta]),
+                ("dataclasses", [
+                  cond "dataclass" $ pythonModuleMetadataUsesDataclass meta]),
+                ("enum", [
+                  cond "Enum" $ pythonModuleMetadataUsesEnum meta]),
+                ("hydra.dsl.types", [
+                  cond "Variant" $ pythonModuleMetadataUsesVariant meta]),
+                ("typing", [
+                  cond "Annotated" $ pythonModuleMetadataUsesAnnotated meta,
+                  cond "Generic" $ pythonModuleMetadataUsesGeneric meta,
+                  cond "NewType" $ pythonModuleMetadataUsesNewType meta,
+                  cond "TypeVar" $ pythonModuleMetadataUsesTypeVar meta])]
+              where
+                cond name b = if b then Just name else Nothing
+            toImport (modName, symbols) = Py.ImportStatementFrom $
+                Py.ImportFrom [] (Just $ Py.DottedName [Py.Name modName]) $
+                  Py.ImportFromTargetsSimple (forSymbol <$> symbols)
+              where
+                forSymbol s = Py.ImportFromAsName (Py.Name s) Nothing
+
 encodeName :: PythonEnvironment -> Name -> Py.Name
 encodeName env name = case M.lookup name (snd $ pythonEnvironmentBoundTypeVariables env) of
     Just n -> n
     Nothing -> if ns == Just focusNs
-      then Py.Name $ if _useFutureAnnotations_ then local else escapePythonString True local
+      then Py.Name $ if _useFutureAnnotations_ then local else PySer.escapePythonString True local
       else Py.Name $ L.intercalate "." $ Strings.splitOn "/" $ unName name
   where
     focusNs = fst $ namespacesFocus $ pythonEnvironmentNamespaces env
@@ -261,84 +319,12 @@ gatherMetadata defs = checkTvars $ L.foldl addDef start defs
             TypeWrap _ -> meta {pythonModuleMetadataUsesNewType = True} -- TODO: this can result in a false positive when the wrapped type is only a reference
             _ -> meta
 
-moduleToPythonModule :: Module -> Flow Graph Py.Module
-moduleToPythonModule mod = do
-    namespaces <- namespacesForModule mod -- TODO: use the adapted definitions, not the raw module
-    let env = PythonEnvironment {
-              pythonEnvironmentNamespaces = namespaces,
-              pythonEnvironmentBoundTypeVariables = ([], M.empty)}
-    defs <- adaptedModuleDefinitions pythonLanguage mod
-    let meta = gatherMetadata defs
-    let tvars = pythonModuleMetadataTypeVariables meta
-    defStmts <- L.concat <$> (CM.mapM (createDeclarations env) defs)
-    let importStmts = imports namespaces meta
-    let tvarStmts = tvarStmt . encodeTypeVariable <$> S.toList tvars
-    let mc = tripleQuotedString . normalizeComment <$> moduleDescription mod
-    let commentStmts = case normalizeComment <$> moduleDescription mod of
-                       Nothing -> []
-                       Just c -> [commentStatement c]
-    let body = L.filter (not . L.null) [commentStmts, importStmts, tvarStmts] ++ (singleton <$> defStmts)
-    return $ Py.Module body
-  where
-    singleton s = [s]
-    createDeclarations env def = case def of
-      DefinitionTerm name term typ -> withTrace ("data element " ++ unName name) $
-        return [pySimpleStatementToPyStatement Py.SimpleStatementContinue] -- TODO
-      DefinitionType name typ -> withTrace ("type element " ++ unName name) $ do
-        comment <- fmap normalizeComment <$> getTypeDescription typ
-        encodeTypeAssignment env name typ comment
-    createDataDeclaration name term typ = fail "oops"
-    createTypeDeclaration name typ = fail "oops"
-    tvarStmt name = assignmentStatement name $ functionCall (pyNameToPyPrimary $ Py.Name "TypeVar")
-      [doubleQuotedString $ Py.unName name]
-    imports namespaces meta = pySimpleStatementToPyStatement . Py.SimpleStatementImport <$> (standardImports ++ domainImports)
-      where
-        domainImports = toImport <$> names
-          where
-            names = L.sort $ M.elems $ namespacesMapping namespaces
-            toImport ns = Py.ImportStatementName $ Py.ImportName [Py.DottedAsName ns Nothing]
-        standardImports = toImport <$> (Y.catMaybes (simplifyPair <$> pairs))
-          where
-            simplifyPair (a, symbols) = if L.null rem then Nothing else Just (a, rem)
-              where
-                rem = Y.catMaybes symbols
-            pairs = [
-                ("__future__", [if _useFutureAnnotations_ then Just "annotations" else Nothing]),
-                ("collections.abc", [
-                  cond "Callable" $ pythonModuleMetadataUsesCallable meta]),
-                ("dataclasses", [
-                  cond "dataclass" $ pythonModuleMetadataUsesDataclass meta]),
-                ("enum", [
-                  cond "Enum" $ pythonModuleMetadataUsesEnum meta]),
-                ("hydra.dsl.types", [
-                  cond "Variant" $ pythonModuleMetadataUsesVariant meta]),
-                ("typing", [
-                  cond "Annotated" $ pythonModuleMetadataUsesAnnotated meta,
-                  cond "Generic" $ pythonModuleMetadataUsesGeneric meta,
-                  cond "NewType" $ pythonModuleMetadataUsesNewType meta,
-                  cond "TypeVar" $ pythonModuleMetadataUsesTypeVar meta])]
-              where
-                cond name b = if b then Just name else Nothing
-            toImport (modName, symbols) = Py.ImportStatementFrom $
-              Py.ImportFrom [] (Just $ Py.DottedName [Py.Name modName]) $
-                Py.ImportFromTargetsSimple (forSymbol <$> symbols)
-              where
-                forSymbol s = Py.ImportFromAsName (Py.Name s) Nothing
-
 moduleToPython :: Module -> Flow Graph (M.Map FilePath String)
 moduleToPython mod = do
-  file <- moduleToPythonModule mod
-  let s = printExpr $ parenthesize $ encodeModule file
+  file <- encodeModule mod
+  let s = printExpr $ parenthesize $ PySer.encodeModule file
   let path = namespaceToFilePath False (FileExtension "py") $ moduleNamespace mod
   return $ M.fromList [(path, s)]
-
-namespacesForModule :: Module -> Flow Graph PythonNamespaces
-namespacesForModule mod = do
-    nss <- moduleDependencyNamespaces True True False False mod
-    return $ Namespaces (toPair focusNs) $ M.fromList (toPair <$> S.toList nss)
-  where
-    focusNs = moduleNamespace mod
-    toPair ns = (ns, encodeNamespace ns)
 
 sanitizePythonName :: String -> String
 sanitizePythonName = sanitizeWithUnderscores pythonReservedWords
