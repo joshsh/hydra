@@ -120,7 +120,8 @@ csharpSyntaxModule = Module ns elements [hydraCoreModule] tier0Modules $
 --     | contextual_keyword
 --     ;
 
-      def "Identifier" string,
+      def "Identifier" $ wrap
+        string,
 
 -- Simple_Identifier
 --     : Available_Identifier
@@ -216,7 +217,8 @@ csharpSyntaxModule = Module ns elements [hydraCoreModule] tier0Modules $
 --     | 'volatile' | 'while'
 --     ;
 
-      def "Keyword" string,
+      def "Keyword" $ wrap
+        string,
 
 -- // Source: §6.4.4 Keywords
 -- contextual_keyword
@@ -588,13 +590,15 @@ csharpSyntaxModule = Module ns elements [hydraCoreModule] tier0Modules $
 --     : namespace_or_type_name
 --     ;
 
-      def "NamespaceName" $ csharp "NamespaceOrTypeName",
+      def "NamespaceName" $ wrap $
+        csharp "NamespaceOrTypeName",
 
 -- type_name
 --     : namespace_or_type_name
 --     ;
 
-      def "TypeName" $ csharp "NamespaceOrTypeName",
+      def "TypeName" $ wrap $
+        csharp "NamespaceOrTypeName",
 
 -- namespace_or_type_name
 --     : identifier type_argument_list?
@@ -661,7 +665,8 @@ csharpSyntaxModule = Module ns elements [hydraCoreModule] tier0Modules $
 --     : type_name
 --     ;
 
-      def "InterfaceType" $ csharp "TypeName",
+      def "InterfaceType" $ wrap $
+        csharp "TypeName",
 
 -- array_type
 --     : non_array_type rank_specifier+
@@ -694,13 +699,15 @@ csharpSyntaxModule = Module ns elements [hydraCoreModule] tier0Modules $
 --     : '[' ','* ']'
 --     ;
 
-      def "RankSpecifier" int32, -- Note: non-negative
+      def "RankSpecifier" $ wrap
+        int32, -- Note: non-negative
 
 -- delegate_type
 --     : type_name
 --     ;
 
-      def "DelegateType" $ csharp "TypeName",
+      def "DelegateType" $ wrap $
+        csharp "TypeName",
 
 -- // Source: §8.3.1 General
 -- value_type
@@ -788,7 +795,8 @@ csharpSyntaxModule = Module ns elements [hydraCoreModule] tier0Modules $
 --     : '(' tuple_type_element (',' tuple_type_element)+ ')'
 --     ;
 
-      def "TupleType" $ nonemptyList $ csharp "TupleTypeElement",
+      def "TupleType" $ wrap $
+        nonemptyList $ csharp "TupleTypeElement",
 
 -- tuple_type_element
 --     : type identifier?
@@ -802,7 +810,8 @@ csharpSyntaxModule = Module ns elements [hydraCoreModule] tier0Modules $
 --     : type_name
 --     ;
 
-      def "EnumType" $ csharp "TypeName",
+      def "EnumType" $ wrap $
+        csharp "TypeName",
 
 -- nullable_value_type
 --     : non_nullable_value_type '?'
@@ -828,7 +837,8 @@ csharpSyntaxModule = Module ns elements [hydraCoreModule] tier0Modules $
 --     : identifier
 --     ;
 
-      def "TypeParameter" $ csharp "Identifier",
+      def "TypeParameter" $ wrap $
+        csharp "Identifier",
 
 -- // Source: §8.8 Unmanaged types
 -- unmanaged_type
@@ -845,7 +855,8 @@ csharpSyntaxModule = Module ns elements [hydraCoreModule] tier0Modules $
 --     : expression
 --     ;
 
-      def "VariableReference" $ csharp "Expression",
+      def "VariableReference" $ wrap $
+        csharp "Expression",
 
 -- // Source: §11.2.1 General
 -- pattern
@@ -872,7 +883,8 @@ csharpSyntaxModule = Module ns elements [hydraCoreModule] tier0Modules $
 --     : single_variable_designation
 --     ;
 
-      def "Designation" $ csharp "Identifier",
+      def "Designation" $ wrap $
+        csharp "Identifier",
 
 -- single_variable_designation
 --     : identifier
@@ -1010,7 +1022,8 @@ csharpSyntaxModule = Module ns elements [hydraCoreModule] tier0Modules $
 --       Interpolated_Regular_String_End
 --     ;
 
-      def "InterpolatedRegularStringExpression" string,
+      def "InterpolatedRegularStringExpression" $ wrap
+        string,
 
 -- regular_interpolation
 --     : expression (',' interpolation_minimum_width)?
@@ -1067,7 +1080,8 @@ csharpSyntaxModule = Module ns elements [hydraCoreModule] tier0Modules $
 --       Interpolated_Verbatim_String_End
 --     ;
 
-      def "InterpolatedVerbatimStringExpression" string,
+      def "InterpolatedVerbatimStringExpression" $ wrap
+        string,
 
 -- verbatim_interpolation
 --     : expression (',' interpolation_minimum_width)?
@@ -1159,7 +1173,8 @@ csharpSyntaxModule = Module ns elements [hydraCoreModule] tier0Modules $
 --     : '(' deconstruction_element (',' deconstruction_element)+ ')'
 --     ;
 
-      def "DeconstructionTuple" $ nonemptyList $ csharp "DeconstructionElement",
+      def "DeconstructionTuple" $ wrap $
+        nonemptyList $ csharp "DeconstructionElement",
 
 -- deconstruction_element
 --     : deconstruction_tuple
@@ -1195,7 +1210,7 @@ csharpSyntaxModule = Module ns elements [hydraCoreModule] tier0Modules $
 
       def "PredefinedType" $ enum [
         "bool", "byte", "char", "decimal", "double", "float", "int", "long", "object", "sbyte", "short", "string",
-         "uint", "ulong", "ushort"],
+        "uint", "ulong", "ushort"],
 
 -- // Source: §12.8.8 Null Conditional Member Access
 -- null_conditional_member_access
@@ -1475,7 +1490,8 @@ csharpSyntaxModule = Module ns elements [hydraCoreModule] tier0Modules $
 --     | unbound_type_name '.' identifier generic_dimension_specifier?
 --     ;
 
-      def "UnboundTypeName" $ nonemptyList $ csharp "UnboundTypeNamePart",
+      def "UnboundTypeName" $ wrap $
+        nonemptyList $ csharp "UnboundTypeNamePart",
 
       def "UnboundTypeNamePart" $ record [
         "identifier">: csharp "Identifier",
@@ -1646,7 +1662,10 @@ csharpSyntaxModule = Module ns elements [hydraCoreModule] tier0Modules $
         "operator">: csharp "MultiplicativeOperator",
         "right">: csharp "UnaryExpression"],
 
-      def "MultiplicativeOperator" $ enum ["times", "divide", "modulo"],
+      def "MultiplicativeOperator" $ enum [
+        "times",
+        "divide",
+        "modulo"],
 
 -- additive_expression
 --     : multiplicative_expression
@@ -1663,7 +1682,9 @@ csharpSyntaxModule = Module ns elements [hydraCoreModule] tier0Modules $
         "operator">: csharp "AdditiveOperator",
         "right">: csharp "MultiplicativeExpression"],
 
-      def "AdditiveOperator" $ enum ["plus", "minus"],
+      def "AdditiveOperator" $ enum [
+        "plus",
+        "minus"],
 
 -- // Source: §12.11 Shift operators
 -- shift_expression
@@ -1681,7 +1702,9 @@ csharpSyntaxModule = Module ns elements [hydraCoreModule] tier0Modules $
         "operator">: csharp "ShiftOperator",
         "right">: csharp "AdditiveExpression"],
 
-      def "ShiftOperator" $ enum ["left", "right"],
+      def "ShiftOperator" $ enum [
+        "left",
+        "right"],
 
 -- // Source: §12.12.1 General
 -- relational_expression
@@ -1737,7 +1760,9 @@ csharpSyntaxModule = Module ns elements [hydraCoreModule] tier0Modules $
         "operator">: csharp "EqualityOperator",
         "right">: csharp "RelationalExpression"],
 
-      def "EqualityOperator" $ enum ["equal", "notEqual"],
+      def "EqualityOperator" $ enum [
+        "equal",
+        "notEqual"],
 
 -- // Source: §12.13.1 General
 -- and_expression
@@ -1920,7 +1945,10 @@ csharpSyntaxModule = Module ns elements [hydraCoreModule] tier0Modules $
 --     | 'in'
 --     ;
 
-      def "AnonymousFunctionParameterModifier" $ enum [ "ref", "out", "in" ],
+      def "AnonymousFunctionParameterModifier" $ enum [
+        "ref",
+        "out",
+        "in"],
 
 -- implicit_anonymous_function_signature
 --     : '(' implicit_anonymous_function_parameter_list? ')'
@@ -2048,7 +2076,9 @@ csharpSyntaxModule = Module ns elements [hydraCoreModule] tier0Modules $
 --     | 'descending'
 --     ;
 
-      def "OrderingDirection" $ enum [ "ascending", "descending" ],
+      def "OrderingDirection" $ enum [
+        "ascending",
+        "descending"],
 
 -- select_or_group_clause
 --     : select_clause
@@ -2136,14 +2166,16 @@ csharpSyntaxModule = Module ns elements [hydraCoreModule] tier0Modules $
 --     : expression
 --     ;
 
-      def "ConstantExpression" $ csharp "Expression",
+      def "ConstantExpression" $ wrap $
+        csharp "Expression",
 
 -- // Source: §12.24 Boolean expressions
 -- boolean_expression
 --     : expression
 --     ;
 
-      def "BooleanExpression" $ csharp "Expression",
+      def "BooleanExpression" $ wrap $
+        csharp "Expression",
 
 -- // Source: §13.1 General
 -- statement
@@ -2195,7 +2227,8 @@ csharpSyntaxModule = Module ns elements [hydraCoreModule] tier0Modules $
 --     : '{' statement_list? '}'
 --     ;
 
-      def "Block" $ list $ csharp "Statement",
+      def "Block" $ wrap $
+        list $ csharp "Statement",
 
 -- // Source: §13.3.2 Statement lists
 -- statement_list
@@ -2388,7 +2421,9 @@ csharpSyntaxModule = Module ns elements [hydraCoreModule] tier0Modules $
 --     | unsafe_modifier   // unsafe code support
 --     ;
 
-      def "RefLocalFunctionModifier" $ enum ["static", "unsafe"],
+      def "RefLocalFunctionModifier" $ enum [
+        "static",
+        "unsafe"],
 
 -- local_function_body
 --     : block
@@ -2972,7 +3007,8 @@ csharpSyntaxModule = Module ns elements [hydraCoreModule] tier0Modules $
 --     : '{' class_member_declaration* '}'
 --     ;
 
-      def "ClassBody" $ list $ csharp "ClassMemberDeclaration",
+      def "ClassBody" $ wrap $
+        list $ csharp "ClassMemberDeclaration",
 
 -- // Source: §15.3.1 General
 -- class_member_declaration
@@ -3903,7 +3939,8 @@ csharpSyntaxModule = Module ns elements [hydraCoreModule] tier0Modules $
 --     | '{' variable_initializer_list ',' '}'
 --     ;
 
-      def "ArrayInitializer" $ list $ csharp "VariableInitializer",
+      def "ArrayInitializer" $ wrap $
+        list $ csharp "VariableInitializer",
 
 -- variable_initializer_list
 --     : variable_initializer (',' variable_initializer)*
@@ -4118,7 +4155,8 @@ csharpSyntaxModule = Module ns elements [hydraCoreModule] tier0Modules $
 --     | '{' enum_member_declarations ',' '}'
 --     ;
 
-      def "EnumBody" $ list $ csharp "EnumMemberDeclaration",
+      def "EnumBody" $ wrap $
+        list $ csharp "EnumMemberDeclaration",
 
 -- // Source: §19.3 Enum modifiers
 -- enum_modifier
@@ -4221,7 +4259,8 @@ csharpSyntaxModule = Module ns elements [hydraCoreModule] tier0Modules $
 --     : attribute_section+
 --     ;
 
-      def "Attributes" $ nonemptyList $ csharp "AttributeSection",
+      def "Attributes" $ wrap $
+        nonemptyList $ csharp "AttributeSection",
 
 -- attribute_section
 --     : '[' attribute_target_specifier? attribute_list ']'
@@ -4263,7 +4302,8 @@ csharpSyntaxModule = Module ns elements [hydraCoreModule] tier0Modules $
 --     : type_name
 --     ;
 
-      def "AttributeName" $ csharp "TypeName",
+      def "AttributeName" $ wrap $
+        csharp "TypeName",
 
 -- attribute_arguments
 --     : '(' ')'
@@ -4307,7 +4347,8 @@ csharpSyntaxModule = Module ns elements [hydraCoreModule] tier0Modules $
 --     : non_assignment_expression
 --     ;
 
-      def "AttributeArgumentExpression" $ csharp "NonAssignmentExpression"]
+      def "AttributeArgumentExpression" $ wrap $
+        csharp "NonAssignmentExpression"]
 
     unsafeElements = [
 

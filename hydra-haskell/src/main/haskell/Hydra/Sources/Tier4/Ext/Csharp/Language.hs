@@ -1,5 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+-- writeHaskell "src/gen-main/haskell" [csharpLanguageModule, csharpSyntaxModule]
+
 module Hydra.Sources.Tier4.Ext.Csharp.Language where
 
 import Hydra.Sources.Tier3.All
@@ -16,7 +18,6 @@ import qualified Hydra.Dsl.Terms as Terms
 import qualified Hydra.Dsl.Types as Types
 
 import qualified Data.Set as S
-
 
 csharpLanguageDefinition :: String -> TTerm a -> TElement a
 csharpLanguageDefinition = definitionInModule csharpLanguageModule
