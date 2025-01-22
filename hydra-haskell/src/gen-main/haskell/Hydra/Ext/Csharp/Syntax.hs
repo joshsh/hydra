@@ -2724,7 +2724,7 @@ _CompilationUnit_members = (Core.Name "members")
 
 data NamespaceDeclaration = 
   NamespaceDeclaration {
-    namespaceDeclarationName :: [Identifier],
+    namespaceDeclarationName :: QualifiedIdentifier,
     namespaceDeclarationBody :: NamespaceBody}
   deriving (Eq, Ord, Read, Show)
 
@@ -2733,6 +2733,13 @@ _NamespaceDeclaration = (Core.Name "hydra/ext/csharp/syntax.NamespaceDeclaration
 _NamespaceDeclaration_name = (Core.Name "name")
 
 _NamespaceDeclaration_body = (Core.Name "body")
+
+newtype QualifiedIdentifier = 
+  QualifiedIdentifier {
+    unQualifiedIdentifier :: [Identifier]}
+  deriving (Eq, Ord, Read, Show)
+
+_QualifiedIdentifier = (Core.Name "hydra/ext/csharp/syntax.QualifiedIdentifier")
 
 data NamespaceBody = 
   NamespaceBody {
@@ -2830,9 +2837,9 @@ _QualifiedAliasMember_arguments = (Core.Name "arguments")
 
 data ClassDeclaration = 
   ClassDeclaration {
-    classDeclarationAttributes :: (Maybe Attributes),
+    classDeclarationAttributes :: [AttributeSection],
     classDeclarationModifiers :: [ClassModifier],
-    classDeclarationPartial :: (),
+    classDeclarationPartial :: Bool,
     classDeclarationName :: Identifier,
     classDeclarationParameters :: (Maybe TypeParameterList),
     classDeclarationBase :: (Maybe ClassBase),

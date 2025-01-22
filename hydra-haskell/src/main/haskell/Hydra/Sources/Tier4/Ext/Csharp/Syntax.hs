@@ -2782,13 +2782,16 @@ csharpSyntaxModule = Module ns elements [hydraCoreModule] tier0Modules $
 --     ;
 
       def "NamespaceDeclaration" $ record [
-        "name">: nonemptyList $ csharp "Identifier",
+        "name">: csharp "QualifiedIdentifier",
         "body">: csharp "NamespaceBody"],
 
 -- qualified_identifier
 --     : identifier ('.' identifier)*
 --     ;
---
+
+      def "QualifiedIdentifier" $ wrap $
+        nonemptyList $ csharp "Identifier",
+
 -- namespace_body
 --     : '{' extern_alias_directive* using_directive*
 --       namespace_member_declaration* '}'
@@ -2882,9 +2885,9 @@ csharpSyntaxModule = Module ns elements [hydraCoreModule] tier0Modules $
 --     ;
 
       def "ClassDeclaration" $ record [
-        "attributes">: optional $ csharp "Attributes",
+        "attributes">: list $ csharp "AttributeSection",
         "modifiers">: list $ csharp "ClassModifier",
-        "partial">: unit,
+        "partial">: boolean,
         "name">: csharp "Identifier",
         "parameters">: optional $ csharp "TypeParameterList",
         "base">: optional $ csharp "ClassBase",
@@ -2919,13 +2922,13 @@ csharpSyntaxModule = Module ns elements [hydraCoreModule] tier0Modules $
 -- type_parameter_list
 --     : '<' type_parameters '>'
 --     ;
---
+
+      def "TypeParameterList" $ nonemptyList $ csharp "TypeParameterPart",
+
 -- type_parameters
 --     : attributes? type_parameter
 --     | type_parameters ',' attributes? type_parameter
 --     ;
-
-      def "TypeParameterList" $ nonemptyList $ csharp "TypeParameterPart",
 
       def "TypeParameterPart" $ record [
         "attributes">: optional $ csharp "Attributes",
@@ -4262,8 +4265,7 @@ csharpSyntaxModule = Module ns elements [hydraCoreModule] tier0Modules $
 --     : attribute_section+
 --     ;
 
-      def "Attributes" $ wrap $
-        nonemptyList $ csharp "AttributeSection",
+      def "Attributes" $ nonemptyList $ csharp "AttributeSection",
 
 -- attribute_section
 --     : '[' attribute_target_specifier? attribute_list ']'
