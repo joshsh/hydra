@@ -2706,7 +2706,7 @@ _YieldStatement_break = (Core.Name "break")
 
 data CompilationUnit = 
   CompilationUnit {
-    compilationUnitExterns :: [Identifier],
+    compilationUnitExterns :: [ExternAliasDirective],
     compilationUnitUsings :: [UsingDirective],
     compilationUnitAttributes :: [GlobalAttributeSection],
     compilationUnitMembers :: [NamespaceMemberDeclaration]}
@@ -2736,7 +2736,7 @@ _NamespaceDeclaration_body = (Core.Name "body")
 
 data NamespaceBody = 
   NamespaceBody {
-    namespaceBodyExterns :: [Identifier],
+    namespaceBodyExterns :: [ExternAliasDirective],
     namespaceBodyUsings :: [UsingDirective],
     namespaceBodyMembers :: [NamespaceMemberDeclaration]}
   deriving (Eq, Ord, Read, Show)
@@ -2748,6 +2748,13 @@ _NamespaceBody_externs = (Core.Name "externs")
 _NamespaceBody_usings = (Core.Name "usings")
 
 _NamespaceBody_members = (Core.Name "members")
+
+newtype ExternAliasDirective = 
+  ExternAliasDirective {
+    unExternAliasDirective :: Identifier}
+  deriving (Eq, Ord, Read, Show)
+
+_ExternAliasDirective = (Core.Name "hydra/ext/csharp/syntax.ExternAliasDirective")
 
 data UsingDirective = 
   UsingDirectiveAlias UsingAliasDirective |

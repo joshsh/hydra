@@ -2771,7 +2771,7 @@ csharpSyntaxModule = Module ns elements [hydraCoreModule] tier0Modules $
 --     ;
 
       def "CompilationUnit" $ record [
-        "externs">: list $ csharp "Identifier",
+        "externs">: list $ csharp "ExternAliasDirective",
         "usings">: list $ csharp "UsingDirective",
         "attributes">: list $ csharp "GlobalAttributeSection",
         "members">: list $ csharp "NamespaceMemberDeclaration"],
@@ -2795,7 +2795,7 @@ csharpSyntaxModule = Module ns elements [hydraCoreModule] tier0Modules $
 --     ;
 
       def "NamespaceBody" $ record [
-        "externs">: list $ csharp "Identifier",
+        "externs">: list $ csharp "ExternAliasDirective",
         "usings">: list $ csharp "UsingDirective",
         "members">: list $ csharp "NamespaceMemberDeclaration"],
 
@@ -2803,7 +2803,10 @@ csharpSyntaxModule = Module ns elements [hydraCoreModule] tier0Modules $
 -- extern_alias_directive
 --     : 'extern' 'alias' identifier ';'
 --     ;
---
+
+      def "ExternAliasDirective" $ wrap $
+        csharp "Identifier",
+
 -- // Source: §14.5.1 General
 -- using_directive
 --     : using_alias_directive
