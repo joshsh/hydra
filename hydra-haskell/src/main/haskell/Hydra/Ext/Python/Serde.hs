@@ -356,8 +356,3 @@ toPythonComments c = L.intercalate "\n" $ ("# " ++) <$> L.lines c
 tripleQuotes :: String -> A.Expr
 tripleQuotes s = cst $ "\"\"\"" ++ s ++ "\"\"\"" -- TODO: escaping
 
-unsupportedType :: String -> A.Expr
-unsupportedType label = cst $ "[" ++ label ++ "]"
-
-unsupportedVariant :: Show a => String -> a -> A.Expr
-unsupportedVariant label obj = cst $ "[unsupported " ++ label ++ ": " ++ show obj ++ "]"
