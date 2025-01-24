@@ -108,13 +108,5 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = [
     "src/main/python/hydra",
-    "src/gen-main/python/hydra/**"
+    "src/gen-main/python/hydra"
 ]
-
-[tool.hatch.envs.default]
-paths = [
-    "src/main/python",
-    "src/gen-main/python"
-]
-
-
