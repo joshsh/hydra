@@ -26,7 +26,7 @@ _useFutureAnnotations_ = True
 
 data PythonEnvironment = PythonEnvironment {
   pythonEnvironmentNamespaces :: Namespaces Py.DottedName,
-  pythonEnvironmentBoundTypeVariables :: TypeParams}
+  pythonEnvironmentBoundTypeVariables :: ([Name], M.Map Name Py.Name)}
 
 -- | Temporary metadata which is used to create the header section of a Python file
 data PythonModuleMetadata = PythonModuleMetadata {
@@ -39,8 +39,6 @@ data PythonModuleMetadata = PythonModuleMetadata {
   pythonModuleMetadataUsesNewType :: Bool,
   pythonModuleMetadataUsesTypeVar :: Bool,
   pythonModuleMetadataUsesVariant :: Bool}
-
-type TypeParams = ([Py.Name], M.Map Name Py.Name)
 
 encodeFieldName :: Name -> Py.Name
 encodeFieldName fname = Py.Name $ sanitizePythonName $
@@ -194,7 +192,7 @@ encodeRecordType env name (RowType _ tfields) comment = do
     args = if L.null tparamList
       then Nothing
       else Just $ pyExpressionsToPyArgs [pyPrimaryToPyExpression $
-        primaryWithExpressionSlices (pyNameToPyPrimary $ Py.Name "Generic") (pyNameToPyExpression <$> tparamList)]
+        primaryWithExpressionSlices (pyNameToPyPrimary $ Py.Name "Generic") (pyNameToPyExpression . encodeTypeVariable <$> tparamList)]
     decs = Py.Decorators [pyNameToPyNamedExpression $ Py.Name "dataclass"]
 
 encodeTerm :: PythonEnvironment -> Term -> Flow Graph Py.Expression
@@ -231,16 +229,15 @@ encodeTypeAssignment env name typ comment = encode env typ
     encode env typ = case stripType typ of
       TypeLambda (LambdaType var body) -> encode newEnv body
         where
-          pyvar = encodeTypeVariable var
           (tparamList, tparamMap) = pythonEnvironmentBoundTypeVariables env
-          newEnv = env {pythonEnvironmentBoundTypeVariables = (tparamList ++ [pyvar], M.insert var pyvar tparamMap)}
+          newEnv = env {pythonEnvironmentBoundTypeVariables = (tparamList ++ [var], M.insert var (encodeTypeVariable var) tparamMap)}
       TypeRecord rt -> single <$> encodeRecordType env name rt comment
       TypeUnion rt -> encodeUnionType env name rt comment
       TypeWrap (WrappedType _ t) -> singleNewtype <$> encodeType env t
       t -> singleTypedef <$> encodeType env t
     single st = [st]
     singleNewtype e = single $ newtypeStatement (Py.Name $ localNameOfEager name) comment e
-    singleTypedef e = single $ typeAliasStatement (Py.Name $ sanitizePythonName $ localNameOfEager name) comment e
+    singleTypedef e = single $ typeAliasStatement (Py.Name $ sanitizePythonName $ localNameOfEager name) [] comment e
 
 encodeTypeVariable :: Name -> Py.Name
 encodeTypeVariable = Py.Name . capitalize . unName
@@ -259,23 +256,44 @@ encodeUnionType env name rt@(RowType _ tfields) comment = if isEnumType rt then 
           return $ Y.catMaybes [
             Just $ assignmentStatement (enumVariantName $ unName fname) (doubleQuotedString $ unName fname),
             pyExpressionToPyStatement . tripleQuotedString <$> fcomment]
+        enumVariantName fname = Py.Name $ convertCase CaseConventionCamel CaseConventionUpperSnake fname
     asUnion = do
       fieldStmts <- CM.mapM toFieldStmt tfields
       return $ fieldStmts ++ [unionStmt]
-    lname = localNameOfEager name
-    toFieldStmt (FieldType fname ftype) = do
-        comment <- fmap normalizeComment <$> getTypeDescription ftype
-        ptype <- encodeType env ftype
-        let body = indentedBlock comment []
-        return $ pyClassDefinitionToPyStatement $
-          Py.ClassDefinition Nothing (variantName fname) [] (Just $ args ptype) body
       where
-        args ptype = pyExpressionsToPyArgs[
-          pyPrimaryToPyExpression $ primaryWithExpressionSlices (pyNameToPyPrimary $ Py.Name "Variant") [ptype]]
-    unionStmt = typeAliasStatement (Py.Name $ sanitizePythonName lname) comment $
-      orExpression (pyNameToPyPrimary . variantName . fieldTypeName <$> tfields)
-    variantName fname = Py.Name $ sanitizePythonName $ lname ++ (capitalize $ unName fname)
-    enumVariantName fname = Py.Name $ convertCase CaseConventionCamel CaseConventionUpperSnake fname
+        toFieldStmt (FieldType fname ftype) = do
+            comment <- fmap normalizeComment <$> getTypeDescription ftype
+            ptype <- encodeType env ftype
+            let body = indentedBlock comment []
+            return $ pyClassDefinitionToPyStatement $
+              Py.ClassDefinition
+                Nothing
+                (variantName fname)
+                (pyNameToPyTypeParameter <$> fieldParams ftype)
+                (Just $ args ptype)
+                body
+          where
+            args ptype = pyExpressionsToPyArgs[
+              pyPrimaryToPyExpression $ primaryWithExpressionSlices (pyNameToPyPrimary $ Py.Name "Variant") [ptype]]
+        unionStmt = typeAliasStatement
+            (Py.Name $ sanitizePythonName lname)
+            (pyNameToPyTypeParameter . encodeTypeVariable <$> (fst $ pythonEnvironmentBoundTypeVariables env))
+            comment
+            (orExpression (alt <$> tfields))
+          where
+            alt (FieldType fname ftype) = if L.null tparams
+                then namePrim
+                else primaryWithExpressionSlices namePrim (pyNameToPyExpression <$> tparams)
+              where
+                tparams = fieldParams ftype
+                namePrim = pyNameToPyPrimary $ variantName fname
+        variantName fname = Py.Name $ sanitizePythonName $ lname ++ (capitalize $ unName fname)
+        fieldParams ftype = encodeTypeVariable <$> allVars
+          where
+            allVars = L.filter isBound $ S.toList $ freeVariablesInType ftype
+              where
+                isBound v = Y.isJust $ M.lookup v $ snd $ pythonEnvironmentBoundTypeVariables env
+    lname = localNameOfEager name
 
 gatherMetadata :: [Definition] -> PythonModuleMetadata
 gatherMetadata defs = checkTvars $ L.foldl addDef start defs

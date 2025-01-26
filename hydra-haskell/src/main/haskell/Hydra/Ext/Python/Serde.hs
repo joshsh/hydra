@@ -243,6 +243,9 @@ encodeSimpleStatement s = case s of
   Py.SimpleStatementStarExpressions exprs -> newlineSep (encodeStarExpression <$> exprs)
   _ -> unsupportedVariant "simple statement" s
 
+encodeSimpleTypeParameter :: Py.SimpleTypeParameter -> A.Expr
+encodeSimpleTypeParameter (Py.SimpleTypeParameter name _ _) = encodeName name
+
 encodeSingleTarget :: Py.SingleTarget -> A.Expr
 encodeSingleTarget s = case s of
   Py.SingleTargetName n -> encodeName n
@@ -317,7 +320,16 @@ encodeTargetWithStarAtom t = case t of
   _ -> unsupportedVariant "target with star atom" t
 
 encodeTypeAlias :: Py.TypeAlias -> A.Expr
-encodeTypeAlias (Py.TypeAlias name tparams body) = spaceSep [cst "type", encodeName name, cst "=", encodeExpression body]
+encodeTypeAlias (Py.TypeAlias name tparams body) = spaceSep [cst "type", alias, cst "=", encodeExpression body]
+  where
+    alias = noSep $ Y.catMaybes [
+      Just $ encodeName name,
+      if L.null tparams then Nothing else Just $ bracketList inlineStyle (encodeTypeParameter <$> tparams)]
+
+encodeTypeParameter :: Py.TypeParameter -> A.Expr
+encodeTypeParameter p = case p of
+  Py.TypeParameterSimple s -> encodeSimpleTypeParameter s
+  _ -> unsupportedVariant "type parameter" p
 
 encodeTypedAssignment :: Py.TypedAssignment -> A.Expr
 encodeTypedAssignment (Py.TypedAssignment lhs typ rhs) = spaceSep $ Y.catMaybes [

@@ -4,7 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
 from hydra.dsl.types import Variant
-from typing import Generic, NewType, TypeVar
+from typing import TypeVar
 import hydra.core
 
 A = TypeVar("A")
@@ -15,7 +15,7 @@ class EitherLeft(Variant[A]): ...
 class EitherRight(Variant[B]): ...
 
 # A disjoint union between a 'left' type and a 'right' type.
-type Either = EitherLeft | EitherRight
+type Either[A, B] = EitherLeft[A] | EitherRight[B]
 
 class EliminationVariant(Enum):
     """The identifier of an elimination constructor."""

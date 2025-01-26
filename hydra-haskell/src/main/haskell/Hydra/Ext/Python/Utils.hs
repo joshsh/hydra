@@ -191,7 +191,6 @@ stringToPyExpression style s = pyAtomToPyExpression $ Py.AtomString $ Py.String_
 tripleQuotedString :: String -> Py.Expression
 tripleQuotedString = stringToPyExpression Py.QuoteStyleTriple
 
-typeAliasStatement :: Py.Name -> Maybe String -> Py.Expression -> Py.Statement
---typeAliasStatement name mcomment tyexpr = annotatedStatement mcomment $ assignmentStatement name tyexpr
-typeAliasStatement name mcomment tyexpr = annotatedStatement mcomment $
- pySimpleStatementToPyStatement $ Py.SimpleStatementTypeAlias $ Py.TypeAlias name [] tyexpr
+typeAliasStatement :: Py.Name -> [Py.TypeParameter] -> Maybe String -> Py.Expression -> Py.Statement
+typeAliasStatement name tparams mcomment tyexpr = annotatedStatement mcomment $
+ pySimpleStatementToPyStatement $ Py.SimpleStatementTypeAlias $ Py.TypeAlias name tparams tyexpr
