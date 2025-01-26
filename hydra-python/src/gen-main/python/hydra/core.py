@@ -42,22 +42,22 @@ class CaseStatement:
     default: Term | None
     cases: list[Field]
 
-class EliminationList(Variant[Term]):
+class EliminationList(Variant["Term"]):
     """Eliminates a list using a fold function; this function has the signature b -> [a] -> b."""
 
-class EliminationOptional(Variant[OptionalCases]):
+class EliminationOptional(Variant["OptionalCases"]):
     """Eliminates an optional term by matching over the two possible cases."""
 
-class EliminationProduct(Variant[TupleProjection]):
+class EliminationProduct(Variant["TupleProjection"]):
     """Eliminates a tuple by projecting the component at a given 0-indexed offset."""
 
-class EliminationRecord(Variant[Projection]):
+class EliminationRecord(Variant["Projection"]):
     """Eliminates a record by projecting a given field."""
 
-class EliminationUnion(Variant[CaseStatement]):
+class EliminationUnion(Variant["CaseStatement"]):
     """Eliminates a union term by matching over the fields of the union. This is a case statement."""
 
-class EliminationWrap(Variant[Name]):
+class EliminationWrap(Variant["Name"]):
     """Unwrap a wrapped term."""
 
 # A corresponding elimination for an introduction term.
@@ -98,13 +98,13 @@ class FloatValueFloat64(Variant[float]):
 # A floating-point literal value.
 type FloatValue = FloatValueBigfloat | FloatValueFloat32 | FloatValueFloat64
 
-class FunctionElimination(Variant[Elimination]):
+class FunctionElimination(Variant["Elimination"]):
     """An elimination for any of a few term variants."""
 
-class FunctionLambda(Variant[Lambda]):
+class FunctionLambda(Variant["Lambda"]):
     """A function abstraction (lambda)."""
 
-class FunctionPrimitive(Variant[Name]):
+class FunctionPrimitive(Variant["Name"]):
     """A reference to a built-in (primitive) function."""
 
 # A function.
@@ -211,10 +211,10 @@ class LiteralBinary(Variant[bytes]):
 class LiteralBoolean(Variant[bool]):
     """A boolean literal."""
 
-class LiteralFloat(Variant[FloatValue]):
+class LiteralFloat(Variant["FloatValue"]):
     """A floating-point literal."""
 
-class LiteralInteger(Variant[IntegerValue]):
+class LiteralInteger(Variant["IntegerValue"]):
     """An integer literal."""
 
 class LiteralString(Variant[str]):
@@ -229,10 +229,10 @@ class LiteralTypeBinary(Variant[None]):
 class LiteralTypeBoolean(Variant[None]):
     """The type of a boolean (true/false) value."""
 
-class LiteralTypeFloat(Variant[FloatType]):
+class LiteralTypeFloat(Variant["FloatType"]):
     """The type of a floating-point value."""
 
-class LiteralTypeInteger(Variant[IntegerType]):
+class LiteralTypeInteger(Variant["IntegerType"]):
     """The type of an integer value."""
 
 class LiteralTypeString(Variant[None]):
@@ -277,7 +277,7 @@ class RowType:
     """A labeled record or union type."""
     
     type_name: Annotated[Name, "The name of the row type, which must correspond to the name of a Type element"]
-    fields: Annotated[list[FieldType], "The fields of this row type, excluding any inherited fields"]
+    fields: Annotated[list["FieldType"], "The fields of this row type, excluding any inherited fields"]
 
 @dataclass
 class Sum:
@@ -287,57 +287,57 @@ class Sum:
     size: int
     term: Annotated[Term, "A data term"]
 
-class TermAnnotated(Variant[AnnotatedTerm]):
+class TermAnnotated(Variant["AnnotatedTerm"]):
     """A term annotated with metadata."""
 
-class TermApplication(Variant[Application]):
+class TermApplication(Variant["Application"]):
     """A function application."""
 
-class TermFunction(Variant[Function]):
+class TermFunction(Variant["Function"]):
     """A function term."""
 
-class TermLet(Variant[Let]): ...
+class TermLet(Variant["Let"]): ...
 
-class TermList(Variant[list[Term]]):
+class TermList(Variant[list["Term"]]):
     """A list."""
 
-class TermLiteral(Variant[Literal]):
+class TermLiteral(Variant["Literal"]):
     """A literal value."""
 
-class TermMap(Variant[dict[Term, Term]]):
+class TermMap(Variant[dict["Term", "Term"]]):
     """A map of keys to values."""
 
-class TermOptional(Variant[Term | None]):
+class TermOptional(Variant["Term | None"]):
     """An optional value."""
 
-class TermProduct(Variant[list[Term]]):
+class TermProduct(Variant[list["Term"]]):
     """A tuple."""
 
-class TermRecord(Variant[Record]):
+class TermRecord(Variant["Record"]):
     """A record term."""
 
-class TermSet(Variant[set[Term]]):
+class TermSet(Variant[set["Term"]]):
     """A set of values."""
 
-class TermSum(Variant[Sum]):
+class TermSum(Variant["Sum"]):
     """A variant tuple."""
 
-class TermTypeAbstraction(Variant[TypeAbstraction]):
+class TermTypeAbstraction(Variant["TypeAbstraction"]):
     """A System F type abstraction term."""
 
-class TermTypeApplication(Variant[TypedTerm]):
+class TermTypeApplication(Variant["TypedTerm"]):
     """A System F type application term."""
 
-class TermTyped(Variant[TypedTerm]):
+class TermTyped(Variant["TypedTerm"]):
     """A term annotated with its type."""
 
-class TermUnion(Variant[Injection]):
+class TermUnion(Variant["Injection"]):
     """An injection; an instance of a union type."""
 
-class TermVariable(Variant[Name]):
+class TermVariable(Variant["Name"]):
     """A variable reference."""
 
-class TermWrap(Variant[WrappedTerm]): ...
+class TermWrap(Variant["WrappedTerm"]): ...
 
 # A data term.
 type Term = TermAnnotated | TermApplication | TermFunction | TermLet | TermList | TermLiteral | TermMap | TermOptional | TermProduct | TermRecord | TermSet | TermSum | TermTypeAbstraction | TermTypeApplication | TermTyped | TermUnion | TermVariable | TermWrap
@@ -349,35 +349,35 @@ class TupleProjection:
     arity: Annotated[int, "The arity of the tuple"]
     index: Annotated[int, "The 0-indexed offset from the beginning of the tuple"]
 
-class TypeAnnotated(Variant[AnnotatedType]): ...
+class TypeAnnotated(Variant["AnnotatedType"]): ...
 
-class TypeApplication(Variant[ApplicationType]): ...
+class TypeApplication(Variant["ApplicationType"]): ...
 
-class TypeFunction(Variant[FunctionType]): ...
+class TypeFunction(Variant["FunctionType"]): ...
 
-class TypeLambda(Variant[LambdaType]): ...
+class TypeLambda(Variant["LambdaType"]): ...
 
-class TypeList(Variant[Type]): ...
+class TypeList(Variant["Type"]): ...
 
-class TypeLiteral(Variant[LiteralType]): ...
+class TypeLiteral(Variant["LiteralType"]): ...
 
-class TypeMap(Variant[MapType]): ...
+class TypeMap(Variant["MapType"]): ...
 
-class TypeOptional(Variant[Type]): ...
+class TypeOptional(Variant["Type"]): ...
 
-class TypeProduct(Variant[list[Type]]): ...
+class TypeProduct(Variant[list["Type"]]): ...
 
-class TypeRecord(Variant[RowType]): ...
+class TypeRecord(Variant["RowType"]): ...
 
-class TypeSet(Variant[Type]): ...
+class TypeSet(Variant["Type"]): ...
 
-class TypeSum(Variant[list[Type]]): ...
+class TypeSum(Variant[list["Type"]]): ...
 
-class TypeUnion(Variant[RowType]): ...
+class TypeUnion(Variant["RowType"]): ...
 
-class TypeVariable(Variant[Name]): ...
+class TypeVariable(Variant["Name"]): ...
 
-class TypeWrap(Variant[WrappedType]): ...
+class TypeWrap(Variant["WrappedType"]): ...
 
 # A data type.
 type Type = TypeAnnotated | TypeApplication | TypeFunction | TypeLambda | TypeList | TypeLiteral | TypeMap | TypeOptional | TypeProduct | TypeRecord | TypeSet | TypeSum | TypeUnion | TypeVariable | TypeWrap

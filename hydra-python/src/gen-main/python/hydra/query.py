@@ -1,6 +1,5 @@
 """A model for language-agnostic graph pattern queries."""
 
-from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
 from hydra.dsl.types import Variant
@@ -35,12 +34,12 @@ class GraphPattern:
     """A query pattern which matches within a designated component subgraph."""
     
     graph: Annotated[hydra.core.Name, "The name of the component graph"]
-    patterns: Annotated[list[Pattern], "The patterns to match within the subgraph"]
+    patterns: Annotated[list["Pattern"], "The patterns to match within the subgraph"]
 
 class NodeTerm(Variant[hydra.core.Term]):
     """A graph term; an expression which is valid in the graph being matched."""
 
-class NodeVariable(Variant[Variable]):
+class NodeVariable(Variant["Variable"]):
     """A query variable, not to be confused with a variable term."""
 
 class NodeWildcard(Variant[None]):
@@ -49,31 +48,31 @@ class NodeWildcard(Variant[None]):
 # A node in a query expression; it may be a term, a variable, or a wildcard.
 type Node = NodeTerm | NodeVariable | NodeWildcard
 
-class PathStep(Variant[Step]):
+class PathStep(Variant["Step"]):
     """A path given by a single step."""
 
-class PathRegex(Variant[RegexSequence]):
+class PathRegex(Variant["RegexSequence"]):
     """A path given by a regular expression quantifier applied to another path."""
 
-class PathInverse(Variant[Path]):
+class PathInverse(Variant["Path"]):
     """A path given by the inverse of another path."""
 
 # A query path.
 type Path = PathStep | PathRegex | PathInverse
 
-class PatternTriple(Variant[TriplePattern]):
+class PatternTriple(Variant["TriplePattern"]):
     """A subject/predicate/object pattern."""
 
-class PatternNegation(Variant[Pattern]):
+class PatternNegation(Variant["Pattern"]):
     """The negation of another pattern."""
 
-class PatternConjunction(Variant[list[Pattern]]):
+class PatternConjunction(Variant[list["Pattern"]]):
     """The conjunction ('and') of several other patterns."""
 
-class PatternDisjunction(Variant[list[Pattern]]):
+class PatternDisjunction(Variant[list["Pattern"]]):
     """The disjunction (inclusive 'or') of several other patterns."""
 
-class PatternGraph(Variant[GraphPattern]):
+class PatternGraph(Variant["GraphPattern"]):
     """A pattern which matches within a named subgraph."""
 
 # A query pattern.
@@ -83,8 +82,8 @@ type Pattern = PatternTriple | PatternNegation | PatternConjunction | PatternDis
 class Query:
     """A SELECT-style graph pattern matching query."""
     
-    variables: Annotated[list[Variable], "The variables selected by the query"]
-    patterns: Annotated[list[Pattern], "The patterns to be matched"]
+    variables: Annotated[list["Variable"], "The variables selected by the query"]
+    patterns: Annotated[list["Pattern"], "The patterns to be matched"]
 
 @dataclass
 class Range:
@@ -111,7 +110,7 @@ class RegexQuantifierExactly(Variant[int]):
 class RegexQuantifierAtLeast(Variant[int]):
     """The {n,} quantifier; matches at least n occurrences."""
 
-class RegexQuantifierRange(Variant[Range]):
+class RegexQuantifierRange(Variant["Range"]):
     """The {n, m} quantifier; matches between n and m (inclusive) occurrences."""
 
 # A regular expression quantifier.
@@ -121,16 +120,16 @@ type RegexQuantifier = RegexQuantifierOne | RegexQuantifierZeroOrOne | RegexQuan
 class RegexSequence:
     """A path with a regex quantifier."""
     
-    path: Path
-    quantifier: RegexQuantifier
+    path: "Path"
+    quantifier: "RegexQuantifier"
 
-class StepEdge(Variant[Edge]):
+class StepEdge(Variant["Edge"]):
     """An out-to-in traversal of an abstract edge."""
 
 class StepProject(Variant[hydra.core.Projection]):
     """A projection from a record through one of its fields."""
 
-class StepCompare(Variant[ComparisonConstraint]):
+class StepCompare(Variant["ComparisonConstraint"]):
     """A comparison of two terms."""
 
 # An atomic function as part of a query. When applied to a graph, steps are typed by function types.
@@ -140,9 +139,9 @@ type Step = StepEdge | StepProject | StepCompare
 class TriplePattern:
     """A subject/predicate/object pattern."""
     
-    subject: Node
-    predicate: Path
-    object: Node
+    subject: "Node"
+    predicate: "Path"
+    object: "Node"
 
 # A query variable.
 Variable = NewType("Variable", str)

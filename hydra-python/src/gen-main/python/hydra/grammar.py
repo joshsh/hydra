@@ -3,20 +3,21 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from hydra.dsl.types import Variant
+from typing import NewType
 
 # A constant pattern.
-type Constant = str
+Constant = NewType("Constant", str)
 
 # An enhanced Backus-Naur form (BNF) grammar.
 type Grammar = list[Production]
 
 # A name for a pattern.
-type Label = str
+Label = NewType("Label", str)
 
 @dataclass
 class LabeledPattern:
     """A pattern together with a name (label)."""
-
+    
     label: Label
     pattern: Pattern
 
@@ -24,9 +25,9 @@ class PatternNil(Variant[None]): ...
 
 class PatternIgnored(Variant["Pattern"]): ...
 
-class PatternLabeled(Variant[LabeledPattern]): ...
+class PatternLabeled(Variant["LabeledPattern"]): ...
 
-class PatternConstant(Variant[Constant]): ...
+class PatternConstant(Variant["Constant"]): ...
 
 class PatternRegex(Variant["Regex"]): ...
 
@@ -48,12 +49,12 @@ type Pattern = PatternNil | PatternIgnored | PatternLabeled | PatternConstant | 
 @dataclass
 class Production:
     """A BNF production."""
-
+    
     symbol: Symbol
     pattern: Pattern
 
 # A regular expression.
-type Regex = str
+Regex = NewType("Regex", str)
 
 # A nonterminal symbol.
-type Symbol = str
+Symbol = NewType("Symbol", str)
