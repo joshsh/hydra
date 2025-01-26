@@ -5,6 +5,7 @@ from dataclasses import dataclass
 
 T = TypeVar("T")
 
+
 @dataclass
 class Variant(Generic[T]):
     """A helper class for variants (alternatives) of Hydra union types."""
