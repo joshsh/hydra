@@ -234,10 +234,12 @@ encodeTypeAssignment env name typ comment = encode env typ
       TypeRecord rt -> single <$> encodeRecordType env name rt comment
       TypeUnion rt -> encodeUnionType env name rt comment
       TypeWrap (WrappedType _ t) -> singleNewtype <$> encodeType env t
-      t -> singleTypedef <$> encodeType env t
+      t -> singleTypedef env <$> encodeType env t
     single st = [st]
     singleNewtype e = single $ newtypeStatement (Py.Name $ localNameOfEager name) comment e
-    singleTypedef e = single $ typeAliasStatement (Py.Name $ sanitizePythonName $ localNameOfEager name) [] comment e
+    singleTypedef env e = single $ typeAliasStatement (Py.Name $ sanitizePythonName $ localNameOfEager name) tparams comment e
+      where
+        tparams = environmentTypeParameters env
 
 encodeTypeVariable :: Name -> Py.Name
 encodeTypeVariable = Py.Name . capitalize . unName
@@ -277,10 +279,11 @@ encodeUnionType env name rt@(RowType _ tfields) comment = if isEnumType rt then 
               pyPrimaryToPyExpression $ primaryWithExpressionSlices (pyNameToPyPrimary $ Py.Name "Variant") [ptype]]
         unionStmt = typeAliasStatement
             (Py.Name $ sanitizePythonName lname)
-            (pyNameToPyTypeParameter . encodeTypeVariable <$> (fst $ pythonEnvironmentBoundTypeVariables env))
+            tparams
             comment
             (orExpression (alt <$> tfields))
           where
+            tparams = environmentTypeParameters env
             alt (FieldType fname ftype) = if L.null tparams
                 then namePrim
                 else primaryWithExpressionSlices namePrim (pyNameToPyExpression <$> tparams)
@@ -294,6 +297,9 @@ encodeUnionType env name rt@(RowType _ tfields) comment = if isEnumType rt then 
               where
                 isBound v = Y.isJust $ M.lookup v $ snd $ pythonEnvironmentBoundTypeVariables env
     lname = localNameOfEager name
+
+environmentTypeParameters :: PythonEnvironment -> [Py.TypeParameter]
+environmentTypeParameters env = pyNameToPyTypeParameter . encodeTypeVariable <$> (fst $ pythonEnvironmentBoundTypeVariables env)
 
 gatherMetadata :: [Definition] -> PythonModuleMetadata
 gatherMetadata defs = checkTvars $ L.foldl addDef start defs

@@ -4,7 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
 from hydra.dsl.types import Variant
-from typing import TypeVar
+from typing import Generic, NewType, TypeVar
 import hydra.core
 
 A = TypeVar("A")

@@ -39,7 +39,7 @@ class Coder(Generic[S1, S2, V1, V2]):
     decode: Callable[[V2], Flow[S2, V1]]
 
 # A variant of the State monad with built-in logging and error handling.
-type Flow = Callable[[S, Trace], FlowState[S, X]]
+type Flow[S, X] = Callable[[S, Trace], FlowState[S, X]]
 
 @dataclass
 class FlowState(Generic[S, X]):
