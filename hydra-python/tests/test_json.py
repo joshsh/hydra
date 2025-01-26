@@ -23,7 +23,7 @@ def from_hydra_json(v: Value) -> JsonValue:
 
 
 def test_json():
-    v0: Value = ValueObject(
+    v0 = ValueObject(
         {
             "a": ValueArray([ValueNumber(5), ValueNumber(6)]),
             "c": ValueString("hello"),

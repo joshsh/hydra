@@ -58,29 +58,29 @@ def count_nonterminals_in_grammar(grammar: Grammar) -> int:
 
 def test_math_grammar():
     # Non-terminal: {E, T, F}
-    expression_symbol: Symbol = "E"
+    expression_symbol= Symbol("E")
     expression = PatternNonterminal(expression_symbol)
 
-    term_symbol: Symbol = "T"
+    term_symbol = Symbol("T")
     term = PatternNonterminal(term_symbol)
 
-    factor_symbol: Symbol = "F"
+    factor_symbol = Symbol("F")
     factor = PatternNonterminal(factor_symbol)
 
     # Terminal
-    plus_symbol: Constant = "+"
+    plus_symbol = Constant("+")
     plus = PatternConstant(plus_symbol)
 
-    times_symbol: Constant = "*"
+    times_symbol = Constant("*")
     times = PatternConstant(times_symbol)
 
-    left_symbol: Constant = "("
+    left_symbol = Constant("(")
     left = PatternConstant(left_symbol)
 
-    right_symbol: Constant = ")"
+    right_symbol = Constant(")")
     right = PatternConstant(right_symbol)
 
-    identifier_regex: Regex = r"[a-zA-Z_][a-zA-Z0-9_]*"
+    identifier_regex = Regex(r"[a-zA-Z_][a-zA-Z0-9_]*")
     identifier = PatternRegex(identifier_regex)
 
     # Grammar
