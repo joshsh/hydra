@@ -35,6 +35,9 @@ bounded min max = annotMin . annotMax
 boundedList :: Maybe Int -> Maybe Int -> Type -> Type
 boundedList min max et = bounded min max $ Types.list et
 
+boundedMap :: Maybe Int -> Maybe Int -> Type -> Type -> Type
+boundedMap min max kt vt = bounded min max $ Types.map kt vt
+
 boundedSet :: Maybe Int -> Maybe Int -> Type -> Type
 boundedSet min max et = bounded min max $ Types.set et
 
@@ -64,6 +67,9 @@ minLengthList len = boundedList (Just len) Nothing
 
 nonemptyList :: Type -> Type
 nonemptyList = minLengthList 1
+
+nonemptyMap :: Type -> Type -> Type
+nonemptyMap = boundedMap (Just 1) Nothing
 
 note :: String -> Type -> Type
 note s = doc $ "Note: " ++ s
