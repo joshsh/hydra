@@ -241,6 +241,13 @@ encodeTypeAssignment env name typ comment = encode env typ
       where
         tparams = environmentTypeParameters env
 
+encodeTypeQuoted :: PythonEnvironment -> Type -> Flow Graph Py.Expression
+encodeTypeQuoted env typ = do
+  pytype <- encodeType env typ
+  return $ if S.null (freeVariablesInType typ)
+    then pytype
+    else doubleQuotedString $ printExpr $ PySer.encodeExpression pytype
+
 encodeTypeVariable :: Name -> Py.Name
 encodeTypeVariable = Py.Name . capitalize . unName
 
@@ -265,14 +272,14 @@ encodeUnionType env name rt@(RowType _ tfields) comment = if isEnumType rt then 
       where
         toFieldStmt (FieldType fname ftype) = do
             comment <- fmap normalizeComment <$> getTypeDescription ftype
-            ptype <- encodeType env ftype
+            ptypeQuoted <- encodeTypeQuoted env ftype
             let body = indentedBlock comment []
             return $ pyClassDefinitionToPyStatement $
               Py.ClassDefinition
                 Nothing
                 (variantName fname)
                 (pyNameToPyTypeParameter <$> fieldParams ftype)
-                (Just $ args ptype)
+                (Just $ args ptypeQuoted)
                 body
           where
             args ptype = pyExpressionsToPyArgs[
