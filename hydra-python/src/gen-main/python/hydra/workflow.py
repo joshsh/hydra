@@ -1,5 +1,6 @@
 """A model for Hydra transformation workflows."""
 
+from __future__ import annotations
 from collections.abc import Callable
 from dataclasses import dataclass
 from hydra.dsl.types import Variant
@@ -44,6 +45,6 @@ class TransformWorkflow:
     """The specification of a workflow which takes a schema specification, reads data from a directory, and writes data to another directory."""
     
     name: Annotated[str, "A descriptive name for the workflow"]
-    schema_spec: Annotated["SchemaSpec", "The schema specification"]
+    schema_spec: Annotated[SchemaSpec, "The schema specification"]
     src_dir: Annotated[str, "The source directory"]
     dest_dir: Annotated[str, "The destination directory"]

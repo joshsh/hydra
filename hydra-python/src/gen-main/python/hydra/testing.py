@@ -1,5 +1,6 @@
 """A model for unit testing."""
 
+from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
 import hydra.core
@@ -16,7 +17,7 @@ class TestCase:
     """A simple test case with an input and an expected output."""
     
     description: str | None
-    evaluation_style: "EvaluationStyle"
+    evaluation_style: EvaluationStyle
     input: hydra.core.Term
     output: hydra.core.Term
 
@@ -26,5 +27,5 @@ class TestGroup:
     
     name: str
     description: str | None
-    subgroups: list["TestGroup"]
-    cases: list["TestCase"]
+    subgroups: list[TestGroup]
+    cases: list[TestCase]

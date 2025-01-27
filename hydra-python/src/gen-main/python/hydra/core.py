@@ -277,7 +277,7 @@ class RowType:
     """A labeled record or union type."""
     
     type_name: Annotated[Name, "The name of the row type, which must correspond to the name of a Type element"]
-    fields: Annotated[list["FieldType"], "The fields of this row type, excluding any inherited fields"]
+    fields: Annotated[list[FieldType], "The fields of this row type, excluding any inherited fields"]
 
 @dataclass
 class Sum:
@@ -298,25 +298,25 @@ class TermFunction(Variant["Function"]):
 
 class TermLet(Variant["Let"]): ...
 
-class TermList(Variant[list["Term"]]):
+class TermList(Variant["list[Term]"]):
     """A list."""
 
 class TermLiteral(Variant["Literal"]):
     """A literal value."""
 
-class TermMap(Variant[dict["Term", "Term"]]):
+class TermMap(Variant["dict[Term, Term]"]):
     """A map of keys to values."""
 
 class TermOptional(Variant["Term | None"]):
     """An optional value."""
 
-class TermProduct(Variant[list["Term"]]):
+class TermProduct(Variant["list[Term]"]):
     """A tuple."""
 
 class TermRecord(Variant["Record"]):
     """A record term."""
 
-class TermSet(Variant[set["Term"]]):
+class TermSet(Variant["set[Term]"]):
     """A set of values."""
 
 class TermSum(Variant["Sum"]):
@@ -365,13 +365,13 @@ class TypeMap(Variant["MapType"]): ...
 
 class TypeOptional(Variant["Type"]): ...
 
-class TypeProduct(Variant[list["Type"]]): ...
+class TypeProduct(Variant["list[Type]"]): ...
 
 class TypeRecord(Variant["RowType"]): ...
 
 class TypeSet(Variant["Type"]): ...
 
-class TypeSum(Variant[list["Type"]]): ...
+class TypeSum(Variant["list[Type]"]): ...
 
 class TypeUnion(Variant["RowType"]): ...
 

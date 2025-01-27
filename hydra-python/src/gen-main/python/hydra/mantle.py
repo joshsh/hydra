@@ -1,5 +1,6 @@
 """A set of types which supplement hydra/core with variants and accessors."""
 
+from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
 from hydra.dsl.types import Variant
@@ -9,9 +10,9 @@ import hydra.core
 A = TypeVar("A")
 B = TypeVar("B")
 
-class EitherLeft(Variant[A]): ...
+class EitherLeft(Variant["A"]): ...
 
-class EitherRight(Variant[B]): ...
+class EitherRight(Variant["B"]): ...
 
 # A disjoint union between a 'left' type and a 'right' type.
 type Either[A, B] = EitherLeft[A] | EitherRight[B]

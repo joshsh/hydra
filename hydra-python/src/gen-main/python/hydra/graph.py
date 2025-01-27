@@ -23,11 +23,11 @@ class Comparison(Enum):
 class Graph:
     """A graph, or set of name/term bindings together with parameters (annotations, primitives) and a schema graph."""
     
-    elements: Annotated[dict[hydra.core.Name, "Element"], "All of the elements in the graph"]
+    elements: Annotated[dict[hydra.core.Name, Element], "All of the elements in the graph"]
     environment: Annotated[dict[hydra.core.Name, hydra.core.Term | None], "The lambda environment of this graph context; it indicates whether a variable is bound by a lambda (Nothing) or a let (Just term)"]
     types: Annotated[dict[hydra.core.Name, hydra.core.TypeScheme], "The typing environment of the graph"]
     body: Annotated[hydra.core.Term, "The body of the term which generated this context"]
-    primitives: Annotated[dict[hydra.core.Name, "Primitive"], "All supported primitive constants and functions, by name"]
+    primitives: Annotated[dict[hydra.core.Name, Primitive], "All supported primitive constants and functions, by name"]
     schema: Annotated[Graph | None, "The schema of this graph. If this parameter is omitted (nothing), the graph is its own schema graph."]
 
 @dataclass
@@ -43,14 +43,14 @@ class Primitive:
     
     name: Annotated[hydra.core.Name, "The unique name of the primitive function"]
     type: Annotated[hydra.core.TypeScheme, "The type signature of the primitive function"]
-    implementation: Annotated[Callable[[list[hydra.core.Term]], hydra.compute.Flow["Graph", hydra.core.Term]], "A concrete implementation of the primitive function"]
+    implementation: Annotated[Callable[[list[hydra.core.Term]], hydra.compute.Flow[Graph, hydra.core.Term]], "A concrete implementation of the primitive function"]
 
 @dataclass
 class TermCoder(Generic[X]):
     """A type together with a coder for mapping terms into arguments for primitive functions, and mapping computed results into terms."""
     
     type: hydra.core.Type
-    coder: hydra.compute.Coder["Graph", "Graph", hydra.core.Term, X]
+    coder: hydra.compute.Coder[Graph, Graph, hydra.core.Term, X]
 
 class TypeClass(Enum):
     """Any of a small number of built-in type classes."""

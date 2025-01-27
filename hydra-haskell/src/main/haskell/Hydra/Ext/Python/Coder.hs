@@ -324,17 +324,26 @@ gatherMetadata defs = checkTvars $ L.foldl addDef start defs
       pythonModuleMetadataUsesVariant = False}
     addDef meta def = case def of
       DefinitionTerm _ _ _ -> meta
-      DefinitionType _ typ -> foldOverType TraversalOrderPre extendMeta newMeta typ
+      DefinitionType _ typ -> foldOverType TraversalOrderPre extendMeta meta3 typ
         where
           tvars = pythonModuleMetadataTypeVariables meta
-          newMeta = meta {pythonModuleMetadataTypeVariables = newTvars tvars typ}
+          meta3 = case stripType typ of
+            TypeWrap _ -> meta2 {pythonModuleMetadataUsesNewType = True}
+            _ -> meta2
+          meta2 = meta {pythonModuleMetadataTypeVariables = newTvars tvars typ}
             where
               newTvars s t = case stripType t of
                 TypeLambda (LambdaType v body) -> newTvars (S.insert v s) body
                 _ -> s
           extendMeta meta t = case t of
             TypeFunction _ -> meta {pythonModuleMetadataUsesCallable = True}
-            TypeLambda _ -> meta {pythonModuleMetadataUsesGeneric = True}
+            TypeLambda (LambdaType _ body) -> case baseType body of
+                TypeRecord _ -> meta {pythonModuleMetadataUsesGeneric = True}
+                _ -> meta
+              where
+                baseType t = case stripType t of
+                  TypeLambda (LambdaType _ body2) -> baseType body2
+                  t2 -> t2
             TypeRecord (RowType _ fields) -> meta {
                 pythonModuleMetadataUsesAnnotated = L.foldl checkForAnnotated (pythonModuleMetadataUsesAnnotated meta) fields,
                 pythonModuleMetadataUsesDataclass = pythonModuleMetadataUsesDataclass meta || not (L.null fields)}
@@ -347,7 +356,6 @@ gatherMetadata defs = checkTvars $ L.foldl addDef start defs
               where
                 checkForLiteral b (FieldType _ ft) = b || isUnitType (stripType ft)
                 checkForNewType b (FieldType _ ft) = b || not (isUnitType (stripType ft))
-            TypeWrap _ -> meta {pythonModuleMetadataUsesNewType = True} -- TODO: this can result in a false positive when the wrapped type is only a reference
             _ -> meta
 
 moduleToPython :: Module -> Flow Graph (M.Map FilePath String)

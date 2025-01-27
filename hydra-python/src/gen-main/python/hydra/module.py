@@ -22,8 +22,8 @@ class Module:
     
     namespace: Annotated[Namespace, "A common prefix for all element names in the module"]
     elements: Annotated[list[hydra.graph.Element], "The elements defined in this module"]
-    term_dependencies: Annotated[list["Module"], "Any modules which the term expressions of this module directly depend upon"]
-    type_dependencies: Annotated[list["Module"], "Any modules which the type expressions of this module directly depend upon"]
+    term_dependencies: Annotated[list[Module], "Any modules which the term expressions of this module directly depend upon"]
+    type_dependencies: Annotated[list[Module], "Any modules which the type expressions of this module directly depend upon"]
     description: Annotated[str | None, "An optional human-readable description of the module"]
 
 # A prefix for element names.

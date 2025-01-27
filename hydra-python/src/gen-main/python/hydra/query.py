@@ -1,5 +1,6 @@
 """A model for language-agnostic graph pattern queries."""
 
+from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
 from hydra.dsl.types import Variant
@@ -34,9 +35,9 @@ class GraphPattern:
     """A query pattern which matches within a designated component subgraph."""
     
     graph: Annotated[hydra.core.Name, "The name of the component graph"]
-    patterns: Annotated[list["Pattern"], "The patterns to match within the subgraph"]
+    patterns: Annotated[list[Pattern], "The patterns to match within the subgraph"]
 
-class NodeTerm(Variant[hydra.core.Term]):
+class NodeTerm(Variant["hydra.core.Term"]):
     """A graph term; an expression which is valid in the graph being matched."""
 
 class NodeVariable(Variant["Variable"]):
@@ -66,10 +67,10 @@ class PatternTriple(Variant["TriplePattern"]):
 class PatternNegation(Variant["Pattern"]):
     """The negation of another pattern."""
 
-class PatternConjunction(Variant[list["Pattern"]]):
+class PatternConjunction(Variant["list[Pattern]"]):
     """The conjunction ('and') of several other patterns."""
 
-class PatternDisjunction(Variant[list["Pattern"]]):
+class PatternDisjunction(Variant["list[Pattern]"]):
     """The disjunction (inclusive 'or') of several other patterns."""
 
 class PatternGraph(Variant["GraphPattern"]):
@@ -82,8 +83,8 @@ type Pattern = PatternTriple | PatternNegation | PatternConjunction | PatternDis
 class Query:
     """A SELECT-style graph pattern matching query."""
     
-    variables: Annotated[list["Variable"], "The variables selected by the query"]
-    patterns: Annotated[list["Pattern"], "The patterns to be matched"]
+    variables: Annotated[list[Variable], "The variables selected by the query"]
+    patterns: Annotated[list[Pattern], "The patterns to be matched"]
 
 @dataclass
 class Range:
@@ -120,13 +121,13 @@ type RegexQuantifier = RegexQuantifierOne | RegexQuantifierZeroOrOne | RegexQuan
 class RegexSequence:
     """A path with a regex quantifier."""
     
-    path: "Path"
-    quantifier: "RegexQuantifier"
+    path: Path
+    quantifier: RegexQuantifier
 
 class StepEdge(Variant["Edge"]):
     """An out-to-in traversal of an abstract edge."""
 
-class StepProject(Variant[hydra.core.Projection]):
+class StepProject(Variant["hydra.core.Projection"]):
     """A projection from a record through one of its fields."""
 
 class StepCompare(Variant["ComparisonConstraint"]):
@@ -139,9 +140,9 @@ type Step = StepEdge | StepProject | StepCompare
 class TriplePattern:
     """A subject/predicate/object pattern."""
     
-    subject: "Node"
-    predicate: "Path"
-    object: "Node"
+    subject: Node
+    predicate: Path
+    object: Node
 
 # A query variable.
 Variable = NewType("Variable", str)
