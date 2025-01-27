@@ -10,11 +10,8 @@ from hydra.grammar import (
     PatternConstant,
     PatternRegex,
     Grammar,
-    Production,
-    Constant,
-    Symbol,
-    Regex,
 )
+import hydra.dsl.grammar as dsl
 
 
 def gather_nonterminals(pattern: Pattern) -> set[str]:
@@ -58,45 +55,31 @@ def count_nonterminals_in_grammar(grammar: Grammar) -> int:
 
 def test_math_grammar():
     # Non-terminal: {E, T, F}
-    expression_symbol= Symbol("E")
-    expression = PatternNonterminal(expression_symbol)
-
-    term_symbol = Symbol("T")
-    term = PatternNonterminal(term_symbol)
-
-    factor_symbol = Symbol("F")
-    factor = PatternNonterminal(factor_symbol)
+    expression = dsl.symbol("E")
+    term = dsl.symbol("T")
+    factor = dsl.symbol("F")
 
     # Terminal
-    plus_symbol = Constant("+")
-    plus = PatternConstant(plus_symbol)
-
-    times_symbol = Constant("*")
-    times = PatternConstant(times_symbol)
-
-    left_symbol = Constant("(")
-    left = PatternConstant(left_symbol)
-
-    right_symbol = Constant(")")
-    right = PatternConstant(right_symbol)
-
-    identifier_regex = Regex(r"[a-zA-Z_][a-zA-Z0-9_]*")
-    identifier = PatternRegex(identifier_regex)
+    plus = dsl.terminal("+")
+    times = dsl.terminal("*")
+    left = dsl.terminal("(")
+    right = dsl.terminal(")")
+    identifier = dsl.regex(r"[a-zA-Z_][a-zA-Z0-9_]*")
 
     # Grammar
     grammar: Grammar = [
         # E -> E + T
-        Production(expression_symbol, PatternSequence([expression, plus, term])),
+        dsl.define("E", [expression, plus, term]),
         # E -> T
-        Production(expression_symbol, term),
+        dsl.define("E", [term]),
         # T -> T * F
-        Production(term_symbol, PatternSequence([term, times, factor])),
+        dsl.define("T", [term, times, factor]),
         # T -> F
-        Production(term_symbol, factor),
+        dsl.define("T", [factor]),
         # F -> (E)
-        Production(factor_symbol, PatternSequence([left, expression, right])),
+        dsl.define("F", [left, expression, right]),
         # F -> id
-        Production(factor_symbol, identifier),
+        dsl.define("F", [identifier]),
     ]
 
     assert grammar
