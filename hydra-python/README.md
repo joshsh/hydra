@@ -86,11 +86,33 @@ Additionally, if you want to see printed outputs, you can run the tests with the
 pytest -s
 ```
 
-## Validate generated Python code
+## Generate Python code
 
-The generated Hydra Kernel code is in `src/gen-main/python`.
+The Python code in `src/gen-main/python` and `src/gen-test/python` are generated from sources in Hydra's bootstrapping implementation, Hydra-Haskell.
+See the [Hydra-Haskell README](https://github.com/CategoricalData/hydra/tree/main/hydra-haskell)
+for more information on how this works.
+You can generate Hydra-Python kernel and test code by first entering GHCi
+
+```bash
+cd ../hydra-haskell && stack ghci
+```
+
+And then running the following commands in the GHC REPL.
+
+```haskell
+writePython "../hydra-python/src/gen-main/python" (hydraCoreModule:tier0Modules)
+writePython "../hydra-python/src/gen-test/pthon" testModules
+```
+
+This will generate `hydra/core` and the tier-0 kernel modules, as well as the test suite.
+Support for generating the rest of the kernel code is currently in progress.
+
+### Validate generated code
+
+The generated Hydra Kernel code is in `src/gen-main/python` and `src/gen-test/python`.
 From the `hydra-python` directory, you can validate this code with a command like:
 
 ```bash
 find src/gen-main/ -name "*.py" -exec python3 -m py_compile {} +
+find src/gen-test/ -name "*.py" -exec python3 -m py_compile {} +
 ```
