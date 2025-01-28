@@ -17,6 +17,11 @@ import Hydra.Sources.Tier4.Ext.Java.Syntax
 import Hydra.Sources.Tier4.Ext.Json.Decoding
 import Hydra.Sources.Tier4.Ext.Json.Schema
 import Hydra.Sources.Tier4.Ext.Pegasus.Pdl
+import Hydra.Sources.Tier4.Ext.Pg.Graphson.Syntax
+import Hydra.Sources.Tier4.Ext.Pg.Mapping
+import Hydra.Sources.Tier4.Ext.Pg.Model
+import Hydra.Sources.Tier4.Ext.Pg.Query
+import Hydra.Sources.Tier4.Ext.Pg.Validation
 import Hydra.Sources.Tier4.Ext.Protobuf.Any
 import Hydra.Sources.Tier4.Ext.Protobuf.Language
 import Hydra.Sources.Tier4.Ext.Protobuf.Proto3
@@ -30,11 +35,6 @@ import Hydra.Sources.Tier4.Ext.Shacl.Model
 import Hydra.Sources.Tier4.Ext.Tabular
 import Hydra.Sources.Tier4.Ext.Yaml.Model
 import Hydra.Sources.Tier4.Test.TestSuite
-import Hydra.Sources.Tier4.Ext.Pg.Mapping
-import Hydra.Sources.Tier4.Ext.Pg.Model
-import Hydra.Sources.Tier4.Ext.Pg.Query
-import Hydra.Sources.Tier4.Ext.Pg.Validation
-
 
 allModules :: [Module]
 allModules = mainModules ++ testModules
@@ -75,4 +75,5 @@ tier4LangModules = [
   pgModelModule,
   pgQueryModule,
   pgValidationModule,
+  graphsonSyntaxModule,
   yamlModelModule]
