@@ -21,8 +21,9 @@ relationalModelModule = Module ns elements [hydraCoreModule] tier0Modules $
 
     elements = [
       def "ColumnName" $
-        doc "A name for a domain which serves to identify the role played by that domain in the given relation; a 'role name' in Codd"
-        string,
+        doc ("A name for a domain which serves to identify the role played by that domain in the given relation;"
+          ++ " a 'role name' in Codd") $
+        wrap string,
 
       def "ColumnSchema" $
         doc "An abstract specification of the domain represented by a column in a relation; a role" $
@@ -32,10 +33,7 @@ relationalModelModule = Module ns elements [hydraCoreModule] tier0Modules $
             rm "ColumnName",
           "domain">:
             doc "The domain (type) of the column" $
-            "t",
-          "isPrimaryKey">:
-            doc "Whether this column represents the primary key of its relation"
-            boolean],
+            "t"],
 
       def "ForeignKey" $
         doc "A mapping from certain columns of a source relation to primary key columns of a target relation" $
@@ -44,19 +42,21 @@ relationalModelModule = Module ns elements [hydraCoreModule] tier0Modules $
             doc "The name of the target relation" $
             rm "RelationName",
           "keys">:
-            Types.map (rm "ColumnName") (rm "ColumnName")], -- TODO: nonempty map
+            doc ("The mapping of source column names to target column names."
+               ++ " The target column names must together make up the primary key of the target relation.") $
+            nonemptyMap (rm "ColumnName") (rm "ColumnName")],
 
       def "PrimaryKey" $
         doc "A primary key of a relation, specified either as a single column, or as a list of columns" $
-        list $ rm "ColumnName", -- TODO: non-empty list
+        nonemptyList $ rm "ColumnName",
 
       def "Relation" $
         doc "A set of distinct n-tuples; a table" $
-        lambda "v" $ set $ list "v",
+        lambda "v" $ list (rm "Row" @@ "v"),
 
       def "RelationName" $
-        doc "A unique relation (table) name"
-        string,
+        doc "A unique relation (table) name" $
+        wrap string,
 
       def "RelationSchema" $ -- Note: this term is not in Codd
         doc "An abstract relation; the name and columns of a relation without its actual data" $
@@ -66,7 +66,7 @@ relationalModelModule = Module ns elements [hydraCoreModule] tier0Modules $
             rm "RelationName",
           "columns">:
             doc "A list of column specifications" $
-            list $ rm "ColumnSchema" @@ "t",
+            nonemptyList $ rm "ColumnSchema" @@ "t",
           "primaryKeys">:
             doc "Any number of primary keys for the relation, each of which must be valid for this relation" $
             list $ rm "PrimaryKey",
@@ -80,4 +80,4 @@ relationalModelModule = Module ns elements [hydraCoreModule] tier0Modules $
 
       def "Row" $
         doc "An n-tuple which is an element of a given relation" $
-        lambda "v" $ list "v"]
+        lambda "v" $ nonemptyList "v"]
