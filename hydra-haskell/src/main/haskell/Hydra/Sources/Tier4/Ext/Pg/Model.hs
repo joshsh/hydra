@@ -173,4 +173,17 @@ pgModelModule = Module ns elements [] tier0Modules $
             "t",
           "properties">:
             doc "A list of property types. The types are ordered for the sake of applications in which property order is significant." $
-            list (pg "PropertyType" @@ "t")]]
+            list (pg "PropertyType" @@ "t")],
+
+      def "VertexWithAdjacentEdges" $
+        doc "A vertex together with any outgoing and/or incoming edges; a vertex object" $
+        lambda "v" $ record [
+          "vertex">:
+            doc "The focus vertex" $
+            pg "Vertex" @@ "v",
+          "inEdges">:
+            doc "An adjacency list of edges in which the focus vertex is the head (in-vertex) of the edge" $
+            list (pg "Edge" @@ "v"),
+          "outEdges">:
+            doc "An adjacency list of edges in which the focus vertex is the tail (out-vertex) of the edge" $
+            list (pg "Edge" @@ "v")]]
