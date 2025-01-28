@@ -277,3 +277,22 @@ _VertexType_label = (Core.Name "label")
 _VertexType_id = (Core.Name "id")
 
 _VertexType_properties = (Core.Name "properties")
+
+-- | A vertex together with any outgoing and/or incoming edges; a vertex object
+data VertexWithAdjacentEdges v = 
+  VertexWithAdjacentEdges {
+    -- | The focus vertex
+    vertexWithAdjacentEdgesVertex :: (Vertex v),
+    -- | An adjacency list of edges in which the focus vertex is the head (in-vertex) of the edge
+    vertexWithAdjacentEdgesInEdges :: [Edge v],
+    -- | An adjacency list of edges in which the focus vertex is the tail (out-vertex) of the edge
+    vertexWithAdjacentEdgesOutEdges :: [Edge v]}
+  deriving (Eq, Ord, Read, Show)
+
+_VertexWithAdjacentEdges = (Core.Name "hydra/pg/model.VertexWithAdjacentEdges")
+
+_VertexWithAdjacentEdges_vertex = (Core.Name "vertex")
+
+_VertexWithAdjacentEdges_inEdges = (Core.Name "inEdges")
+
+_VertexWithAdjacentEdges_outEdges = (Core.Name "outEdges")
