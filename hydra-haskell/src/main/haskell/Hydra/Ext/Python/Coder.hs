@@ -152,7 +152,7 @@ encodeModule mod = do
                   cond "dataclass" $ pythonModuleMetadataUsesDataclass meta]),
                 ("enum", [
                   cond "Enum" $ pythonModuleMetadataUsesEnum meta]),
-                ("hydra.dsl.types", [
+                ("hydra.dsl.python", [
                   cond "Variant" $ pythonModuleMetadataUsesVariant meta]),
                 ("typing", [
                   cond "Annotated" $ pythonModuleMetadataUsesAnnotated meta,

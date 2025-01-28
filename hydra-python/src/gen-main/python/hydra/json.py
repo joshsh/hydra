@@ -1,7 +1,7 @@
 """A JSON syntax model. See the BNF at https://www.json.org."""
 
 from __future__ import annotations
-from hydra.dsl.types import Variant
+from hydra.dsl.python import Variant
 
 class ValueArray(Variant["list[Value]"]):
     """A JSON array."""

@@ -3,7 +3,7 @@
 from __future__ import annotations
 from collections.abc import Callable
 from dataclasses import dataclass
-from hydra.dsl.types import Variant
+from hydra.dsl.python import Variant
 from typing import Annotated, Generic, TypeVar
 import hydra.compute
 import hydra.core

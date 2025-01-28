@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 from dataclasses import dataclass
-from hydra.dsl.types import Variant
+from hydra.dsl.python import Variant
 from typing import NewType
 
 # A constant pattern.

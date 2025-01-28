@@ -3,7 +3,7 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
-from hydra.dsl.types import Variant
+from hydra.dsl.python import Variant
 from typing import Annotated, NewType
 import hydra.core
 
