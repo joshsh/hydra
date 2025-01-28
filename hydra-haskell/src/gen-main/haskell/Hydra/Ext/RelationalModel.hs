@@ -22,9 +22,7 @@ data ColumnSchema t =
     -- | A unique name for the column
     columnSchemaName :: ColumnName,
     -- | The domain (type) of the column
-    columnSchemaDomain :: t,
-    -- | Whether this column represents the primary key of its relation
-    columnSchemaIsPrimaryKey :: Bool}
+    columnSchemaDomain :: t}
   deriving (Eq, Ord, Read, Show)
 
 _ColumnSchema = (Core.Name "hydra/ext/relationalModel.ColumnSchema")
@@ -33,13 +31,12 @@ _ColumnSchema_name = (Core.Name "name")
 
 _ColumnSchema_domain = (Core.Name "domain")
 
-_ColumnSchema_isPrimaryKey = (Core.Name "isPrimaryKey")
-
 -- | A mapping from certain columns of a source relation to primary key columns of a target relation
 data ForeignKey = 
   ForeignKey {
     -- | The name of the target relation
     foreignKeyForeignRelation :: RelationName,
+    -- | The mapping of source column names to target column names. The target column names must together make up the primary key of the target relation.
     foreignKeyKeys :: (Map ColumnName ColumnName)}
   deriving (Eq, Ord, Read, Show)
 
@@ -60,7 +57,7 @@ _PrimaryKey = (Core.Name "hydra/ext/relationalModel.PrimaryKey")
 -- | A set of distinct n-tuples; a table
 newtype Relation v = 
   Relation {
-    unRelation :: (Set [v])}
+    unRelation :: [Row v]}
   deriving (Eq, Ord, Read, Show)
 
 _Relation = (Core.Name "hydra/ext/relationalModel.Relation")
