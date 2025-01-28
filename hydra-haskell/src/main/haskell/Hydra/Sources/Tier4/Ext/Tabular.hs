@@ -17,10 +17,10 @@ tabularModule = Module ns elements [hydraCoreModule] tier0Modules $
     tabular = typeref ns
 
     elements = [
+
       def "DataRow" $
         doc "A data row, containing optional-valued cells; one per column" $
-        lambda "v" $
-          list $ optional "v",
+        lambda "v" $ list $ optional "v",
 
       def "HeaderRow" $
         doc "A header row, containing column names (but no types or data)" $
