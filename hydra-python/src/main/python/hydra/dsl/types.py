@@ -1,4 +1,4 @@
-"""A DSL for constructing Hydra types in Python."""
+"""A domain-specific language for constructing Hydra types in Python."""
 
 from functools import reduce
 from hydra.core import (

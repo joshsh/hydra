@@ -1,4 +1,4 @@
-"""A library for python utilities."""
+"""A collection of foundational typing constructs specific to Hydra-Python."""
 
 from dataclasses import dataclass
 from typing import Generic, TypeVar
