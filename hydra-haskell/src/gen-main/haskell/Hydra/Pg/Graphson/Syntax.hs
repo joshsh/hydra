@@ -89,20 +89,20 @@ newtype Map_ =
 
 _Map = (Core.Name "hydra/pg/graphson/syntax.Map")
 
-data OutEdgeValue = 
-  OutEdgeValue {
-    outEdgeValueId :: Value,
-    outEdgeValueInVertexId :: Value,
-    outEdgeValueProperties :: (Map PropertyKey Value)}
+data AdjacentEdge = 
+  AdjacentEdge {
+    adjacentEdgeId :: Value,
+    adjacentEdgeVertexId :: Value,
+    adjacentEdgeProperties :: (Map PropertyKey Value)}
   deriving (Eq, Ord, Read, Show)
 
-_OutEdgeValue = (Core.Name "hydra/pg/graphson/syntax.OutEdgeValue")
+_AdjacentEdge = (Core.Name "hydra/pg/graphson/syntax.AdjacentEdge")
 
-_OutEdgeValue_id = (Core.Name "id")
+_AdjacentEdge_id = (Core.Name "id")
 
-_OutEdgeValue_inVertexId = (Core.Name "inVertexId")
+_AdjacentEdge_vertexId = (Core.Name "vertexId")
 
-_OutEdgeValue_properties = (Core.Name "properties")
+_AdjacentEdge_properties = (Core.Name "properties")
 
 data PrimitiveTypedValue = 
   PrimitiveTypedValue {
@@ -221,7 +221,8 @@ data Vertex =
   Vertex {
     vertexId :: Value,
     vertexLabel :: (Maybe VertexLabel),
-    vertexOutEdges :: (Map EdgeLabel [OutEdgeValue]),
+    vertexInEdges :: (Map EdgeLabel [AdjacentEdge]),
+    vertexOutEdges :: (Map EdgeLabel [AdjacentEdge]),
     vertexProperties :: (Map PropertyKey [VertexPropertyValue])}
   deriving (Eq, Ord, Read, Show)
 
@@ -230,6 +231,8 @@ _Vertex = (Core.Name "hydra/pg/graphson/syntax.Vertex")
 _Vertex_id = (Core.Name "id")
 
 _Vertex_label = (Core.Name "label")
+
+_Vertex_inEdges = (Core.Name "inEdges")
 
 _Vertex_outEdges = (Core.Name "outEdges")
 

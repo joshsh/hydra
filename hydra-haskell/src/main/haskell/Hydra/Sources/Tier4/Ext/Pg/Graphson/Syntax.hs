@@ -56,10 +56,10 @@ graphsonSyntaxModule = Module ns elements [] tier0Modules $
       def "Map" $
         list $ gson "ValuePair",
 
-      def "OutEdgeValue" $
+      def "AdjacentEdge" $
         record [
           "id">: gson "Value",
-          "inVertexId">: gson "Value",
+          "vertexId">: gson "Value",
           "properties">: Types.map (gson "PropertyKey") (gson "Value")],
 
       def "PrimitiveTypedValue" $
@@ -123,7 +123,8 @@ graphsonSyntaxModule = Module ns elements [] tier0Modules $
         record [
           "id">: gson "Value",
           "label">: optional $ gson "VertexLabel",
-          "outEdges">: Types.map (gson "EdgeLabel") (nonemptyList $ gson "OutEdgeValue"),
+          "inEdges">: Types.map (gson "EdgeLabel") (nonemptyList $ gson "AdjacentEdge"),
+          "outEdges">: Types.map (gson "EdgeLabel") (nonemptyList $ gson "AdjacentEdge"),
           "properties">: Types.map (gson "PropertyKey") (nonemptyList $ gson "VertexPropertyValue")],
 
       def "VertexLabel" $
