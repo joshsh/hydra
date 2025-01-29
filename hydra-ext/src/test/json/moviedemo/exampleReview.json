@@ -1,0 +1,18 @@
+{
+  "timestamp": 1738136577459,
+  "movie": {
+    "imdb": "tt0111161",
+    "title": "The Shawshank Redemption"
+  },
+  "review": {
+    "review_id": "rev_001",
+    "reviewer": {
+      "user_id": "user_12345",
+      "name": "John Doe"
+    },
+    "rating": "9.5",
+    "review_text": "An incredible story of hope, friendship, and redemption. The performances are stellar, and the narrative is truly gripping. A masterpiece!",
+    "review_date": "2025-01-27",
+    "spoiler_warning": "false"
+  }
+}

@@ -6,9 +6,11 @@ module Hydra.Tools.AvroWorkflows (
   TermEncoder(..),
   LastMile(..),
   defaultTinkerpopAnnotations,
+  exampleGraphsonContext,
   examplePgSchema,
   executeAvroTransformWorkflow,
-  propertyGraphLastMile,
+  propertyGraphGraphsonLastMile,
+  propertyGraphJsonLastMile,
   rdfDescriptionsToNtriples,
   shaclRdfLastMile,
   typedTermToShaclRdf,
@@ -36,8 +38,11 @@ import qualified Hydra.Dsl.Types as Types
 import qualified Hydra.Dsl.Expect as Expect
 import Hydra.Ext.Rdf.Serde
 import Hydra.Sources.Core
+import Hydra.Ext.Pg.Graphson.Coder
+import Hydra.Pg.Graphson.Syntax as G
 
 import qualified Control.Monad as CM
+import qualified Data.Either as E
 import qualified Data.List as L
 import qualified Data.Map as M
 import qualified Data.Set as S
@@ -54,10 +59,10 @@ type TermEncoder x = Term -> Graph -> Flow Graph [x]
 
 defaultTinkerpopAnnotations :: PGM.AnnotationSchema
 defaultTinkerpopAnnotations = PGM.AnnotationSchema {
-  PGM.annotationSchemaVertexLabel = "label",
-  PGM.annotationSchemaEdgeLabel = "label",
-  PGM.annotationSchemaVertexId = "id",
-  PGM.annotationSchemaEdgeId = "id",
+  PGM.annotationSchemaVertexLabel = "vertexLabel",
+  PGM.annotationSchemaEdgeLabel = "edgeLabel",
+  PGM.annotationSchemaVertexId = "vertexId",
+  PGM.annotationSchemaEdgeId = "edgeId",
   PGM.annotationSchemaPropertyKey = "key",
   PGM.annotationSchemaPropertyValue = "value",
   PGM.annotationSchemaOutVertex = "outVertex",
@@ -142,8 +147,46 @@ pgElementToJson schema el = case el of
 pgElementsToJson :: PGM.Schema Graph t v -> [PG.Element v] -> Flow Graph Json.Value
 pgElementsToJson schema els = Json.ValueArray <$> CM.mapM (pgElementToJson schema) els
 
-propertyGraphLastMile :: (Show t, Show v) => PGM.Schema Graph t v -> t -> t -> LastMile Graph (PG.Element v)
-propertyGraphLastMile schema vidType eidType =
+pgElementsToPgVerticesWithAdjacentEdges :: Ord v => [PG.Element v] -> [PG.VertexWithAdjacentEdges v]
+pgElementsToPgVerticesWithAdjacentEdges els = M.elems vertexMap1
+  where
+    vertices = E.lefts eithers
+    edges = E.rights eithers
+    eithers = fmap toEither els
+      where
+        toEither el = case el of
+          PG.ElementVertex v -> Left v
+          PG.ElementEdge e -> Right e
+    vertexMap0 = M.fromList $ fmap toPair vertices
+      where
+        toPair v = (PG.vertexId v, PG.VertexWithAdjacentEdges v [] [])
+    vertexMap1 = L.foldl addEdge vertexMap0 edges
+      where
+        addEdge vertexMap (PG.Edge label id outv inv props) = case M.lookup outv vertexMap of
+            Nothing -> vertexMap -- Disconnected edges are ignored
+            Just v -> M.insert outv (appendE v) vertexMap
+          where
+            appendE v = v {PG.vertexWithAdjacentEdgesOuts = (adjEdge:(PG.vertexWithAdjacentEdgesOuts v))}
+            adjEdge = PG.AdjacentEdge label id inv props
+
+pgElementsToGraphson :: (Ord v, Show v) => GraphsonContext s v -> [PG.Element v] -> Flow s [Json.Value]
+pgElementsToGraphson ctx els = CM.mapM encode vertices
+  where
+    vertices = pgElementsToPgVerticesWithAdjacentEdges els
+    encode = coderEncode (vertexToJsonCoder ctx)
+
+propertyGraphGraphsonLastMile :: (Ord v, Show t, Show v) => GraphsonContext Graph v -> PGM.Schema Graph t v -> t -> t -> LastMile Graph (PG.Element v)
+propertyGraphGraphsonLastMile ctx schema vidType eidType =
+  LastMile (\typ -> typedTermToPropertyGraph schema typ vidType eidType) (\els -> jsonValuesToString <$> pgElementsToGraphson ctx els) "jsonl"
+
+exampleGraphsonContext :: GraphsonContext s String
+exampleGraphsonContext = GraphsonContext $ Coder encodeValue decodeValue
+  where
+    encodeValue s = pure $ G.ValueString s
+    decodeValue _ = fail "decoding from GraphSON is not yet supported"
+
+propertyGraphJsonLastMile :: (Show t, Show v) => PGM.Schema Graph t v -> t -> t -> LastMile Graph (PG.Element v)
+propertyGraphJsonLastMile schema vidType eidType =
   LastMile (\typ -> typedTermToPropertyGraph schema typ vidType eidType) (\els -> jsonValueToString <$> pgElementsToJson schema els) "json"
 
 rdfDescriptionsToNtriples :: [Rdf.Description] -> String

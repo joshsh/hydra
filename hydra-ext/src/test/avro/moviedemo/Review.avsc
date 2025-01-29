@@ -1,0 +1,87 @@
+{
+  "namespace": "com.example",
+  "@edgeLabel": "hasReview",
+  "name": "ReviewInfo",
+  "type": "record",
+  "fields": [
+    {
+      "@edgeId": "review-${}",
+      "name": "timestamp",
+      "type": "long"
+    },
+    {
+      "@outVertex": "movie-${imdb}",
+      "@outVertexLabel": "Movie",
+      "name": "movie",
+      "type": {
+        "@vertexLabel": "Movie",
+        "name": "MovieInfo",
+        "type": "record",
+        "fields": [
+          {
+            "@vertexId": "movie-${}",
+            "name": "imdb",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "@inVertex": "review-${review_id}",
+      "@inVertexLabel": "Review",
+      "name": "review",
+      "type": {
+        "@vertexLabel": "Review",
+        "name": "ReviewDetails",
+        "type": "record",
+        "fields": [
+          {
+            "@vertexId": "review-${}",
+            "name": "review_id",
+            "type": "string"
+          },
+          {
+            "@outEdgeLabel": "reviewer",
+            "name": "reviewer",
+            "type": {
+              "@vertexLabel": "User",
+              "name": "User",
+              "type": "record",
+              "fields": [
+                {
+                  "@vertexId": "user-${}",
+                  "name": "user_id",
+                  "type": "string"
+                },
+                {
+                  "name": "name",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          {
+            "name": "rating",
+            "type": "string"
+          },
+          {
+            "name": "review_text",
+            "type": "string"
+          },
+          {
+            "name": "review_date",
+            "type": "string"
+          },
+          {
+            "name": "spoiler_warning",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ]
+}

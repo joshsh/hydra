@@ -46,11 +46,24 @@ Experimental tools include:
 * **AvroToPropertyGraphs**: transforms a specific Avro schema and matching sample JSON to a property graph representation
 * **MeteredEvaluation**: demonstrates term reduction with logging, e.g. for tracking usage or estimating cost
 
-To run the `AvroToPropertyGraphs` demo, use:
+To run the `AvroToPropertyGraphs` demo, first enter `stack ghci`, then:
 
 ```haskell
 import Hydra.Tools.AvroWorkflows
 import Hydra.Demos.AvroToPropertyGraphs
 
-transformAirplaneInfo (propertyGraphLastMile examplePgSchema)
+-- Arguments
+jsonLastMile = propertyGraphJsonLastMile examplePgSchema () ()
+graphsonLastMile = propertyGraphGraphsonLastMile exampleGraphsonContext examplePgSchema () ()
+aviationSchema = "src/test/avro/aviationdemo/AirplaneInfo.avsc"
+aviationDataDir = "src/test/json/aviationdemo"
+movieSchema = "src/test/avro/moviedemo/Review.avsc"
+movieDataDir = "src/test/json/moviedemo"
+outDir = "/tmp/avro-pg-demo/output"
+
+-- Try a few combinations
+transformAvroJsonToPg jsonLastMile aviationSchema aviationDataDir outDir
+transformAvroJsonToPg graphsonLastMile aviationSchema aviationDataDir outDir
+transformAvroJsonToPg jsonLastMile movieSchema movieDataDir outDir
+transformAvroJsonToPg graphsonLastMile movieSchema movieDataDir outDir
 ```

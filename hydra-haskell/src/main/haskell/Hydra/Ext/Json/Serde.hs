@@ -75,5 +75,8 @@ jsonValueToBytes = aesonValueToBytes . jsonValueToAesonValue
 jsonValueToString :: Json.Value -> String
 jsonValueToString = bytesToString . jsonValueToBytes
 
+jsonValuesToString :: [Json.Value] -> String
+jsonValuesToString = L.intercalate "\n" . fmap jsonValueToString
+
 stringToJsonValue :: String -> Either String Json.Value
 stringToJsonValue = bytesToJsonValue . stringToBytes

@@ -1,12 +1,12 @@
 {
-  "@label": "engine",
+  "@edgeLabel": "hasEngine",
   "namespace": "com.example",
   "name": "AirplaneInfo",
   "type": "record",
   "fields": [
     {
-      "@id": "${}",
-      "name": "id",
+      "@edgeId": "${}",
+      "name": "recordId",
       "type": "string"
     },
     {
@@ -19,24 +19,28 @@
     },
     {
       "@outVertex": "airplane-${name}",
-      "@outVertexLabel": "Airplane",
+      "@outVertexLabel": "AirplaneModel",
       "name": "airplane",
       "type": {
-        "@label": "Airplane",
+        "@vertexLabel": "AirplaneModel",
         "name": "AirplaneModel",
         "type": "record",
         "fields": [
           {
+            "@vertexId": "model-${}",
             "name": "name",
             "type": "string"
           },
           {
+            "@edgeLabel": "originalManufacturer",
             "name": "originalManufacturer",
             "type": {
+              "@vertexLabel": "Organization",
               "name": "Organization",
               "type": "record",
               "fields": [
                 {
+                  "@vertexId": "org-${}",
                   "name": "name",
                   "type": "string"
                 },
@@ -48,6 +52,7 @@
             }
           },
           {
+            "@ignore": {},
             "name": "currentManufacturer",
             "type": [
               "null",
@@ -62,11 +67,12 @@
       "@inVertexLabel": "Engine",
       "name": "engine",
       "type": {
-        "@label": "Engine",
+        "@vertexLabel": "Engine",
         "name": "EngineModel",
         "type": "record",
         "fields": [
           {
+            "@vertexId": "engine-model-${}",
             "name": "name",
             "type": "string"
           },
