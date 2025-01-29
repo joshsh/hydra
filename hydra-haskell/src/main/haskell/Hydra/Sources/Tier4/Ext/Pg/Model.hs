@@ -22,6 +22,22 @@ pgModelModule = Module ns elements [] tier0Modules $
 
     elements = [
 
+      def "AdjacentEdge" $
+        doc "An edge which is adjacent to a given vertex. Only the other endpoint of the edge is provided." $
+        lambda "v" $ record [
+          "label">:
+            doc "The label of the edge" $
+            pg "EdgeLabel",
+          "id">:
+            doc "The unique identifier of the edge"
+            "v",
+          "vertex">:
+            doc "The id of the other vertex adjacent to the edge"
+            "v",
+          "properties">:
+            doc "A key/value map of edge properties" $
+            Types.map (pg "PropertyKey") "v"],
+
       def "Direction" $
         doc "The direction of an edge or edge pattern" $
           enum ["out", "in", "both", "undirected"],
@@ -181,9 +197,9 @@ pgModelModule = Module ns elements [] tier0Modules $
           "vertex">:
             doc "The focus vertex" $
             pg "Vertex" @@ "v",
-          "inEdges">:
+          "ins">:
             doc "An adjacency list of edges in which the focus vertex is the head (in-vertex) of the edge" $
-            list (pg "Edge" @@ "v"),
-          "outEdges">:
+            list (pg "AdjacentEdge" @@ "v"),
+          "outs">:
             doc "An adjacency list of edges in which the focus vertex is the tail (out-vertex) of the edge" $
-            list (pg "Edge" @@ "v")]]
+            list (pg "AdjacentEdge" @@ "v")]]

@@ -8,6 +8,29 @@ import Data.List as L
 import Data.Map as M
 import Data.Set as S
 
+-- | An edge which is adjacent to a given vertex. Only the other endpoint of the edge is provided.
+data AdjacentEdge v = 
+  AdjacentEdge {
+    -- | The label of the edge
+    adjacentEdgeLabel :: EdgeLabel,
+    -- | The unique identifier of the edge
+    adjacentEdgeId :: v,
+    -- | The id of the other vertex adjacent to the edge
+    adjacentEdgeVertex :: v,
+    -- | A key/value map of edge properties
+    adjacentEdgeProperties :: (Map PropertyKey v)}
+  deriving (Eq, Ord, Read, Show)
+
+_AdjacentEdge = (Core.Name "hydra/pg/model.AdjacentEdge")
+
+_AdjacentEdge_label = (Core.Name "label")
+
+_AdjacentEdge_id = (Core.Name "id")
+
+_AdjacentEdge_vertex = (Core.Name "vertex")
+
+_AdjacentEdge_properties = (Core.Name "properties")
+
 -- | The direction of an edge or edge pattern
 data Direction = 
   DirectionOut  |
@@ -284,15 +307,15 @@ data VertexWithAdjacentEdges v =
     -- | The focus vertex
     vertexWithAdjacentEdgesVertex :: (Vertex v),
     -- | An adjacency list of edges in which the focus vertex is the head (in-vertex) of the edge
-    vertexWithAdjacentEdgesInEdges :: [Edge v],
+    vertexWithAdjacentEdgesIns :: [AdjacentEdge v],
     -- | An adjacency list of edges in which the focus vertex is the tail (out-vertex) of the edge
-    vertexWithAdjacentEdgesOutEdges :: [Edge v]}
+    vertexWithAdjacentEdgesOuts :: [AdjacentEdge v]}
   deriving (Eq, Ord, Read, Show)
 
 _VertexWithAdjacentEdges = (Core.Name "hydra/pg/model.VertexWithAdjacentEdges")
 
 _VertexWithAdjacentEdges_vertex = (Core.Name "vertex")
 
-_VertexWithAdjacentEdges_inEdges = (Core.Name "inEdges")
+_VertexWithAdjacentEdges_ins = (Core.Name "ins")
 
-_VertexWithAdjacentEdges_outEdges = (Core.Name "outEdges")
+_VertexWithAdjacentEdges_outs = (Core.Name "outs")
