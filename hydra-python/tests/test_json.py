@@ -1,9 +1,17 @@
+from hydra.json import (
+    Value,
+    ValueArray,
+    ValueBoolean,
+    ValueNull,
+    ValueNumber,
+    ValueObject,
+    ValueString,
+)
 
 
-from hydra.json import Value, ValueArray, ValueBoolean, ValueNull, ValueNumber, ValueObject, ValueString
-
-
-type JsonValue = dict[str, "JsonValue"] | list["JsonValue"] | bool | float | int | str | None
+type JsonValue = (
+    dict[str, "JsonValue"] | list["JsonValue"] | bool | float | int | str | None
+)
 
 
 def from_hydra_json(v: Value) -> JsonValue:
