@@ -160,14 +160,20 @@ pgElementsToPgVerticesWithAdjacentEdges els = M.elems vertexMap1
     vertexMap0 = M.fromList $ fmap toPair vertices
       where
         toPair v = (PG.vertexId v, PG.VertexWithAdjacentEdges v [] [])
-    vertexMap1 = L.foldl addEdge vertexMap0 edges
+    vertexMap1 = L.foldl addEdges vertexMap0 edges
       where
-        addEdge vertexMap (PG.Edge label id outv inv props) = case M.lookup outv vertexMap of
-            Nothing -> vertexMap -- Disconnected edges are ignored
-            Just v -> M.insert outv (appendE v) vertexMap
+        addEdges vertexMap (PG.Edge label id outV inV props) = addEdge True $ addEdge False vertexMap
           where
-            appendE v = v {PG.vertexWithAdjacentEdgesOuts = (adjEdge:(PG.vertexWithAdjacentEdgesOuts v))}
-            adjEdge = PG.AdjacentEdge label id inv props
+            addEdge out vertexMap = case M.lookup focusV vertexMap of
+                Nothing -> vertexMap -- Disconnected edges are ignored
+                Just v -> M.insert focusV (appendE v) vertexMap
+              where
+                focusV = if out then outV else inV
+                otherV = if out then inV else outV
+                adjEdge = PG.AdjacentEdge label id otherV props
+                appendE v = if out
+                  then v {PG.vertexWithAdjacentEdgesOuts = (adjEdge:(PG.vertexWithAdjacentEdgesOuts v))}
+                  else v {PG.vertexWithAdjacentEdgesIns = (adjEdge:(PG.vertexWithAdjacentEdgesIns v))}
 
 pgElementsToGraphson :: (Ord v, Show v) => GraphsonContext s v -> [PG.Element v] -> Flow s [Json.Value]
 pgElementsToGraphson ctx els = CM.mapM encode vertices

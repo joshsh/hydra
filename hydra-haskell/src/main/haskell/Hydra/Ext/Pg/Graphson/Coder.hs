@@ -26,6 +26,13 @@ vertexToJsonCoder ctx = composeCoders (vertexToGraphsonCoder ctx) graphsonToJson
 
 -- PG to GraphSON --------------------------------------------------------------
 
+adjacentEdgeToGraphson :: (v -> Flow s G.Value) -> PG.AdjacentEdge v -> Flow s (G.EdgeLabel, G.AdjacentEdge)
+adjacentEdgeToGraphson encodeValue (PG.AdjacentEdge (PG.EdgeLabel label) id v props) = do
+    gid <- encodeValue id
+    gv <- encodeValue v
+    propPairs <- CM.mapM (edgePropertyToGraphson encodeValue) $ M.toList props
+    return (G.EdgeLabel label, G.AdjacentEdge gid gv (M.fromList propPairs))
+
 aggregateMap :: Ord k => [(k, v)] -> M.Map k [v]
 aggregateMap = L.foldl addPair M.empty
   where
@@ -38,24 +45,18 @@ edgePropertyToGraphson encodeValue (PG.PropertyKey k, v) = do
   gv <- encodeValue v
   return (G.PropertyKey k, gv)
 
-outEdgeToGraphson :: (v -> Flow s G.Value) -> PG.AdjacentEdge v -> Flow s (G.EdgeLabel, G.OutEdgeValue)
-outEdgeToGraphson encodeValue (PG.AdjacentEdge (PG.EdgeLabel label) id v props) = do
-    gid <- encodeValue id
-    gv <- encodeValue v
-    propPairs <- CM.mapM (edgePropertyToGraphson encodeValue) $ M.toList props
-    return (G.EdgeLabel label, G.OutEdgeValue gid gv (M.fromList propPairs))
-
 vertexPropertyToGraphson :: (v -> Flow s G.Value) -> (PG.PropertyKey, v) -> Flow s (G.PropertyKey, G.VertexPropertyValue)
 vertexPropertyToGraphson encodeValue (PG.PropertyKey k, v) = do
   gv <- encodeValue v
   return (G.PropertyKey k, G.VertexPropertyValue Nothing gv)
 
 vertexToGraphson :: GraphsonContext s v -> PG.VertexWithAdjacentEdges v -> Flow s G.Vertex
-vertexToGraphson ctx (PG.VertexWithAdjacentEdges (PG.Vertex (PG.VertexLabel label) id props) _ outs) = do
+vertexToGraphson ctx (PG.VertexWithAdjacentEdges (PG.Vertex (PG.VertexLabel label) id props) ins outs) = do
     gid <- encodeValue id
     propPairs <- CM.mapM (vertexPropertyToGraphson encodeValue) $ M.toList props
-    outPairs <- CM.mapM (outEdgeToGraphson encodeValue) outs
-    return $ G.Vertex gid (Just $ G.VertexLabel label) (aggregateMap outPairs) (aggregateMap propPairs)
+    inPairs <- CM.mapM (adjacentEdgeToGraphson encodeValue) ins
+    outPairs <- CM.mapM (adjacentEdgeToGraphson encodeValue) outs
+    return $ G.Vertex gid (Just $ G.VertexLabel label) (aggregateMap inPairs) (aggregateMap outPairs) (aggregateMap propPairs)
   where
     encodeValue = coderEncode $ graphsonContextValueCoder ctx
 
@@ -65,6 +66,13 @@ vertexToGraphsonCoder ctx = Coder (vertexToGraphson ctx) decode
     decode _ = fail "decoding GraphSON is currently unsupported"
 
 -- GraphSON to JSON ------------------------------------------------------------
+
+adjacentEdgeToJson :: Bool -> G.AdjacentEdge -> Json.Value
+adjacentEdgeToJson out (G.AdjacentEdge id otherV props) = toJsonObject [
+  ("id", Just $ valueToJson id),
+  ("inV", if out then Just $ valueToJson otherV else Nothing),
+  ("outV", if out then Nothing else Just $ valueToJson otherV),
+  ("properties", edgePropertyMapToJson props)]
 
 doubleValueToJson :: G.DoubleValue -> Json.Value
 doubleValueToJson v = case v of
@@ -103,18 +111,12 @@ mapToJson (G.Map_ pairs) = Json.ValueArray $ L.concat $ fmap fromPair pairs
   where
     fromPair (G.ValuePair k v) = [valueToJson k, valueToJson v]
 
-outEdgeMapToJson :: M.Map G.EdgeLabel [G.OutEdgeValue] -> Y.Maybe Json.Value
-outEdgeMapToJson m = if M.null m
+edgeMapToJson :: Bool -> M.Map G.EdgeLabel [G.AdjacentEdge] -> Y.Maybe Json.Value
+edgeMapToJson out m = if M.null m
     then Nothing
     else Just $ Json.ValueObject $ M.fromList $ fmap mapPair $ M.toList m
   where
-    mapPair (G.EdgeLabel l, vs) = (l, Json.ValueArray $ fmap outEdgeValueToJson vs)
-
-outEdgeValueToJson :: G.OutEdgeValue -> Json.Value
-outEdgeValueToJson (G.OutEdgeValue id inV props) = toJsonObject [
-  ("id", Just $ valueToJson id),
-  ("inV", Just $ valueToJson inV),
-  ("properties", edgePropertyMapToJson props)]
+    mapPair (G.EdgeLabel l, vs) = (l, Json.ValueArray $ fmap (adjacentEdgeToJson out) vs)
 
 toJsonObject :: [(String, Y.Maybe Json.Value)] -> Json.Value
 toJsonObject pairs = Json.ValueObject $ M.fromList $ Y.catMaybes $ fmap mapPair pairs
@@ -156,10 +158,11 @@ vertexPropertyValue (G.VertexPropertyValue mid v) = toJsonObject [
   ("value", Just $ valueToJson v)]
 
 vertexToJson :: G.Vertex -> Json.Value
-vertexToJson (G.Vertex id label outE props) = toJsonObject [
+vertexToJson (G.Vertex id label inE outE props) = toJsonObject [
   ("id", Just $ valueToJson id),
   ("label", fmap (Json.ValueString . G.unVertexLabel) label),
-  ("outE", outEdgeMapToJson outE),
+  ("inE", edgeMapToJson False inE),
+  ("outE", edgeMapToJson True outE),
   ("properties", vertexPropertyMapToJson props)]
 
 vertexPropertyMapToJson :: M.Map G.PropertyKey [G.VertexPropertyValue] -> Y.Maybe Json.Value
