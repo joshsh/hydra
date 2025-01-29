@@ -22,6 +22,9 @@ graphsonSyntaxModule = Module ns elements [] tier0Modules $
 
     elements = [
 
+      def "BigDecimalValue" $
+        wrap string,
+
       def "CompositeTypedValue" $
         record [
           "type">: gson "TypeName",
@@ -32,17 +35,20 @@ graphsonSyntaxModule = Module ns elements [] tier0Modules $
 
       def "DoubleValue" $
         union [
-          "value">: float64,
+          "finite">: float64,
           "infinity">: unit,
           "negativeInfinity">: unit,
           "notANumber">: unit],
+
+      def "Duration" $
+        wrap string,
 
       def "EdgeLabel" $
         wrap string,
 
       def "FloatValue" $
         union [
-          "value">: float32,
+          "finite">: float32,
           "infinity">: unit,
           "negativeInfinity">: unit,
           "notANumber">: unit],
@@ -50,28 +56,24 @@ graphsonSyntaxModule = Module ns elements [] tier0Modules $
       def "Map" $
         list $ gson "ValuePair",
 
-      def "OutEdge" $
+      def "OutEdgeValue" $
         record [
-          "label">: gson "EdgeLabel",
           "id">: gson "Value",
           "inVertexId">: gson "Value",
-          "properties">: list $ gson "Property"],
+          "properties">: Types.map (gson "PropertyKey") (gson "Value")],
 
       def "PrimitiveTypedValue" $
         record [
           "type">: gson "TypeName",
           "value">: string],
 
-      def "Property" $
-        record [
-          "key">: gson "PropertyKey",
-          "id">: optional $ gson "Value",
-          "value">: gson "Value"],
-
       def "PropertyKey" $
         wrap string,
 
       def "TypeName" $
+        wrap string,
+
+      def "Uuid" $
         wrap string,
 
       -- Note: the following are currently unsupported as values:
@@ -90,7 +92,7 @@ graphsonSyntaxModule = Module ns elements [] tier0Modules $
       --   * VertexProperty
       def "Value" $
         union [
-          "bigDecimal">: string,
+          "bigDecimal">: gson "BigDecimalValue",
           "bigInteger">: bigint,
           "binary">: binary,
           "boolean">: boolean,
@@ -99,7 +101,7 @@ graphsonSyntaxModule = Module ns elements [] tier0Modules $
           "composite">: gson "CompositeTypedValue",
           "dateTime">: gson "DateTime",
           "double">: gson "DoubleValue",
-          "duration">: string,
+          "duration">: gson "Duration",
           "float">: gson "FloatValue",
           "integer">: int32,
           "list">: list $ gson "Value",
@@ -110,7 +112,7 @@ graphsonSyntaxModule = Module ns elements [] tier0Modules $
           "set">: list $ gson "Value",
           "short">: int16,
           "string">: string,
-          "uuid">: string],
+          "uuid">: gson "Uuid"],
 
       def "ValuePair" $
         record [
@@ -121,8 +123,13 @@ graphsonSyntaxModule = Module ns elements [] tier0Modules $
         record [
           "id">: gson "Value",
           "label">: optional $ gson "VertexLabel",
-          "outEdges">: list $ gson "OutEdge",
-          "properties">: list $ gson "Property"],
+          "outEdges">: Types.map (gson "EdgeLabel") (nonemptyList $ gson "OutEdgeValue"),
+          "properties">: Types.map (gson "PropertyKey") (nonemptyList $ gson "VertexPropertyValue")],
 
       def "VertexLabel" $
-        wrap string]
+        wrap string,
+
+      def "VertexPropertyValue" $
+        record [
+          "id">: optional $ gson "Value",
+          "value">: gson "Value"]]
