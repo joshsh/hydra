@@ -67,7 +67,7 @@ def test_math_grammar():
     identifier = dsl.regex(r"[a-zA-Z_][a-zA-Z0-9_]*")
 
     # Grammar
-    grammar: Grammar = [
+    grammar = [
         # E -> E + T
         dsl.define("E", [expression, plus, term]),
         # E -> T
