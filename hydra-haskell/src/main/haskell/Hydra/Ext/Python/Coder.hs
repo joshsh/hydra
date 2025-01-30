@@ -56,8 +56,7 @@ encodeFunctionType env ft = do
     pydoms <- CM.mapM encode doms
     pycod <- encode cod
     return $ pyPrimaryToPyExpression $ primaryWithSlices (pyNameToPyPrimary $ Py.Name "Callable")
-      (pyPrimaryToPySlice $ Py.PrimarySimple $ Py.AtomList $
-        Py.List (Py.StarNamedExpressionSimple . Py.NamedExpressionSimple <$> pydoms))
+      (pyPrimaryToPySlice $ Py.PrimarySimple $ Py.AtomList $ pyList pydoms)
       [Py.SliceOrStarredExpressionSlice $ pyExpressionToPySlice pycod]
   where
     encode = encodeType env
@@ -79,11 +78,22 @@ encodeApplicationType env at = do
 
 encodeDefinition :: PythonEnvironment -> Definition -> Flow Graph [Py.Statement]
 encodeDefinition env def = case def of
-  DefinitionTerm name term typ -> withTrace ("data element " ++ unName name) $
-    return [pySimpleStatementToPyStatement Py.SimpleStatementContinue] -- TODO
+  DefinitionTerm name term typ -> withTrace ("data element " ++ unName name) $ do
+    comment <- fmap normalizeComment <$> getTermDescription term
+    encodeTermAssignment env name term typ comment
   DefinitionType name typ -> withTrace ("type element " ++ unName name) $ do
     comment <- fmap normalizeComment <$> getTypeDescription typ
     encodeTypeAssignment env name typ comment
+
+encodeFloatValue :: FloatValue -> Flow s Py.Expression
+encodeFloatValue fv = case fv of
+  FloatValueBigfloat f -> pure $ pyAtomToPyExpression $ Py.AtomNumber $ Py.NumberFloat f
+  _ -> fail $ "unsupported floating point type: " ++ show (floatValueType fv)
+
+encodeIntegerValue :: IntegerValue -> Flow s Py.Expression
+encodeIntegerValue iv = case iv of
+  IntegerValueBigint i -> pure $ pyAtomToPyExpression $ Py.AtomNumber $ Py.NumberInteger i
+  _ -> fail $ "unsupported integer type: " ++ show (integerValueType iv)
 
 encodeLambdaType :: PythonEnvironment -> LambdaType -> Flow Graph Py.Expression
 encodeLambdaType env lt = do
@@ -94,6 +104,14 @@ encodeLambdaType env lt = do
     gatherParams t ps = case stripType t of
       TypeLambda (LambdaType name body) -> gatherParams body (name:ps)
       _ -> (t, L.reverse ps)
+
+encodeLiteral :: Literal -> Flow s Py.Expression
+encodeLiteral lit = case lit of
+  LiteralBoolean b -> pure $ pyAtomToPyExpression $ if b then Py.AtomTrue else Py.AtomFalse
+  LiteralFloat f -> encodeFloatValue f
+  LiteralInteger i -> encodeIntegerValue i
+  LiteralString s -> pure $ stringToPyExpression Py.QuoteStyleDouble s
+  _ -> fail $ "unsupported literal variant: " ++ show (literalVariant lit)
 
 encodeLiteralType :: LiteralType -> Flow Graph Py.Expression
 encodeLiteralType lt = do
@@ -196,7 +214,29 @@ encodeRecordType env name (RowType _ tfields) comment = do
     decs = Py.Decorators [pyNameToPyNamedExpression $ Py.Name "dataclass"]
 
 encodeTerm :: PythonEnvironment -> Term -> Flow Graph Py.Expression
-encodeTerm env term = fail "not yet implemented"
+encodeTerm env term = case fullyStripTerm term of
+    TermList els -> pyAtomToPyExpression . Py.AtomList . pyList <$> CM.mapM encode els
+    TermLiteral lit -> encodeLiteral lit
+    TermOptional mt -> case mt of
+      Nothing -> pure $ pyNameToPyExpression pyNone
+      Just term1 -> encode term1
+    TermRecord (Record tname fields) -> do
+      pargs <- CM.mapM (encode . fieldTerm) fields
+      return $ functionCall (pyNameToPyPrimary $ encodeName env tname) pargs
+    TermUnion (Injection tname field) -> do
+      parg <- encode $ fieldTerm field
+      return $ functionCall (pyNameToPyPrimary $ variantName True env tname (fieldName field)) [parg]
+    TermWrap (WrappedTerm tname term1) -> do
+      parg <- encode term1
+      return $ functionCall (pyNameToPyPrimary $ encodeName env tname) [parg]
+    t -> fail $ "unsupported term variant: " ++ show (termVariant t)
+  where
+    encode = encodeTerm env
+
+encodeTermAssignment :: PythonEnvironment -> Name -> Term -> Type -> Maybe String -> Flow Graph [Py.Statement]
+encodeTermAssignment env name term _ comment = do
+  expr <- encodeTerm env term
+  return [annotatedStatement comment $ assignmentStatement (Py.Name $ localNameOfEager name) expr]
 
 encodeType :: PythonEnvironment -> Type -> Flow Graph Py.Expression
 encodeType env typ = case stripType typ of
@@ -211,7 +251,7 @@ encodeType env typ = case stripType typ of
     TypeLiteral lt -> encodeLiteralType lt
     TypeOptional et -> orNull . pyExpressionToPyPrimary <$> encode et
     TypeRecord rt -> if isUnitType (TypeRecord rt)
-      then pure $ pyNameToPyExpression $ Py.Name "None"
+      then pure $ pyNameToPyExpression pyNone
       else variableReference $ rowTypeTypeName rt
     TypeSet et -> nameAndParams (Py.Name "set") . L.singleton <$> encode et
     TypeUnion rt -> variableReference $ rowTypeTypeName rt
@@ -277,7 +317,7 @@ encodeUnionType env name rt@(RowType _ tfields) comment = if isEnumType rt then 
             return $ pyClassDefinitionToPyStatement $
               Py.ClassDefinition
                 Nothing
-                (variantName fname)
+                (variantName False env name fname)
                 (pyNameToPyTypeParameter <$> fieldParams ftype)
                 (Just $ args ptypeQuoted)
                 body
@@ -296,8 +336,7 @@ encodeUnionType env name rt@(RowType _ tfields) comment = if isEnumType rt then 
                 else primaryWithExpressionSlices namePrim (pyNameToPyExpression <$> tparams)
               where
                 tparams = fieldParams ftype
-                namePrim = pyNameToPyPrimary $ variantName fname
-        variantName fname = Py.Name $ sanitizePythonName $ lname ++ (capitalize $ unName fname)
+                namePrim = pyNameToPyPrimary $ variantName False env name fname
         fieldParams ftype = encodeTypeVariable <$> allVars
           where
             allVars = L.filter isBound $ S.toList $ freeVariablesInType ftype
@@ -367,3 +406,11 @@ moduleToPython mod = do
 
 sanitizePythonName :: String -> String
 sanitizePythonName = sanitizeWithUnderscores pythonReservedWords
+
+variantName :: Bool -> PythonEnvironment -> Name -> Name -> Py.Name
+variantName qual env tname fname = if qual
+    then encodeName env $ unqualifyName $ QualifiedName mns vname
+    else Py.Name vname
+  where
+    (QualifiedName mns local) = qualifyNameEager tname
+    vname = sanitizePythonName $ local ++ (capitalize $ unName fname)

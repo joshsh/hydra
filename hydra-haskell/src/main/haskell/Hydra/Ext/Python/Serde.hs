@@ -37,9 +37,12 @@ encodeAtom :: Py.Atom -> A.Expr
 encodeAtom a = case a of
   Py.AtomDict d -> encodeDict d
   Py.AtomEllipsis -> cst "..."
+  Py.AtomFalse -> cst "False"
   Py.AtomList l -> encodeList l
   Py.AtomName n -> encodeName n
+  Py.AtomNumber n -> encodeNumber n
   Py.AtomString s -> encodeString s
+  Py.AtomTrue -> cst "True"
   _ -> unsupportedVariant "atom" a
 
 encodeAwaitPrimary :: Py.AwaitPrimary -> A.Expr
@@ -197,6 +200,11 @@ encodeNamedExpression :: Py.NamedExpression -> A.Expr
 encodeNamedExpression ne = case ne of
   Py.NamedExpressionSimple e -> encodeExpression e
   _ -> unsupportedVariant "named expression" ne
+
+encodeNumber :: Py.Number -> A.Expr
+encodeNumber n = case n of
+  Py.NumberFloat f -> cst $ show f
+  Py.NumberInteger i -> cst $ show i
 
 encodePosArg :: Py.PosArg -> A.Expr
 encodePosArg a = case a of

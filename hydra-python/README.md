@@ -101,7 +101,7 @@ And then running the following commands in the GHC REPL.
 
 ```haskell
 writePython "../hydra-python/src/gen-main/python" (hydraCoreModule:tier0Modules)
-writePython "../hydra-python/src/gen-test/pthon" testModules
+writePython "../hydra-python/src/gen-test/python" testModules
 ```
 
 This will generate `hydra/core` and the tier-0 kernel modules, as well as the test suite.

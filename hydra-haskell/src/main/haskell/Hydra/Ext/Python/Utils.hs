@@ -128,6 +128,9 @@ pyExpressionToPySimpleStatement expr = Py.SimpleStatementStarExpressions [Py.Sta
 pyExpressionToPyStatement :: Py.Expression -> Py.Statement
 pyExpressionToPyStatement = pySimpleStatementToPyStatement . pyExpressionToPySimpleStatement
 
+pyList :: [Py.Expression] -> Py.List
+pyList exprs = Py.List (Py.StarNamedExpressionSimple . Py.NamedExpressionSimple <$> exprs)
+
 pyNameToPyExpression :: Py.Name -> Py.Expression
 pyNameToPyExpression =  pyPrimaryToPyExpression . pyNameToPyPrimary
 
@@ -142,6 +145,9 @@ pyNameToPyStarTarget = Py.StarTargetUnstarred . Py.TargetWithStarAtomAtom . Py.S
 
 pyNameToPyTypeParameter :: Py.Name -> Py.TypeParameter
 pyNameToPyTypeParameter name = Py.TypeParameterSimple $ Py.SimpleTypeParameter name Nothing Nothing
+
+pyNone :: Py.Name
+pyNone = Py.Name "None"
 
 pyPrimaryToPyBitwiseOr :: Py.Primary -> Py.BitwiseOr
 pyPrimaryToPyBitwiseOr = Py.BitwiseOr Nothing . pyPrimaryToPyBitwiseXor
