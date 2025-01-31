@@ -8,8 +8,12 @@ type Bigfloat = float
 
 def string(value: str) -> TTerm[str]:
     """Construct a string term."""
-    return terms.string(value)
+    return TTerm[str](terms.string(value))
 
+
+def boolean(value: bool) -> TTerm[bool]:
+    """Construct a boolean term."""
+    return TTerm[bool](terms.boolean(value))
 
 def true() -> TTerm[bool]:
     """Construct a true term."""
@@ -23,27 +27,23 @@ def false() -> TTerm[bool]:
 
 def bigfloat(value: Bigfloat) -> TTerm[Bigfloat]:
     """Construct a bigfloat term."""
-    return terms.bigfloat(value)
+    return TTerm[Bigfloat](terms.bigfloat(value))
 
 
 def bigint(value: int) -> TTerm[int]:
     """Construct a bigint term."""
-    return terms.bigint(value)
+    return TTerm[int](terms.bigint(value))
 
 
 def binary(value: bytes) -> TTerm[bytes]:
     """Construct a binary term."""
-    return terms.binary(value)
+    return TTerm[bytes](terms.binary(value))
 
-
-def boolean(value: bool) -> TTerm[bool]:
-    """Construct a boolean term."""
-    return terms.boolean(value)
 
 
 def double(value: float) -> TTerm[float]:
     """Construct a double term."""
-    return terms.float64(value)
+    return TTerm[float](terms.float64(value))
 
 
 def float_(value: float) -> TTerm[float]:
@@ -53,12 +53,12 @@ def float_(value: float) -> TTerm[float]:
 
 def float32(value: float) -> TTerm[float]:
     """Construct a float32 term."""
-    return terms.float32(value)
+    return TTerm[float](terms.float32(value))
 
 
 def float64(value: float) -> TTerm[float]:
     """Construct a float64 term."""
-    return terms.float64(value)
+    return TTerm[float](terms.float64(value))
 
 
 def integer(value: int) -> TTerm[int]:
@@ -68,19 +68,19 @@ def integer(value: int) -> TTerm[int]:
 
 def int8(value: int) -> TTerm[int]:
     """Construct an int8 term."""
-    return terms.int8(value)
+    return TTerm[int](terms.int8(value))
 
 
 def int16(value: int) -> TTerm[int]:
     """Construct an int16 term."""
-    return terms.int16(value)
+    return TTerm[int](terms.int16(value))
 
 
 def int32(value: int) -> TTerm[int]:
     """Construct an int32 term."""
-    return terms.int32(value)
+    return TTerm[int](terms.int32(value))
 
 
 def int64(value: int) -> TTerm[int]:
     """Construct an int64 term."""
-    return terms.int64(value)
+    return TTerm[int](terms.int64(value))

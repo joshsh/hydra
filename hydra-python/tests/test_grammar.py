@@ -18,7 +18,7 @@ def gather_nonterminals(pattern: Pattern) -> set[str]:
     """Gather all nonterminals in a pattern."""
     match pattern:
         case PatternNonterminal(value):
-            return {value}
+            return {value.value}
         case PatternSequence(value):
             nonterminals: set[str] = set()
             for p in value:

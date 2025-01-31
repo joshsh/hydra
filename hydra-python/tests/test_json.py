@@ -7,7 +7,8 @@ from hydra.json import (
     ValueObject,
     ValueString,
 )
-
+from dataclasses import dataclass
+from typing import Generic, TypeVar
 
 type JsonValue = (
     dict[str, "JsonValue"] | list["JsonValue"] | bool | float | int | str | None
@@ -40,3 +41,19 @@ def test_json():
         }
     )
     assert from_hydra_json(v0) == {"a": [5, 6], "c": "hello", "d": True, "e": None}
+
+
+T = TypeVar("T")
+A = TypeVar("A")
+
+@dataclass
+class Node(Generic[T]):
+    """A wrapper for another type; a NewType alternative which allows type parameters."""
+    
+    value: T
+
+
+class Name(Node[str]):
+    """A wrapper for another type; a NewType alternative which allows type parameters."""
+  
+class TTerm(Node[Name], Generic[A]): ...
