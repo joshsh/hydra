@@ -89,6 +89,8 @@ normalizeComment s = if L.null stripped
 primaryAndParams :: Py.Primary -> [Py.Expression] -> Py.Expression
 primaryAndParams prim params = pyPrimaryToPyExpression $ primaryWithExpressionSlices prim params
 
+--projection ... = ... Py.TargetWithStarAtomProject $ Py.TPrimaryAndName
+
 pyAssignmentToPyStatement :: Py.Assignment -> Py.Statement
 pyAssignmentToPyStatement = pySimpleStatementToPyStatement . Py.SimpleStatementAssignment
 

@@ -85,10 +85,23 @@ encodeDefinition env def = case def of
     comment <- fmap normalizeComment <$> getTypeDescription typ
     encodeTypeAssignment env name typ comment
 
+encodeElimination :: PythonEnvironment -> Elimination -> Flow s Py.Expression
+encodeElimination env elm = case elm of
+--  EliminationRecord (Projection _ fname) ->
+  _ -> fail $ "unsupported elimination variant: " ++ show (eliminationVariant elm)
+
 encodeFloatValue :: FloatValue -> Flow s Py.Expression
 encodeFloatValue fv = case fv of
   FloatValueBigfloat f -> pure $ pyAtomToPyExpression $ Py.AtomNumber $ Py.NumberFloat f
   _ -> fail $ "unsupported floating point type: " ++ show (floatValueType fv)
+
+encodeFunction :: PythonEnvironment -> Function -> Flow s Py.Expression
+encodeFunction env f = case f of
+  FunctionElimination elm -> encodeElimination env elm
+  FunctionLambda (Lambda var _ body) -> do
+    pbody <- encodeTerm env body
+    return $ Py.ExpressionLambda $ Py.Lambda (Py.LambdaParameters Nothing [] [] $ Just $ Py.LambdaStarEtcKwds $ Py.LambdaKwds $ Py.LambdaParamNoDefault $ encodeName env var) pbody
+  FunctionPrimitive name -> pure $ pyNameToPyExpression $ encodeName env name
 
 encodeIntegerValue :: IntegerValue -> Flow s Py.Expression
 encodeIntegerValue iv = case iv of
@@ -213,8 +226,13 @@ encodeRecordType env name (RowType _ tfields) comment = do
         primaryWithExpressionSlices (pyNameToPyPrimary $ Py.Name "Generic") (pyNameToPyExpression . encodeTypeVariable <$> tparamList)]
     decs = Py.Decorators [pyNameToPyNamedExpression $ Py.Name "dataclass"]
 
-encodeTerm :: PythonEnvironment -> Term -> Flow Graph Py.Expression
+encodeTerm :: PythonEnvironment -> Term -> Flow s Py.Expression
 encodeTerm env term = case fullyStripTerm term of
+    TermApplication (Application fun arg) -> do
+      pfun <- encode fun
+      parg <- encode arg
+      return $ functionCall (pyExpressionToPyPrimary pfun) [parg]
+    TermFunction f -> encodeFunction env f
     TermList els -> pyAtomToPyExpression . Py.AtomList . pyList <$> CM.mapM encode els
     TermLiteral lit -> encodeLiteral lit
     TermOptional mt -> case mt of
@@ -226,6 +244,7 @@ encodeTerm env term = case fullyStripTerm term of
     TermUnion (Injection tname field) -> do
       parg <- encode $ fieldTerm field
       return $ functionCall (pyNameToPyPrimary $ variantName True env tname (fieldName field)) [parg]
+    TermVariable name -> pure $ variableReference env name
     TermWrap (WrappedTerm tname term1) -> do
       parg <- encode term1
       return $ functionCall (pyNameToPyPrimary $ encodeName env tname) [parg]
@@ -233,7 +252,7 @@ encodeTerm env term = case fullyStripTerm term of
   where
     encode = encodeTerm env
 
-encodeTermAssignment :: PythonEnvironment -> Name -> Term -> Type -> Maybe String -> Flow Graph [Py.Statement]
+encodeTermAssignment :: PythonEnvironment -> Name -> Term -> Type -> Maybe String -> Flow s [Py.Statement]
 encodeTermAssignment env name term _ comment = do
   expr <- encodeTerm env term
   return [annotatedStatement comment $ assignmentStatement (Py.Name $ localNameOfEager name) expr]
@@ -250,18 +269,17 @@ encodeType env typ = case stripType typ of
       return $ nameAndParams (Py.Name "dict") [pykt, pyvt]
     TypeLiteral lt -> encodeLiteralType lt
     TypeOptional et -> orNull . pyExpressionToPyPrimary <$> encode et
-    TypeRecord rt -> if isUnitType (TypeRecord rt)
-      then pure $ pyNameToPyExpression pyNone
-      else variableReference $ rowTypeTypeName rt
+    TypeRecord rt -> pure $ if isUnitType (TypeRecord rt)
+      then pyNameToPyExpression pyNone
+      else variableReference env $ rowTypeTypeName rt
     TypeSet et -> nameAndParams (Py.Name "set") . L.singleton <$> encode et
-    TypeUnion rt -> variableReference $ rowTypeTypeName rt
-    TypeVariable name -> variableReference name
-    TypeWrap (WrappedType name _) -> variableReference name
+    TypeUnion rt -> pure $ variableReference env $ rowTypeTypeName rt
+    TypeVariable name -> pure $ variableReference env name
+    TypeWrap (WrappedType name _) -> pure $ variableReference env name
     _ -> dflt
   where
     encode = encodeType env
     dflt = pure $ doubleQuotedString $ "type = " ++ show (stripType typ)
-    variableReference name = pure $ pyNameToPyExpression $ encodeName env name
 
 encodeTypeAssignment :: PythonEnvironment -> Name -> Type -> Maybe String -> Flow Graph [Py.Statement]
 encodeTypeAssignment env name typ comment = encode env typ
@@ -406,6 +424,9 @@ moduleToPython mod = do
 
 sanitizePythonName :: String -> String
 sanitizePythonName = sanitizeWithUnderscores pythonReservedWords
+
+variableReference :: PythonEnvironment -> Name -> Py.Expression
+variableReference env name = pyNameToPyExpression $ encodeName env name
 
 variantName :: Bool -> PythonEnvironment -> Name -> Name -> Py.Name
 variantName qual env tname fname = if qual
