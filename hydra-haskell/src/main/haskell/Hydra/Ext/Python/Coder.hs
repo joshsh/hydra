@@ -37,7 +37,7 @@ data PythonModuleMetadata = PythonModuleMetadata {
   pythonModuleMetadataUsesEnum :: Bool,
   pythonModuleMetadataUsesGeneric :: Bool,
   pythonModuleMetadataUsesTypeVar :: Bool,
-  pythonModuleMetadataUsesVariant :: Bool}
+  pythonModuleMetadataUsesNode :: Bool}
 
 encodeFieldName :: Name -> Py.Name
 encodeFieldName fname = Py.Name $ sanitizePythonName $
@@ -183,7 +183,7 @@ encodeModule mod = do
                 ("enum", [
                   cond "Enum" $ pythonModuleMetadataUsesEnum meta]),
                 ("hydra.dsl.python", [
-                  cond "Variant" $ pythonModuleMetadataUsesVariant meta]),
+                  cond "Node" $ pythonModuleMetadataUsesNode meta]),
                 ("typing", [
                   cond "Annotated" $ pythonModuleMetadataUsesAnnotated meta,
                   cond "Generic" $ pythonModuleMetadataUsesGeneric meta,
@@ -385,14 +385,14 @@ gatherMetadata defs = checkTvars $ L.foldl addDef start defs
       pythonModuleMetadataUsesEnum = False,
       pythonModuleMetadataUsesGeneric = False,
       pythonModuleMetadataUsesTypeVar = False,
-      pythonModuleMetadataUsesVariant = False}
+      pythonModuleMetadataUsesNode = False}
     addDef meta def = case def of
       DefinitionTerm _ _ _ -> meta
       DefinitionType _ typ -> foldOverType TraversalOrderPre extendMeta meta3 typ
         where
           tvars = pythonModuleMetadataTypeVariables meta
           meta3 = case stripType typ of
-            TypeWrap _ -> meta2 {pythonModuleMetadataUsesVariant = True}
+            TypeWrap _ -> meta2 {pythonModuleMetadataUsesNode = True}
             _ -> meta2
           meta2 = meta {pythonModuleMetadataTypeVariables = newTvars tvars typ}
             where
@@ -416,7 +416,7 @@ gatherMetadata defs = checkTvars $ L.foldl addDef start defs
             TypeUnion rt@(RowType _ fields) -> if isEnumType rt
                 then meta {pythonModuleMetadataUsesEnum = True}
                 else meta {
-                  pythonModuleMetadataUsesVariant = pythonModuleMetadataUsesVariant meta || (not $ L.null fields)}
+                  pythonModuleMetadataUsesNode = pythonModuleMetadataUsesNode meta || (not $ L.null fields)}
               where
                 checkForLiteral b (FieldType _ ft) = b || isUnitType (stripType ft)
                 checkForNewType b (FieldType _ ft) = b || not (isUnitType (stripType ft))
@@ -444,7 +444,7 @@ variableReference env name = pyNameToPyExpression $ encodeName env name
 variantArgs :: Py.Expression -> [Name] -> Py.Args
 variantArgs ptype tparams = pyExpressionsToPyArgs $ Y.catMaybes [
     Just $ pyPrimaryToPyExpression $
-      primaryWithExpressionSlices (pyNameToPyPrimary $ Py.Name "Variant") [ptype],
+      primaryWithExpressionSlices (pyNameToPyPrimary $ Py.Name "Node") [ptype],
     genericArg tparams]
 
 variantName :: Bool -> PythonEnvironment -> Name -> Name -> Py.Name
