@@ -7,8 +7,8 @@ import hydra.core
 
 A = TypeVar("A")
 
-# An association of a field name (as in a case statement) with a phantom type.
-type TCase[A] = hydra.core.Name
+class TCase(Node["hydra.core.Name"], Generic[A]):
+    """An association of a field name (as in a case statement) with a phantom type."""
 
 @dataclass
 class TElement(Generic[A]):
@@ -17,8 +17,8 @@ class TElement(Generic[A]):
     name: hydra.core.Name
     term: TTerm[A]
 
-# An association with a term-level field with a phantom type.
-type TField[A] = hydra.core.Field
+class TField(Node["hydra.core.Field"], Generic[A]):
+    """An association with a term-level field with a phantom type."""
 
-# An association of a term with a phantom type.
-type TTerm[A] = hydra.core.Term
+class TTerm(Node["hydra.core.Term"], Generic[A]):
+    """An association of a term with a phantom type."""

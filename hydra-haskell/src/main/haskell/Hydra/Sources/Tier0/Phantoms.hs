@@ -29,7 +29,7 @@ hydraPhantomsModule = Module ns elements [hydraComputeModule] [hydraCoreModule] 
 
       def "TCase" $
         doc "An association of a field name (as in a case statement) with a phantom type" $
-        lambda "a" $ core "Name",
+        lambda "a" $ wrap $ core "Name",
 
       def "TElement" $
         doc "An association with a named term (element) with a phantom type" $
@@ -39,8 +39,8 @@ hydraPhantomsModule = Module ns elements [hydraComputeModule] [hydraCoreModule] 
 
       def "TField" $
         doc "An association with a term-level field with a phantom type" $
-        lambda "a" $ core "Field",
+        lambda "a" $ wrap $ core "Field",
 
       def "TTerm" $
         doc "An association of a term with a phantom type" $
-        lambda "a" $ core "Term"]
+        lambda "a" $ wrap $ core "Term"]
