@@ -36,7 +36,6 @@ data PythonModuleMetadata = PythonModuleMetadata {
   pythonModuleMetadataUsesDataclass :: Bool,
   pythonModuleMetadataUsesEnum :: Bool,
   pythonModuleMetadataUsesGeneric :: Bool,
-  pythonModuleMetadataUsesNewType :: Bool,
   pythonModuleMetadataUsesTypeVar :: Bool,
   pythonModuleMetadataUsesVariant :: Bool}
 
@@ -188,7 +187,6 @@ encodeModule mod = do
                 ("typing", [
                   cond "Annotated" $ pythonModuleMetadataUsesAnnotated meta,
                   cond "Generic" $ pythonModuleMetadataUsesGeneric meta,
-                  cond "NewType" $ pythonModuleMetadataUsesNewType meta,
                   cond "TypeVar" $ pythonModuleMetadataUsesTypeVar meta])]
               where
                 cond name b = if b then Just name else Nothing
@@ -220,10 +218,7 @@ encodeRecordType env name (RowType _ tfields) comment = do
   where
     (tparamList, tparamMap) = pythonEnvironmentBoundTypeVariables env
     lname = localNameOfEager name
-    args = if L.null tparamList
-      then Nothing
-      else Just $ pyExpressionsToPyArgs [pyPrimaryToPyExpression $
-        primaryWithExpressionSlices (pyNameToPyPrimary $ Py.Name "Generic") (pyNameToPyExpression . encodeTypeVariable <$> tparamList)]
+    args = fmap (\a -> pyExpressionsToPyArgs [a]) $ genericArg tparamList
     decs = Py.Decorators [pyNameToPyNamedExpression $ Py.Name "dataclass"]
 
 encodeTerm :: PythonEnvironment -> Term -> Flow s Py.Expression
@@ -291,10 +286,10 @@ encodeTypeAssignment env name typ comment = encode env typ
           newEnv = env {pythonEnvironmentBoundTypeVariables = (tparamList ++ [var], M.insert var (encodeTypeVariable var) tparamMap)}
       TypeRecord rt -> single <$> encodeRecordType env name rt comment
       TypeUnion rt -> encodeUnionType env name rt comment
-      TypeWrap (WrappedType _ t) -> singleNewtype <$> encodeType env t
+--      TypeWrap (WrappedType _ t) -> (single . newtypeStatement (Py.Name $ localNameOfEager name) comment) <$> encodeType env t
+      TypeWrap (WrappedType _ t) -> single <$> encodeWrappedType env name t comment
       t -> singleTypedef env <$> encodeType env t
     single st = [st]
-    singleNewtype e = single $ newtypeStatement (Py.Name $ localNameOfEager name) comment e
     singleTypedef env e = single $ typeAliasStatement (Py.Name $ sanitizePythonName $ localNameOfEager name) tparams comment e
       where
         tparams = environmentTypeParameters env
@@ -337,11 +332,8 @@ encodeUnionType env name rt@(RowType _ tfields) comment = if isEnumType rt then 
                 Nothing
                 (variantName False env name fname)
                 (pyNameToPyTypeParameter <$> fieldParams ftype)
-                (Just $ args ptypeQuoted)
+                (Just $ variantArgs ptypeQuoted [])
                 body
-          where
-            args ptype = pyExpressionsToPyArgs[
-              pyPrimaryToPyExpression $ primaryWithExpressionSlices (pyNameToPyPrimary $ Py.Name "Variant") [ptype]]
         unionStmt = typeAliasStatement
             (Py.Name $ sanitizePythonName lname)
             tparams
@@ -355,15 +347,31 @@ encodeUnionType env name rt@(RowType _ tfields) comment = if isEnumType rt then 
               where
                 tparams = fieldParams ftype
                 namePrim = pyNameToPyPrimary $ variantName False env name fname
-        fieldParams ftype = encodeTypeVariable <$> allVars
-          where
-            allVars = L.filter isBound $ S.toList $ freeVariablesInType ftype
-              where
-                isBound v = Y.isJust $ M.lookup v $ snd $ pythonEnvironmentBoundTypeVariables env
+        fieldParams ftype = encodeTypeVariable <$> findTypeParams env ftype
+    lname = localNameOfEager name
+
+encodeWrappedType :: PythonEnvironment -> Name -> Type -> Maybe String -> Flow Graph Py.Statement
+encodeWrappedType env name typ comment = do
+    ptypeQuoted <- encodeTypeQuoted env typ
+    let body = indentedBlock comment []
+    return $ pyClassDefinitionToPyStatement $
+      Py.ClassDefinition
+        Nothing
+        (Py.Name $ sanitizePythonName lname)
+        (pyNameToPyTypeParameter . encodeTypeVariable <$> findTypeParams env typ)
+        (Just $ variantArgs ptypeQuoted tparamList)
+        body
+  where
+    (tparamList, tparamMap) = pythonEnvironmentBoundTypeVariables env
     lname = localNameOfEager name
 
 environmentTypeParameters :: PythonEnvironment -> [Py.TypeParameter]
 environmentTypeParameters env = pyNameToPyTypeParameter . encodeTypeVariable <$> (fst $ pythonEnvironmentBoundTypeVariables env)
+
+findTypeParams :: PythonEnvironment -> Type -> [Name]
+findTypeParams env typ = L.filter isBound $ S.toList $ freeVariablesInType typ
+  where
+    isBound v = Y.isJust $ M.lookup v $ snd $ pythonEnvironmentBoundTypeVariables env
 
 gatherMetadata :: [Definition] -> PythonModuleMetadata
 gatherMetadata defs = checkTvars $ L.foldl addDef start defs
@@ -376,7 +384,6 @@ gatherMetadata defs = checkTvars $ L.foldl addDef start defs
       pythonModuleMetadataUsesDataclass = False,
       pythonModuleMetadataUsesEnum = False,
       pythonModuleMetadataUsesGeneric = False,
-      pythonModuleMetadataUsesNewType = False,
       pythonModuleMetadataUsesTypeVar = False,
       pythonModuleMetadataUsesVariant = False}
     addDef meta def = case def of
@@ -385,7 +392,7 @@ gatherMetadata defs = checkTvars $ L.foldl addDef start defs
         where
           tvars = pythonModuleMetadataTypeVariables meta
           meta3 = case stripType typ of
-            TypeWrap _ -> meta2 {pythonModuleMetadataUsesNewType = True}
+            TypeWrap _ -> meta2 {pythonModuleMetadataUsesVariant = True}
             _ -> meta2
           meta2 = meta {pythonModuleMetadataTypeVariables = newTvars tvars typ}
             where
@@ -415,6 +422,12 @@ gatherMetadata defs = checkTvars $ L.foldl addDef start defs
                 checkForNewType b (FieldType _ ft) = b || not (isUnitType (stripType ft))
             _ -> meta
 
+genericArg :: [Name] -> Y.Maybe Py.Expression
+genericArg tparamList = if L.null tparamList
+  then Nothing
+  else Just $ pyPrimaryToPyExpression $ primaryWithExpressionSlices (pyNameToPyPrimary $ Py.Name "Generic")
+    (pyNameToPyExpression . encodeTypeVariable <$> tparamList)
+
 moduleToPython :: Module -> Flow Graph (M.Map FilePath String)
 moduleToPython mod = do
   file <- encodeModule mod
@@ -427,6 +440,12 @@ sanitizePythonName = sanitizeWithUnderscores pythonReservedWords
 
 variableReference :: PythonEnvironment -> Name -> Py.Expression
 variableReference env name = pyNameToPyExpression $ encodeName env name
+
+variantArgs :: Py.Expression -> [Name] -> Py.Args
+variantArgs ptype tparams = pyExpressionsToPyArgs $ Y.catMaybes [
+    Just $ pyPrimaryToPyExpression $
+      primaryWithExpressionSlices (pyNameToPyPrimary $ Py.Name "Variant") [ptype],
+    genericArg tparams]
 
 variantName :: Bool -> PythonEnvironment -> Name -> Name -> Py.Name
 variantName qual env tname fname = if qual
