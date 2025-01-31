@@ -7,7 +7,7 @@ T = TypeVar("T")
 
 
 @dataclass
-class Variant(Generic[T]):
-    """A variant type."""
+class Node(Generic[T]):
+    """A wrapper for another type; a NewType alternative which allows type parameters."""
 
     value: T

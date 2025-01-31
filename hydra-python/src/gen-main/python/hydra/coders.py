@@ -4,7 +4,8 @@ from __future__ import annotations
 from collections.abc import Callable
 from dataclasses import dataclass
 from enum import Enum
-from typing import Annotated, NewType
+from hydra.dsl.python import Node
+from typing import Annotated
 import hydra.compute
 import hydra.core
 import hydra.graph
@@ -45,8 +46,8 @@ class LanguageConstraints:
     type_variants: Annotated[set[hydra.mantle.TypeVariant], "All supported type variants"]
     types: Annotated[Callable[[hydra.core.Type], bool], "A logical set of types, as a predicate which tests a type for inclusion"]
 
-# The unique name of a language.
-LanguageName = NewType("LanguageName", str)
+class LanguageName(Node[str]):
+    """The unique name of a language."""
 
 class TraversalOrder(Enum):
     """Specifies either a pre-order or post-order traversal."""

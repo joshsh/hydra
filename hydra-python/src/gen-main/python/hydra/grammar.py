@@ -2,17 +2,16 @@
 
 from __future__ import annotations
 from dataclasses import dataclass
-from hydra.dsl.python import Variant
-from typing import NewType
+from hydra.dsl.python import Node
 
-# A constant pattern.
-Constant = NewType("Constant", str)
+class Constant(Node[str]):
+    """A constant pattern."""
 
 # An enhanced Backus-Naur form (BNF) grammar.
 type Grammar = list[Production]
 
-# A name for a pattern.
-Label = NewType("Label", str)
+class Label(Node[str]):
+    """A name for a pattern."""
 
 @dataclass
 class LabeledPattern:
@@ -21,27 +20,27 @@ class LabeledPattern:
     label: Label
     pattern: Pattern
 
-class PatternNil(Variant[None]): ...
+class PatternNil(Node[None]): ...
 
-class PatternIgnored(Variant["Pattern"]): ...
+class PatternIgnored(Node["Pattern"]): ...
 
-class PatternLabeled(Variant["LabeledPattern"]): ...
+class PatternLabeled(Node["LabeledPattern"]): ...
 
-class PatternConstant(Variant["Constant"]): ...
+class PatternConstant(Node["Constant"]): ...
 
-class PatternRegex(Variant["Regex"]): ...
+class PatternRegex(Node["Regex"]): ...
 
-class PatternNonterminal(Variant["Symbol"]): ...
+class PatternNonterminal(Node["Symbol"]): ...
 
-class PatternSequence(Variant["list[Pattern]"]): ...
+class PatternSequence(Node["list[Pattern]"]): ...
 
-class PatternAlternatives(Variant["list[Pattern]"]): ...
+class PatternAlternatives(Node["list[Pattern]"]): ...
 
-class PatternOption(Variant["Pattern"]): ...
+class PatternOption(Node["Pattern"]): ...
 
-class PatternStar(Variant["Pattern"]): ...
+class PatternStar(Node["Pattern"]): ...
 
-class PatternPlus(Variant["Pattern"]): ...
+class PatternPlus(Node["Pattern"]): ...
 
 # A pattern which matches valid expressions in the language.
 type Pattern = PatternNil | PatternIgnored | PatternLabeled | PatternConstant | PatternRegex | PatternNonterminal | PatternSequence | PatternAlternatives | PatternOption | PatternStar | PatternPlus
@@ -53,8 +52,8 @@ class Production:
     symbol: Symbol
     pattern: Pattern
 
-# A regular expression.
-Regex = NewType("Regex", str)
+class Regex(Node[str]):
+    """A regular expression."""
 
-# A nonterminal symbol.
-Symbol = NewType("Symbol", str)
+class Symbol(Node[str]):
+    """A nonterminal symbol."""

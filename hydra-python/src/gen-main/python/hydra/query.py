@@ -3,8 +3,8 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
-from hydra.dsl.python import Variant
-from typing import Annotated, NewType
+from hydra.dsl.python import Node
+from typing import Annotated
 import hydra.core
 
 class ComparisonConstraint(Enum):
@@ -37,43 +37,43 @@ class GraphPattern:
     graph: Annotated[hydra.core.Name, "The name of the component graph"]
     patterns: Annotated[list[Pattern], "The patterns to match within the subgraph"]
 
-class NodeTerm(Variant["hydra.core.Term"]):
+class NodeTerm(Node["hydra.core.Term"]):
     """A graph term; an expression which is valid in the graph being matched."""
 
-class NodeVariable(Variant["Variable"]):
+class NodeVariable(Node["Variable"]):
     """A query variable, not to be confused with a variable term."""
 
-class NodeWildcard(Variant[None]):
+class NodeWildcard(Node[None]):
     """An anonymous variable which we do not care to join across patterns."""
 
 # A node in a query expression; it may be a term, a variable, or a wildcard.
 type Node = NodeTerm | NodeVariable | NodeWildcard
 
-class PathStep(Variant["Step"]):
+class PathStep(Node["Step"]):
     """A path given by a single step."""
 
-class PathRegex(Variant["RegexSequence"]):
+class PathRegex(Node["RegexSequence"]):
     """A path given by a regular expression quantifier applied to another path."""
 
-class PathInverse(Variant["Path"]):
+class PathInverse(Node["Path"]):
     """A path given by the inverse of another path."""
 
 # A query path.
 type Path = PathStep | PathRegex | PathInverse
 
-class PatternTriple(Variant["TriplePattern"]):
+class PatternTriple(Node["TriplePattern"]):
     """A subject/predicate/object pattern."""
 
-class PatternNegation(Variant["Pattern"]):
+class PatternNegation(Node["Pattern"]):
     """The negation of another pattern."""
 
-class PatternConjunction(Variant["list[Pattern]"]):
+class PatternConjunction(Node["list[Pattern]"]):
     """The conjunction ('and') of several other patterns."""
 
-class PatternDisjunction(Variant["list[Pattern]"]):
+class PatternDisjunction(Node["list[Pattern]"]):
     """The disjunction (inclusive 'or') of several other patterns."""
 
-class PatternGraph(Variant["GraphPattern"]):
+class PatternGraph(Node["GraphPattern"]):
     """A pattern which matches within a named subgraph."""
 
 # A query pattern.
@@ -93,25 +93,25 @@ class Range:
     min: int
     max: int
 
-class RegexQuantifierOne(Variant[None]):
+class RegexQuantifierOne(Node[None]):
     """No quantifier; matches a single occurrence."""
 
-class RegexQuantifierZeroOrOne(Variant[None]):
+class RegexQuantifierZeroOrOne(Node[None]):
     """The ? quanifier; matches zero or one occurrence."""
 
-class RegexQuantifierZeroOrMore(Variant[None]):
+class RegexQuantifierZeroOrMore(Node[None]):
     """The * quantifier; matches any number of occurrences."""
 
-class RegexQuantifierOneOrMore(Variant[None]):
+class RegexQuantifierOneOrMore(Node[None]):
     """The + quantifier; matches one or more occurrences."""
 
-class RegexQuantifierExactly(Variant[int]):
+class RegexQuantifierExactly(Node[int]):
     """The {n} quantifier; matches exactly n occurrences."""
 
-class RegexQuantifierAtLeast(Variant[int]):
+class RegexQuantifierAtLeast(Node[int]):
     """The {n,} quantifier; matches at least n occurrences."""
 
-class RegexQuantifierRange(Variant["Range"]):
+class RegexQuantifierRange(Node["Range"]):
     """The {n, m} quantifier; matches between n and m (inclusive) occurrences."""
 
 # A regular expression quantifier.
@@ -124,13 +124,13 @@ class RegexSequence:
     path: Path
     quantifier: RegexQuantifier
 
-class StepEdge(Variant["Edge"]):
+class StepEdge(Node["Edge"]):
     """An out-to-in traversal of an abstract edge."""
 
-class StepProject(Variant["hydra.core.Projection"]):
+class StepProject(Node["hydra.core.Projection"]):
     """A projection from a record through one of its fields."""
 
-class StepCompare(Variant["ComparisonConstraint"]):
+class StepCompare(Node["ComparisonConstraint"]):
     """A comparison of two terms."""
 
 # An atomic function as part of a query. When applied to a graph, steps are typed by function types.
@@ -144,5 +144,5 @@ class TriplePattern:
     predicate: Path
     object: Node
 
-# A query variable.
-Variable = NewType("Variable", str)
+class Variable(Node[str]):
+    """A query variable."""

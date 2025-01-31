@@ -1,24 +1,24 @@
 """A JSON syntax model. See the BNF at https://www.json.org."""
 
 from __future__ import annotations
-from hydra.dsl.python import Variant
+from hydra.dsl.python import Node
 
-class ValueArray(Variant["list[Value]"]):
+class ValueArray(Node["list[Value]"]):
     """A JSON array."""
 
-class ValueBoolean(Variant[bool]):
+class ValueBoolean(Node[bool]):
     """A boolean value."""
 
-class ValueNull(Variant[None]):
+class ValueNull(Node[None]):
     """JSON's null value."""
 
-class ValueNumber(Variant[float]):
+class ValueNumber(Node[float]):
     """A numeric value."""
 
-class ValueObject(Variant["dict[str, Value]"]):
+class ValueObject(Node["dict[str, Value]"]):
     """A JSON object as a set of key/value pairs."""
 
-class ValueString(Variant[str]):
+class ValueString(Node[str]):
     """A string value."""
 
 # A JSON value.

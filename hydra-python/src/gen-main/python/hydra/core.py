@@ -3,8 +3,8 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
-from hydra.dsl.python import Variant
-from typing import Annotated, NewType
+from hydra.dsl.python import Node
+from typing import Annotated
 
 @dataclass
 class AnnotatedTerm:
@@ -42,22 +42,22 @@ class CaseStatement:
     default: Term | None
     cases: list[Field]
 
-class EliminationList(Variant["Term"]):
+class EliminationList(Node["Term"]):
     """Eliminates a list using a fold function; this function has the signature b -> [a] -> b."""
 
-class EliminationOptional(Variant["OptionalCases"]):
+class EliminationOptional(Node["OptionalCases"]):
     """Eliminates an optional term by matching over the two possible cases."""
 
-class EliminationProduct(Variant["TupleProjection"]):
+class EliminationProduct(Node["TupleProjection"]):
     """Eliminates a tuple by projecting the component at a given 0-indexed offset."""
 
-class EliminationRecord(Variant["Projection"]):
+class EliminationRecord(Node["Projection"]):
     """Eliminates a record by projecting a given field."""
 
-class EliminationUnion(Variant["CaseStatement"]):
+class EliminationUnion(Node["CaseStatement"]):
     """Eliminates a union term by matching over the fields of the union. This is a case statement."""
 
-class EliminationWrap(Variant["Name"]):
+class EliminationWrap(Node["Name"]):
     """Unwrap a wrapped term."""
 
 # A corresponding elimination for an introduction term.
@@ -86,25 +86,25 @@ class FloatType(Enum):
     
     FLOAT64 = "float64"
 
-class FloatValueBigfloat(Variant[float]):
+class FloatValueBigfloat(Node[float]):
     """An arbitrary-precision floating-point value."""
 
-class FloatValueFloat32(Variant[float]):
+class FloatValueFloat32(Node[float]):
     """A 32-bit floating-point value."""
 
-class FloatValueFloat64(Variant[float]):
+class FloatValueFloat64(Node[float]):
     """A 64-bit floating-point value."""
 
 # A floating-point literal value.
 type FloatValue = FloatValueBigfloat | FloatValueFloat32 | FloatValueFloat64
 
-class FunctionElimination(Variant["Elimination"]):
+class FunctionElimination(Node["Elimination"]):
     """An elimination for any of a few term variants."""
 
-class FunctionLambda(Variant["Lambda"]):
+class FunctionLambda(Node["Lambda"]):
     """A function abstraction (lambda)."""
 
-class FunctionPrimitive(Variant["Name"]):
+class FunctionPrimitive(Node["Name"]):
     """A reference to a built-in (primitive) function."""
 
 # A function.
@@ -145,31 +145,31 @@ class IntegerType(Enum):
     
     UINT64 = "uint64"
 
-class IntegerValueBigint(Variant[int]):
+class IntegerValueBigint(Node[int]):
     """An arbitrary-precision integer value."""
 
-class IntegerValueInt8(Variant[int]):
+class IntegerValueInt8(Node[int]):
     """An 8-bit signed integer value."""
 
-class IntegerValueInt16(Variant[int]):
+class IntegerValueInt16(Node[int]):
     """A 16-bit signed integer value (short value)."""
 
-class IntegerValueInt32(Variant[int]):
+class IntegerValueInt32(Node[int]):
     """A 32-bit signed integer value (int value)."""
 
-class IntegerValueInt64(Variant[int]):
+class IntegerValueInt64(Node[int]):
     """A 64-bit signed integer value (long value)."""
 
-class IntegerValueUint8(Variant[int]):
+class IntegerValueUint8(Node[int]):
     """An 8-bit unsigned integer value (byte)."""
 
-class IntegerValueUint16(Variant[int]):
+class IntegerValueUint16(Node[int]):
     """A 16-bit unsigned integer value."""
 
-class IntegerValueUint32(Variant[int]):
+class IntegerValueUint32(Node[int]):
     """A 32-bit unsigned integer value (unsigned int)."""
 
-class IntegerValueUint64(Variant[int]):
+class IntegerValueUint64(Node[int]):
     """A 64-bit unsigned integer value (unsigned long)."""
 
 # An integer literal value.
@@ -205,37 +205,37 @@ class LetBinding:
     term: Term
     type: TypeScheme | None
 
-class LiteralBinary(Variant[bytes]):
+class LiteralBinary(Node[bytes]):
     """A binary literal."""
 
-class LiteralBoolean(Variant[bool]):
+class LiteralBoolean(Node[bool]):
     """A boolean literal."""
 
-class LiteralFloat(Variant["FloatValue"]):
+class LiteralFloat(Node["FloatValue"]):
     """A floating-point literal."""
 
-class LiteralInteger(Variant["IntegerValue"]):
+class LiteralInteger(Node["IntegerValue"]):
     """An integer literal."""
 
-class LiteralString(Variant[str]):
+class LiteralString(Node[str]):
     """A string literal."""
 
 # A term constant; an instance of a literal type.
 type Literal = LiteralBinary | LiteralBoolean | LiteralFloat | LiteralInteger | LiteralString
 
-class LiteralTypeBinary(Variant[None]):
+class LiteralTypeBinary(Node[None]):
     """The type of a binary (byte string) value."""
 
-class LiteralTypeBoolean(Variant[None]):
+class LiteralTypeBoolean(Node[None]):
     """The type of a boolean (true/false) value."""
 
-class LiteralTypeFloat(Variant["FloatType"]):
+class LiteralTypeFloat(Node["FloatType"]):
     """The type of a floating-point value."""
 
-class LiteralTypeInteger(Variant["IntegerType"]):
+class LiteralTypeInteger(Node["IntegerType"]):
     """The type of an integer value."""
 
-class LiteralTypeString(Variant[None]):
+class LiteralTypeString(Node[None]):
     """The type of a string value."""
 
 # Any of a fixed set of literal types, also called atomic types, base types, primitive types, or type constants.
@@ -248,8 +248,8 @@ class MapType:
     keys: Type
     values: Type
 
-# A unique identifier in some context; a string-valued key.
-Name = NewType("Name", str)
+class Name(Node[str]):
+    """A unique identifier in some context; a string-valued key."""
 
 @dataclass
 class OptionalCases:
@@ -287,57 +287,57 @@ class Sum:
     size: int
     term: Annotated[Term, "A data term"]
 
-class TermAnnotated(Variant["AnnotatedTerm"]):
+class TermAnnotated(Node["AnnotatedTerm"]):
     """A term annotated with metadata."""
 
-class TermApplication(Variant["Application"]):
+class TermApplication(Node["Application"]):
     """A function application."""
 
-class TermFunction(Variant["Function"]):
+class TermFunction(Node["Function"]):
     """A function term."""
 
-class TermLet(Variant["Let"]): ...
+class TermLet(Node["Let"]): ...
 
-class TermList(Variant["list[Term]"]):
+class TermList(Node["list[Term]"]):
     """A list."""
 
-class TermLiteral(Variant["Literal"]):
+class TermLiteral(Node["Literal"]):
     """A literal value."""
 
-class TermMap(Variant["dict[Term, Term]"]):
+class TermMap(Node["dict[Term, Term]"]):
     """A map of keys to values."""
 
-class TermOptional(Variant["Term | None"]):
+class TermOptional(Node["Term | None"]):
     """An optional value."""
 
-class TermProduct(Variant["list[Term]"]):
+class TermProduct(Node["list[Term]"]):
     """A tuple."""
 
-class TermRecord(Variant["Record"]):
+class TermRecord(Node["Record"]):
     """A record term."""
 
-class TermSet(Variant["set[Term]"]):
+class TermSet(Node["set[Term]"]):
     """A set of values."""
 
-class TermSum(Variant["Sum"]):
+class TermSum(Node["Sum"]):
     """A variant tuple."""
 
-class TermTypeAbstraction(Variant["TypeAbstraction"]):
+class TermTypeAbstraction(Node["TypeAbstraction"]):
     """A System F type abstraction term."""
 
-class TermTypeApplication(Variant["TypedTerm"]):
+class TermTypeApplication(Node["TypedTerm"]):
     """A System F type application term."""
 
-class TermTyped(Variant["TypedTerm"]):
+class TermTyped(Node["TypedTerm"]):
     """A term annotated with its type."""
 
-class TermUnion(Variant["Injection"]):
+class TermUnion(Node["Injection"]):
     """An injection; an instance of a union type."""
 
-class TermVariable(Variant["Name"]):
+class TermVariable(Node["Name"]):
     """A variable reference."""
 
-class TermWrap(Variant["WrappedTerm"]): ...
+class TermWrap(Node["WrappedTerm"]): ...
 
 # A data term.
 type Term = TermAnnotated | TermApplication | TermFunction | TermLet | TermList | TermLiteral | TermMap | TermOptional | TermProduct | TermRecord | TermSet | TermSum | TermTypeAbstraction | TermTypeApplication | TermTyped | TermUnion | TermVariable | TermWrap
@@ -349,35 +349,35 @@ class TupleProjection:
     arity: Annotated[int, "The arity of the tuple"]
     index: Annotated[int, "The 0-indexed offset from the beginning of the tuple"]
 
-class TypeAnnotated(Variant["AnnotatedType"]): ...
+class TypeAnnotated(Node["AnnotatedType"]): ...
 
-class TypeApplication(Variant["ApplicationType"]): ...
+class TypeApplication(Node["ApplicationType"]): ...
 
-class TypeFunction(Variant["FunctionType"]): ...
+class TypeFunction(Node["FunctionType"]): ...
 
-class TypeLambda(Variant["LambdaType"]): ...
+class TypeLambda(Node["LambdaType"]): ...
 
-class TypeList(Variant["Type"]): ...
+class TypeList(Node["Type"]): ...
 
-class TypeLiteral(Variant["LiteralType"]): ...
+class TypeLiteral(Node["LiteralType"]): ...
 
-class TypeMap(Variant["MapType"]): ...
+class TypeMap(Node["MapType"]): ...
 
-class TypeOptional(Variant["Type"]): ...
+class TypeOptional(Node["Type"]): ...
 
-class TypeProduct(Variant["list[Type]"]): ...
+class TypeProduct(Node["list[Type]"]): ...
 
-class TypeRecord(Variant["RowType"]): ...
+class TypeRecord(Node["RowType"]): ...
 
-class TypeSet(Variant["Type"]): ...
+class TypeSet(Node["Type"]): ...
 
-class TypeSum(Variant["list[Type]"]): ...
+class TypeSum(Node["list[Type]"]): ...
 
-class TypeUnion(Variant["RowType"]): ...
+class TypeUnion(Node["RowType"]): ...
 
-class TypeVariable(Variant["Name"]): ...
+class TypeVariable(Node["Name"]): ...
 
-class TypeWrap(Variant["WrappedType"]): ...
+class TypeWrap(Node["WrappedType"]): ...
 
 # A data type.
 type Type = TypeAnnotated | TypeApplication | TypeFunction | TypeLambda | TypeList | TypeLiteral | TypeMap | TypeOptional | TypeProduct | TypeRecord | TypeSet | TypeSum | TypeUnion | TypeVariable | TypeWrap

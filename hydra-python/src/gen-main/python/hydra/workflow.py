@@ -3,7 +3,7 @@
 from __future__ import annotations
 from collections.abc import Callable
 from dataclasses import dataclass
-from hydra.dsl.python import Variant
+from hydra.dsl.python import Node
 from typing import Annotated, Generic, TypeVar
 import hydra.compute
 import hydra.core
@@ -28,13 +28,13 @@ class LastMile(Generic[S, A]):
     serializer: Annotated[Callable[[list[A]], hydra.compute.Flow[S, str]], "A function which serializes a list of output objects to a string representation"]
     file_extension: Annotated[str, "A file extension for the generated file(s)"]
 
-class SchemaSpecHydra(Variant["HydraSchemaSpec"]):
+class SchemaSpecHydra(Node["HydraSchemaSpec"]):
     """A native Hydra schema."""
 
-class SchemaSpecFile(Variant[str]):
+class SchemaSpecFile(Node[str]):
     """A schema provided as a file, available at the given file path."""
 
-class SchemaSpecProvided(Variant[None]):
+class SchemaSpecProvided(Node[None]):
     """A schema which will be provided within the workflow."""
 
 # The specification of a schema at the source end of a workflow.
