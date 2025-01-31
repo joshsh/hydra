@@ -391,9 +391,12 @@ gatherMetadata defs = checkTvars $ L.foldl addDef start defs
       DefinitionType _ typ -> foldOverType TraversalOrderPre extendMeta meta3 typ
         where
           tvars = pythonModuleMetadataTypeVariables meta
-          meta3 = case stripType typ of
-            TypeWrap _ -> meta2 {pythonModuleMetadataUsesNode = True}
-            _ -> meta2
+          meta3 = digForWrap typ
+            where
+              digForWrap typ = case stripType typ of
+                TypeLambda (LambdaType _ body) -> digForWrap body
+                TypeWrap _ -> meta2 {pythonModuleMetadataUsesNode = True}
+                _ -> meta2
           meta2 = meta {pythonModuleMetadataTypeVariables = newTvars tvars typ}
             where
               newTvars s t = case stripType t of

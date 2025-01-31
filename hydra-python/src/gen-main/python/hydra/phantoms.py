@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 from dataclasses import dataclass
+from hydra.dsl.python import Node
 from typing import Generic, TypeVar
 import hydra.core
 
